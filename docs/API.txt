@@ -1,0 +1,280 @@
+1. AuthenticationService
+	* login:
+		- request {
+			"username" : "phone number",
+			"password" : "password"
+		}
+		- respone {
+			"user_id" : 1,
+			"role" : "admin/user"
+		}
+
+	* register:
+		- request {
+			"username" : "Nguyen Thanh Tri",
+			"phone" : "0329367633",
+			"email" : "tringuyenntt1505@gmail.com",
+			"personal_id" : "082205013757",
+			"password": "password"
+		}
+		- respone {
+			"status" : "success/failed",
+			"message" : ""
+		}
+
+2. AccountServices
+	* getUserInformation:
+		- request {
+			"user_id" : 1
+		}
+		- respone {
+			"username" : "Nguyen Thanh Tri",
+			"phone" : "0329367633",
+			"email" : "tringuyenntt1505@gmail.com",
+			"personal_id" : "082205013757",
+			"password": "password"
+		}
+	
+	* updateUser:
+		- request {
+			"username" : "Nguyen Thanh Tri",
+			"phone" : "0329367633",
+			"email" : "tringuyenntt1505@gmail.com",
+			"personal_id" : "082205013757",
+			"password": "password"
+		}
+		- respone {
+			"status" : "success/failed",
+			"message" : ""
+		}
+
+	* getAllUserAccount:
+		- request {
+
+		}
+		- respone {
+			"user" : [
+				{
+				"user_id" : 1,
+				"username" : "Nguyen Thanh Tri",
+				"phone" : "0329367633",
+				"email" : "tringuyenntt1505@gmail.com",
+				"personal_id" : "082205013757"
+				},
+				{
+				"user_id" : 2,
+				"username" : "Nguyen Thanh Tri",
+				"phone" : "0329367633",
+				"email" : "tringuyenntt1505@gmail.com",
+				"personal_id" : "082205013757"
+				},
+				{
+				"user_id" : 3,
+				"username" : "Nguyen Thanh Tri",
+				"phone" : "0329367633",
+				"email" : "tringuyenntt1505@gmail.com",
+				"personal_id" : "082205013757"
+				}
+			]
+			
+		}
+
+3. DomainServices
+	* Search:
+		- request {
+			"name" : "example.com"
+		}
+
+		- respone {
+			"domain" : [
+				{
+					"name" : "example.com",
+					"status" : "actived/available",
+					"price" : 100000
+				},
+								{
+					"name" : "example.vn",
+					"status" : "available",
+					"price" : 100000
+				},
+								{
+					"name" : "example.click",
+					"status" : "available",
+					"price" : 100000
+				},
+								{
+					"name" : "example.site",
+					"status" : "available",
+					"price" : 100000
+				}
+			]
+		}
+	* getShoppingCart:
+		- request {
+			"user_id" : 1
+		}
+
+		-respone {
+			"domain" : [
+				{
+					"name" : "example.com",
+					"status" : "available",
+					"price" : 100000
+				},
+				{
+					"name" : "example.vn",
+					"status" : "available",
+					"price" : 100000
+				},
+								{
+					"name" : "example.click",
+					"status" : "available",
+					"price" : 100000
+				},
+								{
+					"name" : "example.site",
+					"status" : "available",
+					"price" : 100000
+				}
+			]
+		}
+
+	* addToCart:
+		- request {
+			"userID" : id,
+			"domain: [
+				{
+					"name" : "example.com",
+					"status" : "available",
+					"price" : 100000,
+					"years" : 1
+				},
+				{
+					"name" : "example.com",
+					"status" : "available",
+					"price" : 100000,
+					"years" : 1
+				}
+			]
+		}
+		- respone {
+			"status" : "success/failed",
+			"message" : "3 domains have been add to <user id> cart / failed to add to <user id> cart"
+		}
+
+4. TransactionServices
+	* getAllUserTransaction:
+		- request {
+			"user_id" : id
+		}
+
+		- respone {
+			"transactions" : [
+				{
+					"id" : "HD001",
+					"date": "12/12/2025",
+					"total_price" : 100000,
+					"status" : "penddingConfirm/penddingPayment/completed/canceled"
+				},
+				{
+					"id" : "HD002",
+					"date": "12/12/2025",
+					"total_price" : 100000,
+					"status" : "penddingConfirm/penddingPayment/completed/canceled"
+				},
+				{
+					"id" : "HD003",
+					"date": "12/12/2025",
+					"total_price" : 100000,
+					"status" : "penddingConfirm/penddingPayment/completed/canceled"
+				}
+			]
+		}
+
+	* getTransactionInfomation:
+		- request {
+			"transaction_id" : "HD001"
+		}
+
+		- respone {
+			"domains" : [
+				{
+					"name" : "example.com",
+					"status" : "available",
+					"price" : 100000,
+					"years" : 1
+				},
+				{
+					"name" : "example.com",
+					"status" : "available",
+					"price" : 100000,
+					"years" : 2
+				},
+				{
+					"name" : "example.com",
+					"status" : "available",
+					"price" : 100000,
+					"years" : 3
+				},
+			]
+		}
+
+	* getAllTransaction:
+		- request {
+
+		}
+
+		- respone {
+			"transactions" : [
+				{
+					"id" : "HD001",
+					"date": "12/12/2025",
+					"total_price" : 100000,
+					"status" : "penddingConfirm/penddingPayment/completed/canceled"
+				},
+				{
+					"id" : "HD002",
+					"date": "12/12/2025",
+					"total_price" : 100000,
+					"status" : "penddingConfirm/penddingPayment/completed/canceled"
+				},
+				{
+					"id" : "HD003",
+					"date": "12/12/2025",
+					"total_price" : 100000,
+					"status" : "penddingConfirm/penddingPayment/completed/canceled"
+				}
+			]
+		}
+	
+5. PaymentServices
+	* getUserPaymentHistory:
+	- request {
+		"user_id" : 1
+	}
+
+	- respone {
+		paymentHistory: [
+			{
+				"payment_id" : "id",
+				"transaction_id" : "id",
+				"method" : "VN Pay",
+				"date" : "12/12/2025",
+				"status" : "completed/failed"
+			},
+			{
+				"payment_id" : "id",
+				"transaction_id" : "id",
+				"method" : "VN Pay",
+				"date" : "12/12/2025",
+				"status" : "completed/failed"
+			},
+			{
+				"payment_id" : "id",
+				"transaction_id" : "id",
+				"method" : "VN Pay",
+				"date" : "12/12/2025",
+				"status" : "completed/failed"
+			}
+		]
+	}

@@ -1,0 +1,18 @@
+.header {
+    -fx-background-color: #3F40FF;
+}
+
+.label {
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+}
+
+.button.default {
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+    -fx-background-color: #3F40FF;
+}
+
+.button.primary {
+    -fx-background-color: #326FFF;  
+}
