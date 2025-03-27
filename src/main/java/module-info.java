@@ -1,4 +1,5 @@
 module com.utc2.domainstore{
+    requires com.sun.jna;
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;

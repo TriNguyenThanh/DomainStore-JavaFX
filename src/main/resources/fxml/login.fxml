@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
@@ -12,46 +12,37 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../style/login.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.LoginController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="root" stylesheets="@../style/login.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.LoginController">
     <top>
         <HBox prefHeight="50.0" prefWidth="1000.0" styleClass="header" stylesheets="@../style/style.css" BorderPane.alignment="CENTER" />
     </top>
     <left>
-        <ImageView fitHeight="540.0" fitWidth="480.0" pickOnBounds="true" preserveRatio="true"
-                   BorderPane.alignment="CENTER">
-            <Image url="@../image/loginBG.png"/>
+        <ImageView fitHeight="540.0" fitWidth="480.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+            <Image url="@../image/loginBG.png" />
         </ImageView>
     </left>
     <center>
         <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <top>
-                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="130.0" prefWidth="518.0" text="%login.title" BorderPane.alignment="CENTER">
+                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="93.0" prefWidth="518.0" styleClass="header" stylesheets="@../style/login.css" text="%login.title" BorderPane.alignment="CENTER">
                     <font>
                         <Font name="Tahoma Bold" size="48.0" />
                     </font>
                 </Label>
             </top>
          <center>
-             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                 <TextField layoutX="205.0" layoutY="79.0" prefHeight="26.0" prefWidth="266.0"/>
-                 <PasswordField layoutX="203.0" layoutY="154.0" prefHeight="26.0" prefWidth="268.0"/>
-                 <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="83.0" prefHeight="30.0" prefWidth="182.0"
-                        text="%login.username"/>
-                 <Label alignment="CENTER_RIGHT" layoutX="13.0" layoutY="152.0" prefHeight="30.0" prefWidth="176.0"
-                        text="%login.password"/>
+             <AnchorPane prefHeight="283.0" prefWidth="520.0" BorderPane.alignment="CENTER">
+                 <TextField fx:id="usernameField" layoutX="204.0" layoutY="77.0" prefHeight="26.0" prefWidth="266.0" promptText="%login.username.placeholder" />
+                 <PasswordField fx:id="passwordField" layoutX="203.0" layoutY="154.0" prefHeight="26.0" prefWidth="268.0" promptText="login.password.placeholder" />
+                 <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="85.0" prefHeight="30.0" prefWidth="182.0" text="%login.username" />
+                 <Label alignment="CENTER_RIGHT" layoutX="13.0" layoutY="160.0" prefHeight="30.0" prefWidth="176.0" text="%login.password" />
+               <CheckBox fx:id="passwordCheckbox" layoutX="329.0" layoutY="210.0" mnemonicParsing="false" onAction="#showPassword" prefHeight="20.0" prefWidth="141.0" styleClass="checkbox" stylesheets="@../style/login.css" text="%login.checkbox" />
              </AnchorPane>
          </center>
          <bottom>
-             <AnchorPane prefHeight="114.0" prefWidth="520.0" BorderPane.alignment="CENTER">
-                 <Button layoutX="96.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="328.0"
-                         stylesheets="@../style/login.css" text="%login.button.login">
-                    <styleClass>
-                        <String fx:value="primary"/>
-                        <String fx:value="default"/>
-                    </styleClass>
-                 </Button>
-                 <Button layoutX="95.0" layoutY="57.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="329.0"
-                         text="%login.button.register"/>
+             <AnchorPane prefHeight="165.0" prefWidth="520.0" stylesheets="@../style/login.css" BorderPane.alignment="CENTER">
+                 <Button layoutX="96.0" mnemonicParsing="false" onAction="#login" prefHeight="26.0" prefWidth="328.0" styleClass="login" stylesheets="@../style/login.css" text="%login.button.login" />
+                 <Button layoutX="95.0" layoutY="67.0" mnemonicParsing="false" onAction="#register" prefHeight="26.0" prefWidth="329.0" styleClass="register" stylesheets="@../style/login.css" text="%login.button.register" />
              </AnchorPane>
          </bottom>
         </BorderPane>
