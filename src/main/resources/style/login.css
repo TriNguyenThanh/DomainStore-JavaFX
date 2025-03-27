@@ -8,7 +8,19 @@
 }
 
 .label.header {
+    -fx-font-size: 30;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+
+.label.title {
     -fx-font-size: 50;
+}
+
+.label.error {
+    -fx-font-size: 12;
+    -fx-font-style: italic;
+    -fx-text-fill: #FF0000;
 }
 
 .text-field {
@@ -17,7 +29,7 @@
     -fx-background-radius: 10;
     -fx-border-color: #3F40FF;
     -fx-border-radius: 10;
-    -fx-prompt-text-fill: #000000;
+    -fx-prompt-text-fill: #3F40FF;
 }
 
 .checkbox {
