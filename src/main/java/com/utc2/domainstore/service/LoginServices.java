@@ -1,8 +1,7 @@
 package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.dao.CustomerDAO;
-import com.utc2.domainstore.model.CustomerModel;
-import com.utc2.domainstore.utils.PasswordUtils;
+import com.utc2.domainstore.entity.database.CustomerModel;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import java.util.LinkedHashMap;

@@ -1,8 +1,8 @@
 package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.dao.DomainDAO;
-import com.utc2.domainstore.model.DomainModel;
-import com.utc2.domainstore.model.TopLevelDomainModel;
+import com.utc2.domainstore.entity.database.DomainModel;
+import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.List;

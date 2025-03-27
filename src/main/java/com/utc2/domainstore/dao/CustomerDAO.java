@@ -5,10 +5,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import com.utc2.domainstore.model.CustomerModel;
-import com.utc2.domainstore.model.CustomerModel.Role;
-import com.utc2.domainstore.utils.PasswordUtils;
-import com.utc2.domainstore.dao.DAOInterface;
+import com.utc2.domainstore.entity.database.CustomerModel;
+import com.utc2.domainstore.entity.database.CustomerModel.Role;
+
 import java.util.ArrayList;
 
 public class CustomerDAO implements DAOInterface<CustomerModel> {

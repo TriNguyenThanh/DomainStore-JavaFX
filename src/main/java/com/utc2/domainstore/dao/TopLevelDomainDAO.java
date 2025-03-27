@@ -1,6 +1,6 @@
 package com.utc2.domainstore.dao;
 
-import com.utc2.domainstore.model.TopLevelDomainModel;
+import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import com.utc2.domainstore.utils.JDBC;
 
 import java.sql.*;

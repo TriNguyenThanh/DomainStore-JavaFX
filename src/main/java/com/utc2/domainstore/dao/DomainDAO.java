@@ -1,7 +1,7 @@
 package com.utc2.domainstore.dao;
 
-import com.utc2.domainstore.model.DomainModel;
-import com.utc2.domainstore.model.DomainModel.DomainStatusEnum;
+import com.utc2.domainstore.entity.database.DomainModel;
+import com.utc2.domainstore.entity.database.DomainModel.DomainStatusEnum;
 import com.utc2.domainstore.utils.JDBC;
 
 import java.sql.*;

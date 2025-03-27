@@ -1,4 +1,4 @@
-package com.utc2.domainstore.model;
+package com.utc2.domainstore.entity.database;
 
 public class TopLevelDomainModel {
     private int id;

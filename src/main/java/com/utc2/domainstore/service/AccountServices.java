@@ -1,7 +1,7 @@
 package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.dao.CustomerDAO;
-import com.utc2.domainstore.model.CustomerModel;
+import com.utc2.domainstore.entity.database.CustomerModel;
 import com.utc2.domainstore.utils.PasswordUtils;
 import java.sql.Timestamp;
 import java.util.*;

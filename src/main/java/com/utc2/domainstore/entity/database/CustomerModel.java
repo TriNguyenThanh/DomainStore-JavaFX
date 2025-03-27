@@ -1,7 +1,6 @@
 
-package com.utc2.domainstore.model;
+package com.utc2.domainstore.entity.database;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 public class CustomerModel {

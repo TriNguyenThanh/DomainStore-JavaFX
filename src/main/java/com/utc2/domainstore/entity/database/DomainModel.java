@@ -1,4 +1,4 @@
-package com.utc2.domainstore.model;
+package com.utc2.domainstore.entity.database;
 
 import com.utc2.domainstore.dao.TopLevelDomainDAO;
 import java.sql.Date;

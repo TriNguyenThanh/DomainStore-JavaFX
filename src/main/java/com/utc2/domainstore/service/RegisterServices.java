@@ -1,13 +1,9 @@
 package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.dao.CustomerDAO;
-import com.utc2.domainstore.model.CustomerModel;
+import com.utc2.domainstore.entity.database.CustomerModel;
 import com.utc2.domainstore.utils.PasswordUtils;
-import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;
-import java.sql.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+
 import java.util.Scanner;
 import org.json.JSONObject;
 public class RegisterServices {
