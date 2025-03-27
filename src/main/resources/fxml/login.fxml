@@ -17,10 +17,9 @@
         <HBox prefHeight="50.0" prefWidth="1000.0" styleClass="header" stylesheets="@../style/style.css" BorderPane.alignment="CENTER" />
     </top>
     <left>
-        <ImageView fitHeight="540.0" fitWidth="480.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-            <image>
-                <Image url="@../image/loginBG.png" />
-            </image>
+        <ImageView fitHeight="540.0" fitWidth="480.0" pickOnBounds="true" preserveRatio="true"
+                   BorderPane.alignment="CENTER">
+            <Image url="@../image/loginBG.png"/>
         </ImageView>
     </left>
     <center>
@@ -33,27 +32,27 @@
                 </Label>
             </top>
          <center>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <TextField layoutX="205.0" layoutY="79.0" prefHeight="26.0" prefWidth="266.0" />
-                  <PasswordField layoutX="203.0" layoutY="154.0" prefHeight="26.0" prefWidth="268.0" />
-                  <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="83.0" prefHeight="30.0" prefWidth="182.0" text="%login.username" />
-                  <Label alignment="CENTER_RIGHT" layoutX="13.0" layoutY="152.0" prefHeight="30.0" prefWidth="176.0" text="%login.password" />
-               </children>
-            </AnchorPane>
+             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                 <TextField layoutX="205.0" layoutY="79.0" prefHeight="26.0" prefWidth="266.0"/>
+                 <PasswordField layoutX="203.0" layoutY="154.0" prefHeight="26.0" prefWidth="268.0"/>
+                 <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="83.0" prefHeight="30.0" prefWidth="182.0"
+                        text="%login.username"/>
+                 <Label alignment="CENTER_RIGHT" layoutX="13.0" layoutY="152.0" prefHeight="30.0" prefWidth="176.0"
+                        text="%login.password"/>
+             </AnchorPane>
          </center>
          <bottom>
-            <AnchorPane prefHeight="114.0" prefWidth="520.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Button layoutX="96.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="328.0" stylesheets="@../style/login.css" text="%login.button.login">
-                     <styleClass>
-                        <String fx:value="primary" />
-                        <String fx:value="default" />
-                     </styleClass>
-                  </Button>
-                  <Button layoutX="95.0" layoutY="57.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="329.0" text="%login.button.register" />
-               </children>
-            </AnchorPane>
+             <AnchorPane prefHeight="114.0" prefWidth="520.0" BorderPane.alignment="CENTER">
+                 <Button layoutX="96.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="328.0"
+                         stylesheets="@../style/login.css" text="%login.button.login">
+                    <styleClass>
+                        <String fx:value="primary"/>
+                        <String fx:value="default"/>
+                    </styleClass>
+                 </Button>
+                 <Button layoutX="95.0" layoutY="57.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="329.0"
+                         text="%login.button.register"/>
+             </AnchorPane>
          </bottom>
         </BorderPane>
     </center>
