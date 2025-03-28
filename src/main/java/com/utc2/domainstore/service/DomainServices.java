@@ -6,7 +6,6 @@ import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.List;
-import java.util.Scanner;
 
 public class DomainServices {
     private final DomainDAO domainDAO = new DomainDAO();
@@ -34,10 +33,9 @@ public class DomainServices {
     }
 
     // 2. lấy giỏ hàng theo id
-    public String getShoppingCart(String jsonInput) {
-        JSONObject jsonObject = new JSONObject(jsonInput);
-        int userId = jsonObject.getInt("user_id");
-        
+    public JSONObject getShoppingCart(JSONObject jsonInput) {
+        int userId = jsonInput.getInt("user_id");
+
         List<DomainModel> cartList = domainDAO.getCartByUserId(userId);
         JSONArray domainArray = new JSONArray();
 
@@ -52,27 +50,24 @@ public class DomainServices {
 
         JSONObject response = new JSONObject();
         response.put("domain", domainArray);
-        return response.toString();
+        return response;
     }
 
 
 
     // 3. thêm giỏ hàng
-    public String addToCart(String jsonInput) {
-        JSONObject jsonObject = new JSONObject(jsonInput);
-        int userId = jsonObject.getInt("userID");
-        JSONArray domainArray = jsonObject.getJSONArray("domain");
+    public JSONObject addToCart(JSONObject jsonInput) {
+        int userId = jsonInput.getInt("userID");
+        JSONArray domainArray = jsonInput.getJSONArray("domain");
 
         int successCount = 0;
 
         for (int i = 0; i < domainArray.length(); i++) {
             JSONObject domainJson = domainArray.getJSONObject(i);
 
-            //Đọc đúng tên miền từ JSON
             String domainName = domainJson.getString("domain_name");
             String tldText = domainJson.getString("tld");
 
-            //Tìm kiếm domain dựa trên domain_name và tld
             List<DomainModel> matchingDomains = domainDAO.searchByName(domainName);
             DomainModel selectedDomain = null;
 
@@ -84,71 +79,24 @@ public class DomainServices {
                 }
             }
 
-            //Kiểm tra domain có sẵn để thêm vào giỏ hàng
             if (selectedDomain != null && selectedDomain.getStatus() == DomainModel.DomainStatusEnum.AVAILABLE) {
-
-                // Cập nhật số năm đăng ký từ JSON
                 int years = domainJson.getInt("years");
-                selectedDomain.setYears(years); 
+                selectedDomain.setYears(years);
 
-                // Gọi hàm cập nhật owner_id và years (mới sửa)
                 boolean isUpdated = domainDAO.updateDomainOwnership(userId, selectedDomain);
                 if (isUpdated) successCount++;
             }
         }
 
-        //Tạo phản hồi JSON
         JSONObject response = new JSONObject();
         if (successCount > 0) {
             response.put("status", "success");
-            response.put("message", successCount + " domains have been added to " + userId + " cart");
+            response.put("message", successCount + " domains have been added to cart");
         } else {
             response.put("status", "failed");
-            response.put("message", "Failed to add to " + userId + " cart");
+            response.put("message", "Failed to add to cart");
         }
 
-        return response.toString();
-    }
-
-
-
-
-    // Main
-    public static void main(String[] args) {
-        DomainServices service = new DomainServices();
-        Scanner scanner = new Scanner(System.in);
-
-        // Test search
-//        System.out.println("Nhập để tìm kiếm:");
-//        String searchJson = scanner.nextLine();
-//        System.out.println(service.search(searchJson));
-
-        // Test get shopping cart
-//        System.out.println("Enter JSON for shopping cart:");
-//        String cartJson = scanner.nextLine();
-//        System.out.println(service.getShoppingCart(cartJson));
-
-        // Test add to cart
-//        String testJson = "{"
-//        + "\"userID\": 1,"
-//        + "\"domain\": ["
-//        + "{"
-//        + "\"domain_name\": \"example\","
-//        + "\"tld\": \".com\","
-//        + "\"price\": 299000,"
-//        + "\"years\": 1"
-//        + "},"
-//        + "{"
-//        + "\"domain_name\": \"example\","
-//        + "\"tld\": \".site\","
-//        + "\"price\": 39000,"
-//        + "\"years\": 1"
-//        + "}"
-//        + "]"
-//        + "}";
-//        String response = service.addToCart(testJson);
-//        System.out.println("Response: " + response);
-
-        scanner.close();
+        return response;
     }
 }
