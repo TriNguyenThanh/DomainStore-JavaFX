@@ -1,11 +1,11 @@
 package com.utc2.domainstore.DuongTan;
 
-import com.utc2.domainstore.model.DomainModel;
+import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.dao.CustomerDAO;
 import com.utc2.domainstore.dao.DomainDAO;
 import com.utc2.domainstore.dao.TopLevelDomainDAO;
-import com.utc2.domainstore.model.CustomerModel;
-import com.utc2.domainstore.model.TopLevelDomainModel;
+import com.utc2.domainstore.entity.database.CustomerModel;
+import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import com.utc2.domainstore.utils.PasswordUtils;
 import java.sql.Date;
 import java.sql.Timestamp;

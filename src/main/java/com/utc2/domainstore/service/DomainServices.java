@@ -11,7 +11,7 @@ public class DomainServices {
     private final DomainDAO domainDAO = new DomainDAO();
     
     // 1. tìm theo tên
-    public String search(String jsonInput) {
+    public JSONObject search(JSONObject jsonInput) {
         JSONObject jsonObject = new JSONObject(jsonInput);
         String domainName = jsonObject.getString("name");
 
@@ -29,8 +29,11 @@ public class DomainServices {
 
         JSONObject response = new JSONObject();
         response.put("domain", domainArray);
-        return response.toString();
+        return response;  // Không cần toString()
     }
+
+
+
 
     // 2. lấy giỏ hàng theo id
     public JSONObject getShoppingCart(JSONObject jsonInput) {
