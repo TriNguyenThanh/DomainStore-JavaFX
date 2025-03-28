@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
+            prefWidth="1000.0" stylesheets="@../style/register.css" xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.RegisterController">
+    <BorderPane prefWidth="1000.0">
+        <right>
+            <AnchorPane prefHeight="802.0" prefWidth="450.0" styleClass="pane" stylesheets="@../style/register.css"
+                        BorderPane.alignment="CENTER">
+                <HBox layoutX="-1.0" prefWidth="450.0">
+                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                        <HBox.margin>
+                            <Insets left="50.0" top="10.0"/>
+                        </HBox.margin>
+                        <Image url="@../icon/domain.png"/>
+                    </ImageView>
+                    <Label alignment="BASELINE_CENTER" prefHeight="58.0" prefWidth="313.0" styleClass="header"
+                           stylesheets="@../style/register.css" text="UTC2 DOMAIN STORE">
+                        <HBox.margin>
+                            <Insets left="10.0" top="10.0"/>
+                        </HBox.margin>
+                    </Label>
+                </HBox>
+                <ComboBox layoutX="14.0" layoutY="762.0" prefWidth="150.0" styleClass="combobox"
+                          stylesheets="@../style/register.css"/>
+            </AnchorPane>
+        </right>
+        <center>
+            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                <Label alignment="CENTER" prefHeight="92.0" prefWidth="510.0" styleClass="title"
+                       stylesheets="@../style/register.css" text="%register.title"/>
+                <AnchorPane prefHeight="85.0" prefWidth="510.0">
+                    <TextField fx:id="usernameTextfield" layoutX="208.0" layoutY="31.0" prefHeight="50.0"
+                               prefWidth="310.0"/>
+                    <Label alignment="CENTER_RIGHT" layoutY="41.0" prefHeight="30.0" prefWidth="207.0"
+                           text="%register.username">
+                        <padding>
+                            <Insets right="10.0"/>
+                        </padding>
+                    </Label>
+                    <Label fx:id="usernameErr" layoutX="208.0" layoutY="14.0" prefHeight="18.0" prefWidth="304.0"
+                           styleClass="error" text=" "/>
+                </AnchorPane>
+                <AnchorPane prefHeight="85.0" prefWidth="510.0">
+                    <TextField fx:id="phoneTextfield" layoutX="208.0" layoutY="31.0" prefHeight="50.0"
+                               prefWidth="310.0"/>
+                    <Label alignment="CENTER_RIGHT" layoutY="41.0" prefHeight="30.0" prefWidth="207.0"
+                           text="%register.phone">
+                        <padding>
+                            <Insets right="10.0"/>
+                        </padding>
+                    </Label>
+                    <Label fx:id="phoneErr" layoutX="208.0" layoutY="14.0" prefHeight="18.0" prefWidth="310.0"
+                           styleClass="error" text=" "/>
+                </AnchorPane>
+                <AnchorPane prefHeight="85.0" prefWidth="510.0">
+                    <TextField fx:id="emailTextfield" layoutX="208.0" layoutY="31.0" prefHeight="50.0"
+                               prefWidth="310.0"/>
+                    <Label alignment="CENTER_RIGHT" layoutY="41.0" prefHeight="30.0" prefWidth="207.0"
+                           text="%register.email">
+                        <padding>
+                            <Insets right="10.0"/>
+                        </padding>
+                    </Label>
+                    <Label fx:id="emailErr" layoutX="208.0" layoutY="14.0" prefHeight="18.0" prefWidth="310.0"
+                           styleClass="error" text=" "/>
+                </AnchorPane>
+                <AnchorPane prefHeight="85.0" prefWidth="510.0">
+                    <TextField fx:id="psIDTextfield" layoutX="208.0" layoutY="31.0" prefHeight="50.0"
+                               prefWidth="310.0"/>
+                    <Label alignment="CENTER_RIGHT" layoutX="1.0" layoutY="41.0" prefHeight="30.0" prefWidth="207.0"
+                           text="%register.psID">
+                        <padding>
+                            <Insets right="10.0"/>
+                        </padding>
+                    </Label>
+                    <Label fx:id="psIDErr" layoutX="208.0" layoutY="14.0" prefHeight="18.0" prefWidth="310.0"
+                           styleClass="error" text=" "/>
+                </AnchorPane>
+                <AnchorPane prefHeight="85.0" prefWidth="510.0">
+                    <Label alignment="CENTER_RIGHT" layoutX="2.0" layoutY="41.0" prefHeight="30.0" prefWidth="206.0"
+                           text="%register.password">
+                        <padding>
+                            <Insets right="10.0"/>
+                        </padding>
+                    </Label>
+                    <Label fx:id="passwordErr" layoutX="208.0" layoutY="14.0" prefHeight="18.0" prefWidth="310.0"
+                           styleClass="error" text=" "/>
+                    <PasswordField fx:id="passwordField" layoutX="208.0" layoutY="31.0"
+                                   onMouseClicked="#passwordFieldOnClicked" prefHeight="50.0" prefWidth="310.0"/>
+                </AnchorPane>
+                <AnchorPane prefHeight="85.0" prefWidth="510.0">
+                    <Label alignment="CENTER_RIGHT" layoutX="-63.0" layoutY="41.0" prefHeight="30.0" prefWidth="270.0"
+                           text="%register.confirmPassword">
+                        <padding>
+                            <Insets right="10.0"/>
+                        </padding>
+                    </Label>
+                    <Label fx:id="confirmPasswordErr" layoutX="208.0" layoutY="14.0" prefHeight="18.0" prefWidth="310.0"
+                           styleClass="error" text=" "/>
+                    <PasswordField fx:id="confirmPasswordField" layoutX="208.0" layoutY="31.0"
+                                   onMouseClicked="#passwordFieldOnClicked" prefHeight="50.0" prefWidth="310.0"/>
+                </AnchorPane>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <CheckBox fx:id="passwordCheckBox" layoutX="375.0" layoutY="4.0" mnemonicParsing="false"
+                              onAction="#showPasswordOnAction" prefHeight="20.0" styleClass="checkbox"
+                              stylesheets="@../style/register.css" text="%checkbox.password"/>
+                    <Label layoutY="169.0" prefHeight="30.0" prefWidth="546.0" styleClass="description"
+                           stylesheets="@../style/register.css" text="%register.description">
+                        <padding>
+                            <Insets left="10.0"/>
+                        </padding>
+                    </Label>
+                    <Button layoutX="111.0" layoutY="53.0" mnemonicParsing="false" onAction="#buttonRegisterOnAction"
+                            prefHeight="26.0" prefWidth="328.0" styleClass="register"
+                            stylesheets="@../style/register.css" text="%button.register">
+                        <cursor>
+                            <Cursor fx:constant="HAND"/>
+                        </cursor>
+                    </Button>
+                    <Button layoutX="110.0" layoutY="107.0" mnemonicParsing="false" onAction="#buttonLoginOnAction"
+                            prefHeight="26.0" prefWidth="329.0" styleClass="login" stylesheets="@../style/register.css"
+                            text="%button.login">
+                        <cursor>
+                            <Cursor fx:constant="HAND"/>
+                        </cursor>
+                    </Button>
+                </AnchorPane>
+            </VBox>
+        </center>
+    </BorderPane>
+</AnchorPane>

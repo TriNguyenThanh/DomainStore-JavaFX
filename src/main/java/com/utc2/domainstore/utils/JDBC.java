@@ -11,17 +11,17 @@ public class JDBC {
         Connection c = null;
         try {
             try {
-                Class.forName(ConfigManager.getInstance().getSetting("driver", "com.mysql.cj.jdbc.Driver"));
+                Class.forName(ConfigManager.getInstance().getSetting("JDBC.driver", "com.mysql.cj.jdbc.Driver"));
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException("no found driver");
             }
-            String url = ConfigManager.getInstance().getSetting("url", "jdbc:mysql://localhost:3306/domainmanagement");
-            String username = ConfigManager.getInstance().getSetting("username", "root");
-            String password = ConfigManager.getInstance().getSetting("password", "root");
+            String url = ConfigManager.getInstance().getSetting("JDBC.url", "jdbc:mysql://localhost:3306/domainmanagement");
+            String username = ConfigManager.getInstance().getSetting("JDBC.username", "root");
+            String password = ConfigManager.getInstance().getSetting("JDBC.password", "root");
             
             c = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("no found connection");
         }
         return c;
     }
@@ -31,7 +31,7 @@ public class JDBC {
             if (c != null)
                 c.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("can't close connection");
         }
     }
 }
