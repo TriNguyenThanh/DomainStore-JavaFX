@@ -126,7 +126,7 @@ public class RegisterController implements Initializable {
             // nhận respone
             try {
                 RegisterServices registerServices = new RegisterServices();
-                JSONObject responeJSON = new JSONObject(registerServices.addToDB(requestJSON.toString()));
+                JSONObject responeJSON = registerServices.addToDB(requestJSON);
                 String status = responeJSON.getString("status");
                 String message = responeJSON.getString("message");
 
