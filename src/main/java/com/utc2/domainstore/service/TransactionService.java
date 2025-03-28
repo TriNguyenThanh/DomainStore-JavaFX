@@ -32,7 +32,8 @@ public class TransactionService {
         return result;
     }
     
-    public JSONObject getAllUserTransaction(int userId) {
+    public JSONObject getAllUserTransaction(JSONObject json) {
+        int userId = json.getInt("user_id");
         JSONArray jsonArray = new JSONArray();
         for (TransactionModel t : transactionDAO.selectByCondition("user_id = " + userId)) {
             JSONObject jsonObject = new JSONObject();
@@ -47,7 +48,8 @@ public class TransactionService {
         return result;
     }
     
-    public JSONObject getTransactionInfomation(String transactionId) {
+    public JSONObject getTransactionInfomation(JSONObject json) {
+        String transactionId = json.getString("transaction_id");
         JSONArray jsonArray = new JSONArray();
         TransactionModel t = new TransactionModel(); t.setTransactionId(transactionId);
         for (TransactionInfoModel ti : transactionDAO.selectById(t).getTransactionInfos()) {

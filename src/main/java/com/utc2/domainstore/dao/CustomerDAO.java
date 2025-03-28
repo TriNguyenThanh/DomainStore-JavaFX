@@ -18,24 +18,27 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
 
     @Override
     public int insert(CustomerModel customer) {
-        // Lưu vào bảng Customer
-        try {
-            Connection con = JDBC.getConnection();
-            String sql = "INSERT INTO users (full_name, email, phone, cccd, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+        String sql = "INSERT INTO users (full_name, email, phone, cccd, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+
             pst.setString(1, customer.getFullName());
             pst.setString(2, customer.getEmail());
             pst.setString(3, customer.getPhone());
             pst.setString(4, customer.getCccd());
             pst.setString(5, customer.getPasswordHash());
             pst.setString(6, customer.getRole().name());
-            
+
             int result = pst.executeUpdate();
-            ResultSet rs = pst.getGeneratedKeys();
-            if (rs.next()) {
-                customer.setId(rs.getInt(1)); // Lấy ID vừa tạo và gán vào object
+
+            try (ResultSet rs = pst.getGeneratedKeys()) {
+                if (rs.next()) {
+                    customer.setId(rs.getInt(1)); 
+                }
             }
             return result;
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {
@@ -46,10 +49,11 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
 
     @Override
     public int update(CustomerModel customer) {
-        try {
-            Connection con = JDBC.getConnection();
-            String sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, password_hash=?, role=? WHERE id=?";
-            PreparedStatement pst = con.prepareStatement(sql);
+        String sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, password_hash=?, role=? WHERE id=?";
+
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
             pst.setString(1, customer.getFullName());
             pst.setString(2, customer.getEmail());
             pst.setString(3, customer.getPhone());
@@ -57,7 +61,7 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
             pst.setString(5, customer.getPasswordHash());
             pst.setString(6, customer.getRole().name());
             pst.setInt(7, customer.getId());
-            
+
             return pst.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,13 +71,16 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
         return 0;
     }
 
+
     @Override
     public int delete(CustomerModel customer) {
-        try {
-            Connection con = JDBC.getConnection();
-            String sql = "DELETE FROM users WHERE id=?";
-            PreparedStatement pst = con.prepareStatement(sql);
+        String sql = "DELETE FROM users WHERE id=?";
+        
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+            
             pst.setInt(1, customer.getId());
+            
             return pst.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,27 +92,28 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
 
     @Override
     public CustomerModel selectById(CustomerModel customer) {
-        try {
-            Connection con = JDBC.getConnection();
-            String sql = "SELECT * FROM users WHERE id=?";
-            PreparedStatement pst = con.prepareStatement(sql);
+        String sql = "SELECT * FROM users WHERE id=?";
+        
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+            
             pst.setInt(1, customer.getId());
-            ResultSet rs = pst.executeQuery();
-            if (rs.next()) {
-                return new CustomerModel(
-                        rs.getInt("id"),
-                        rs.getString("full_name"),
-                        rs.getString("email"),
-                        rs.getString("phone"),
-                        rs.getString("cccd"),
-                        rs.getString("password_hash"),
-                        Role.valueOf(rs.getString("role")),
-                        rs.getTimestamp("created_at")
-                );
+            
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new CustomerModel(
+                            rs.getInt("id"),
+                            rs.getString("full_name"),
+                            rs.getString("email"),
+                            rs.getString("phone"),
+                            rs.getString("cccd"),
+                            rs.getString("password_hash"),
+                            Role.valueOf(rs.getString("role")),
+                            rs.getTimestamp("created_at")
+                    );
+                }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
         }
         return null;
@@ -113,15 +121,15 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
 
     @Override
     public ArrayList<CustomerModel> selectByCondition(String condition) {
-        ArrayList<CustomerModel> customer = new ArrayList<>();
-        try {
-            Connection con = JDBC.getConnection();
-            String sql = "SELECT * FROM users WHERE " + condition;
-            PreparedStatement pst = con.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
+        ArrayList<CustomerModel> customers = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE " + condition; 
+        
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
 
             while (rs.next()) {
-                customer.add(new CustomerModel(
+                customers.add(new CustomerModel(
                         rs.getInt("id"),
                         rs.getString("full_name"),
                         rs.getString("email"),
@@ -132,22 +140,22 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
                         rs.getTimestamp("created_at")
                 ));
             }
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-         }
-        return customer;
+        }
+        return customers;
     }
+
 
     @Override
     public ArrayList<CustomerModel> selectAll() {
         ArrayList<CustomerModel> users = new ArrayList<>();
-        try {
-            Connection con = JDBC.getConnection();
-            String sql = "SELECT * FROM users";
-            PreparedStatement pst = con.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
+        String sql = "SELECT * FROM users";
+        
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+            
             while (rs.next()) {
                 users.add(new CustomerModel(
                         rs.getInt("id"),
@@ -160,37 +168,36 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
                         rs.getTimestamp("created_at")
                 ));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
         }
         return users;
     }
-    //lay so dien thoai
+
+    // Lấy thông tin khách hàng theo số điện thoại
     public CustomerModel selectByPhone(String phone) {
-        try {
-            Connection con = JDBC.getConnection();
-            String sql = "SELECT * FROM users WHERE phone=?";
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, phone);
-            ResultSet rs = pst.executeQuery();
+        String sql = "SELECT * FROM users WHERE phone=?";
+        
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
             
-            if (rs.next()) {
-                return new CustomerModel(
-                        rs.getInt("id"),
-                        rs.getString("full_name"),
-                        rs.getString("email"),
-                        rs.getString("phone"),
-                        rs.getString("cccd"),
-                        rs.getString("password_hash"),
-                        Role.valueOf(rs.getString("role")),
-                        rs.getTimestamp("created_at")
-                );
+            pst.setString(1, phone);
+            
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new CustomerModel(
+                            rs.getInt("id"),
+                            rs.getString("full_name"),
+                            rs.getString("email"),
+                            rs.getString("phone"),
+                            rs.getString("cccd"),
+                            rs.getString("password_hash"),
+                            Role.valueOf(rs.getString("role")),
+                            rs.getTimestamp("created_at")
+                    );
+                }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
         }
         return null;

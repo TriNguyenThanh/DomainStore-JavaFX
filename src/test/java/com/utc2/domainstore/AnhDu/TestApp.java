@@ -1,16 +1,25 @@
 package com.utc2.domainstore.AnhDu;
 
+import com.utc2.domainstore.service.PaymentService;
+import com.utc2.domainstore.service.TransactionService;
+import org.json.JSONObject;
+
 public class TestApp {
     public static void main(String[] args) {
 
 // ------------ PaymentService -----------
+//        JSONObject json = new JSONObject();
+//        json.put("user_id", 1);
 //        PaymentService t = new PaymentService();
-//        System.out.println(t.getUserPaymentHistory(1));
+//        System.out.println(t.getUserPaymentHistory(json));
 // ------------ TransactionService -----------
+//        JSONObject json = new JSONObject();
+//        json.put("user_id", 1);
+//        json.put("transaction_id", "HD001");
 //        TransactionService t = new TransactionService();
-//        System.out.println(t.getUserTransactionHistory(1));
+//        System.out.println(t.getAllUserTransaction(json));
 //        System.out.println(t.getAllTransaction());
-//        System.out.println(t.getTransactionInfomation("HD001"));
+//        System.out.println(t.getTransactionInfomation(json));
         // ------------ PaymentHistory -----------
         // Select All
 //        ArrayList<PaymentHistoryModel> payments = PaymentHistoryDAO.getInstance().selectAll();
