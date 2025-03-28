@@ -15,7 +15,8 @@ public class PaymentService {
     private ArrayList<PaymentHistoryModel> listPaymentHistory = PaymentHistoryDAO.getInstance().selectAll();
     private final PaymentHistoryDAO paymentHistoryDAO = new PaymentHistoryDAO();
 
-    public JSONObject getUserPaymentHistory(int userId){
+    public JSONObject getUserPaymentHistory(JSONObject json){
+        int userId = json.getInt("user_id");
         JSONArray jsonArray = new JSONArray();
         for (PaymentHistoryModel p : paymentHistoryDAO.selectByCondition("user_id = " + userId)) {
             JSONObject jsonObject = new JSONObject();
