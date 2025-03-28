@@ -24,6 +24,11 @@
     -fx-font-style: italic;
     -fx-text-fill: #FF0000;
 }
+.label.description {
+    -fx-font-size: 12;
+    -fx-font-style: italic;
+    -fx-text-fill: #4C4C4C;
+}
 
 .text-field {
     -fx-font-size: 20;
@@ -56,16 +61,16 @@
     -fx-text-fill: #3F40FF;
 }
 
-.button.login {
+.button.register {
     -fx-background-color: #3F40FF;
     -fx-text-fill: #FFFFFF;
 }
 
-.button.register {
+.button.login {
     -fx-background-color: #FFFFFF;
 }
 
 .pane {
     -fx-background-color: #3F40FF;
-    -fx-background-radius: 0 10 10 0;
+    -fx-background-radius: 10 0 0 10;
 }

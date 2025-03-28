@@ -1,11 +1,10 @@
-module com.utc2.domainstore{
-    requires com.sun.jna;
+module com.utc2.domainstore {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
-    requires mysql.connector.j;
-    requires okhttp3;
+//    requires net.java.dev.jna;
     requires org.json;
+    requires okhttp3;
     requires de.mkammerer.argon2.nolibs;
 
     opens com.utc2.domainstore to javafx.fxml;

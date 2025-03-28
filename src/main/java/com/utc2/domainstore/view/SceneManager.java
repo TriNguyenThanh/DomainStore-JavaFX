@@ -1,5 +1,7 @@
 package com.utc2.domainstore.view;
 
+//import animatefx.animation.Shake;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -20,7 +22,7 @@ public class SceneManager {
     }
 
     public static void init(Stage inputStage) {
-        if(stage == null) {
+        if (stage == null) {
             stage = inputStage;
         }
     }
@@ -33,10 +35,11 @@ public class SceneManager {
             ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath), rb);
 
-            Scene scene = new Scene(fxmlLoader.load(), 1000, 600);
+            Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
+
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Can't switch scene");
         }
     }
 
@@ -68,6 +71,11 @@ public class SceneManager {
     public void show() {
         if (stage != null) {
             stage.show();
+//            new Shake(stage.getScene().getRoot());
         }
+    }
+
+    public void setMaximized(boolean maximized) {
+        stage.setMaximized(maximized);
     }
 }
