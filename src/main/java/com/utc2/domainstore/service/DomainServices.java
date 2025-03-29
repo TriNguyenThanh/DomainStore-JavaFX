@@ -1,6 +1,7 @@
 package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.dao.DomainDAO;
+import com.utc2.domainstore.dao.TopLevelDomainDAO;
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import org.json.JSONArray;
@@ -68,22 +69,33 @@ public class DomainServices {
         for (int i = 0; i < domainArray.length(); i++) {
             JSONObject domainJson = domainArray.getJSONObject(i);
 
-            String domainName = domainJson.getString("domain_name");
-            String tldText = domainJson.getString("tld");
+            String domainName = domainJson.getString("name");
+            String status = domainJson.getString("status");
+            int years = domainJson.getInt("years");
+            int inputPrice = domainJson.getInt("price");
+
+            if (!"available".equalsIgnoreCase(status)) {
+                continue;
+            }
 
             List<DomainModel> matchingDomains = domainDAO.searchByName(domainName);
             DomainModel selectedDomain = null;
 
             for (DomainModel domain : matchingDomains) {
-                TopLevelDomainModel tldModel = domain.getTopLevelDomainbyId(domain.getTldId());
-                if (tldModel != null && tldModel.getTldText().equalsIgnoreCase(tldText)) {
+                if (domain.getStatus() == DomainModel.DomainStatusEnum.AVAILABLE) {
                     selectedDomain = domain;
                     break;
                 }
             }
 
-            if (selectedDomain != null && selectedDomain.getStatus() == DomainModel.DomainStatusEnum.AVAILABLE) {
-                int years = domainJson.getInt("years");
+            if (selectedDomain != null) {
+                TopLevelDomainModel tld = selectedDomain.getTopLevelDomainbyId(selectedDomain.getTldId());
+                int actualPrice = (tld != null) ? tld.getPrice() : 0;
+
+                if (inputPrice != actualPrice) {
+                    continue; // Bỏ qua nếu giá không khớp
+                }
+
                 selectedDomain.setYears(years);
 
                 boolean isUpdated = domainDAO.updateDomainOwnership(userId, selectedDomain);
@@ -94,12 +106,13 @@ public class DomainServices {
         JSONObject response = new JSONObject();
         if (successCount > 0) {
             response.put("status", "success");
-            response.put("message", successCount + " domains have been added to cart");
+            response.put("message", successCount + " domains have been added to " + userId + " cart");
         } else {
             response.put("status", "failed");
-            response.put("message", "Failed to add to cart");
+            response.put("message", "Failed to add to " + userId + " cart");
         }
 
         return response;
     }
+
 }
