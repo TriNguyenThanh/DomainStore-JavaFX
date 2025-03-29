@@ -126,24 +126,21 @@ public class RegisterController implements Initializable {
             // nhận respone
             try {
                 RegisterServices registerServices = new RegisterServices();
-                JSONObject responeJSON = new JSONObject(registerServices.addToDB(requestJSON.toString()));
-                String status = responeJSON.getString("status");
-                String message = responeJSON.getString("message");
+                JSONObject respondJSON = registerServices.addToDB(requestJSON);
+                String status = respondJSON.getString("status");
+                String message = respondJSON.getString("message");
 
                 if (status.equals("success")) {
                     System.out.println("Dang ky tai khoan thanh cong");
                 } else if (status.equals("failed")) {
                     if (message.toLowerCase().contains("phone number already exists")) {
                         phoneErr.setText(bundle.getString("register.phoneErr3"));
-                        System.out.println("So dien thoai da ton tai. Hay su dung mot so dien thoai khac");
                     }
                     if (message.toLowerCase().contains("email already exists")) {
                         emailErr.setText(bundle.getString("register.emailErr3"));
-                        System.out.println("Email da ton tai. Hay su dung mot email khac");
                     }
                     if (message.toLowerCase().contains("personal id already exists")) {
                         psIDErr.setText(bundle.getString("register.psIDErr3"));
-                        System.out.println("So CCCD da ton tai. Hay su dung mot so CCCD khac");
                     }
                 }
             } catch (JSONException e) {

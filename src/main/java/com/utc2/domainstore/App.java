@@ -16,7 +16,7 @@ public class App extends Application {
 //        stage.setScene(scene);
 
         SceneManager.init(stage);
-        SceneManager.getInstance().switchScene("/fxml/register.fxml");
+        SceneManager.getInstance().switchScene("/fxml/start.fxml");
         SceneManager.getInstance().setTitle("UTC2 - Domain Store");
         SceneManager.getInstance().show();
     }

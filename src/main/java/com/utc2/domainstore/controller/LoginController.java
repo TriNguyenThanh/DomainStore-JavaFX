@@ -53,7 +53,7 @@ public class LoginController implements Initializable {
 
             // gửi request và nhận respone
             LoginServices loginServices = new LoginServices();
-            String response = loginServices.authentication(jsonObject.toString());
+            JSONObject response = loginServices.authentication(jsonObject);
 
             try {
                 JSONObject jsonResponse = new JSONObject(response);
@@ -63,6 +63,8 @@ public class LoginController implements Initializable {
                 // đưa id và role vào session
                 UserSession.getInstance().setUserId(userId);
                 UserSession.getInstance().setRole(role);
+
+                SceneManager.getInstance().switchScene("/fxml/main.fxml");
             } catch (JSONException e) {
                 useErrorLabel.setText(bundle.getString("login.loginErr"));
                 passErrorLabel.setText(bundle.getString("login.loginErr"));

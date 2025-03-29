@@ -1,0 +1,23 @@
+.pane {
+    -fx-background-color: #3F40FF;
+}
+
+.pane .debug {
+    -fx-background-color: #FFFFFF;
+}
+
+.label {
+    -fx-text-fill: #000000;
+    -fx-font-size: 14;
+    -fx-font-style: italic;
+}
+
+.label.header{
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 40;
+    -fx-font-weight: bold;
+}
+
+.progress-bar .bar {
+    -fx-background-color: #00FF00;
+}

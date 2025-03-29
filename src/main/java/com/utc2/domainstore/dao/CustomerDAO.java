@@ -176,13 +176,10 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
 
     // Lấy thông tin khách hàng theo số điện thoại
     public CustomerModel selectByPhone(String phone) {
-        String sql = "SELECT * FROM users WHERE phone=?";
-        
+        String sql = "SELECT * FROM users WHERE phone = ?";
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
-            
             pst.setString(1, phone);
-            
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     return new CustomerModel(
@@ -197,7 +194,59 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
                     );
                 }
             }
-        } catch (SQLException | NullPointerException e) {
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    //lấy email
+    public CustomerModel selectByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, email);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new CustomerModel(
+                            rs.getInt("id"),
+                            rs.getString("full_name"),
+                            rs.getString("email"),
+                            rs.getString("phone"),
+                            rs.getString("cccd"),
+                            rs.getString("password_hash"),
+                            Role.valueOf(rs.getString("role")),
+                            rs.getTimestamp("created_at")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    //lấy cccd
+    public CustomerModel selectByCccd(String cccd) {
+        String sql = "SELECT * FROM users WHERE cccd = ?";
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, cccd);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new CustomerModel(
+                            rs.getInt("id"),
+                            rs.getString("full_name"),
+                            rs.getString("email"),
+                            rs.getString("phone"),
+                            rs.getString("cccd"),
+                            rs.getString("password_hash"),
+                            Role.valueOf(rs.getString("role")),
+                            rs.getTimestamp("created_at")
+                    );
+                }
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;

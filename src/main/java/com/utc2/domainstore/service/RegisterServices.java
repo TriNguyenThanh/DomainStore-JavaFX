@@ -14,30 +14,33 @@ public class RegisterServices {
         String password = jsonInput.getString("password");
 
         CustomerDAO customerDAO = new CustomerDAO();
-
         JSONObject response = new JSONObject();
+
         if (customerDAO.selectByPhone(phone) != null) {
-            response.put("status", "failed");
-            response.put("message", "Phone number already exists.");
-            return response;
+            return createResponse("failed", "Phone number already exists.");
+        }
+        if (customerDAO.selectByEmail(email) != null) {
+            return createResponse("failed", "Email already exists.");
+        }
+        if (customerDAO.selectByCccd(personalId) != null) {
+            return createResponse("failed", "CCCD already exists.");
         }
 
         String hashedPassword = PasswordUtils.hashedPassword(password);
         CustomerModel newCustomer = new CustomerModel(name, email, phone, personalId, hashedPassword, CustomerModel.Role.user);
-
+        
         int result = customerDAO.insert(newCustomer);
         if (result > 0) {
-            response.put("status", "success");
-            response.put("message", "User registered successfully.");
+            return createResponse("success", "User registered successfully.");
         } else {
-            response.put("status", "failed");
-            response.put("message", "Failed to register user.");
+            return createResponse("failed", "Failed to register user.");
         }
-
-        return response;
     }
     
-    private String createResponse(String status, String message) {
-        return "{ \"status\": \"" + status + "\", \"message\": \"" + message + "\" }";
+    private JSONObject createResponse(String status, String message) {
+        JSONObject response = new JSONObject();
+        response.put("status", status);
+        response.put("message", message);
+        return response;
     }
 }
