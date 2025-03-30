@@ -2,6 +2,7 @@ package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.dao.CustomerDAO;
 import com.utc2.domainstore.entity.database.CustomerModel;
+import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.utils.PasswordUtils;
 import org.json.JSONObject;
 public class RegisterServices {
@@ -27,7 +28,7 @@ public class RegisterServices {
         }
 
         String hashedPassword = PasswordUtils.hashedPassword(password);
-        CustomerModel newCustomer = new CustomerModel(name, email, phone, personalId, hashedPassword, CustomerModel.Role.user);
+        CustomerModel newCustomer = new CustomerModel(name, email, phone, personalId, hashedPassword, RoleEnum.user);
         
         int result = customerDAO.insert(newCustomer);
         if (result > 0) {

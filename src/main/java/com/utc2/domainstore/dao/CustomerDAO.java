@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.utc2.domainstore.entity.database.CustomerModel;
-import com.utc2.domainstore.entity.database.CustomerModel.Role;
+import com.utc2.domainstore.entity.database.RoleEnum;
 
 import java.util.ArrayList;
 
@@ -108,7 +108,7 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
                             rs.getString("phone"),
                             rs.getString("cccd"),
                             rs.getString("password_hash"),
-                            Role.valueOf(rs.getString("role")),
+                            RoleEnum.valueOf(rs.getString("role")),
                             rs.getTimestamp("created_at")
                     );
                 }
@@ -136,7 +136,7 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
                         rs.getString("phone"),
                         rs.getString("cccd"),
                         rs.getString("password_hash"),
-                        Role.valueOf(rs.getString("role")),
+                        RoleEnum.valueOf(rs.getString("role")),
                         rs.getTimestamp("created_at")
                 ));
             }
@@ -164,7 +164,7 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
                         rs.getString("phone"),
                         rs.getString("cccd"),
                         rs.getString("password_hash"),
-                        Role.valueOf(rs.getString("role")),
+                        RoleEnum.valueOf(rs.getString("role")),
                         rs.getTimestamp("created_at")
                 ));
             }
@@ -189,7 +189,7 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
                             rs.getString("phone"),
                             rs.getString("cccd"),
                             rs.getString("password_hash"),
-                            Role.valueOf(rs.getString("role")),
+                            RoleEnum.valueOf(rs.getString("role")),
                             rs.getTimestamp("created_at")
                     );
                 }
@@ -215,7 +215,7 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
                             rs.getString("phone"),
                             rs.getString("cccd"),
                             rs.getString("password_hash"),
-                            Role.valueOf(rs.getString("role")),
+                            RoleEnum.valueOf(rs.getString("role")),
                             rs.getTimestamp("created_at")
                     );
                 }
@@ -241,7 +241,7 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
                             rs.getString("phone"),
                             rs.getString("cccd"),
                             rs.getString("password_hash"),
-                            Role.valueOf(rs.getString("role")),
+                            RoleEnum.valueOf(rs.getString("role")),
                             rs.getTimestamp("created_at")
                     );
                 }

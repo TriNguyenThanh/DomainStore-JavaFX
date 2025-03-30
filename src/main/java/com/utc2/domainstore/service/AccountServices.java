@@ -2,6 +2,7 @@ package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.dao.CustomerDAO;
 import com.utc2.domainstore.entity.database.CustomerModel;
+import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.utils.PasswordUtils;
 import java.sql.Timestamp;
 import java.util.*;
@@ -15,7 +16,7 @@ public class AccountServices {
     public JSONObject getUserInformation(JSONObject jsonInput) {
         int user_id = jsonInput.getInt("user_id");
 
-        CustomerModel customer = new CustomerModel(user_id, "", "", "", "", "", CustomerModel.Role.user, null);
+        CustomerModel customer = new CustomerModel(user_id, "", "", "", "", "", RoleEnum.user, null);
         CustomerModel find = customerDAO.selectById(customer);
         if (find == null) {
             return createResponse("failed", "User not found");
@@ -41,7 +42,7 @@ public class AccountServices {
         String password = jsonInput.getString("password");
 
         // Kiểm tra người dùng có tồn tại không
-        CustomerModel customer = new CustomerModel(userId, "", "", "", "", "", CustomerModel.Role.user, null);
+        CustomerModel customer = new CustomerModel(userId, "", "", "", "", "", RoleEnum.user, null);
         CustomerModel existingUser = customerDAO.selectById(customer);
         if (existingUser == null) {
             return createResponse("failed", "User not found");
