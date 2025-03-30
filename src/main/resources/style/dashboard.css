@@ -1,0 +1,23 @@
+.pnBackground {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 20;
+}
+
+.lbHeader {
+    -fx-font-size: 52;
+    -fx-font-weight:bold;
+    -fx-text-fill: #000000;
+}
+
+.button {
+    -fx-background-color: #769FFF;
+    -fx-background-radius: 20;
+
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 30;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-background-color: #326FFF;
+}

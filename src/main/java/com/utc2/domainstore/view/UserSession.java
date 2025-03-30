@@ -5,7 +5,7 @@ package com.utc2.domainstore.view;
 public class UserSession {
 
     private static UserSession instance;
-    private int userId;
+    private int userId = -1;
     private String role;
 
     private UserSession() {

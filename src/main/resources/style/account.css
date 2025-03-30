@@ -1,0 +1,43 @@
+.pnBackground {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 20;
+}
+
+.label.header {
+    -fx-font-size: 52;
+    -fx-font-weight:bold;
+    -fx-text-fill: #000000;
+}
+
+.label {
+    -fx-font-size: 24;
+    -fx-font-weight:bold;
+    -fx-text-fill: #000000;
+}
+
+.text-field {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10;
+
+    -fx-font-size: 24;
+    -fx-text-fill: #000000;
+}
+
+.text-field:focused {
+    -fx-background-color: #BACFFF;
+}
+
+.button {
+    -fx-background-color: #326FFF;
+    -fx-background-radius: 10;
+    -fx-border-width: 0;
+    -fx-border-radius: 10;
+
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+ -fx-background-color: #3F40FF;
+}

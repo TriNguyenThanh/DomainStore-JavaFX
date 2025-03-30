@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="640.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.AccountController">
+    <children>
+        <AnchorPane layoutX="154.0" layoutY="210.0" prefHeight="200.0" prefWidth="200.0"
+                    stylesheets="@../style/account.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <StackPane prefHeight="150.0" prefWidth="200.0" styleClass="pnBackground" AnchorPane.leftAnchor="10.0"
+                           AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                    <children>
+                        <Label alignment="CENTER" prefHeight="100.0" styleClass="header" text="%account"/>
+                    </children>
+                </StackPane>
+                <BorderPane layoutX="11.2" layoutY="194.0" prefHeight="453.0" prefWidth="998.0"
+                            styleClass="pnBackground" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"
+                            AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="170.0">
+                    <left>
+                        <VBox prefHeight="454.0" prefWidth="300.0" spacing="10.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0"
+                                       text="%register.username">
+                                    <VBox.margin>
+                                        <Insets right="10.0" top="14.0"/>
+                                    </VBox.margin>
+                                </Label>
+                                <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0"
+                                       text="%register.phone">
+                                    <VBox.margin>
+                                        <Insets right="10.0"/>
+                                    </VBox.margin>
+                                </Label>
+                                <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0"
+                                       text="%register.email">
+                                    <VBox.margin>
+                                        <Insets right="10.0"/>
+                                    </VBox.margin>
+                                </Label>
+                                <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0"
+                                       text="%register.psID">
+                                    <VBox.margin>
+                                        <Insets right="10.0"/>
+                                    </VBox.margin>
+                                </Label>
+                                <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0"
+                                       text="%register.password">
+                                    <VBox.margin>
+                                        <Insets right="10.0"/>
+                                    </VBox.margin>
+                                </Label>
+                            </children>
+                        </VBox>
+                    </left>
+                    <center>
+                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <TextField fx:id="tfUsername" editable="false" prefHeight="50.0">
+                                    <VBox.margin>
+                                        <Insets top="14.0"/>
+                                    </VBox.margin>
+                                </TextField>
+                                <TextField fx:id="tfPhone" editable="false" prefHeight="50.0"/>
+                                <TextField fx:id="tfEmail" editable="false" prefHeight="50.0"/>
+                                <TextField fx:id="tfPsID" editable="false" prefHeight="50.0"/>
+                                <PasswordField fx:id="tfPass" editable="false" prefHeight="50.0"/>
+                            </children>
+                        </VBox>
+                    </center>
+                    <right>
+                        <AnchorPane prefHeight="454.0" prefWidth="235.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <Button fx:id="btEdit" graphicTextGap="10.0" layoutX="14.0" layoutY="14.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="200.0" text="%button.edit" AnchorPane.leftAnchor="14.0"
+                                        AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/edit_2.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btSave" graphicTextGap="10.0" layoutX="15.0" layoutY="77.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="200.0" text="%button.save" AnchorPane.leftAnchor="14.0"
+                                        AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="84.0">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/save_2.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btCancel" graphicTextGap="10.0" layoutX="13.0" layoutY="150.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="200.0" text="%button.cancel" AnchorPane.leftAnchor="14.0"
+                                        AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="154.0">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/cancel_2.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btLogout" graphicTextGap="10.0" layoutX="13.0" layoutY="389.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="200.0" text="%button.logout" AnchorPane.bottomAnchor="14.0"
+                                        AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/logout_2.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </AnchorPane>
+                    </right>
+                </BorderPane>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

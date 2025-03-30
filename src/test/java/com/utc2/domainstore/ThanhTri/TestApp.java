@@ -1,4 +1,4 @@
-package com.utc2.domainstore;
+package com.utc2.domainstore.ThanhTri;
 
 import com.utc2.domainstore.view.SceneManager;
 import javafx.application.Application;
@@ -6,14 +6,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class App extends Application {
+public class TestApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
         SceneManager.init(stage);
-        SceneManager.getInstance().switchScene("/fxml/main.fxml");
+        SceneManager.getInstance().switchScene("/fxml/start.fxml");
         SceneManager.getInstance().setTitle("UTC2 - Domain Store");
-        SceneManager.getInstance().setIcon("/image/logoUTC2.png");
         SceneManager.getInstance().show();
     }
 

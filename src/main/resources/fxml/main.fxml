@@ -1,9 +1,187 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.utc2.domainstore.controller.MainController"
-            prefHeight="400.0" prefWidth="600.0">
-
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" styleClass="pnBackground" stylesheets="@../style/main.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.utc2.domainstore.controller.MainController">
+    <children>
+        <BorderPane prefHeight="720.0" prefWidth="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <StackPane prefHeight="50.0" styleClass="pnHeader" stylesheets="@../style/main.css"
+                           BorderPane.alignment="CENTER">
+                    <children>
+                        <Label alignment="CENTER" prefHeight="60.0" styleClass="lbHeader"
+                               stylesheets="@../style/main.css" text="UTC2 DOMAIN STORE">
+                            <graphic>
+                                <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../image/logoUTC2.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Label>
+                    </children>
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </BorderPane.margin>
+                </StackPane>
+            </top>
+            <left>
+                <AnchorPane prefWidth="250.0" styleClass="pnSideBar" stylesheets="@../style/main.css"
+                            BorderPane.alignment="CENTER">
+                    <children>
+                        <StackPane prefHeight="100.0" styleClass="pnSideBarItem" stylesheets="@../style/main.css"
+                                   AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                            <children>
+                                <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../icon/user.png"/>
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </StackPane>
+                        <VBox layoutX="8.0" layoutY="100.0" prefHeight="200.0" spacing="5.0"
+                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0"
+                              AnchorPane.topAnchor="105.0">
+                            <children>
+                                <Button fx:id="btDashBoard" alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="300.0" styleClass="btSideBarItem" stylesheets="@../style/main.css"
+                                        text="%dashboard">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/home.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btAccount" alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="300.0" styleClass="btSideBarItem" stylesheets="@../style/main.css"
+                                        text="%account">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/account.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btSearch" alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="300.0" styleClass="btSideBarItem" stylesheets="@../style/main.css"
+                                        text="%search">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/search.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btBill" alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="300.0" styleClass="btSideBarItem" stylesheets="@../style/main.css"
+                                        text="%bill">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/bill.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btPayment" alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="300.0" styleClass="btSideBarItem" stylesheets="@../style/main.css"
+                                        text="%paymentHistory" wrapText="true">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/payment.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Line endX="120.09288024902344" startX="-100.0"/>
+                                <Button fx:id="btUser" alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="300.0" styleClass="btSideBarItem" stylesheets="@../style/main.css"
+                                        text="%userManager" wrapText="true">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/admin.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btDomain" alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="300.0" styleClass="btSideBarItem" stylesheets="@../style/main.css"
+                                        text="%domainManager" wrapText="true">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/domain_dark.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btCheckBill" alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="300.0" styleClass="btSideBarItem" stylesheets="@../style/main.css"
+                                        text="%billsManager" wrapText="true">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/checkBill.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btCheckPayment" alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="300.0" styleClass="btSideBarItem" stylesheets="@../style/main.css"
+                                        text="%paymentManager" wrapText="true">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/checkPayment.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </VBox>
+                    </children>
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0"/>
+                    </BorderPane.margin>
+                </AnchorPane>
+            </left>
+            <center>
+                <StackPane fx:id="contentArea" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0"/>
+                    </BorderPane.margin>
+                </StackPane>
+            </center>
+        </BorderPane>
+    </children>
 </AnchorPane>
