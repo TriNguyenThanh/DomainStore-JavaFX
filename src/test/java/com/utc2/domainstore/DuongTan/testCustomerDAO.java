@@ -5,6 +5,7 @@ import com.utc2.domainstore.dao.CustomerDAO;
 import com.utc2.domainstore.dao.DomainDAO;
 import com.utc2.domainstore.dao.TopLevelDomainDAO;
 import com.utc2.domainstore.entity.database.CustomerModel;
+import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import com.utc2.domainstore.utils.PasswordUtils;
 import java.sql.Date;
@@ -25,7 +26,7 @@ public class testCustomerDAO {
                 CustomerModel newUser = new CustomerModel(
                     0, "Tan", "tan@gmail.com", 
                     "0327876534", "082265218564", hashedPassword, 
-                    CustomerModel.Role.user, new Timestamp(System.currentTimeMillis())
+                    RoleEnum.user, new Timestamp(System.currentTimeMillis())
                 );
 
                 int insertResult = customerDAO.insert(newUser);
@@ -43,7 +44,7 @@ public class testCustomerDAO {
             
             case 3:
                 // Tìm người dùng theo ID
-                CustomerModel findUser = new CustomerModel(1, "", "", "", "", "",CustomerModel.Role.user, null);
+                CustomerModel findUser = new CustomerModel(1, "", "", "", "", "",RoleEnum.user, null);
                 CustomerModel result = customerDAO.selectById(findUser);
                 System.out.println("User found: " + result);
                 break;
@@ -52,14 +53,14 @@ public class testCustomerDAO {
                 // Cập nhật thông tin người dùng
                 String newPassword = "newPassword123";
                 String hashPassword = PasswordUtils.hashedPassword(newPassword);
-                CustomerModel updateUser = new CustomerModel(1, "Updated User", "updated@gmail.com", "0987654321", "123456789012", hashPassword, CustomerModel.Role.admin, new Timestamp(System.currentTimeMillis()));
+                CustomerModel updateUser = new CustomerModel(1, "Updated User", "updated@gmail.com", "0987654321", "123456789012", hashPassword, RoleEnum.admin, new Timestamp(System.currentTimeMillis()));
                 int updateResult = customerDAO.update(updateUser);
                 System.out.println("Update User: " + updateResult);
                 break;
             
             case 5:
                 // Xóa người dùng
-                CustomerModel deleteUser = new CustomerModel(5, "", "", "", "", "", CustomerModel.Role.user, null);
+                CustomerModel deleteUser = new CustomerModel(5, "", "", "", "", "", RoleEnum.user, null);
                 int deleteResult = customerDAO.delete(deleteUser);
                 System.out.println("Delete User: " + deleteResult);
                 break;
