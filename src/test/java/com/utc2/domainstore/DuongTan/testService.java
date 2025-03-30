@@ -1,5 +1,6 @@
 package com.utc2.domainstore.DuongTan;
 
+import com.utc2.domainstore.service.AccountServices;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import com.utc2.domainstore.service.DomainServices;
@@ -24,8 +25,8 @@ public class testService {
 //        //TEST ĐĂNG NHẬP NGƯỜI DÙNG
 //        LoginServices loginServices = new LoginServices();
 //        JSONObject loginInput = new JSONObject();
-//        loginInput.put("username", "0987654321");
-//        loginInput.put("password", "mypassword");
+//        loginInput.put("username", "0123456789");
+//        loginInput.put("password", "newpassword123");
 //
 //        JSONObject loginResponse = loginServices.authentication(loginInput);
 //        System.out.println("Login Response: " + loginResponse.toString(2));
@@ -58,11 +59,46 @@ public class testService {
 //        System.out.println("Add to Cart Response: " + cartResponse.toString(2));
 
         //TEST LẤY GIỎ HÀNG
-    	DomainServices domainServices = new DomainServices();
-        JSONObject cartRequest = new JSONObject();
-        cartRequest.put("user_id", 1);
+//    	DomainServices domainServices = new DomainServices();
+//        JSONObject cartRequest = new JSONObject();
+//        cartRequest.put("user_id", 1);
+//        
+//        JSONObject cartResult = domainServices.getShoppingCart(cartRequest);
+//        System.out.println("Get Shopping Cart Response: " + cartResult.toString(2));
         
-        JSONObject cartResult = domainServices.getShoppingCart(cartRequest);
-        System.out.println("Get Shopping Cart Response: " + cartResult.toString(2));
-    }
+        
+        // TEST CẬP NHẬT THÔNG TIN NGƯỜI DÙNG (KHÔNG BAO GỒM MẬT KHẨU)
+//        AccountServices accountServices = new AccountServices();
+//        JSONObject updateUserInput = new JSONObject();
+//        updateUserInput.put("user_id", 1);
+//        updateUserInput.put("username", "Au Duong Tai");
+//        updateUserInput.put("phone", "0123456789");
+//        updateUserInput.put("email", "auduongtai27@gmail.com");
+//        updateUserInput.put("personal_id", "027205011960");
+//        
+//        JSONObject updateUserResponse = accountServices.updateUser(updateUserInput);
+//        System.out.println("Update User Response: " + updateUserResponse.toString(2));
+        
+        // TEST CẬP NHẬT MẬT KHẨU NGƯỜI DÙNG
+//        AccountServices accountServices = new AccountServices();
+//        JSONObject updatePasswordInput = new JSONObject();
+//        updatePasswordInput.put("user_id", 1);
+//        updatePasswordInput.put("password", "newpassword123");
+//        
+//        JSONObject updatePasswordResponse = accountServices.updateUserPassword(updatePasswordInput);
+//        System.out.println("Update Password Response: " + updatePasswordResponse.toString(2));
+
+        // TEST LẤY THÔNG TIN NGƯỜI DÙNG THEO ID
+//        AccountServices accountServices = new AccountServices();
+//        JSONObject getUserInput = new JSONObject();
+//        getUserInput.put("user_id", 1);
+//
+//        JSONObject getUserResponse = accountServices.getUserInformation(getUserInput);
+//        System.out.println("Get User Information Response: " + getUserResponse.toString(2));
+
+        // TEST LẤY DANH SÁCH TẤT CẢ NGƯỜI DÙNG
+//        AccountServices accountServices = new AccountServices();
+//        JSONObject getAllUsersResponse = accountServices.getAllUserAccount();
+//        System.out.println("Get All Users Response: " + getAllUsersResponse.toString(2));
+        }
 }

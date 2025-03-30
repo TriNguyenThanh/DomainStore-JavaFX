@@ -49,7 +49,12 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
 
     @Override
     public int update(CustomerModel customer) {
-        String sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, password_hash=?, role=? WHERE id=?";
+        String sql;
+        if (customer.getPasswordHash() == null || customer.getPasswordHash().isEmpty()) {
+            sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, role=? WHERE id=?";
+        } else {
+            sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, password_hash=?, role=? WHERE id=?";
+        }
 
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
@@ -58,18 +63,23 @@ public class CustomerDAO implements DAOInterface<CustomerModel> {
             pst.setString(2, customer.getEmail());
             pst.setString(3, customer.getPhone());
             pst.setString(4, customer.getCccd());
-            pst.setString(5, customer.getPasswordHash());
-            pst.setString(6, customer.getRole().name());
-            pst.setInt(7, customer.getId());
+
+            if (customer.getPasswordHash() == null || customer.getPasswordHash().isEmpty()) {
+                pst.setString(5, customer.getRole().name());
+                pst.setInt(6, customer.getId());
+            } else {
+                pst.setString(5, customer.getPasswordHash());
+                pst.setString(6, customer.getRole().name());
+                pst.setInt(7, customer.getId());
+            }
 
             return pst.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
         }
         return 0;
     }
+
 
 
     @Override

@@ -23,7 +23,20 @@ public class CustomerModel {
         this.passwordHash = passwordHash;
         this.role = role;
     }
-    
+    public CustomerModel(String phone,RoleEnum role) {
+        this.phone = phone;
+        this.role = role;
+    }
+    //khong password
+    public CustomerModel(int id, String fullName, String email, String phone, String cccd, RoleEnum role, Timestamp createdAt) {
+        this.id = id;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.cccd = cccd;
+        this.role = role;
+        this.createdAt = createdAt;
+    }
     public CustomerModel(int id, String fullName, String email, String phone, String cccd, String passwordHash, RoleEnum role, Timestamp createdAt) {
         this.id = id;
         this.fullName = fullName;
