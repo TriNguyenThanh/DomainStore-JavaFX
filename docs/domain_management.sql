@@ -73,28 +73,28 @@ CREATE TABLE PaymentHistory (
 );
 INSERT INTO users (full_name, email, phone, cccd, password_hash, role)
 VALUES 
-('Nguyễn Thành Trí', 'tringuyen@example.com', '0987654321', '027205011960', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Nguyễn Thành Trí', 'tringuyen@example.com', '0987654321', '027205011960', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0987654321 password: pass123456@
-('Âu Dương Tấn', 'duongtan@example.com', '0912345678', '027205011961', '$argon2i$v=19$m=65536,t=3,p=1$LdOwimdB3obvKIlQQSxO7A$Ty2IDQ8LH8+lpNYSUfXdMuqjw1s/KjxzzLGWSRg76wQ', 'user'),
--- user:0912345678 password: +yTVq&!a196,
-('Lê Nguyễn Anh Dự', 'dule@example.com', '0923456789', '027205011962', '$argon2i$v=19$m=65536,t=3,p=1$Q05CH4ZAAx0QUErpJSaULw$Fdp72yb2HC82vjgcthIJn53g5GXxQhPAY+h8KOdRXns', 'user'),
--- user:0923456789 password: xK5MH5mhuh{)
-('Phạm Anh Dũng', 'dung.pham@example.com', '0934567890', '027205011963', '$argon2i$v=19$m=65536,t=3,p=1$kNwVly9ImSz1L1URUuLfpQ$pi26c5+SiQkJuApmzeGAvxmBJLKVAxXhgbmKfBe46TM', 'user'),
--- user:0934567890 password: |Srm7AZ!FV{[
-('Ngô Thanh Hoa', 'hoa.ngo@example.com', '0945678901', '027205011964', '$argon2i$v=19$m=65536,t=3,p=1$uM/0YWIZVLTs7X/5q1aPHA$Xz74lXljO8WyM2iujg6VOnjuv4PJMN9HB8Kl9ptFEs0', 'user'),
--- user:0945678901 password: 7(W}Q4f'oSmO
-('Hoàng Tuấn Khang', 'khang.hoang@example.com', '0956789012', '027205011965', '$argon2i$v=19$m=65536,t=3,p=1$8Ku4VUecVTAYrJ3xYifwLg$cG4472+kX7cREZxGjibtxgi0mAGeVNrFGH3+qYESHlw', 'user'),
--- user:0956789012 password: Y7r<gHclQd2L
-('Bùi Diễm Lan', 'lan.bui@example.com', '0967890123', '027205011966', '$argon2i$v=19$m=65536,t=3,p=1$C/LJL5jYwDf+DOg/4bqKxA$FFz+VbmyyBQ+JQCXJrR4l/YS4a420537CUctikd4I+E', 'user'),
--- user:0967890123 password: jIn>@m%u^>Bo
-('Đặng Thành Nam', 'nam.dang@example.com', '0978901234', '027205011967', '$argon2i$v=19$m=65536,t=3,p=1$HvyY7UFzCsdRpoQX3yoGoQ$O0SaLMh3aJ6jWoAlv/9MmShQB5hIechd33mYfiMkF4w', 'user'),
--- user:0978901234 password: ~OIo{nHIFZP
-('Võ Minh Nhật', 'nhat.vo@example.com', '0989012345', '027205011968', '$argon2i$v=19$m=65536,t=3,p=1$8Q0I7BRCJis+FeKIXyzdkA$bhcSURF3RU8FD3JL8WeXc6M6hdxjRnhbNnYyN0WqY6Y', 'user'),
--- user:0989012345 password: (teS(oI=,)RU
-('Nguyễn Thị Oanh', 'oanh.nguyen@example.com', '0990123456', '027205011969', '$argon2i$v=19$m=65536,t=3,p=1$v2u8f25JRw+2TNh7MFVsZQ$zTFyCH1O+6hDiE0Ge7yaQfkKHDO0rey+Dh1oMwzvv+Y', 'user'),
--- user:0990123456 password: OP=)b[/Rw#+/
-('Đỗ Quang Phúc', 'phuc.do@example.com', '0901234567', '027205011970', '$argon2i$v=19$m=65536,t=3,p=1$PrbWwD0raM2W1O1X5Cet5g$4AZgEXc+/TXPPjev0lDfwIqS3g0H5ncxnZw+YnZ7vqg', 'user');
--- user:0901234567 password: h.u_XZE^9Y[e
+('Âu Dương Tấn', 'duongtan@example.com', '0912345678', '027205011961', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+-- user:0912345678 password: pass123456@
+('Lê Nguyễn Anh Dự', 'dule@example.com', '0923456789', '027205011962', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+-- user:0923456789 password: pass123456@
+('Phạm Anh Dũng', 'dung.pham@example.com', '0934567890', '027205011963', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+-- user:0934567890 password: pass123456@
+('Ngô Thanh Hoa', 'hoa.ngo@example.com', '0945678901', '027205011964', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+-- user:0945678901 password: pass123456@
+('Hoàng Tuấn Khang', 'khang.hoang@example.com', '0956789012', '027205011965', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+-- user:0956789012 password: pass123456@
+('Bùi Diễm Lan', 'lan.bui@example.com', '0967890123', '027205011966', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+-- user:0967890123 password: pass123456@
+('Đặng Thành Nam', 'nam.dang@example.com', '0978901234', '027205011967', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+-- user:0978901234 password: pass123456@
+('Võ Minh Nhật', 'nhat.vo@example.com', '0989012345', '027205011968', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+-- user:0989012345 password: pass123456@
+('Nguyễn Thị Oanh', 'oanh.nguyen@example.com', '0990123456', '027205011969', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+-- user:0990123456 password: pass123456@
+('Đỗ Quang Phúc', 'phuc.do@example.com', '0901234567', '027205011970', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user');
+-- user:0901234567 password: pass123456@
 
 INSERT INTO TopLevelDomain (TLD_text, price)
 VALUES 
