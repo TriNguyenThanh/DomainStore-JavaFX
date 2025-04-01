@@ -1,4 +1,4 @@
-package com.utc2.domainstore.dao;
+package com.utc2.domainstore.repository;
 
 import java.util.ArrayList;
 
