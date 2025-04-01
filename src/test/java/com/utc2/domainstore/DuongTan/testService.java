@@ -25,8 +25,8 @@ public class testService {
 //        //TEST ĐĂNG NHẬP NGƯỜI DÙNG
 //        LoginServices loginServices = new LoginServices();
 //        JSONObject loginInput = new JSONObject();
-//        loginInput.put("username", "0123456789");
-//        loginInput.put("password", "newpassword123");
+//        loginInput.put("username", "0987654321");
+//        loginInput.put("password", "pass123456@");
 //
 //        JSONObject loginResponse = loginServices.authentication(loginInput);
 //        System.out.println("Login Response: " + loginResponse.toString(2));

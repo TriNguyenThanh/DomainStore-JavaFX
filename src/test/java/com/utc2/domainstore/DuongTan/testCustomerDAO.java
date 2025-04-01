@@ -1,9 +1,9 @@
 package com.utc2.domainstore.DuongTan;
 
 import com.utc2.domainstore.entity.database.DomainModel;
-import com.utc2.domainstore.dao.CustomerDAO;
-import com.utc2.domainstore.dao.DomainDAO;
-import com.utc2.domainstore.dao.TopLevelDomainDAO;
+import com.utc2.domainstore.repository.CustomerRepository;
+import com.utc2.domainstore.repository.DomainRepository;
+import com.utc2.domainstore.repository.TopLevelDomainRepository;
 import com.utc2.domainstore.entity.database.CustomerModel;
 import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
@@ -15,7 +15,7 @@ import java.util.List;
 public class testCustomerDAO {
 
     public static void customerDAOTest(int i) {
-        CustomerDAO customerDAO = CustomerDAO.getInstance();
+        CustomerRepository customerDAO = CustomerRepository.getInstance();
 
         switch (i) {
             case 1:
@@ -68,7 +68,7 @@ public class testCustomerDAO {
     }
 
 public static void domainDAOTest(int i) {
-        DomainDAO domainDAO = DomainDAO.getInstance();
+        DomainRepository domainDAO = DomainRepository.getInstance();
 
         switch (i) {
             case 1:
@@ -131,7 +131,7 @@ public static void domainDAOTest(int i) {
         }
     }
     public static void topLevelDomainDAOTest(int i) {
-        TopLevelDomainDAO tldDAO = new TopLevelDomainDAO();
+        TopLevelDomainRepository tldDAO = new TopLevelDomainRepository();
 
         switch (i) {
             case 1:

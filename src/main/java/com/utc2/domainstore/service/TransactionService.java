@@ -1,8 +1,8 @@
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.dao.DomainDAO;
-import com.utc2.domainstore.dao.TransactionDAO;
-import com.utc2.domainstore.dao.TransactionInfoDAO;
+import com.utc2.domainstore.repository.DomainRepository;
+import com.utc2.domainstore.repository.TransactionRepository;
+import com.utc2.domainstore.repository.TransactionInfoRepository;
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.TransactionInfoModel;
 import com.utc2.domainstore.entity.database.TransactionModel;
@@ -11,12 +11,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class TransactionService {
+public class TransactionService implements ITransactionService{
 
-    private final ArrayList<TransactionModel> transactions = TransactionDAO.getInstance().selectAll();
-    private final TransactionDAO transactionDAO = new TransactionDAO();
-    private final TransactionInfoDAO transactionInfoDAO = new TransactionInfoDAO();
+    private final ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll();
+    private final TransactionRepository transactionDAO = new TransactionRepository();
+    private final TransactionInfoRepository transactionInfoDAO = new TransactionInfoRepository();
 
+    @Override
     public JSONObject getAllTransaction() {
         JSONArray jsonArray = new JSONArray();
         for (TransactionModel t : transactionDAO.selectAll()) {
@@ -31,7 +32,8 @@ public class TransactionService {
         result.put("transactions", jsonArray);
         return result;
     }
-    
+
+    @Override
     public JSONObject getAllUserTransaction(JSONObject json) {
         int userId = json.getInt("user_id");
         JSONArray jsonArray = new JSONArray();
@@ -47,7 +49,8 @@ public class TransactionService {
         result.put("transactions", jsonArray);
         return result;
     }
-    
+
+    @Override
     public JSONObject getTransactionInfomation(JSONObject json) {
         String transactionId = json.getString("transaction_id");
         JSONArray jsonArray = new JSONArray();
@@ -55,7 +58,7 @@ public class TransactionService {
         for (TransactionInfoModel ti : transactionDAO.selectById(t).getTransactionInfos()) {
             JSONObject jsonObject = new JSONObject();
             DomainModel d = new DomainModel(); d.setId(ti.getDomainId());
-            DomainModel domain = DomainDAO.getInstance().selectById(d);
+            DomainModel domain = DomainRepository.getInstance().selectById(d);
             jsonObject.put("name", domain.getDomainName());
             jsonObject.put("status", domain.getStatus());
             jsonObject.put("price", domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
@@ -66,4 +69,5 @@ public class TransactionService {
         result.put("domains", jsonArray);
         return result;
     }
+
 }

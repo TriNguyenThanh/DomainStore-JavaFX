@@ -1,20 +1,19 @@
 
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.dao.PaymentHistoryDAO;
+import com.utc2.domainstore.repository.PaymentHistoryRepository;
 import com.utc2.domainstore.entity.database.PaymentHistoryModel;
-import com.utc2.domainstore.entity.database.PaymentStatusEnum;
 import com.utc2.domainstore.entity.database.PaymentTypeEnum;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class PaymentService {
-    private ArrayList<PaymentHistoryModel> listPaymentHistory = PaymentHistoryDAO.getInstance().selectAll();
-    private final PaymentHistoryDAO paymentHistoryDAO = new PaymentHistoryDAO();
+public class PaymentService implements  IPaymentService{
+    private ArrayList<PaymentHistoryModel> listPaymentHistory = PaymentHistoryRepository.getInstance().selectAll();
+    private final PaymentHistoryRepository paymentHistoryDAO = new PaymentHistoryRepository();
 
+    @Override
     public JSONObject getUserPaymentHistory(JSONObject json){
         int userId = json.getInt("user_id");
         JSONArray jsonArray = new JSONArray();

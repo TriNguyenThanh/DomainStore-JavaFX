@@ -1,4 +1,4 @@
-package com.utc2.domainstore.dao;
+package com.utc2.domainstore.repository;
 
 
 import com.utc2.domainstore.entity.database.PaymentStatusEnum;
@@ -10,10 +10,10 @@ import com.utc2.domainstore.utils.JDBC;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class TransactionDAO implements DAOInterface<TransactionModel> {
+public class TransactionRepository implements IRepository<TransactionModel> {
 
-    public static TransactionDAO getInstance() {
-        return new TransactionDAO();
+    public static TransactionRepository getInstance() {
+        return new TransactionRepository();
     }
 
     @Override
@@ -36,7 +36,7 @@ public class TransactionDAO implements DAOInterface<TransactionModel> {
             // Bước 4: Thực thi câu lệnh INSERT và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             for(TransactionInfoModel ti : transaction.getTransactionInfos()){
-                TransactionInfoDAO.getInstance().insert(ti);
+                TransactionInfoRepository.getInstance().insert(ti);
                 rowsAffected++;
             }
             // Bước 5: Đóng kết nối

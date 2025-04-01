@@ -1,5 +1,5 @@
 
-package com.utc2.domainstore.dao;
+package com.utc2.domainstore.repository;
 
 
 import com.utc2.domainstore.entity.database.PaymentHistoryModel;
@@ -10,10 +10,10 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class PaymentHistoryDAO implements DAOInterface<PaymentHistoryModel>{
+public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel>{
     
-    public static PaymentHistoryDAO getInstance(){
-        return new PaymentHistoryDAO();
+    public static PaymentHistoryRepository getInstance(){
+        return new PaymentHistoryRepository();
     }
     
     @Override
