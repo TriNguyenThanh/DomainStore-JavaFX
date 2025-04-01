@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="640.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/21"
+<AnchorPane fx:id="rootPane" prefHeight="640.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.AccountController">
     <children>
         <AnchorPane layoutX="154.0" layoutY="210.0" prefHeight="200.0" prefWidth="200.0"
@@ -72,7 +72,7 @@
                         </VBox>
                     </center>
                     <right>
-                        <AnchorPane prefHeight="454.0" prefWidth="235.0" BorderPane.alignment="CENTER">
+                        <AnchorPane prefHeight="454.0" prefWidth="300.0" BorderPane.alignment="CENTER">
                             <children>
                                 <Button fx:id="btEdit" graphicTextGap="10.0" layoutX="14.0" layoutY="14.0"
                                         mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
@@ -122,6 +122,19 @@
                                                    preserveRatio="true">
                                             <image>
                                                 <Image url="@../icon/logout_2.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btChangePass" graphicTextGap="10.0" layoutX="18.0" layoutY="230.0"
+                                        mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
+                                        prefWidth="200.0" text="%button.changePass" AnchorPane.leftAnchor="14.0"
+                                        AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="230.0">
+                                    <graphic>
+                                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../icon/password_2.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>

@@ -1,5 +1,6 @@
 package com.utc2.domainstore.controller;
 
+import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.service.LoginServices;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
@@ -9,7 +10,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -30,7 +30,7 @@ public class LoginController implements Initializable {
     private ResourceBundle bundle;
 
     public void login() {
-
+        passwordFieldOnInputMethodTextChanged();
         // bắt buộc nhập
         if (usernameField.getText().isBlank()) {
             useErrorLabel.setText(bundle.getString("login.usernameErr"));
@@ -47,25 +47,23 @@ public class LoginController implements Initializable {
         // Kiểm tra tên đăng nhập và mật khẩu
         if (!usernameField.getText().isBlank() && !passwordField.getText().isBlank()) {
             // tạo request
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("username", usernameField.getText());
-            jsonObject.put("password", passwordField.getText());
+            JSONObject request = new JSONObject();
+            request.put("username", usernameField.getText());
+            request.put("password", passwordField.getText());
 
-            // gửi request và nhận respone
+            // gửi request và nhận respond
             LoginServices loginServices = new LoginServices();
-            JSONObject response = loginServices.authentication(jsonObject);
-
+            JSONObject respond = loginServices.authentication(request);
             try {
-                JSONObject jsonResponse = new JSONObject(response);
-                int userId = jsonResponse.getInt("user_id");
-                String role = jsonResponse.getString("role");
+                int userId = respond.getInt("user_id");
+                RoleEnum role = RoleEnum.valueOf(respond.get("role").toString());
 
                 // đưa id và role vào session
                 UserSession.getInstance().setUserId(userId);
                 UserSession.getInstance().setRole(role);
 
                 SceneManager.getInstance().switchScene("/fxml/main.fxml");
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 useErrorLabel.setText(bundle.getString("login.loginErr"));
                 passErrorLabel.setText(bundle.getString("login.loginErr"));
             }

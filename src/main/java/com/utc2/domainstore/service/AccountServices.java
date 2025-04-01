@@ -4,14 +4,15 @@ import com.utc2.domainstore.dao.CustomerDAO;
 import com.utc2.domainstore.entity.database.CustomerModel;
 import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.utils.PasswordUtils;
-import java.sql.Timestamp;
-import java.util.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 public class AccountServices {
     private final CustomerDAO customerDAO = new CustomerDAO();
-    
+
     // 1. Lấy thông tin user theo user_id
     public JSONObject getUserInformation(JSONObject jsonInput) {
         int user_id = jsonInput.getInt("user_id");
@@ -31,7 +32,7 @@ public class AccountServices {
 
         return response;
     }
-    
+
     // 2. Cập nhật user
     //update người dùng không update mật khẩu
     public JSONObject updateUser(JSONObject jsonInput) {
@@ -51,35 +52,35 @@ public class AccountServices {
 
         // Cập nhật thông tin
         CustomerModel updatedUser = new CustomerModel(
-            existingUser.getId(), name, email, phone, personalId, existingUser.getRole(), new Timestamp(System.currentTimeMillis())
+                existingUser.getId(), name, email, phone, personalId, existingUser.getRole(), new Timestamp(System.currentTimeMillis())
         );
 
         int result = customerDAO.update(updatedUser);
 
         return result > 0 ? createResponse("success", "User updated successfully")
-                          : createResponse("failed", "Update failed");
-        }
+                : createResponse("failed", "Update failed");
+    }
 
     //update mật khẩu người dùng 
-    public JSONObject updateUserPassword(JSONObject jsonInput){
+    public JSONObject updateUserPassword(JSONObject jsonInput) {
         int userId = jsonInput.getInt("user_id");
         String password = jsonInput.getString("password");
-        
+
         //kiểm tra người dùng có tồn tại hay không
         CustomerModel existingCustomer = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", "", RoleEnum.user, null));
-        if (existingCustomer == null){
+        if (existingCustomer == null) {
             return createResponse("failed", "User not found");
         }
-        
+
         // hash mật khẩu mới
         String hashedPassword = PasswordUtils.hashedPassword(password);
         existingCustomer.setPasswordHash(hashedPassword);
         int result = customerDAO.update(existingCustomer);
-        
+
         return result > 0 ? createResponse("success", "Ur password updated successfully")
                 : createResponse("failed", "Ur password update failed");
     }
-    
+
     // 3. Lấy danh sách tất cả người dùng
     public JSONObject getAllUserAccount() {
         List<CustomerModel> userList = customerDAO.selectAll();
@@ -100,7 +101,7 @@ public class AccountServices {
         response.put("users", userArray);
         return response;
     }
-    
+
     // Tạo JSON phản hồi chung
     private JSONObject createResponse(String status, String message) {
         JSONObject response = new JSONObject();

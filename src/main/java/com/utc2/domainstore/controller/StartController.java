@@ -54,7 +54,7 @@ public class StartController implements Initializable {
                     // Kiểm tra kết nối internet
                     case 2:
                         String host = "8.8.8.8"; // Google DNS
-                        int timeout = 3000; // 3 giây
+                        int timeout = 10000; // 10 giây
                         try {
                             status = InetAddress.getByName(host).isReachable(timeout);
                         } catch (IOException e) {

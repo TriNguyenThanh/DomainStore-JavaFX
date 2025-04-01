@@ -2,6 +2,7 @@ package com.utc2.domainstore.view;
 
 //import animatefx.animation.Shake;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -76,6 +77,8 @@ public class SceneManager {
     }
 
     public void setMaximized(boolean maximized) {
-        stage.setMaximized(maximized);
+        Platform.runLater(() -> {
+            stage.setMaximized(true);
+        });
     }
 }

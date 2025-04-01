@@ -34,8 +34,8 @@ package com.utc2.domainstore.utils;
 //        return newHash.equals(storedHash);
 //    }
 //}
-import de.mkammerer.argon2.Argon2;
 
+import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
 public class PasswordUtils {
@@ -63,5 +63,16 @@ public class PasswordUtils {
         }
 
         return hashedPassword;
+    }
+
+    public static boolean checkPassword(String hash_code, String password) {
+        Argon2 argon2 = Argon2Factory.create();
+        boolean isMatched;
+        try {
+            isMatched = argon2.verify(hash_code, password);
+        } finally {
+            argon2.wipeArray(password.toCharArray());
+        }
+        return isMatched;
     }
 }

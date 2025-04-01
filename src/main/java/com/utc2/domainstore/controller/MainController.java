@@ -73,6 +73,7 @@ public class MainController implements Initializable {
         load("/fxml/dashboard.fxml");
 
         this.bundle = resources;
+        SceneManager.getInstance().setResizable(true);
         SceneManager.getInstance().setMaximized(true);
     }
 }

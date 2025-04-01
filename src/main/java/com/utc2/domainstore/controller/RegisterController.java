@@ -14,6 +14,8 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static com.utc2.domainstore.utils.CheckingUtils.*;
+
 public class RegisterController implements Initializable {
     private ResourceBundle bundle;
 
@@ -182,30 +184,6 @@ public class RegisterController implements Initializable {
 
             passwordCheckBox.setSelected(false);
         }
-    }
-
-    // sdt phải bắt đầu bằng 0 hoặc +84 và có độ dài là 9
-    private boolean phoneNumberCheck(String s) {
-        String pattern = "^(0|\\+84)\\d{9}$";
-        return s.matches(pattern);
-    }
-
-    // kiểm tra số căn cước công dân
-    private boolean personalIDCheck(String s) {
-        String pattern = "^(0|)\\d{12}$";
-        return s.matches(pattern);
-    }
-
-    // kiểm tra email
-    private boolean emailCheck(String s) {
-        String pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-        return s.matches(pattern);
-    }
-
-    //kiểm tra mặt khẩu có độ dài 8-16 ký tự, bao gồm a - z, A - Z, 0 - 9, @, _, .
-    private boolean passwordCheck(String s) {
-        String pattern = "^[a-zA-Z0-9@_]{8,16}$";
-        return s.matches(pattern);
     }
 
     @Override

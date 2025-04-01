@@ -1,18 +1,36 @@
 package com.utc2.domainstore.controller;
 
+import com.utc2.domainstore.entity.view.AccountModel;
+import com.utc2.domainstore.service.AccountServices;
+import com.utc2.domainstore.view.ConfigManager;
+import com.utc2.domainstore.view.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AccountController implements Initializable {
     private ResourceBundle bundle;
+    private AccountModel rootData;
+    private AccountModel newData;
+    private final AccountServices accountServices = new AccountServices();
+
+    @FXML
+    private AnchorPane rootPane;
 
     @FXML
     private TextField tfUsername, tfPhone, tfEmail, tfPsID;
@@ -21,53 +39,171 @@ public class AccountController implements Initializable {
     private PasswordField tfPass;
 
     @FXML
-    private Button btEdit, btSave, btCancel, btLogout;
+    private Button btEdit, btSave, btCancel, btLogout, btChangePass;
 
     @FXML
     private void handleButtonOnAction(ActionEvent e) {
         if (e.getSource() == btEdit) {
-            tfUsername.setEditable(true);
-            tfPhone.setEditable(true);
-            tfEmail.setEditable(true);
-            tfPsID.setEditable(true);
-            tfPass.setEditable(true);
+            edit(true);
         } else if (e.getSource() == btSave) {
             // lưu
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle(bundle.getString("button.save"));
-            alert.setHeaderText(bundle.getString("account.save"));
-            alert.setContentText("");
-            alert.showAndWait();
-            tfUsername.setEditable(false);
-            tfPhone.setEditable(false);
-            tfEmail.setEditable(false);
-            tfPsID.setEditable(false);
-            tfPass.setEditable(false);
+            save();
         } else if (e.getSource() == btCancel) {
             // hủy bỏ thay đổi
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle(bundle.getString("button.cancel"));
-            alert.setHeaderText(bundle.getString("account.cancel"));
-            alert.setContentText("");
-            alert.showAndWait();
-            tfUsername.setEditable(false);
-            tfPhone.setEditable(false);
-            tfEmail.setEditable(false);
-            tfPsID.setEditable(false);
-            tfPass.setEditable(false);
+            cancel();
         } else if (e.getSource() == btLogout) {
             //
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle(bundle.getString("button.logout"));
-            alert.setHeaderText(bundle.getString("account.logout"));
-            alert.setContentText("");
-            alert.showAndWait();
+            logout();
+        } else if (e.getSource() == btChangePass) {
+            changePass();
+        }
+    }
+
+    private void logout() {
+        edit(false);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(bundle.getString("button.logout"));
+        alert.setHeaderText(bundle.getString("account.logout"));
+        alert.setContentText("");
+        alert.showAndWait();
+    }
+
+    private void changePass() {
+        try {
+            ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/change_password.fxml"), rb);
+            Parent root = fxmlLoader.load();
+
+            changePasswordController controller = fxmlLoader.getController();
+            controller.setData(rootData.getHash_password());
+
+            Stage stage = new Stage();
+            stage.setTitle(bundle.getString("button.changePass"));
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/icon/password.png"))));
+
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void cancel() {
+        edit(false);
+        displayData();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(bundle.getString("button.cancel"));
+        alert.setHeaderText(bundle.getString("account.cancel"));
+        alert.setContentText("");
+        alert.showAndWait();
+    }
+
+    private void save() {
+        edit(false);
+        newData = new AccountModel(tfUsername.getText(), tfPhone.getText(), tfEmail.getText(), tfPsID.getText(), rootData.getHash_password());
+        if (rootData.isSame(newData)) {
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(bundle.getString("button.save"));
+        alert.setHeaderText(bundle.getString("account.save"));
+        alert.setContentText("");
+
+        Optional<ButtonType> button = alert.showAndWait();
+        if (button.isPresent() && button.get() == ButtonType.OK) {
+
+            JSONObject request = new JSONObject();
+            request.put("user_id", UserSession.getInstance().getUserId());
+            request.put("username", newData.getFullName());
+            request.put("phone", newData.getPhone());
+            request.put("email", newData.getEmail());
+            request.put("personal_id", newData.getPsID());
+
+            JSONObject respond = accountServices.updateUser(request);
+            try {
+                String status, message;
+                status = respond.getString("status");
+                message = respond.getString("message");
+
+                if (status.equals("failed")) {
+                    Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
+                    alert1.setTitle(bundle.getString("button.save"));
+                    alert1.setHeaderText(bundle.getString("account.save"));
+                    alert1.setContentText(bundle.getString("account.savingFailed"));
+                    alert1.showAndWait();
+                }
+            } catch (JSONException e) {
+                Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
+                alert1.setTitle(bundle.getString("button.save"));
+                alert1.setHeaderText(bundle.getString("account.save"));
+                alert1.setContentText(bundle.getString("account.savingFailed"));
+                alert1.showAndWait();
+            }
+        } else {
+            displayData();
+        }
+    }
+
+    private void edit(boolean isEdited) {
+        tfUsername.setEditable(isEdited);
+        tfPhone.setEditable(isEdited);
+        tfEmail.setEditable(isEdited);
+        tfPsID.setEditable(isEdited);
+        if (isEdited) {
+            tfUsername.setStyle("-fx-border-color: #0000C6");
+            tfPhone.setStyle("-fx-border-color: #0000C6");
+            tfEmail.setStyle("-fx-border-color: #0000C6");
+            tfPsID.setStyle("-fx-border-color: #0000C6");
+        } else {
+            tfUsername.setStyle("-fx-border-color: #FFFFFF");
+            tfPhone.setStyle("-fx-border-color: #FFFFFF");
+            tfEmail.setStyle("-fx-border-color: #FFFFFF");
+            tfPsID.setStyle("-fx-border-color: #FFFFFF");
         }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         bundle = resources;
-        
+        rootData = getRootData();
+        newData = null;
+        displayData();
+        rootPane.parentProperty().addListener((obs, oldParent, newParent) -> {
+            if (newParent == null) {
+                onRemovedFromScene();
+            }
+        });
+    }
+
+    private AccountModel getRootData() {
+        JSONObject request = new JSONObject();
+        request.put("user_id", UserSession.getInstance().getUserId());
+
+        JSONObject respond = accountServices.getUserInformation(request);
+
+        String fullname = respond.getString("username");
+        String phone = respond.getString("phone");
+        String email = respond.getString("email");
+        String psID = respond.getString("personal_id");
+        String pass = respond.getString("password");
+
+        return new AccountModel(fullname, phone, email, psID, pass);
+    }
+
+    private void displayData() {
+        tfUsername.setText(rootData.getFullName());
+        tfPhone.setText(rootData.getPhone());
+        tfEmail.setText(rootData.getEmail());
+        tfPsID.setText(rootData.getPsID());
+        tfPass.setText("11111111");
+    }
+
+    private void onRemovedFromScene() {
+        //check the difference
+        save();
     }
 }
