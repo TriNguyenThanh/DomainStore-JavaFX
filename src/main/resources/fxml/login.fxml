@@ -76,7 +76,7 @@
                         </Label>
                     </children>
                 </HBox>
-                <ComboBox layoutX="277.0" layoutY="560.0" prefWidth="150.0" styleClass="combobox" stylesheets="@../style/login.css" />
+                <ComboBox fx:id="cbLanguage" layoutX="277.0" layoutY="560.0" onAction="#changeLanguage" prefWidth="150.0" styleClass="combobox" stylesheets="@../style/login.css" />
             <ImageView fitHeight="448.0" fitWidth="462.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="100.0">
                <image>
                   <Image url="@../image/loginBG.png" />
