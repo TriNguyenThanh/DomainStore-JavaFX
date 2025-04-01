@@ -1,6 +1,6 @@
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.dao.CustomerRepository;
+import com.utc2.domainstore.repository.CustomerRepository;
 import com.utc2.domainstore.entity.database.CustomerModel;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;

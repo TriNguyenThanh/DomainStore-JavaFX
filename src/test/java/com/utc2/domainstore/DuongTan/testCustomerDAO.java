@@ -1,9 +1,9 @@
 package com.utc2.domainstore.DuongTan;
 
 import com.utc2.domainstore.entity.database.DomainModel;
-import com.utc2.domainstore.dao.CustomerRepository;
-import com.utc2.domainstore.dao.DomainRepository;
-import com.utc2.domainstore.dao.TopLevelDomainRepository;
+import com.utc2.domainstore.repository.CustomerRepository;
+import com.utc2.domainstore.repository.DomainRepository;
+import com.utc2.domainstore.repository.TopLevelDomainRepository;
 import com.utc2.domainstore.entity.database.CustomerModel;
 import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
