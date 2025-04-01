@@ -6,11 +6,11 @@
 .lbHeader {
     -fx-font-size: 52;
     -fx-font-weight:bold;
-    -fx-text-fill: #000000;
+    -fx-text-fill: #1713FF;
 }
 
 .button {
-    -fx-background-color: #769FFF;
+    -fx-background-color: linear-gradient(to right, #4A00E0, #8E2DE2);
     -fx-background-radius: 20;
 
     -fx-text-fill: #FFFFFF;

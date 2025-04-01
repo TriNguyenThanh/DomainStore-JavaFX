@@ -97,5 +97,6 @@ public class LoginController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
         SceneManager.getInstance().setResizable(false);
+        SceneManager.getInstance().setMaximized(false);
     }
 }

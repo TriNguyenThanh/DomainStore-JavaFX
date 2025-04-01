@@ -37,7 +37,14 @@ public class SceneManager {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath), rb);
 
             Scene scene = new Scene(fxmlLoader.load());
+
+            boolean resizable = stage.isResizable();
+            stage.setResizable(true);
             stage.setScene(scene);
+            stage.sizeToScene();
+            if (!resizable) {
+                stage.setResizable(false);
+            }
 
         } catch (IOException e) {
             throw new RuntimeException("Can't switch scene");
@@ -45,10 +52,12 @@ public class SceneManager {
     }
 
     public void setResizable(boolean resizable) {
-        if (stage == null) {
-            throw new IllegalStateException("Stage has not been initialized");
-        }
-        stage.setResizable(resizable);
+        Platform.runLater(() -> {
+            if (stage == null) {
+                throw new IllegalStateException("Stage has not been initialized");
+            }
+            stage.setResizable(resizable);
+        });
     }
 
     public void setTitle(String title) {
@@ -78,7 +87,7 @@ public class SceneManager {
 
     public void setMaximized(boolean maximized) {
         Platform.runLater(() -> {
-            stage.setMaximized(true);
+            stage.setMaximized(maximized);
         });
     }
 }

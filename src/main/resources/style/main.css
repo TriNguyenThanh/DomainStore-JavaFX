@@ -1,5 +1,5 @@
 .pnBackground {
-    -fx-background-color: #BACFFF;
+    -fx-background-color: radial-gradient(center 50% 50%, radius 50%, #4A00E0, #8E2DE2);
 }
 
 .lbHeader {
@@ -17,7 +17,7 @@
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 20;
     -fx-border-color: #000000;
-    -fx-border-width: 3;
+    -fx-border-width: 0;
     -fx-border-radius: 20;
 }
 

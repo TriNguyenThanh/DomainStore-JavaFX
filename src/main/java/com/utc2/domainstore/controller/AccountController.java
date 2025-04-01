@@ -2,7 +2,9 @@ package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.entity.view.AccountModel;
 import com.utc2.domainstore.service.AccountServices;
+import com.utc2.domainstore.service.IAccount;
 import com.utc2.domainstore.view.ConfigManager;
+import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,17 +25,21 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static com.utc2.domainstore.utils.CheckingUtils.*;
+
 public class AccountController implements Initializable {
     private ResourceBundle bundle;
     private AccountModel rootData;
     private AccountModel newData;
-    private final AccountServices accountServices = new AccountServices();
 
     @FXML
     private AnchorPane rootPane;
 
     @FXML
     private TextField tfUsername, tfPhone, tfEmail, tfPsID;
+
+    @FXML
+    private Label lbFullNameErr, lbPhoneErr, lbEmailErr, lbPsIDErr;
 
     @FXML
     private PasswordField tfPass;
@@ -65,7 +71,13 @@ public class AccountController implements Initializable {
         alert.setTitle(bundle.getString("button.logout"));
         alert.setHeaderText(bundle.getString("account.logout"));
         alert.setContentText("");
-        alert.showAndWait();
+        Optional<ButtonType> buttonType = alert.showAndWait();
+        if (buttonType.isPresent() && buttonType.get() == ButtonType.OK) {
+            // Reset the fields to the original data
+            save();
+            UserSession.getInstance().logout();
+            SceneManager.getInstance().switchScene("/fxml/login.fxml");
+        }
     }
 
     private void changePass() {
@@ -92,13 +104,22 @@ public class AccountController implements Initializable {
 
     private void cancel() {
         edit(false);
-        displayData();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(bundle.getString("button.cancel"));
         alert.setHeaderText(bundle.getString("account.cancel"));
         alert.setContentText("");
-        alert.showAndWait();
+        Optional<ButtonType> buttonType = alert.showAndWait();
+
+        if (buttonType.isPresent() && buttonType.get() == ButtonType.OK) {
+            // Reset the fields to the original data
+            displayData();
+            lbPhoneErr.setText("");
+            lbEmailErr.setText("");
+            lbPsIDErr.setText("");
+            lbFullNameErr.setText("");
+
+        }
     }
 
     private void save() {
@@ -116,6 +137,8 @@ public class AccountController implements Initializable {
         Optional<ButtonType> button = alert.showAndWait();
         if (button.isPresent() && button.get() == ButtonType.OK) {
 
+            if (!checkingData()) return;
+
             JSONObject request = new JSONObject();
             request.put("user_id", UserSession.getInstance().getUserId());
             request.put("username", newData.getFullName());
@@ -123,6 +146,7 @@ public class AccountController implements Initializable {
             request.put("email", newData.getEmail());
             request.put("personal_id", newData.getPsID());
 
+            IAccount accountServices = new AccountServices();
             JSONObject respond = accountServices.updateUser(request);
             try {
                 String status, message;
@@ -143,9 +167,54 @@ public class AccountController implements Initializable {
                 alert1.setContentText(bundle.getString("account.savingFailed"));
                 alert1.showAndWait();
             }
-        } else {
-            displayData();
         }
+    }
+
+    private boolean checkingData() {
+        boolean flag = true;
+
+        // kiểm tra tên người dùng
+        if (newData.getFullName().isBlank()) {
+            flag = false;
+            lbFullNameErr.setText(bundle.getString("register.usernameErr"));
+        } else {
+            lbFullNameErr.setText(" ");
+        }
+
+        // kiểm tra số điện thoại
+        if (newData.getPhone().isBlank()) {
+            flag = false;
+            lbPhoneErr.setText(bundle.getString("register.phoneErr1"));
+        } else if (!phoneNumberCheck(newData.getPhone())) {
+            flag = false;
+            lbPhoneErr.setText(bundle.getString("register.phoneErr2"));
+        } else {
+            lbPhoneErr.setText(" ");
+        }
+
+        // kiêm tra email
+        if (newData.getEmail().isBlank()) {
+            flag = false;
+            lbEmailErr.setText(bundle.getString("register.emailErr1"));
+        } else if (!emailCheck(newData.getEmail())) {
+            flag = false;
+            lbEmailErr.setText(bundle.getString("register.emailErr2"));
+        } else {
+            lbEmailErr.setText(" ");
+        }
+
+        // kiểm tra số CCCD
+        if (newData.getPsID().isBlank()) {
+            flag = false;
+            lbPsIDErr.setText(bundle.getString("register.psIDErr1"));
+        } else if (!personalIDCheck(newData.getPsID())) {
+            flag = false;
+            lbPsIDErr.setText(bundle.getString("register.psIDErr2"));
+        } else {
+            lbPsIDErr.setText(" ");
+        }
+
+        return flag;
     }
 
     private void edit(boolean isEdited) {
@@ -183,6 +252,7 @@ public class AccountController implements Initializable {
         JSONObject request = new JSONObject();
         request.put("user_id", UserSession.getInstance().getUserId());
 
+        IAccount accountServices = new AccountServices();
         JSONObject respond = accountServices.getUserInformation(request);
 
         String fullname = respond.getString("username");

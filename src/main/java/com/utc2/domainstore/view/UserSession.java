@@ -37,4 +37,8 @@ public class UserSession {
     public void setRole(RoleEnum role) {
         this.role = role;
     }
+
+    public void logout() {
+        instance = null;
+    }
 }

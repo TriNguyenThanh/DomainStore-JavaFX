@@ -23,30 +23,35 @@
                     <left>
                         <VBox prefHeight="454.0" prefWidth="300.0" spacing="10.0" BorderPane.alignment="CENTER">
                             <children>
+                                <Label styleClass="error"/>
                                 <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0"
                                        text="%register.username">
                                     <VBox.margin>
                                         <Insets right="10.0" top="14.0"/>
                                     </VBox.margin>
                                 </Label>
+                                <Label styleClass="error"/>
                                 <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0"
                                        text="%register.phone">
                                     <VBox.margin>
                                         <Insets right="10.0"/>
                                     </VBox.margin>
                                 </Label>
+                                <Label styleClass="error"/>
                                 <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0"
                                        text="%register.email">
                                     <VBox.margin>
                                         <Insets right="10.0"/>
                                     </VBox.margin>
                                 </Label>
+                                <Label styleClass="error"/>
                                 <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0"
                                        text="%register.psID">
                                     <VBox.margin>
                                         <Insets right="10.0"/>
                                     </VBox.margin>
                                 </Label>
+                                <Label styleClass="error"/>
                                 <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0"
                                        text="%register.password">
                                     <VBox.margin>
@@ -59,14 +64,19 @@
                     <center>
                         <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
                             <children>
+                                <Label fx:id="lbFullNameErr" styleClass="error"/>
                                 <TextField fx:id="tfUsername" editable="false" prefHeight="50.0">
                                     <VBox.margin>
                                         <Insets top="14.0"/>
                                     </VBox.margin>
                                 </TextField>
+                                <Label fx:id="lbPhoneErr" styleClass="error"/>
                                 <TextField fx:id="tfPhone" editable="false" prefHeight="50.0"/>
+                                <Label fx:id="lbEmailErr" styleClass="error"/>
                                 <TextField fx:id="tfEmail" editable="false" prefHeight="50.0"/>
+                                <Label fx:id="lbPsIDErr" styleClass="error"/>
                                 <TextField fx:id="tfPsID" editable="false" prefHeight="50.0"/>
+                                <Label styleClass="error"/>
                                 <PasswordField fx:id="tfPass" editable="false" prefHeight="50.0"/>
                             </children>
                         </VBox>

@@ -7,7 +7,11 @@ import org.json.JSONObject;
 
 public class Test {
     public static void main(String[] args) {
-        UserSession.getInstance().setUserId(1);
+        try {
+            UserSession.getInstance().setUserId(1);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         getData();
     }
 
