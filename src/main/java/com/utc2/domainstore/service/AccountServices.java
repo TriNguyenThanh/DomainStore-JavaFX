@@ -1,6 +1,6 @@
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.dao.CustomerDAO;
+import com.utc2.domainstore.dao.CustomerRepository;
 import com.utc2.domainstore.entity.database.CustomerModel;
 import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.utils.PasswordUtils;
@@ -9,10 +9,11 @@ import java.util.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class AccountServices {
-    private final CustomerDAO customerDAO = new CustomerDAO();
+public class AccountServices implements IAccount{
+    private final CustomerRepository customerDAO = new CustomerRepository();
     
     // 1. Lấy thông tin user theo user_id
+    @Override
     public JSONObject getUserInformation(JSONObject jsonInput) {
         int user_id = jsonInput.getInt("user_id");
 
@@ -34,6 +35,7 @@ public class AccountServices {
     
     // 2. Cập nhật user
     //update người dùng không update mật khẩu
+    @Override
     public JSONObject updateUser(JSONObject jsonInput) {
         int userId = jsonInput.getInt("user_id");
 
@@ -61,6 +63,7 @@ public class AccountServices {
         }
 
     //update mật khẩu người dùng 
+    @Override
     public JSONObject updateUserPassword(JSONObject jsonInput){
         int userId = jsonInput.getInt("user_id");
         String password = jsonInput.getString("password");
@@ -81,6 +84,7 @@ public class AccountServices {
     }
     
     // 3. Lấy danh sách tất cả người dùng
+    @Override
     public JSONObject getAllUserAccount() {
         List<CustomerModel> userList = customerDAO.selectAll();
         JSONArray userArray = new JSONArray();

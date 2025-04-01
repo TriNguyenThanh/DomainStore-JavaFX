@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class TransactionInfoDAO implements DAOInterface<TransactionInfoModel>{
+public class TransactionInfoDAO implements IRepository<TransactionInfoModel>{
 
     public static TransactionInfoDAO getInstance(){
         return new TransactionInfoDAO();

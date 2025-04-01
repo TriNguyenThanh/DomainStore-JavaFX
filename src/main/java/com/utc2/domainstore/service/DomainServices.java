@@ -1,17 +1,18 @@
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.dao.DomainDAO;
-import com.utc2.domainstore.dao.TopLevelDomainDAO;
+import com.utc2.domainstore.dao.DomainRepository;
+import com.utc2.domainstore.dao.TopLevelDomainRepository;
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.List;
 
-public class DomainServices {
-    private final DomainDAO domainDAO = new DomainDAO();
+public class DomainServices implements IDomain{
+    private final DomainRepository domainDAO = new DomainRepository();
     
     // 1. tìm theo tên
+    @Override
     public JSONObject search(JSONObject jsonInput) {
         JSONObject jsonObject = new JSONObject(jsonInput);
         String domainName = jsonObject.getString("name");
@@ -37,6 +38,7 @@ public class DomainServices {
 
 
     // 2. lấy giỏ hàng theo id
+    @Override
     public JSONObject getShoppingCart(JSONObject jsonInput) {
         int userId = jsonInput.getInt("user_id");
 
@@ -60,6 +62,7 @@ public class DomainServices {
 
 
     // 3. thêm giỏ hàng
+    @Override
     public JSONObject addToCart(JSONObject jsonInput) {
         int userId = jsonInput.getInt("userID");
         JSONArray domainArray = jsonInput.getJSONArray("domain");

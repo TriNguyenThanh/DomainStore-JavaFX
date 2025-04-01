@@ -1,12 +1,13 @@
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.dao.CustomerDAO;
+import com.utc2.domainstore.dao.CustomerRepository;
 import com.utc2.domainstore.entity.database.CustomerModel;
 import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.utils.PasswordUtils;
 import org.json.JSONObject;
-public class RegisterServices {
+public class RegisterServices implements IRegister{
     
+    @Override
     public JSONObject addToDB(JSONObject jsonInput) {
         String name = jsonInput.getString("username");
         String phone = jsonInput.getString("phone");
@@ -14,7 +15,7 @@ public class RegisterServices {
         String personalId = jsonInput.getString("personal_id");
         String password = jsonInput.getString("password");
 
-        CustomerDAO customerDAO = new CustomerDAO();
+        CustomerRepository customerDAO = new CustomerRepository();
         JSONObject response = new JSONObject();
 
         if (customerDAO.selectByPhone(phone) != null) {

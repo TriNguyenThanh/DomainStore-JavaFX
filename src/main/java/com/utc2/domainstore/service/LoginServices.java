@@ -1,17 +1,18 @@
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.dao.CustomerDAO;
+import com.utc2.domainstore.dao.CustomerRepository;
 import com.utc2.domainstore.entity.database.CustomerModel;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import org.json.JSONObject;
 
-public class LoginServices {
+public class LoginServices implements ILogin{
+    @Override
     public JSONObject authentication(JSONObject jsonInput) {
         String username = jsonInput.getString("username");
         String password = jsonInput.getString("password");
 
-        CustomerDAO customerDAO = new CustomerDAO();
+        CustomerRepository customerDAO = new CustomerRepository();
         CustomerModel customer = customerDAO.selectByPhone(username);
 
         JSONObject response = new JSONObject();

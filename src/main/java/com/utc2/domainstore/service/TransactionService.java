@@ -1,6 +1,6 @@
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.dao.DomainDAO;
+import com.utc2.domainstore.dao.DomainRepository;
 import com.utc2.domainstore.dao.TransactionDAO;
 import com.utc2.domainstore.dao.TransactionInfoDAO;
 import com.utc2.domainstore.entity.database.DomainModel;
@@ -55,7 +55,7 @@ public class TransactionService {
         for (TransactionInfoModel ti : transactionDAO.selectById(t).getTransactionInfos()) {
             JSONObject jsonObject = new JSONObject();
             DomainModel d = new DomainModel(); d.setId(ti.getDomainId());
-            DomainModel domain = DomainDAO.getInstance().selectById(d);
+            DomainModel domain = DomainRepository.getInstance().selectById(d);
             jsonObject.put("name", domain.getDomainName());
             jsonObject.put("status", domain.getStatus());
             jsonObject.put("price", domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());

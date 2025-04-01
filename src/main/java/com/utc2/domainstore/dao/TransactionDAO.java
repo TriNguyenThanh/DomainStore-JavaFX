@@ -10,7 +10,7 @@ import com.utc2.domainstore.utils.JDBC;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class TransactionDAO implements DAOInterface<TransactionModel> {
+public class TransactionDAO implements IRepository<TransactionModel> {
 
     public static TransactionDAO getInstance() {
         return new TransactionDAO();
