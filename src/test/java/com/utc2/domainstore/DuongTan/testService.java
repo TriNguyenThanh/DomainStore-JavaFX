@@ -33,12 +33,20 @@ public class testService {
 //
 //        //TEST TÌM KIẾM DOMAIN
 //
+//        DomainServices domainServices = new DomainServices();
+//        JSONObject searchInput = new JSONObject();
+//        searchInput.put("name", "tanVjpProNo1.vn");
+//         // In JSON để kiểm tra nó có chứa "name" không
+//         System.out.println("Test Input: " + searchInput.toString(2));
+//        JSONObject searchResponse = domainServices.search(searchInput);
+//        System.out.println("Search Response: " + searchResponse.toString(2));
+
+            // test gợi ý tên miền
         DomainServices domainServices = new DomainServices();
         JSONObject searchInput = new JSONObject();
-        searchInput.put("name", "tanVjpProNo1.vn");
-         // In JSON để kiểm tra nó có chứa "name" không
-         System.out.println("Test Input: " + searchInput.toString(2));
-        JSONObject searchResponse = domainServices.search(searchInput);
+        searchInput.put("name", "example.com");
+ 
+        JSONObject searchResponse = domainServices.Suggestion(searchInput);
         System.out.println("Search Response: " + searchResponse.toString(2));
 
         //TEST THÊM DOMAIN VÀO GIỎ HÀNG

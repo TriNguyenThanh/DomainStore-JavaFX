@@ -133,5 +133,31 @@ public class DomainServices implements IDomain{
 
         return response;
     }
+    //4. Gợi ý tên miền
+    public JSONObject Suggestion(JSONObject jsonInput) {
+        String domainName = jsonInput.getString("name");
 
+        List<DomainModel> domainList = domainDAO.searchByName(domainName);
+        JSONArray domainArray = new JSONArray();
+
+        for (DomainModel domain : domainList) {
+            TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
+            JSONObject domainJson = new JSONObject();
+
+            // Lấy phần mở rộng tên miền (TLD)
+            String fullDomainName = domain.getDomainName();
+            if (tld != null && tld.getTldText() != null) {
+                fullDomainName += tld.getTldText();
+            }
+
+            domainJson.put("name", fullDomainName);
+            domainJson.put("status", domain.getStatus().toString().toLowerCase());
+            domainJson.put("price", (tld != null) ? tld.getPrice() : 0);
+            domainArray.put(domainJson);
+        }
+
+        JSONObject response = new JSONObject();
+        response.put("domain", domainArray);
+        return response; 
+    }
 }
