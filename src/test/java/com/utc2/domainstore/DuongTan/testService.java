@@ -35,8 +35,9 @@ public class testService {
 //
 //        DomainServices domainServices = new DomainServices();
 //        JSONObject searchInput = new JSONObject();
-//        searchInput.put("name", "example");
-//
+//        searchInput.put("name", "tanVjpProNo1.vn");
+//        // In JSON để kiểm tra nó có chứa "name" không
+//        System.out.println("Test Input: " + searchInput.toString(2));
 //        JSONObject searchResponse = domainServices.search(searchInput);
 //        System.out.println("Search Response: " + searchResponse.toString(2));
 
@@ -44,14 +45,14 @@ public class testService {
 //        DomainServices domainServices = new DomainServices();
 //        JSONObject cartInput = new JSONObject();
 //        cartInput.put("userID", 1);
-//        
+//
 //        JSONArray domainArray = new JSONArray();
 //        JSONObject domain1 = new JSONObject();
 //        domain1.put("name", "example");
 //        domain1.put("status", "available");
 //        domain1.put("price", 299000);
 //        domain1.put("years", 1);
-//        
+//
 //        domainArray.put(domain1);
 //        cartInput.put("domain", domainArray);
 //
@@ -62,7 +63,7 @@ public class testService {
 //    	DomainServices domainServices = new DomainServices();
 //        JSONObject cartRequest = new JSONObject();
 //        cartRequest.put("user_id", 1);
-//        
+//
 //        JSONObject cartResult = domainServices.getShoppingCart(cartRequest);
 //        System.out.println("Get Shopping Cart Response: " + cartResult.toString(2));
         
