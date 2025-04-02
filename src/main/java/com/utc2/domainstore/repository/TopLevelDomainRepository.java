@@ -133,4 +133,25 @@ public class TopLevelDomainRepository implements IRepository<TopLevelDomainModel
         }
         return list;
     }
+    public TopLevelDomainModel getTLDByName(String tldText) {
+     String query = "SELECT * FROM TopLevelDomain WHERE TLD_text = ?";
+
+     try (Connection conn = JDBC.getConnection();
+          PreparedStatement stmt = conn.prepareStatement(query)) {
+
+         stmt.setString(1, tldText);
+         try (ResultSet rs = stmt.executeQuery()) {
+             if (rs.next()) {
+                 return new TopLevelDomainModel(
+                         rs.getInt("id"),
+                         rs.getString("TLD_text"),
+                         rs.getInt("price")
+                 );
+             }
+         }
+     } catch (SQLException e) {
+         e.printStackTrace();
+     }
+     return null;
+ }
 }

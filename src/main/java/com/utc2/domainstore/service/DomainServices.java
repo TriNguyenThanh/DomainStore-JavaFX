@@ -3,6 +3,8 @@ package com.utc2.domainstore.service;
 import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
+import com.utc2.domainstore.repository.TopLevelDomainRepository;
+import com.utc2.domainstore.utils.DomainUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.List;
@@ -13,26 +15,41 @@ public class DomainServices implements IDomain{
     // 1. tìm theo tên
     @Override
     public JSONObject search(JSONObject jsonInput) {
-        JSONObject jsonObject = new JSONObject(jsonInput);
-        String domainName = jsonObject.getString("name");
+        String domainName = jsonInput.optString("name", "UNKNOWN");
+         // Tách phần mở rộng (TLD) từ tên miền
+         String[] parts = domainName.split("\\.");
+         if (parts.length < 2) {
+             return createErrorResponse("Invalid domain format.");
+         }
+         String tld = "." + parts[parts.length - 1];
+         
+         // Kiểm tra TLD có hợp lệ không
+         TopLevelDomainModel tldModel = TopLevelDomainRepository.getInstance().getTLDByName(tld);
+         if (tldModel == null) {
+             return createErrorResponse("TLD is not supported.");
+         }
 
-        List<DomainModel> domainList = domainDAO.searchByName(domainName);
-        JSONArray domainArray = new JSONArray();
+       // Kiểm tra domain đã đăng ký chưa
+         String domainStatus = DomainUtils.getDomainInfo(domainName);
+         JSONObject response = new JSONObject();
 
-        for (DomainModel domain : domainList) {
-            TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
-            JSONObject domainJson = new JSONObject();
-            domainJson.put("name", domain.getDomainName());
-            domainJson.put("status", domain.getStatus().toString().toLowerCase());
-            domainJson.put("price", (tld != null) ? tld.getPrice() : 0);
-            domainArray.put(domainJson);
-        }
-
-        JSONObject response = new JSONObject();
-        response.put("domain", domainArray);
-        return response;  // Không cần toString()
+        if ("Nofound".equals(domainStatus)) {
+             response.put("status", "available");
+             response.put("price", tldModel.getPrice());
+         } else {
+             response.put("status", "activated");
+             response.put("price", 0);
+         }
+ 
+         response.put("name", domainName);
+        return response; 
     }
-
+    private JSONObject createErrorResponse(String message) {
+         JSONObject response = new JSONObject();
+         response.put("status", "failed");
+         response.put("message", message);
+         return response;
+     }
 
 
 
