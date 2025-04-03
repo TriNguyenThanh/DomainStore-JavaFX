@@ -55,7 +55,7 @@ public class RegisterController implements Initializable {
 
         if (usernameTextfield.getText().isBlank()) {
             flag = false;
-            usernameErr.setText(bundle.getString("register.usernameErr"));
+            usernameErr.setText(bundle.getString("error.username"));
         } else {
             usernameErr.setText(" ");
         }
@@ -63,10 +63,10 @@ public class RegisterController implements Initializable {
         // kiểm tra số điện thoại
         if (phoneTextfield.getText().isBlank()) {
             flag = false;
-            phoneErr.setText(bundle.getString("register.phoneErr1"));
+            phoneErr.setText(bundle.getString("error.phoneErr1"));
         } else if (!phoneNumberCheck(phoneTextfield.getText())) {
             flag = false;
-            phoneErr.setText(bundle.getString("register.phoneErr2"));
+            phoneErr.setText(bundle.getString("error.phoneErr2"));
         } else {
             phoneErr.setText(" ");
         }
@@ -74,10 +74,10 @@ public class RegisterController implements Initializable {
         // kiêm tra email
         if (emailTextfield.getText().isBlank()) {
             flag = false;
-            emailErr.setText(bundle.getString("register.emailErr1"));
+            emailErr.setText(bundle.getString("error.emailErr1"));
         } else if (!emailCheck(emailTextfield.getText())) {
             flag = false;
-            emailErr.setText(bundle.getString("register.emailErr2"));
+            emailErr.setText(bundle.getString("error.emailErr2"));
         } else {
             emailErr.setText(" ");
         }
@@ -85,10 +85,10 @@ public class RegisterController implements Initializable {
         // kiểm tra số CCCD
         if (psIDTextfield.getText().isBlank()) {
             flag = false;
-            psIDErr.setText(bundle.getString("register.psIDErr1"));
+            psIDErr.setText(bundle.getString("error.psIDErr1"));
         } else if (!personalIDCheck(psIDTextfield.getText())) {
             flag = false;
-            psIDErr.setText(bundle.getString("register.psIDErr2"));
+            psIDErr.setText(bundle.getString("error.psIDErr2"));
         } else {
             psIDErr.setText(" ");
         }
@@ -96,10 +96,10 @@ public class RegisterController implements Initializable {
         // Kiểm tra mật khẩu
         if (passwordField.getText().isBlank()) {
             flag = false;
-            passwordErr.setText(bundle.getString("register.passwordErr1"));
+            passwordErr.setText(bundle.getString("error.password1"));
         } else if (!passwordCheck(passwordField.getText())) {
             flag = false;
-            passwordErr.setText(bundle.getString("register.passwordErr2"));
+            passwordErr.setText(bundle.getString("error.password2"));
         } else {
             passwordErr.setText(" ");
         }
@@ -107,10 +107,10 @@ public class RegisterController implements Initializable {
         // Kiểm tra nhập lại mật khẩu
         if (confirmPasswordField.getText().isBlank()) {
             flag = false;
-            confirmPasswordErr.setText(bundle.getString("register.confirmPasswordErr1"));
+            confirmPasswordErr.setText(bundle.getString("error.confirmPasswordErr1"));
         } else if (!confirmPasswordField.getText().equals(passwordField.getText())) {
             flag = false;
-            confirmPasswordErr.setText(bundle.getString("register.confirmPasswordErr2"));
+            confirmPasswordErr.setText(bundle.getString("error.confirmPasswordErr2"));
         } else {
             confirmPasswordErr.setText(" ");
         }
@@ -136,13 +136,13 @@ public class RegisterController implements Initializable {
                     System.out.println("Dang ky tai khoan thanh cong");
                 } else if (status.equals("failed")) {
                     if (message.toLowerCase().contains("phone number already exists")) {
-                        phoneErr.setText(bundle.getString("register.phoneErr3"));
+                        phoneErr.setText(bundle.getString("error.phone3"));
                     }
                     if (message.toLowerCase().contains("email already exists")) {
-                        emailErr.setText(bundle.getString("register.emailErr3"));
+                        emailErr.setText(bundle.getString("error.email3"));
                     }
                     if (message.toLowerCase().contains("personal id already exists")) {
-                        psIDErr.setText(bundle.getString("register.psIDErr3"));
+                        psIDErr.setText(bundle.getString("error.psIDErr3"));
                     }
                 }
             } catch (JSONException e) {

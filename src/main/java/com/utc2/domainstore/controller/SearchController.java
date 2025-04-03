@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SearchController implements Initializable {
+    private ResourceBundle bundle;
+
     @FXML
     private TextField tfSearch;
 
@@ -30,6 +32,6 @@ public class SearchController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        this.bundle = resources;
     }
 }

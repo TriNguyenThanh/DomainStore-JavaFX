@@ -52,7 +52,7 @@ public class DashBoardController implements Initializable {
             throw new RuntimeException(e);
         }
     }
-
+  
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         bundle = resources;

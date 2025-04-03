@@ -1,14 +1,21 @@
 package com.utc2.domainstore.ThanhTri;
 
 
-import com.utc2.domainstore.service.AccountServices;
+import com.utc2.domainstore.entity.view.BillViewModel;
+import com.utc2.domainstore.service.ITransactionService;
+import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.view.UserSession;
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Test {
     public static void main(String[] args) {
         try {
-            UserSession.getInstance().setUserId(1);
+            UserSession.getInstance().setUserId(2);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -16,24 +23,27 @@ public class Test {
     }
 
     private static void getData() {
+        List<BillViewModel> bills = new ArrayList<>();
+
         JSONObject request = new JSONObject();
         request.put("user_id", UserSession.getInstance().getUserId());
 
-        AccountServices accountServices = new AccountServices();
-        JSONObject respond = accountServices.getUserInformation(request);
+        ITransactionService transactionService = new TransactionService();
+        JSONObject respond = transactionService.getAllTransaction();
+        JSONArray list = respond.getJSONArray("transactions");
 
-        System.out.println(respond);
+        for (Object o : list) {
+            JSONObject jsonObject = (JSONObject) o;
+            String id = jsonObject.getString("id");
+            Date date = Date.valueOf(jsonObject.get("date").toString()); //jsonObject.get("date");
+            String status = String.valueOf(jsonObject.get("status"));
+            int price = jsonObject.getInt("total_price");
 
-        String fullname = respond.getString("username");
-        String phone = respond.getString("phone");
-        String email = respond.getString("email");
-        String psID = respond.getString("personal_id");
-        String pass = respond.getString("password");
-
-        System.out.println(fullname);
-        System.out.println(phone);
-        System.out.println(email);
-        System.out.println(psID);
-        System.out.println(pass);
+            System.out.println();
+            System.out.println("ID: " + id);
+            System.out.println("Date: " + date);
+            System.out.println("Status: " + status);
+            System.out.println("Price: " + price);
+        }
     }
 }
