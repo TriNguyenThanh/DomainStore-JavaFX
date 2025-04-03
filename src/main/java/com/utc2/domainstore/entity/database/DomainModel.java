@@ -14,10 +14,6 @@ public class DomainModel {
     private Integer ownerId;
     private Date createdAt; 
     
-    public enum DomainStatusEnum {
-        AVAILABLE, SOLD;
-    }
-    
     public DomainModel() {
     }
     public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Date activeDate, int years, Integer ownerId) {

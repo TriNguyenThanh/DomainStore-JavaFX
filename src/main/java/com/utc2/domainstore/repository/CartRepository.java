@@ -1,16 +1,20 @@
 package com.utc2.domainstore.repository;
 
 import com.utc2.domainstore.entity.database.CartModel;
+import com.utc2.domainstore.entity.database.DomainModel;
+import com.utc2.domainstore.entity.database.DomainStatusEnum;
+import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import com.utc2.domainstore.utils.JDBC;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CartRepository implements IRepository<CartModel>{
-    public static CustomerRepository getInstance() {
-        return new CustomerRepository();
+    public static CartRepository getInstance() {
+        return new CartRepository();
     }
     
     @Override
@@ -149,4 +153,74 @@ public class CartRepository implements IRepository<CartModel>{
         return carts;
     }
     
+    public List<DomainModel> getCartByUserId(int userId) {
+        String sql = "SELECT d.id, d.domain_name, d.status, t.price " +
+                     "FROM carts c " +
+                     "JOIN domains d ON c.domain_id = d.id " +
+                     "JOIN TopLevelDomain t ON d.tld_id = t.id " +
+                     "WHERE c.cus_id = ?";
+
+        List<DomainModel> domainList = new ArrayList<>();
+
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setInt(1, userId);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    DomainModel domain = new DomainModel();
+                    domain.setId(rs.getInt("id"));
+                    domain.setDomainName(rs.getString("domain_name"));
+                    domain.setStatus(DomainStatusEnum.valueOf(rs.getString("status")));
+
+                    TopLevelDomainModel tld = new TopLevelDomainModel();
+                    tld.setPrice(rs.getInt("price"));
+                    domain.setTldId(tld.getId());
+
+                    domainList.add(domain);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return domainList;
+    }
+
+    public boolean isDomainAvailable(int domainId) {
+        String sql = "SELECT COUNT(*) FROM domains WHERE id = ? AND status = 'AVAILABLE'";
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setInt(1, domainId);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean addToCart(int userId, int domainId, int years) {
+        if (!isDomainAvailable(domainId)) {
+            System.out.println("Tên miền không khả dụng.");
+            return false;
+        }
+
+        String sql = "INSERT INTO carts (cus_id, domain_id, years) VALUES (?, ?, ?)";
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setInt(1, userId);
+            pst.setInt(2, domainId);
+            pst.setInt(3, years);
+
+            return pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

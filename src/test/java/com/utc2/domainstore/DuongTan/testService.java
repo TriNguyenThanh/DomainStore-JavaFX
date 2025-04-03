@@ -1,6 +1,8 @@
 package com.utc2.domainstore.DuongTan;
-
 import com.utc2.domainstore.service.AccountServices;
+import com.utc2.domainstore.repository.CartRepository;
+import com.utc2.domainstore.service.CartServices;
+import com.utc2.domainstore.entity.database.DomainStatusEnum;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import com.utc2.domainstore.service.DomainServices;
@@ -42,39 +44,12 @@ public class testService {
 //        System.out.println("Search Response: " + searchResponse.toString(2));
 
             // test gợi ý tên miền
-        DomainServices domainServices = new DomainServices();
-        JSONObject searchInput = new JSONObject();
-        searchInput.put("name", "example.com");
- 
-        JSONObject searchResponse = domainServices.Suggestion(searchInput);
-        System.out.println("Search Response: " + searchResponse.toString(2));
-
-        //TEST THÊM DOMAIN VÀO GIỎ HÀNG
 //        DomainServices domainServices = new DomainServices();
-//        JSONObject cartInput = new JSONObject();
-//        cartInput.put("userID", 1);
-//        
-//        JSONArray domainArray = new JSONArray();
-//        JSONObject domain1 = new JSONObject();
-//        domain1.put("name", "example");
-//        domain1.put("status", "available");
-//        domain1.put("price", 299000);
-//        domain1.put("years", 1);
-//        
-//        domainArray.put(domain1);
-//        cartInput.put("domain", domainArray);
-//
-//        JSONObject cartResponse = domainServices.addToCart(cartInput);
-//        System.out.println("Add to Cart Response: " + cartResponse.toString(2));
-
-        //TEST LẤY GIỎ HÀNG
-//    	DomainServices domainServices = new DomainServices();
-//        JSONObject cartRequest = new JSONObject();
-//        cartRequest.put("user_id", 1);
-//        
-//        JSONObject cartResult = domainServices.getShoppingCart(cartRequest);
-//        System.out.println("Get Shopping Cart Response: " + cartResult.toString(2));
-        
+//        JSONObject searchInput = new JSONObject();
+//        searchInput.put("name", "example.com");
+// 
+//        JSONObject searchResponse = domainServices.Suggestion(searchInput);
+//        System.out.println("Search Response: " + searchResponse.toString(2));
         
         // TEST CẬP NHẬT THÔNG TIN NGƯỜI DÙNG (KHÔNG BAO GỒM MẬT KHẨU)
 //        AccountServices accountServices = new AccountServices();
@@ -109,5 +84,35 @@ public class testService {
 //        AccountServices accountServices = new AccountServices();
 //        JSONObject getAllUsersResponse = accountServices.getAllUserAccount();
 //        System.out.println("Get All Users Response: " + getAllUsersResponse.toString(2));
-        }
+        
+
+////        //test cart
+        // Khởi tạo CartRepository (giả định)
+        CartRepository cartRepository = new CartRepository();
+
+        // Tạo đối tượng CartServices
+        CartServices cartServices = new CartServices(cartRepository);
+
+        // TEST LẤY GIỎ HÀNG NGƯỜI DÙNG
+        JSONObject cartInput = new JSONObject();
+        cartInput.put("cus_id", 4);
+
+        JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
+        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
+//
+////        // TEST THÊM DOMAIN VÀO GIỎ HÀNG
+//        JSONObject addToCartInput = new JSONObject();
+//        addToCartInput.put("user_id", 1);
+//
+//        JSONArray domainArray = new JSONArray();
+//        JSONObject domain1 = new JSONObject();
+//        domain1.put("id", 101);
+//        domain1.put("years", 2);
+//        domainArray.put(domain1);
+//
+//        addToCartInput.put("domain_id", domainArray);
+//
+//        JSONObject addToCartResponse = cartServices.addToCart(addToCartInput);
+//        System.out.println("Add to Cart Response: " + addToCartResponse.toString(2));
+    }
 }

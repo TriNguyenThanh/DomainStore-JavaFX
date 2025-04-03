@@ -1,7 +1,7 @@
 package com.utc2.domainstore.repository;
 
 import com.utc2.domainstore.entity.database.DomainModel;
-import com.utc2.domainstore.entity.database.DomainModel.DomainStatusEnum;
+import com.utc2.domainstore.entity.database.DomainStatusEnum;
 import com.utc2.domainstore.utils.JDBC;
 
 import java.sql.*;
@@ -191,7 +191,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainModel.DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
                             rs.getDate("active_date"),
                             rs.getInt("years"),
                             rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
@@ -221,7 +221,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainModel.DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
                             rs.getDate("active_date"),
                             rs.getInt("years"),
                             rs.getInt("owner_id")
@@ -250,5 +250,24 @@ public class DomainRepository implements IRepository<DomainModel> {
             e.printStackTrace();
         }
         return false;
+    }
+    // Lấy giá của TLD dựa trên domain_id
+    public Integer getTLDPriceByDomainId(int domainId) {
+        String sql = "SELECT t.price FROM domains d " +
+                     "JOIN TopLevelDomain t ON d.tld_id = t.id " +
+                     "WHERE d.id = ?";
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setInt(1, domainId);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("price");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
