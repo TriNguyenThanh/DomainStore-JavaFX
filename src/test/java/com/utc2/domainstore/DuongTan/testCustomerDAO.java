@@ -1,5 +1,6 @@
 package com.utc2.domainstore.DuongTan;
 
+import com.utc2.domainstore.entity.database.CartModel;
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.repository.CustomerRepository;
 import com.utc2.domainstore.repository.DomainRepository;
@@ -7,6 +8,7 @@ import com.utc2.domainstore.repository.TopLevelDomainRepository;
 import com.utc2.domainstore.entity.database.CustomerModel;
 import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
+import com.utc2.domainstore.repository.CartRepository;
 import com.utc2.domainstore.utils.PasswordUtils;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -177,6 +179,53 @@ public static void domainDAOTest(int i) {
                 System.out.println("Invalid test case number.");
         }
     }
+    public static void cartDAOTest(int i) {
+        CartRepository cartRepo = new CartRepository();
+
+        switch (i) {
+            case 1:
+//                // Thêm cart mới
+                CartModel  newCart = new CartModel(4, 28, 2);
+                int insertResult = cartRepo.insert(newCart);
+                System.out.println("Insert cart: " + (insertResult > 0 ? "Success, ID = " + insertResult : "Failed"));
+                break;
+
+            case 2:
+                // Lấy danh sách tất cả carts
+                List<CartModel> carts = cartRepo.selectAll();
+                System.out.println("Danh sách carts:");
+                for (CartModel cart : carts) {
+                    System.out.println(cart);
+                }
+                break;
+            
+            case 3:
+                // Tìm TLD theo ID
+                int cartId = 1; // ID cần tìm
+                CartModel findCart = new CartModel(cartId, 0, 0, 0);
+                CartModel result = cartRepo.selectById(findCart);
+                System.out.println("Cart found: " + (result != null ? result : "Not found"));
+                break;
+            
+            case 4:
+                // Cập nhật TLD
+                CartModel updateCart = new CartModel(1, 4, 28, 3);
+                int updateResult = cartRepo.update(updateCart);
+                System.out.println("Update cart: " + (updateResult > 0 ? "Success" : "Failed"));
+                break;
+            
+            case 5:
+                // Xóa TLD
+                int deleteCartId = 20; // ID cần xóa
+                CartModel deleteCart = new CartModel(deleteCartId, 0, 0, 0);
+                int deleteResult = cartRepo.delete(deleteCart);
+                System.out.println("Delete cart: " + (deleteResult > 0 ? "Success" : "Failed"));
+                break;
+
+            default:
+                System.out.println("Invalid test case number.");
+        }
+    }
     
     public static void UITest() {
 //        UserSession.login("KH001", "admin");
@@ -192,6 +241,7 @@ public static void domainDAOTest(int i) {
 //        topLevelDomainDAOTest(1);
         
         //  Kiểm tra giao diện UI
-        UITest();
+//        UITest();
+//        cartDAOTest(2);
     }
 }
