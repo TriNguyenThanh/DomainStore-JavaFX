@@ -36,6 +36,12 @@ public class DomainModel {
         this.createdAt = createdAt;
     }
 
+    public DomainModel(String domainName, int tldId, DomainStatusEnum status) {
+        this.domainName = domainName;
+        this.tldId = tldId;
+        this.status = status;
+    }
+    
     public int getId() {
         return id;
     }

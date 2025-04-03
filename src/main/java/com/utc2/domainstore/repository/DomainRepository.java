@@ -160,7 +160,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
                             rs.getDate("active_date"),
                             rs.getInt("years"),
                             rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
@@ -191,7 +191,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
                             rs.getDate("active_date"),
                             rs.getInt("years"),
                             rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
@@ -203,6 +203,57 @@ public class DomainRepository implements IRepository<DomainModel> {
             e.printStackTrace();
         }
         return domainList;
+    }
+    public boolean isDomainExists(String nameDomain, int tld_id) {
+        String domainName = nameDomain.contains(".") ? nameDomain.split("\\.")[0] : nameDomain;
+        String sql = "SELECT * FROM domains WHERE domain_name = ? AND tld_id = ?";
+
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setString(1, domainName);
+            pst.setInt(2, tld_id);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                return rs.next(); 
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    public DomainModel getDomainByNameAndTld(String nameDomain, int tld_id) {
+        String domainName = nameDomain.contains(".") ? nameDomain.split("\\.")[0] : nameDomain;
+        String sql = "SELECT * FROM domains WHERE domain_name = ? AND tld_id = ?";
+
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setString(1, domainName);
+            pst.setInt(2, tld_id);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new DomainModel(
+                        rs.getInt("id"),
+                        rs.getString("domain_name"),
+                        rs.getInt("tld_id"),
+                        DomainStatusEnum.valueOf(rs.getString("status")), 
+                        rs.getDate("active_date"),
+                        rs.getInt("years"),
+                        rs.getInt("owner_id"),
+                        rs.getDate("created_at")
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; 
     }
 
     //lay danh sach theo userId
@@ -221,7 +272,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
                             rs.getDate("active_date"),
                             rs.getInt("years"),
                             rs.getInt("owner_id")
@@ -233,7 +284,6 @@ public class DomainRepository implements IRepository<DomainModel> {
         }
         return cartList;
     }
-
     //them vao gio hang
     public boolean updateDomainOwnership(int userId, DomainModel domain) {
         String updateQuery = "UPDATE domains SET owner_id = ?, years = ? WHERE id = ? AND status = 'available'";

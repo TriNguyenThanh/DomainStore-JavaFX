@@ -48,7 +48,7 @@ public class testService {
 //        JSONObject searchInput = new JSONObject();
 //        searchInput.put("name", "example.com");
 // 
-//        JSONObject searchResponse = domainServices.Suggestion(searchInput);
+//        JSONObject searchResponse = domainServices.suggestion(searchInput);
 //        System.out.println("Search Response: " + searchResponse.toString(2));
         
         // TEST CẬP NHẬT THÔNG TIN NGƯỜI DÙNG (KHÔNG BAO GỒM MẬT KHẨU)
@@ -87,30 +87,38 @@ public class testService {
         
 
 ////        //test cart
-        // Khởi tạo CartRepository (giả định)
+//         Khởi tạo CartRepository (giả định)
         CartRepository cartRepository = new CartRepository();
 
         // Tạo đối tượng CartServices
         CartServices cartServices = new CartServices(cartRepository);
-
+////
         // TEST LẤY GIỎ HÀNG NGƯỜI DÙNG
         JSONObject cartInput = new JSONObject();
         cartInput.put("cus_id", 4);
 
         JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
         System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
-//
-////        // TEST THÊM DOMAIN VÀO GIỎ HÀNG
+
+        // TEST THÊM DOMAIN VÀO GIỎ HÀNG
+        
 //        JSONObject addToCartInput = new JSONObject();
-//        addToCartInput.put("user_id", 1);
+//        addToCartInput.put("cus_id", 4);
 //
 //        JSONArray domainArray = new JSONArray();
 //        JSONObject domain1 = new JSONObject();
-//        domain1.put("id", 101);
+//        domain1.put("name", "hailuamotmua.org");
+//        domain1.put("status", "available");
+//        domain1.put("price", 59000);
 //        domain1.put("years", 2);
 //        domainArray.put(domain1);
-//
-//        addToCartInput.put("domain_id", domainArray);
+//        JSONObject domain2 = new JSONObject();
+//        domain2.put("name", "tanvjpprono1.vn");
+//        domain2.put("status", "available");
+//        domain2.put("price", 59000);
+//        domain2.put("years", 3);
+//        domainArray.put(domain2);
+//        addToCartInput.put("domain", domainArray);
 //
 //        JSONObject addToCartResponse = cartServices.addToCart(addToCartInput);
 //        System.out.println("Add to Cart Response: " + addToCartResponse.toString(2));

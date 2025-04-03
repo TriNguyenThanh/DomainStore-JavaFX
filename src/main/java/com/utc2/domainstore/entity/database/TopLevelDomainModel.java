@@ -8,6 +8,10 @@ public class TopLevelDomainModel {
     public TopLevelDomainModel() {
     }
 
+    public TopLevelDomainModel(int id) {
+        this.id = id;
+    }
+    
     public TopLevelDomainModel(int id, String tldText, int price) {
         this.id = id;
         this.tldText = tldText;

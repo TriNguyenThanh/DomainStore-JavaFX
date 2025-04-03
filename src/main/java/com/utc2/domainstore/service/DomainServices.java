@@ -37,7 +37,7 @@ public class DomainServices implements IDomain{
              response.put("status", "available");
              response.put("price", tldModel.getPrice());
          } else {
-             response.put("status", "activated");
+             response.put("status", "sold");
              response.put("price", 0);
          }
  
