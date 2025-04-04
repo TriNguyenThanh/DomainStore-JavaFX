@@ -14,10 +14,6 @@ public class DomainModel {
     private Integer ownerId;
     private Date createdAt; 
     
-    public enum DomainStatusEnum {
-        AVAILABLE, SOLD;
-    }
-    
     public DomainModel() {
     }
     public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Date activeDate, int years, Integer ownerId) {
@@ -40,6 +36,12 @@ public class DomainModel {
         this.createdAt = createdAt;
     }
 
+    public DomainModel(String domainName, int tldId, DomainStatusEnum status) {
+        this.domainName = domainName;
+        this.tldId = tldId;
+        this.status = status;
+    }
+    
     public int getId() {
         return id;
     }

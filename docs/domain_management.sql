@@ -162,7 +162,16 @@ VALUES
 ('nextlevel', 12, 'available'),
 ('connectasia', 13, 'available'),
 ('cloudhub', 14, 'available'),
-('universeclick', 15, 'available');
+('universeclick', 15, 'available'),
+('amazingblog', 16, 'available'),
+('futurecloud', 17, 'available'),
+('bestclick', 18, 'available'),
+('stronggroup', 19, 'available'),
+('supermom', 20, 'available'),
+('techasia', 21, 'available'),
+('globalbusiness', 22, 'available'),
+('creativeart', 23, 'available'),
+('topblog', 24, 'available');
 
 INSERT INTO carts (cus_id, domain_id, years) VALUES
 (4, 2, 2),
