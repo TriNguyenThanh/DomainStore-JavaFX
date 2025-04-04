@@ -68,8 +68,8 @@ public class AccountController implements Initializable {
     private void logout() {
         edit(false);
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(bundle.getString("button.logout"));
-        alert.setHeaderText(bundle.getString("account.logout"));
+        alert.setTitle(bundle.getString("logout"));
+        alert.setHeaderText(bundle.getString("notice.logout"));
         alert.setContentText("");
         Optional<ButtonType> buttonType = alert.showAndWait();
         if (buttonType.isPresent() && buttonType.get() == ButtonType.OK) {
@@ -90,13 +90,15 @@ public class AccountController implements Initializable {
             controller.setData(rootData.getHash_password());
 
             Stage stage = new Stage();
-            stage.setTitle(bundle.getString("button.changePass"));
+            stage.setTitle(bundle.getString("changePass"));
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/icon/password.png"))));
 
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
+            rootData = newData = getRootData();
+            
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -106,8 +108,8 @@ public class AccountController implements Initializable {
         edit(false);
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(bundle.getString("button.cancel"));
-        alert.setHeaderText(bundle.getString("account.cancel"));
+        alert.setTitle(bundle.getString("cancel"));
+        alert.setHeaderText(bundle.getString("notice.cancel"));
         alert.setContentText("");
         Optional<ButtonType> buttonType = alert.showAndWait();
 
@@ -130,8 +132,8 @@ public class AccountController implements Initializable {
         }
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(bundle.getString("button.save"));
-        alert.setHeaderText(bundle.getString("account.save"));
+        alert.setTitle(bundle.getString("save"));
+        alert.setHeaderText(bundle.getString("notice.save"));
         alert.setContentText("");
 
         Optional<ButtonType> button = alert.showAndWait();
@@ -155,16 +157,16 @@ public class AccountController implements Initializable {
 
                 if (status.equals("failed")) {
                     Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
-                    alert1.setTitle(bundle.getString("button.save"));
-                    alert1.setHeaderText(bundle.getString("account.save"));
-                    alert1.setContentText(bundle.getString("account.savingFailed"));
+                    alert1.setTitle(bundle.getString("save"));
+                    alert1.setHeaderText(bundle.getString("save"));
+                    alert1.setContentText(bundle.getString("notice.savingFailed"));
                     alert1.showAndWait();
                 }
             } catch (JSONException e) {
                 Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
-                alert1.setTitle(bundle.getString("button.save"));
-                alert1.setHeaderText(bundle.getString("account.save"));
-                alert1.setContentText(bundle.getString("account.savingFailed"));
+                alert1.setTitle(bundle.getString("save"));
+                alert1.setHeaderText(bundle.getString("save"));
+                alert1.setContentText(bundle.getString("notice.savingFailed"));
                 alert1.showAndWait();
             }
         }

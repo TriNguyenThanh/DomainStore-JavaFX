@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-
 <AnchorPane prefHeight="640.0" prefWidth="1020.0" stylesheets="@../style/bill.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.BillController">
    <children>
       <BorderPane layoutX="131.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -21,7 +20,7 @@
                   <DropShadow />
                </effect>
                <children>
-                  <Label alignment="CENTER" layoutX="20.0" layoutY="14.0" styleClass="header" text="%bill.title" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                  <Label alignment="CENTER" layoutX="20.0" layoutY="14.0" styleClass="header" text="%bill" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
                </children>
             </AnchorPane>
          </top>
@@ -34,11 +33,13 @@
                   <DropShadow />
                </effect>
                <children>
-                  <TableView layoutX="120.0" layoutY="51.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
-                    <columns>
-                      <TableColumn prefWidth="75.0" text="C1" />
-                      <TableColumn prefWidth="75.0" text="C2" />
-                    </columns>
+                  <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                     <columns>
+                        <TableColumn fx:id="colID" prefWidth="190.0" text="%billID" />
+                        <TableColumn fx:id="colDate" prefWidth="250.0" text="%date" />
+                        <TableColumn fx:id="colStatus" prefWidth="320.0" text="%status" />
+                        <TableColumn fx:id="colPrice" prefWidth="200.0" text="%price" />
+                     </columns>
                   </TableView>
                </children>
             </AnchorPane>

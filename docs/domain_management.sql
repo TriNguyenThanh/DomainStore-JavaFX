@@ -173,7 +173,6 @@ VALUES
 ('creativeart', 23, 'available'),
 ('topblog', 24, 'available');
 
-
 INSERT INTO carts (cus_id, domain_id, years) VALUES
 (4, 2, 2),
 (4, 3, 1),

@@ -22,8 +22,8 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </BorderPane.margin>
                     <children>
-                        <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" styleClass="header" text="%search.title" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
-                        <Label alignment="CENTER" layoutX="87.0" layoutY="100.0" styleClass="subheader" text="%search.slogan" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0" />
+                        <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" styleClass="header" text="%search" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                        <Label alignment="CENTER" layoutX="87.0" layoutY="100.0" styleClass="subheader" text="%description.search" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0" />
                     </children>
                <effect>
                   <DropShadow />
@@ -46,17 +46,17 @@
                                         <Insets bottom="6.0" top="6.0" />
                                     </HBox.margin>
                                 </ImageView>
-                                <TextField fx:id="tfSearch" prefHeight="50.0" prefWidth="500.0" promptText="%search.placeholder" />
-                                <Button fx:id="btSearch" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="%button.search" />
+                                <TextField fx:id="tfSearch" prefHeight="50.0" prefWidth="500.0" promptText="%placeHolder.search" />
+                                <Button fx:id="btSearch" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="%search" />
                             </children>
                         </HBox>
                         <HBox layoutX="165.0" layoutY="224.0" prefHeight="100.0" prefWidth="200.0" styleClass="pnResults" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="150.0">
                             <children>
                                 <VBox alignment="CENTER_RIGHT" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <Label styleClass="subheader" text="%search.domain" />
-                                        <Label styleClass="subheader" text="%search.status" VBox.vgrow="ALWAYS" />
-                                        <Label styleClass="subheader" text="%search.price" VBox.vgrow="ALWAYS" />
+                                        <Label styleClass="subheader" text="%domain" />
+                                        <Label styleClass="subheader" text="%status" VBox.vgrow="ALWAYS" />
+                                        <Label styleClass="subheader" text="%price" VBox.vgrow="ALWAYS" />
                                     </children>
                                     <HBox.margin>
                                         <Insets right="10.0" />
@@ -74,7 +74,7 @@
                                 </VBox>
                                 <StackPane prefHeight="150.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <Button fx:id="btAdd" mnemonicParsing="false" onAction="#handleSearch" prefHeight="50.0" prefWidth="250.0" text="%search.buttonAdd" />
+                                        <Button fx:id="btAdd" mnemonicParsing="false" onAction="#handleSearch" prefHeight="50.0" prefWidth="250.0" text="%addToCart" />
                                     </children>
                                 </StackPane>
                             </children>

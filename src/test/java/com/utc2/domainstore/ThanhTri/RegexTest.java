@@ -8,7 +8,7 @@ public class RegexTest {
 
     public static void main(String[] args) {
         JSONObject request = new JSONObject();
-        String domainName = "example.com";
+        String domainName = "facebook.com";
         request.put("name", domainName);
 
         IDomain domainService = new DomainServices();

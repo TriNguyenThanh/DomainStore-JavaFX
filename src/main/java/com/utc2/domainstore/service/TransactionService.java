@@ -1,17 +1,17 @@
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.repository.DomainRepository;
-import com.utc2.domainstore.repository.TransactionRepository;
-import com.utc2.domainstore.repository.TransactionInfoRepository;
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.TransactionInfoModel;
 import com.utc2.domainstore.entity.database.TransactionModel;
+import com.utc2.domainstore.repository.DomainRepository;
+import com.utc2.domainstore.repository.TransactionInfoRepository;
+import com.utc2.domainstore.repository.TransactionRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class TransactionService implements ITransactionService{
+public class TransactionService implements ITransactionService {
 
     private final ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll();
     private final TransactionRepository transactionDAO = new TransactionRepository();
@@ -54,10 +54,12 @@ public class TransactionService implements ITransactionService{
     public JSONObject getTransactionInfomation(JSONObject json) {
         String transactionId = json.getString("transaction_id");
         JSONArray jsonArray = new JSONArray();
-        TransactionModel t = new TransactionModel(); t.setTransactionId(transactionId);
+        TransactionModel t = new TransactionModel();
+        t.setTransactionId(transactionId);
         for (TransactionInfoModel ti : transactionDAO.selectById(t).getTransactionInfos()) {
             JSONObject jsonObject = new JSONObject();
-            DomainModel d = new DomainModel(); d.setId(ti.getDomainId());
+            DomainModel d = new DomainModel();
+            d.setId(ti.getDomainId());
             DomainModel domain = DomainRepository.getInstance().selectById(d);
             jsonObject.put("name", domain.getDomainName());
             jsonObject.put("status", domain.getStatus());
@@ -69,5 +71,4 @@ public class TransactionService implements ITransactionService{
         result.put("domains", jsonArray);
         return result;
     }
-
 }

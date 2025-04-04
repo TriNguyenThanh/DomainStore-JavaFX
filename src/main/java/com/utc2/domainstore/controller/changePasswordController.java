@@ -38,21 +38,29 @@ public class changePasswordController implements Initializable {
         } else if (e.getSource() == btSave) {
             tfOnclick();
             if (!checkOldPassword()) return;
+            boolean flag = true;
+
             if (tfNew.getText().isBlank()) {
-                lbNewErr.setText(bundle.getString("changePassword.newPasswordErr1"));
+                lbNewErr.setText(bundle.getString("error.newPasswordErr1"));
+                flag = false;
             } else if (tfNew.getText().equals(tfOld.getText())) {
-                lbNewErr.setText(bundle.getString("changePassword.newPasswordErr3"));
+                lbNewErr.setText(bundle.getString("error.newPasswordErr3"));
+                flag = false;
             } else if (!CheckingUtils.passwordCheck(tfNew.getText())) {
-                lbNewErr.setText(bundle.getString("changePassword.newPasswordErr2"));
+                lbNewErr.setText(bundle.getString("error.newPasswordErr2"));
+                flag = false;
             } else {
                 lbNewErr.setText("");
             }
 
             if (!tfNew.getText().equals(tfConfirm.getText())) {
-                lbConfirmErr.setText(bundle.getString("changePassword.confirmPasswordErr"));
+                lbConfirmErr.setText(bundle.getString("error.confirmPasswordErr"));
+                flag = false;
             } else {
                 lbConfirmErr.setText("");
             }
+
+            if (!flag) return;
 
             // luu vao database
             JSONObject request = new JSONObject();
@@ -64,13 +72,13 @@ public class changePasswordController implements Initializable {
 
             if (respond.get("status").equals("failed")) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(bundle.getString("title.Error"));
-                alert.setHeaderText(bundle.getString("changePassword.updateFailed"));
+                alert.setTitle(bundle.getString("error"));
+                alert.setHeaderText(bundle.getString("notice.updatePassFailed"));
                 alert.showAndWait();
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle(bundle.getString("title.Notice"));
-                alert.setHeaderText(bundle.getString("changePassword.updateSuccess"));
+                alert.setTitle(bundle.getString("notice"));
+                alert.setHeaderText(bundle.getString("notice.updatePassSuccess"));
                 alert.showAndWait();
             }
             ((Stage) tfOld.getScene().getWindow()).close();
@@ -116,10 +124,10 @@ public class changePasswordController implements Initializable {
 
     private boolean checkOldPassword() {
         if (tfOld.getText().isBlank()) {
-            lbOldErr.setText(bundle.getString("changePassword.oldPasswordErr1"));
+            lbOldErr.setText(bundle.getString("error.oldPasswordErr1"));
             return false;
         } else if (!checkPassword(hash_pass, tfOld.getText())) {
-            lbOldErr.setText(bundle.getString("changePassword.oldPasswordErr2"));
+            lbOldErr.setText(bundle.getString("error.oldPasswordErr2"));
             return false;
         }
         lbOldErr.setText("");

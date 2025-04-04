@@ -2,6 +2,7 @@ package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.service.LoginServices;
+import com.utc2.domainstore.utils.CheckingUtils;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
@@ -31,21 +32,29 @@ public class LoginController implements Initializable {
 
     public void login() {
         passwordFieldOnInputMethodTextChanged();
+        boolean flag = true;
+
         // bắt buộc nhập
         if (usernameField.getText().isBlank()) {
-            useErrorLabel.setText(bundle.getString("login.usernameErr"));
+            useErrorLabel.setText(bundle.getString("error.username"));
+            flag = false;
         } else {
             useErrorLabel.setText(" ");
         }
 
+        String pass = passwordField.getText();
         if (passwordField.getText().isBlank()) {
-            passErrorLabel.setText(bundle.getString("login.passwordErr"));
+            passErrorLabel.setText(bundle.getString("error.password1"));
+            flag = false;
+        } else if (!CheckingUtils.passwordCheck(passwordField.getText())) {
+            passErrorLabel.setText(bundle.getString("error.password2"));
+            flag = false;
         } else {
             passErrorLabel.setText(" ");
         }
 
         // Kiểm tra tên đăng nhập và mật khẩu
-        if (!usernameField.getText().isBlank() && !passwordField.getText().isBlank()) {
+        if (flag) {
             // tạo request
             JSONObject request = new JSONObject();
             request.put("username", usernameField.getText());
@@ -64,8 +73,8 @@ public class LoginController implements Initializable {
 
                 SceneManager.getInstance().switchScene("/fxml/main.fxml");
             } catch (Exception e) {
-                useErrorLabel.setText(bundle.getString("login.loginErr"));
-                passErrorLabel.setText(bundle.getString("login.loginErr"));
+                useErrorLabel.setText(bundle.getString("error.login"));
+                passErrorLabel.setText(bundle.getString("error.login"));
             }
         }
     }
