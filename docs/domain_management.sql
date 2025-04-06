@@ -174,55 +174,91 @@ VALUES
 ('topblog', 24, 'available');
 
 INSERT INTO carts (cus_id, domain_id, years) VALUES
-(4, 2, 2),
-(4, 3, 1),
-(5, 6, 3),
-(6, 7, 1),
-(7, 8, 2),
-(8, 9, 5),
-(9, 10, 1),
-(10, 11, 4),
-(11, 12, 2),
-(4, 5, 3),
-(5, 7, 2),
-(6, 8, 1),
-(7, 9, 4),
-(8, 10, 5),
-(9, 11, 2),
-(10, 12, 3),
-(11, 13, 1),
-(5, 14, 2),
-(6, 15, 3);
+(1, 1, 1),
+(1, 20, 1),
+(2, 11, 1),
+(2, 13, 1),
+(6, 31, 1),
+(6, 36, 1),
+(6, 37, 1),
+(7, 7, 1),
+(7, 8, 1),
+(7, 9, 1),
+(7, 10, 1),
+(10, 17, 1),
+(10, 18, 1),
+(10, 28, 1),
+(10, 32, 1);
 
-INSERT INTO Transactions (id, user_id, transaction_date, transaction_status)
-VALUES
-('HD001', 1, '2025-03-26', 'completed'),
-('HD002', 3, '2025-03-26', 'completed'),
-('HD003', 5, '2025-03-25', 'pendingPayment'),
-('HD004', 2, '2025-03-24', 'cancelled'),
-('HD005', 6, '2025-03-27', 'completed'),
-('HD006', 7, '2025-03-28', 'pendingPayment'),
-('HD007', 8, '2025-03-29', 'completed'),
-('HD008', 9, '2025-03-30', 'cancelled'),
-('HD009', 10, '2025-03-31', 'completed'),
-('HD010', 11, '2025-04-01', 'pendingConfirm');
 
-INSERT INTO Transactions_info (transactions_id, domain_id, price)
-VALUES
-('HD001', 1, 299000),
-('HD001', 4, 299000),
-('HD002', 5, 39000),
-('HD003', 6, 39000),
-('HD003', 7, 49000),
-('HD003', 8, 179000),
-('HD005', 3, 299000),
-('HD005', 6, 499000),
-('HD006', 7, 890000),
-('HD007', 9, 1499000),
-('HD007', 10, 299000),
-('HD009', 11, 399000),
-('HD010', 12, 299000);
--- Giao dịch HD004: không có domain nào (có thể do bị huỷ)
+INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VALUES
+('HD001', 1, '2024-01-21', 'completed'),
+('HD002', 2, '2024-01-22', 'cancelled'),
+('HD003', 2, '2024-02-10', 'completed'),
+('HD004', 3, '2024-03-15', 'completed'),
+('HD005', 7, '2024-03-20', 'cancelled'),
+('HD006', 4, '2024-04-20', 'completed'),
+('HD007', 8, '2024-08-10', 'completed'),
+('HD008', 10, '2024-08-20', 'cancelled'),
+('HD009', 11, '2024-11-25', 'completed'),
+('HD010', 9, '2025-03-15', 'completed'),
+('HD011', 5, '2025-03-25', 'completed');
+
+
+INSERT INTO Transactions_info (transactions_id, domain_id, price) VALUES
+-- HD001
+('HD001', 15, 39000),
+
+-- HD002 (cancelled)
+('HD002', 11, 299000),
+('HD002', 13, 299000),
+
+-- HD003
+('HD003', 5, 39000),
+('HD003', 12, 299000),
+('HD003', 6, 179000),
+
+-- HD004
+('HD004', 2, 299000),
+('HD004', 3, 499000),
+('HD004', 4, 299000),
+
+-- HD005 (cancelled)
+('HD005', 7, 890000),
+('HD005', 8, 179000),
+('HD005', 9, 1499000),
+('HD005', 10, 299000),
+
+-- HD006
+('HD006', 14, 299000),
+('HD006', 16, 299000),
+('HD006', 19, 99000),
+
+-- HD007
+('HD007', 22, 299000),
+('HD007', 23, 399000),
+('HD007', 24, 49000),
+
+-- HD008 (cancelled)
+('HD008', 17, 179000),
+('HD008', 18, 299000),
+('HD008', 28, 59000),
+('HD008', 32, 129000),
+
+-- HD009
+('HD009', 25, 449000),
+('HD009', 30, 59000),
+
+-- HD010
+('HD010', 33, 69000),
+('HD010', 34, 59000),
+('HD010', 35, 59000),
+
+-- HD011
+('HD011', 21, 1499000),
+('HD011', 26, 690000),
+('HD011', 27, 39000);
+
 
 INSERT INTO PaymentMethod (method)
 VALUES
@@ -231,15 +267,19 @@ VALUES
 ('CreditCard'),
 ('ZaloPay');
 
-INSERT INTO PaymentHistory (transaction_id, payment_method, payment_status, payment_date)
-VALUES
-('HD001', 1, 'completed', '2025-03-26'),
-('HD002', 2, 'completed', '2025-03-26'),
-('HD003', 3, 'failed', '2025-03-25'),
-('HD005', 2, 'completed', '2025-03-27'),
-('HD006', 3, 'failed', '2025-03-28'),
-('HD007', 1, 'completed', '2025-03-29'),
-('HD009', 4, 'completed', '2025-03-31');
+INSERT INTO PaymentHistory (transaction_id, payment_method, payment_status, payment_date) VALUES
+('HD001', 1, 'completed', '2024-01-21'),
+-- HD002: cancelled
+('HD003', 2, 'completed', '2024-02-10'),
+('HD004', 3, 'completed', '2024-03-15'),
+-- HD005: cancelled 
+('HD006', 4, 'completed', '2024-04-20'),
+('HD007', 1, 'completed', '2024-08-10'),
+-- HD008: cancelled
+('HD009', 2, 'completed', '2024-11-25'),
+('HD010', 3, 'completed', '2025-03-15'),
+('HD011', 4, 'completed', '2025-03-25');
+
 
 
 
