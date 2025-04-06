@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<AnchorPane prefHeight="640.0" prefWidth="1020.0" stylesheets="@../style/bill.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.PaymentController">
+    <children>
+        <BorderPane layoutX="131.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <AnchorPane prefHeight="94.0" prefWidth="579.0" styleClass="pnBackground" BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </BorderPane.margin>
+                    <effect>
+                        <DropShadow />
+                    </effect>
+                    <children>
+                        <Label alignment="CENTER" layoutX="20.0" layoutY="14.0" styleClass="header" text="%paymentHistory" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                    </children>
+                </AnchorPane>
+            </top>
+            <center>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="pnBackground" BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </BorderPane.margin>
+                    <effect>
+                        <DropShadow />
+                    </effect>
+                    <children>
+                        <TableView layoutX="120.0" layoutY="51.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                            <columns>
+                                <TableColumn prefWidth="147.19998359680176" text="%billID" />
+                                <TableColumn prefWidth="176.8000030517578" text="%paymentID" />
+                        <TableColumn prefWidth="192.79989624023438" text="%status" />
+                        <TableColumn prefWidth="188.0" text="%date" />
+                        <TableColumn prefWidth="334.40008544921875" text="x" />
+                            </columns>
+                        </TableView>
+                    </children>
+                </AnchorPane>
+            </center>
+        </BorderPane>
+    </children>
+</AnchorPane>

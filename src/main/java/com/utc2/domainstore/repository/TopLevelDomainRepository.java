@@ -1,4 +1,4 @@
-package com.utc2.domainstore.dao;
+package com.utc2.domainstore.repository;
 
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import com.utc2.domainstore.utils.JDBC;
@@ -6,9 +6,9 @@ import com.utc2.domainstore.utils.JDBC;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class TopLevelDomainDAO implements DAOInterface<TopLevelDomainModel> {
-    public static TopLevelDomainDAO getInstance() {
-        return new TopLevelDomainDAO();
+public class TopLevelDomainRepository implements IRepository<TopLevelDomainModel> {
+    public static TopLevelDomainRepository getInstance() {
+        return new TopLevelDomainRepository();
     }
 
     @Override
@@ -133,4 +133,25 @@ public class TopLevelDomainDAO implements DAOInterface<TopLevelDomainModel> {
         }
         return list;
     }
+    public TopLevelDomainModel getTLDByName(String tldText) {
+     String query = "SELECT * FROM TopLevelDomain WHERE TLD_text = ?";
+
+     try (Connection conn = JDBC.getConnection();
+          PreparedStatement stmt = conn.prepareStatement(query)) {
+
+         stmt.setString(1, tldText);
+         try (ResultSet rs = stmt.executeQuery()) {
+             if (rs.next()) {
+                 return new TopLevelDomainModel(
+                         rs.getInt("id"),
+                         rs.getString("TLD_text"),
+                         rs.getInt("price")
+                 );
+             }
+         }
+     } catch (SQLException e) {
+         e.printStackTrace();
+     }
+     return null;
+ }
 }

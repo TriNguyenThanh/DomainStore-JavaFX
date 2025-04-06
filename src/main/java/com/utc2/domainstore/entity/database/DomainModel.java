@@ -1,6 +1,7 @@
 package com.utc2.domainstore.entity.database;
 
-import com.utc2.domainstore.dao.TopLevelDomainDAO;
+import com.utc2.domainstore.repository.TopLevelDomainRepository;
+
 import java.sql.Date;
 
 public class DomainModel {
@@ -12,10 +13,6 @@ public class DomainModel {
     private int years;
     private Integer ownerId;
     private Date createdAt; 
-    
-    public enum DomainStatusEnum {
-        AVAILABLE, SOLD;
-    }
     
     public DomainModel() {
     }
@@ -39,6 +36,12 @@ public class DomainModel {
         this.createdAt = createdAt;
     }
 
+    public DomainModel(String domainName, int tldId, DomainStatusEnum status) {
+        this.domainName = domainName;
+        this.tldId = tldId;
+        this.status = status;
+    }
+    
     public int getId() {
         return id;
     }
@@ -103,7 +106,7 @@ public class DomainModel {
         this.createdAt = createdAt;
     }
     public TopLevelDomainModel getTopLevelDomainbyId(int id){
-        for(TopLevelDomainModel tld : TopLevelDomainDAO.getInstance().selectAll()){
+        for(TopLevelDomainModel tld : TopLevelDomainRepository.getInstance().selectAll()){
             if(tld.getId() == id) return tld;
         }
         return null;

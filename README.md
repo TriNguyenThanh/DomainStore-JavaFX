@@ -2,7 +2,8 @@
 
 ## Introduction
 
-DomainStore is a desktop application developed using Java Swing, allowing users to easily buy and sell domain names. The application supports domain status checking, shopping cart functionality, online payment, and transaction history.
+DomainStore is a desktop application developed using Java Swing, allowing users to easily buy and sell domain names. The
+application supports domain status checking, shopping cart functionality, online payment, and transaction history.
 
 ## Features
 
@@ -26,19 +27,19 @@ DomainStore is a desktop application developed using Java Swing, allowing users 
 
 - **Java JDK** 11 or later
 - **MySQL Server** 8.0
-- **NetBeans** (or any IDE supporting Maven)
+- **Intellij** (or any IDE supporting Maven)
 
 ### Installation Guide
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/TriNguyenThanh/DomainStore.git
+   git clone https://github.com/TriNguyenThanh/DomainStore-JavaFX.git
    cd domain-marketplace
    ```
 2. Configure the MySQL database:
-   - Create a new database.
-   - Import the `domainmanagement.sql` file included in the project.
-   - Update MySQL connection details in the application configuration file.
+    - Create a new database.
+    - Import the `domainmanagement.sql` file included in the project.
+    - Update MySQL connection details in the application configuration file.
 3. Run the application using Intellij or Maven:
    ```sh
    mvn clean install

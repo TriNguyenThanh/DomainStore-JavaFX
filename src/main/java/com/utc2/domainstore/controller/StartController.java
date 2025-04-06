@@ -54,7 +54,7 @@ public class StartController implements Initializable {
                     // Kiểm tra kết nối internet
                     case 2:
                         String host = "8.8.8.8"; // Google DNS
-                        int timeout = 3000; // 3 giây
+                        int timeout = 10000; // 10 giây
                         try {
                             status = InetAddress.getByName(host).isReachable(timeout);
                         } catch (IOException e) {
@@ -69,9 +69,9 @@ public class StartController implements Initializable {
                     newTask.setStyle("-fx-text-fill: #FF0000;");
                     updateProgress(-1, taskList.size());
 
-                    String title = bundle.getString("task.title");
-                    String header = bundle.getString("task.header");
-                    String content = taskList.get(index) + " " + bundle.getString("task.failed");
+                    String title = bundle.getString("task");
+                    String header = bundle.getString("task");
+                    String content = taskList.get(index) + " " + bundle.getString("failed");
 
                     Platform.runLater(() -> {
                         container.getChildren().add(newTask);

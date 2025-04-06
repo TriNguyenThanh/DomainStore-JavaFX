@@ -1,12 +1,18 @@
 package com.utc2.domainstore.ThanhTri;
 
+import com.utc2.domainstore.service.DomainServices;
+import com.utc2.domainstore.service.IDomain;
+import org.json.JSONObject;
+
 public class RegexTest {
-    private static boolean emailCheck(String s) {
-        String pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-        return s.matches(pattern);
-    }
 
     public static void main(String[] args) {
-        System.out.println(emailCheck("aaaaa"));
+        JSONObject request = new JSONObject();
+        String domainName = "facebook.com";
+        request.put("name", domainName);
+
+        IDomain domainService = new DomainServices();
+        JSONObject response = domainService.search(request);
+        System.out.println(response.toString());
     }
 }

@@ -1,23 +1,23 @@
-package com.utc2.domainstore.dao;
+package com.utc2.domainstore.repository;
 
 import com.utc2.domainstore.entity.database.DomainModel;
-import com.utc2.domainstore.entity.database.DomainModel.DomainStatusEnum;
+import com.utc2.domainstore.entity.database.DomainStatusEnum;
 import com.utc2.domainstore.utils.JDBC;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DomainDAO implements DAOInterface<DomainModel> {
+public class DomainRepository implements IRepository<DomainModel> {
 
-    public static DomainDAO getInstance() {
-        return new DomainDAO();
+    public static DomainRepository getInstance() {
+        return new DomainRepository();
     }
 
     @Override
     public int insert(DomainModel domain) {
         String sql = "INSERT INTO domains (domain_name, tld_id, status, active_date, years, owner_id, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -51,7 +51,7 @@ public class DomainDAO implements DAOInterface<DomainModel> {
     @Override
     public int update(DomainModel domain) {
         String sql = "UPDATE domains SET domain_name=?, tld_id=?, status=?, active_date=?, years=?, owner_id=? WHERE id=?";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
 
@@ -78,7 +78,7 @@ public class DomainDAO implements DAOInterface<DomainModel> {
     @Override
     public int delete(DomainModel domain) {
         String sql = "DELETE FROM domains WHERE id=?";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
 
@@ -93,19 +93,19 @@ public class DomainDAO implements DAOInterface<DomainModel> {
     @Override
     public DomainModel selectById(DomainModel domain) {
         String sql = "SELECT * FROM domains WHERE id=?";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
-            
+
             pst.setInt(1, domain.getId());
-            
+
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     return new DomainModel(
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
                             rs.getDate("active_date"),
                             rs.getInt("years"),
                             rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
@@ -123,7 +123,7 @@ public class DomainDAO implements DAOInterface<DomainModel> {
     public ArrayList<DomainModel> selectAll() {
         ArrayList<DomainModel> domains = new ArrayList<>();
         String sql = "SELECT * FROM domains";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
@@ -148,19 +148,19 @@ public class DomainDAO implements DAOInterface<DomainModel> {
 
     @Override
     public ArrayList<DomainModel> selectByCondition(String condition) {
-    	ArrayList<DomainModel> domains = new ArrayList<>();
+        ArrayList<DomainModel> domains = new ArrayList<>();
         String sql = "SELECT * FROM domains WHERE " + condition;
 
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
-            
+
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
                     domains.add(new DomainModel(
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
                             rs.getDate("active_date"),
                             rs.getInt("years"),
                             rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
@@ -173,7 +173,7 @@ public class DomainDAO implements DAOInterface<DomainModel> {
         }
         return domains;
     }
-    
+
     //lay ten
     public List<DomainModel> searchByName(String domainInput) {
         List<DomainModel> domainList = new ArrayList<>();
@@ -182,7 +182,7 @@ public class DomainDAO implements DAOInterface<DomainModel> {
 
         try (Connection conn = JDBC.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            
+
             stmt.setString(1, domainName + "%");
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -191,7 +191,7 @@ public class DomainDAO implements DAOInterface<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainModel.DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
                             rs.getDate("active_date"),
                             rs.getInt("years"),
                             rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
@@ -205,6 +205,59 @@ public class DomainDAO implements DAOInterface<DomainModel> {
         return domainList;
     }
 
+    public boolean isDomainExists(String nameDomain, int tld_id) {
+        String domainName = nameDomain.contains(".") ? nameDomain.split("\\.")[0] : nameDomain;
+        String sql = "SELECT * FROM domains WHERE domain_name = ? AND tld_id = ?";
+
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setString(1, domainName);
+            pst.setInt(2, tld_id);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                return rs.next();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public DomainModel getDomainByNameAndTld(String nameDomain, int tld_id) {
+        String domainName = nameDomain.contains(".") ? nameDomain.split("\\.")[0] : nameDomain;
+        String sql = "SELECT * FROM domains WHERE domain_name = ? AND tld_id = ?";
+
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setString(1, domainName);
+            pst.setInt(2, tld_id);
+
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return new DomainModel(
+                            rs.getInt("id"),
+                            rs.getString("domain_name"),
+                            rs.getInt("tld_id"),
+                            DomainStatusEnum.valueOf(rs.getString("status")),
+                            rs.getDate("active_date"),
+                            rs.getInt("years"),
+                            rs.getInt("owner_id"),
+                            rs.getDate("created_at")
+                    );
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     //lay danh sach theo userId
     public List<DomainModel> getCartByUserId(int userId) {
         List<DomainModel> cartList = new ArrayList<>();
@@ -212,16 +265,16 @@ public class DomainDAO implements DAOInterface<DomainModel> {
 
         try (Connection conn = JDBC.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            
+
             stmt.setInt(1, userId);
-            
+
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     cartList.add(new DomainModel(
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainModel.DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
                             rs.getDate("active_date"),
                             rs.getInt("years"),
                             rs.getInt("owner_id")
@@ -245,10 +298,30 @@ public class DomainDAO implements DAOInterface<DomainModel> {
             updateStmt.setInt(2, domain.getYears());
             updateStmt.setInt(3, domain.getId());
 
-            return updateStmt.executeUpdate() > 0; 
+            return updateStmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // Lấy giá của TLD dựa trên domain_id
+    public Integer getTLDPriceByDomainId(int domainId) {
+        String sql = "SELECT t.price FROM domains d " +
+                "JOIN TopLevelDomain t ON d.tld_id = t.id " +
+                "WHERE d.id = ?";
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setInt(1, domainId);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("price");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

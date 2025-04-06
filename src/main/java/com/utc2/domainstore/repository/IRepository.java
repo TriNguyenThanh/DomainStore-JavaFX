@@ -1,8 +1,8 @@
-package com.utc2.domainstore.dao;
+package com.utc2.domainstore.repository;
 
 import java.util.ArrayList;
 
-public interface DAOInterface<T> {
+public interface IRepository<T> {
     public int insert(T t);
 
     public int update(T t);

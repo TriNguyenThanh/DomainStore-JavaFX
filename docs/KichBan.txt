@@ -1,0 +1,19 @@
+--Gio hàng
+khách hàng 1 thêm tên miền 1, 20 vào giỏ hàng
+khách hàng 2 thêm tên miền 11, 13 vào giỏ hàng
+khách hàng 6 thêm tên miền 31, 36, 37 vào giỏ hàng
+khách hàng 7 thêm tên miền 7, 8, 9, 10 vào giỏ hàng
+khách hàng 10 thêm tền miền 17, 18, 28, 32 vào giỏ hàng
+
+--Hóa đơn
+HD001 khách hàng 1 mua thành công tên miền 15 trong 2 năm vào ngày 21/01/2024
+HD002 khách hàng 2 hủy đơn hàng tên miền 11, 13 vào ngày 22/01/2024
+HD003 khách hàng 2 mua thành công tên miền 5, 12, 6 trong 1 năm vào ngày 10/02/2024
+HD004 khách hàng 3 mua thành công tên miền 2, 3, 4 trong 1 năm vào ngày 15/03/2024
+HD005 Khách hàng 7 hủy đơn hàng tên miền 7, 8, 9, 10 vào ngày 20/03/2024
+HD006 khách hàng 4 mua thành công tên miền 14, 16, 19 trong 1 năm vào ngày 20/04/2024
+HD007 khách hàng 8 mua thành công tên miền 22, 23, 24 trong 1 năm vào ngày 10/08/2024
+HD006 Khách hàng 10 hủy đơn hàng tên miền 17, 18, 28, 32 vào ngày 20/08/2024
+HD009 khách hàng 11 mua thành công tên miền 25, 30 trong 1 năm vào ngày 25/11/2024
+HD0010 khách hàng 9 mua thành công tên miền 33, 34, 35 trong 1 năm vào ngày 15/03/2025
+HD0011 khách hàng 5 mua thành công tên miền 21, 26, 27 trong 1 năm vào ngày 25/03/2025

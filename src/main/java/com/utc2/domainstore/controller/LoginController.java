@@ -1,15 +1,14 @@
 package com.utc2.domainstore.controller;
 
+import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.service.LoginServices;
+import com.utc2.domainstore.utils.CheckingUtils;
+import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import org.json.JSONException;
+import javafx.scene.control.*;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -26,48 +25,56 @@ public class LoginController implements Initializable {
     private Label useErrorLabel;
     @FXML
     private Label passErrorLabel;
+    @FXML
+    private ComboBox<String> cbLanguage;
 
     private ResourceBundle bundle;
 
     public void login() {
+        passwordFieldOnInputMethodTextChanged();
+        boolean flag = true;
 
         // bắt buộc nhập
         if (usernameField.getText().isBlank()) {
-            useErrorLabel.setText(bundle.getString("login.usernameErr"));
+            useErrorLabel.setText(bundle.getString("error.username"));
+            flag = false;
         } else {
             useErrorLabel.setText(" ");
         }
 
+        String pass = passwordField.getText();
         if (passwordField.getText().isBlank()) {
-            passErrorLabel.setText(bundle.getString("login.passwordErr"));
+            passErrorLabel.setText(bundle.getString("error.password1"));
+            flag = false;
+        } else if (!CheckingUtils.passwordCheck(passwordField.getText())) {
+            passErrorLabel.setText(bundle.getString("error.password2"));
+            flag = false;
         } else {
             passErrorLabel.setText(" ");
         }
 
         // Kiểm tra tên đăng nhập và mật khẩu
-        if (!usernameField.getText().isBlank() && !passwordField.getText().isBlank()) {
+        if (flag) {
             // tạo request
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("username", usernameField.getText());
-            jsonObject.put("password", passwordField.getText());
+            JSONObject request = new JSONObject();
+            request.put("username", usernameField.getText());
+            request.put("password", passwordField.getText());
 
-            // gửi request và nhận respone
+            // gửi request và nhận respond
             LoginServices loginServices = new LoginServices();
-            JSONObject response = loginServices.authentication(jsonObject);
-
+            JSONObject respond = loginServices.authentication(request);
             try {
-                JSONObject jsonResponse = new JSONObject(response);
-                int userId = jsonResponse.getInt("user_id");
-                String role = jsonResponse.getString("role");
+                int userId = respond.getInt("user_id");
+                RoleEnum role = RoleEnum.valueOf(respond.get("role").toString());
 
                 // đưa id và role vào session
                 UserSession.getInstance().setUserId(userId);
                 UserSession.getInstance().setRole(role);
 
                 SceneManager.getInstance().switchScene("/fxml/main.fxml");
-            } catch (JSONException e) {
-                useErrorLabel.setText(bundle.getString("login.loginErr"));
-                passErrorLabel.setText(bundle.getString("login.loginErr"));
+            } catch (Exception e) {
+                useErrorLabel.setText(bundle.getString("error.login"));
+                passErrorLabel.setText(bundle.getString("error.login"));
             }
         }
     }
@@ -86,6 +93,22 @@ public class LoginController implements Initializable {
         }
     }
 
+    @FXML
+    private void changeLanguage() {
+        String selectedLanguage = cbLanguage.getValue();
+        ConfigManager.getInstance().updateSetting("language", selectedLanguage);
+//        SceneManager.getInstance().setLanguage(selectedLanguage);
+//        bundle = ConfigManager.getInstance().getLanguageBundle();
+//        usernameField.setPromptText(bundle.getString("login.username"));
+//        passwordField.setPromptText(bundle.getString("login.password"));
+//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//        alert.setTitle(bundle.getString("login.languageChange"));
+//        alert.setHeaderText(null);
+//        alert.setContentText(bundle.getString("login.languageChangeContent"));
+//        Op alert.showAndWait();
+
+    }
+
     public void passwordFieldOnInputMethodTextChanged() {
         if (passwordCheckbox.isSelected()) {
             passwordField.setText(passwordField.getPromptText());
@@ -98,6 +121,9 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        this.cbLanguage.getItems().addAll(ConfigManager.getInstance().getLanguages());
+        this.cbLanguage.setValue(ConfigManager.getInstance().getSetting("language", "Tiếng việt"));
         SceneManager.getInstance().setResizable(false);
+        SceneManager.getInstance().setMaximized(false);
     }
 }

@@ -10,16 +10,12 @@ public class CustomerModel {
     private String phone;
     private String cccd;
     private String passwordHash;
-    private Role role;
+    private RoleEnum role;
     private Timestamp createdAt;
-    public enum Role {
-        user, 
-        admin;
-    }
     public CustomerModel() {
     }
 
-    public CustomerModel(String fullName, String email, String phone, String cccd, String passwordHash, Role role) {
+    public CustomerModel(String fullName, String email, String phone, String cccd, String passwordHash, RoleEnum role) {
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
@@ -27,8 +23,21 @@ public class CustomerModel {
         this.passwordHash = passwordHash;
         this.role = role;
     }
-    
-    public CustomerModel(int id, String fullName, String email, String phone, String cccd, String passwordHash, Role role, Timestamp createdAt) {
+    public CustomerModel(String phone,RoleEnum role) {
+        this.phone = phone;
+        this.role = role;
+    }
+    //khong password
+    public CustomerModel(int id, String fullName, String email, String phone, String cccd, RoleEnum role, Timestamp createdAt) {
+        this.id = id;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.cccd = cccd;
+        this.role = role;
+        this.createdAt = createdAt;
+    }
+    public CustomerModel(int id, String fullName, String email, String phone, String cccd, String passwordHash, RoleEnum role, Timestamp createdAt) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -87,11 +96,11 @@ public class CustomerModel {
         this.passwordHash = passwordHash;
     }
 
-    public Role getRole() {
+    public RoleEnum getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(RoleEnum role) {
         this.role = role;
     }
 

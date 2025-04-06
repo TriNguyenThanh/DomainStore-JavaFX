@@ -1,5 +1,5 @@
 
-package com.utc2.domainstore.dao;
+package com.utc2.domainstore.repository;
 
 import com.utc2.domainstore.entity.database.TransactionInfoModel;
 import com.utc2.domainstore.utils.JDBC;
@@ -10,10 +10,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class TransactionInfoDAO implements DAOInterface<TransactionInfoModel>{
+public class TransactionInfoRepository implements IRepository<TransactionInfoModel>{
 
-    public static TransactionInfoDAO getInstance(){
-        return new TransactionInfoDAO();
+    public static TransactionInfoRepository getInstance(){
+        return new TransactionInfoRepository();
     }
     
     @Override
