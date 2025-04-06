@@ -37,7 +37,7 @@ public class MainController implements Initializable {
         } else if (focus != e.getSource() && e.getSource() == btSearch) {
             load("/fxml/search.fxml");
         } else if (focus != e.getSource() && e.getSource() == btBill) {
-            load("/fxml/bill.fxml");
+            load("/fxml/transaction.fxml");
         } else if (focus != e.getSource() && e.getSource() == btPayment) {
             load("/fxml/payment.fxml");
         } else if (focus != e.getSource() && e.getSource() == btUser) {
@@ -45,7 +45,7 @@ public class MainController implements Initializable {
         } else if (focus != e.getSource() && e.getSource() == btDomain) {
             load("/fxml/domain_manager.fxml");
         } else if (focus != e.getSource() && e.getSource() == btCheckBill) {
-            load("/fxml/bill_manager.fxml");
+            load("/fxml/transaction_manager.fxml");
         } else if (focus != e.getSource() && e.getSource() == btCheckPayment) {
             load("/fxml/payment_manager.fxml");
         }

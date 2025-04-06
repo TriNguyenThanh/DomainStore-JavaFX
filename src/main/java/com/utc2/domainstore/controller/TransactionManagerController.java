@@ -1,4 +1,4 @@
 package com.utc2.domainstore.controller;
 
-public class BillManagerController {
+public class TransactionManagerController {
 }

@@ -11,5 +11,13 @@ module com.utc2.domainstore {
 
     opens com.utc2.domainstore to javafx.fxml;
     opens com.utc2.domainstore.controller to javafx.fxml;
+    opens com.utc2.domainstore.entity.view to javafx.fxml;
+    opens com.utc2.domainstore.entity.database to javafx.fxml;
+    opens com.utc2.domainstore.view to javafx.fxml;
+
     exports com.utc2.domainstore;
+    exports com.utc2.domainstore.controller;
+    exports com.utc2.domainstore.entity.view;
+    exports com.utc2.domainstore.entity.database;
+    exports com.utc2.domainstore.view;
 }
