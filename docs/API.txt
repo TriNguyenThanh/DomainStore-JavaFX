@@ -4,7 +4,7 @@
 			"username" : "phone number",
 			"password" : "password"
 		}
-		- respone {
+		- respond {
 			"user_id" : 1,
 			"role" : "admin/user"
 		}
@@ -17,7 +17,7 @@
 			"personal_id" : "082205013757",
 			"password": "password"
 		}
-		- respone {
+		- respond {
 			"status" : "success/failed",
 			"message" : ""
 		}
@@ -27,7 +27,7 @@
 		- request {
 			"user_id" : 1
 		}
-		- respone {
+		- respond {
 			"username" : "Nguyen Thanh Tri",
 			"phone" : "0329367633",
 			"email" : "tringuyenntt1505@gmail.com",
@@ -43,7 +43,7 @@
 			"personal_id" : "082205013757",
 			"password": "password"
 		}
-		- respone {
+		- respond {
 			"status" : "success/failed",
 			"message" : ""
 		}
@@ -52,7 +52,7 @@
 		- request {
 
 		}
-		- respone {
+		- respond {
 			"user" : [
 				{
 				"user_id" : 1,
@@ -85,7 +85,7 @@
 			"name" : "example.com"
 		}
 
-		- respone {
+		- respond {
 			"domain" : [
 				{
 					"name" : "example.com",
@@ -114,7 +114,7 @@
 			"user_id" : 1
 		}
 
-		-respone {
+		-respond {
 			"domain" : [
 				{
 					"name" : "example.com",
@@ -157,7 +157,7 @@
 				}
 			]
 		}
-		- respone {
+		- respond {
 			"status" : "success/failed",
 			"message" : "3 domains have been add to <user id> cart / failed to add to <user id> cart"
 		}
@@ -168,7 +168,7 @@
 			"user_id" : id
 		}
 
-		- respone {
+		- respond {
 			"transactions" : [
 				{
 					"id" : "HD001",
@@ -196,7 +196,7 @@
 			"transaction_id" : "HD001"
 		}
 
-		- respone {
+		- respond {
 			"domains" : [
 				{
 					"name" : "example.com",
@@ -224,7 +224,7 @@
 
 		}
 
-		- respone {
+		- respond {
 			"transactions" : [
 				{
 					"id" : "HD001",
@@ -253,7 +253,7 @@
 		"user_id" : 1
 	}
 
-	- respone {
+	- respond {
 		paymentHistory: [
 			{
 				"payment_id" : "id",

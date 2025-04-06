@@ -33,7 +33,7 @@ application supports domain status checking, shopping cart functionality, online
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/TriNguyenThanh/DomainStore.git
+   git clone https://github.com/TriNguyenThanh/DomainStore-JavaFX.git
    cd domain-marketplace
    ```
 2. Configure the MySQL database:

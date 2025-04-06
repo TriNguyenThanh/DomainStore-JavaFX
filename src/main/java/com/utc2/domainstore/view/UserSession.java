@@ -10,6 +10,7 @@ public class UserSession {
     private int userId = -1;
     private RoleEnum role;
 
+
     private UserSession() {
         // Private constructor to prevent instantiation
     }

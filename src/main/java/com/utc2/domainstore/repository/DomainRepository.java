@@ -17,7 +17,7 @@ public class DomainRepository implements IRepository<DomainModel> {
     @Override
     public int insert(DomainModel domain) {
         String sql = "INSERT INTO domains (domain_name, tld_id, status, active_date, years, owner_id, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -51,7 +51,7 @@ public class DomainRepository implements IRepository<DomainModel> {
     @Override
     public int update(DomainModel domain) {
         String sql = "UPDATE domains SET domain_name=?, tld_id=?, status=?, active_date=?, years=?, owner_id=? WHERE id=?";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
 
@@ -78,7 +78,7 @@ public class DomainRepository implements IRepository<DomainModel> {
     @Override
     public int delete(DomainModel domain) {
         String sql = "DELETE FROM domains WHERE id=?";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
 
@@ -93,12 +93,12 @@ public class DomainRepository implements IRepository<DomainModel> {
     @Override
     public DomainModel selectById(DomainModel domain) {
         String sql = "SELECT * FROM domains WHERE id=?";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
-            
+
             pst.setInt(1, domain.getId());
-            
+
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     return new DomainModel(
@@ -123,7 +123,7 @@ public class DomainRepository implements IRepository<DomainModel> {
     public ArrayList<DomainModel> selectAll() {
         ArrayList<DomainModel> domains = new ArrayList<>();
         String sql = "SELECT * FROM domains";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
@@ -148,12 +148,12 @@ public class DomainRepository implements IRepository<DomainModel> {
 
     @Override
     public ArrayList<DomainModel> selectByCondition(String condition) {
-    	ArrayList<DomainModel> domains = new ArrayList<>();
+        ArrayList<DomainModel> domains = new ArrayList<>();
         String sql = "SELECT * FROM domains WHERE " + condition;
 
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
-            
+
             try (ResultSet rs = pst.executeQuery()) {
                 while (rs.next()) {
                     domains.add(new DomainModel(
@@ -173,7 +173,7 @@ public class DomainRepository implements IRepository<DomainModel> {
         }
         return domains;
     }
-    
+
     //lay ten
     public List<DomainModel> searchByName(String domainInput) {
         List<DomainModel> domainList = new ArrayList<>();
@@ -182,7 +182,7 @@ public class DomainRepository implements IRepository<DomainModel> {
 
         try (Connection conn = JDBC.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            
+
             stmt.setString(1, domainName + "%");
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -204,6 +204,7 @@ public class DomainRepository implements IRepository<DomainModel> {
         }
         return domainList;
     }
+
     public boolean isDomainExists(String nameDomain, int tld_id) {
         String domainName = nameDomain.contains(".") ? nameDomain.split("\\.")[0] : nameDomain;
         String sql = "SELECT * FROM domains WHERE domain_name = ? AND tld_id = ?";
@@ -215,7 +216,7 @@ public class DomainRepository implements IRepository<DomainModel> {
             pst.setInt(2, tld_id);
 
             try (ResultSet rs = pst.executeQuery()) {
-                return rs.next(); 
+                return rs.next();
             }
 
         } catch (SQLException e) {
@@ -224,6 +225,7 @@ public class DomainRepository implements IRepository<DomainModel> {
 
         return false;
     }
+
     public DomainModel getDomainByNameAndTld(String nameDomain, int tld_id) {
         String domainName = nameDomain.contains(".") ? nameDomain.split("\\.")[0] : nameDomain;
         String sql = "SELECT * FROM domains WHERE domain_name = ? AND tld_id = ?";
@@ -237,14 +239,14 @@ public class DomainRepository implements IRepository<DomainModel> {
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     return new DomainModel(
-                        rs.getInt("id"),
-                        rs.getString("domain_name"),
-                        rs.getInt("tld_id"),
-                        DomainStatusEnum.valueOf(rs.getString("status")), 
-                        rs.getDate("active_date"),
-                        rs.getInt("years"),
-                        rs.getInt("owner_id"),
-                        rs.getDate("created_at")
+                            rs.getInt("id"),
+                            rs.getString("domain_name"),
+                            rs.getInt("tld_id"),
+                            DomainStatusEnum.valueOf(rs.getString("status")),
+                            rs.getDate("active_date"),
+                            rs.getInt("years"),
+                            rs.getInt("owner_id"),
+                            rs.getDate("created_at")
                     );
                 }
             }
@@ -253,7 +255,7 @@ public class DomainRepository implements IRepository<DomainModel> {
             e.printStackTrace();
         }
 
-        return null; 
+        return null;
     }
 
     //lay danh sach theo userId
@@ -263,9 +265,9 @@ public class DomainRepository implements IRepository<DomainModel> {
 
         try (Connection conn = JDBC.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            
+
             stmt.setInt(1, userId);
-            
+
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     cartList.add(new DomainModel(
@@ -284,6 +286,7 @@ public class DomainRepository implements IRepository<DomainModel> {
         }
         return cartList;
     }
+
     //them vao gio hang
     public boolean updateDomainOwnership(int userId, DomainModel domain) {
         String updateQuery = "UPDATE domains SET owner_id = ?, years = ? WHERE id = ? AND status = 'available'";
@@ -295,17 +298,18 @@ public class DomainRepository implements IRepository<DomainModel> {
             updateStmt.setInt(2, domain.getYears());
             updateStmt.setInt(3, domain.getId());
 
-            return updateStmt.executeUpdate() > 0; 
+            return updateStmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+
     // Lấy giá của TLD dựa trên domain_id
     public Integer getTLDPriceByDomainId(int domainId) {
         String sql = "SELECT t.price FROM domains d " +
-                     "JOIN TopLevelDomain t ON d.tld_id = t.id " +
-                     "WHERE d.id = ?";
+                "JOIN TopLevelDomain t ON d.tld_id = t.id " +
+                "WHERE d.id = ?";
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
 

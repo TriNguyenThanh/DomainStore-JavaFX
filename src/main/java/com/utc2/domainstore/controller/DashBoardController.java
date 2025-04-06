@@ -30,7 +30,7 @@ public class DashBoardController implements Initializable {
         } else if (e.getSource() == btSearch) {
             changeView("/fxml/search.fxml");
         } else if (e.getSource() == btBill) {
-            changeView("/fxml/bill.fxml");
+            changeView("/fxml/transaction.fxml");
         } else if (e.getSource() == btPayment) {
             changeView("/fxml/payment.fxml");
         }
@@ -52,7 +52,7 @@ public class DashBoardController implements Initializable {
             throw new RuntimeException(e);
         }
     }
-  
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         bundle = resources;
