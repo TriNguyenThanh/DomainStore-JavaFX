@@ -1,14 +1,11 @@
 package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.entity.view.DomainViewModel;
-import com.utc2.domainstore.service.DomainServices;
-import com.utc2.domainstore.service.IDomain;
 import com.utc2.domainstore.view.UserSession;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -34,14 +31,14 @@ public class ShoppingCartController implements Initializable {
         JSONObject request = new JSONObject();
         request.put("user_id", UserSession.getInstance().getUserId());
 
-        IDomain domainServices = new DomainServices();
-        JSONObject respond = domainServices.getShoppingCart(request);
-
-        JSONArray domainList = respond.getJSONArray("domain");
-
-        for (Object object : domainList) {
-            
-        }
+//        IDomain domainServices = new DomainServices();
+//        JSONObject respond = domainServices.getShoppingCart(request);
+//
+//        JSONArray domainList = respond.getJSONArray("domain");
+//
+//        for (Object object : domainList) {
+//
+//        }
         return null;
     }
 }
