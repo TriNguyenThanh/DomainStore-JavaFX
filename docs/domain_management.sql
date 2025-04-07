@@ -133,45 +133,48 @@ VALUES
 ('.art', 59000),    -- Thêm .art
 ('.blog', 59000);   -- Thêm .blog
 
-INSERT INTO domains (domain_name, tld_id, status) 
-VALUES 
-('example', 1, 'available'),
-('example', 3, 'available'),
-('testdomain', 6, 'available'),
-('mywebsite', 1, 'available'),
-('yourdomain', 2, 'available'),
-('newproject', 3, 'available'),
-('techhub', 4, 'available'),
-('globalinfo', 5, 'available'),
-('vietnamexpert', 6, 'available'),
-('startupvn', 7, 'available'),
-('coolbrand', 1, 'available'),
-('bestservices', 2, 'available'),
-('amazingtech', 3, 'available'),
-('supercool', 1, 'available'),
-('fastservice', 2, 'available'),
-('amazingproject', 3, 'available'),
-('yourbrand', 4, 'available'),
-('nextbigthing', 5, 'available'),
-('enterprisehub', 6, 'available'),
-('futurenow', 7, 'available'),
-('techstartup', 8, 'available'),
-('digitalworld', 9, 'available'),
-('smartcity', 10, 'available'),
-('globalmarket', 11, 'available'),
-('nextlevel', 12, 'available'),
-('connectasia', 13, 'available'),
-('cloudhub', 14, 'available'),
-('universeclick', 15, 'available'),
-('amazingblog', 16, 'available'),
-('futurecloud', 17, 'available'),
-('bestclick', 18, 'available'),
-('stronggroup', 19, 'available'),
-('supermom', 20, 'available'),
-('techasia', 21, 'available'),
-('globalbusiness', 22, 'available'),
-('creativeart', 23, 'available'),
-('topblog', 24, 'available');
+INSERT INTO domains (domain_name, tld_id, status, active_date, years, owner_id)
+VALUES
+
+
+
+('yourexample', 1, 'available', null, null ,null),
+('example', 3, 'sold', '2024-03-15 17:00:00', 1, 3),
+('testdomain', 6, 'sold', '2024-03-15 17:00:00', 1, 3),
+('mywebsite', 1, 'sold', '2024-03-15 17:00:00', 1, 3),
+('yourdomain', 2, 'sold', null, 1, 2),
+('newproject', 3, 'sold', null, 1, 2),
+('techhub', 4, 'available', null, null ,null),
+('globalinfo', 5, 'available', null, null ,null),
+('vietnamexpert', 6, 'available', null, null ,null),
+('startupvn', 7, 'available', null, null ,null),
+('coolbrand', 1, 'available', null, null ,null),
+('bestservices', 2, 'sold', null, 1, 2),
+('amazingtech', 3, 'available', null, null ,null),
+('supercool', 1, 'sold', '2024-04-20 10:00:00', 1, 4),
+('fastservice', 2, 'sold', '2024-01-21 19:30:00', 2, 1),
+('amazingproject', 3, 'sold', '2024-04-20 10:00:00', 1, 4),
+('yourbrand', 4, 'available', null, null ,null),
+('nextbigthing', 5, 'available', null, null ,null),
+('enterprisehub', 6, 'sold', '2024-04-20 10:00:00', 1, 4),
+('futurenow', 7, 'available', null, null ,null),
+('techstartup', 8, 'sold', null, 1, 5),
+('digitalworld', 9, 'sold', null , 1, 8),
+('smartcity', 10, 'sold', null , 1, 8),
+('globalmarket', 11, 'sold', null , 1, 8),
+('nextlevel', 12, 'sold', '2024-11-25 9:30:00', 1, 11),
+('connectasia', 13, 'sold', null, 1, 5),
+('cloudhub', 14, 'sold', null, 1, 5),
+('universeclick', 15, 'available', null, null ,null),
+('amazingblog', 16, 'available', null, null ,null),
+('futurecloud', 17, 'sold', '2024-11-25 9:30:00', 1, 11),
+('bestclick', 18, 'available', null, null ,null),
+('stronggroup', 19, 'available', null, null ,null),
+('supermom', 20, 'sold', '2025-03-15 11:20:00', 1, 9),
+('techasia', 21, 'sold', '2025-03-15 11:20:00', 1, 9),
+('globalbusiness', 22, 'sold', '2025-03-15 11:20:00', 1, 9),
+('creativeart', 23, 'available', null, null ,null),
+('topblog', 24, 'available', null, null ,null);
 
 INSERT INTO carts (cus_id, domain_id, years) VALUES
 (1, 1, 1),
@@ -194,15 +197,15 @@ INSERT INTO carts (cus_id, domain_id, years) VALUES
 INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VALUES
 ('HD001', 1, '2024-01-21', 'completed'),
 ('HD002', 2, '2024-01-22', 'cancelled'),
-('HD003', 2, '2024-02-10', 'completed'),
+('HD003', 2, '2024-02-10', 'pendingConfirm'),
 ('HD004', 3, '2024-03-15', 'completed'),
 ('HD005', 7, '2024-03-20', 'cancelled'),
 ('HD006', 4, '2024-04-20', 'completed'),
-('HD007', 8, '2024-08-10', 'completed'),
+('HD007', 8, '2024-08-10', 'pendingConfirm'),
 ('HD008', 10, '2024-08-20', 'cancelled'),
 ('HD009', 11, '2024-11-25', 'completed'),
 ('HD010', 9, '2025-03-15', 'completed'),
-('HD011', 5, '2025-03-25', 'completed');
+('HD011', 5, '2025-03-25', 'pendingPayment');
 
 
 INSERT INTO Transactions_info (transactions_id, domain_id, price) VALUES
@@ -270,15 +273,12 @@ VALUES
 INSERT INTO PaymentHistory (transaction_id, payment_method, payment_status, payment_date) VALUES
 ('HD001', 1, 'completed', '2024-01-21'),
 -- HD002: cancelled
-('HD003', 2, 'completed', '2024-02-10'),
 ('HD004', 3, 'completed', '2024-03-15'),
 -- HD005: cancelled 
 ('HD006', 4, 'completed', '2024-04-20'),
-('HD007', 1, 'completed', '2024-08-10'),
 -- HD008: cancelled
 ('HD009', 2, 'completed', '2024-11-25'),
-('HD010', 3, 'completed', '2025-03-15'),
-('HD011', 4, 'completed', '2025-03-25');
+('HD010', 3, 'completed', '2025-03-15');
 
 
 

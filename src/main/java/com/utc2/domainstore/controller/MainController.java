@@ -32,8 +32,8 @@ public class MainController implements Initializable {
             load("/fxml/dashboard.fxml");
         } else if (focus != e.getSource() && e.getSource() == btAccount) {
             load("/fxml/account.fxml");
-//        } else if (focus != e.getSource() && e.getSource() == btShoppingCart) {
-//            load("/fxml/shoppingCart.fxml");
+        } else if (focus != e.getSource() && e.getSource() == btShoppingCart) {
+            load("/fxml/shoppingCart.fxml");
         } else if (focus != e.getSource() && e.getSource() == btSearch) {
             load("/fxml/search.fxml");
         } else if (focus != e.getSource() && e.getSource() == btBill) {
