@@ -40,7 +40,7 @@ public class TransactionInfoController implements Initializable {
     @FXML
     private AnchorPane imgQR;
     @FXML
-    private Button btExport;
+    private Button btExport, btPay;
 
     @FXML
     private TableView<DomainViewModel> table;
@@ -66,15 +66,8 @@ public class TransactionInfoController implements Initializable {
 
         lbBillID.setText(String.valueOf(billViewModel.getId()));
         lbDate.setText(String.valueOf(billViewModel.getDate()));
-        lbTotal.setText(bundle.getString("total") + ": " + String.valueOf(billViewModel.getPrice()));
+        lbTotal.setText(bundle.getString("total") + ": " + billViewModel.getPrice());
         lbStatus.setText(String.valueOf(billViewModel.getStatus()));
-//        lbPaymentID.setText(String.valueOf(billViewModel.getPaymentId()));
-//        lbMethod.setText(String.valueOf(billViewModel.getMethod()));
-//        lbPaymentDate.setText(String.valueOf(billViewModel.getPaymentDate()));
-
-//        domainList = billViewModel.getDomainList();
-//        ObservableList<DomainViewModel> observableList = FXCollections.observableArrayList(domainList);
-//        table.setItems(observableList);
     }
 
     private void initTable() {
