@@ -5,7 +5,7 @@ import com.utc2.domainstore.entity.database.PaymentStatusEnum;
 import com.utc2.domainstore.entity.database.TransactionInfoModel;
 import com.utc2.domainstore.entity.database.TransactionModel;
 import com.utc2.domainstore.entity.database.TransactionStatusEnum;
-import com.utc2.domainstore.utils.JDBC;
+import com.utc2.domainstore.config.JDBC;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -2,7 +2,7 @@ package com.utc2.domainstore.repository;
 
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.DomainStatusEnum;
-import com.utc2.domainstore.utils.JDBC;
+import com.utc2.domainstore.config.JDBC;
 
 import java.sql.*;
 import java.util.ArrayList;
