@@ -2,6 +2,9 @@ package com.utc2.domainstore.service;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public interface IPaymentService {
-    public JSONObject getUserPaymentHistory(JSONObject json);
+    JSONObject getUserPaymentHistory(JSONObject json);
+    JSONObject createPayment() throws IOException;
 }

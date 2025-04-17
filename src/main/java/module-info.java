@@ -8,6 +8,7 @@ module com.utc2.domainstore {
     requires de.mkammerer.argon2.nolibs;
     requires mysql.connector.j;
     requires jdk.compiler;
+    requires jdk.httpserver;
 
     opens com.utc2.domainstore to javafx.fxml;
     opens com.utc2.domainstore.controller to javafx.fxml;
