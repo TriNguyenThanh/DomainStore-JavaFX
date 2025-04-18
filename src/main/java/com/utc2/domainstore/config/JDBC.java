@@ -1,4 +1,4 @@
-package com.utc2.domainstore.utils;
+package com.utc2.domainstore.config;
 
 import com.utc2.domainstore.view.ConfigManager;
 

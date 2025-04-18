@@ -1,6 +1,6 @@
 package com.utc2.domainstore.controller;
 
-import com.utc2.domainstore.utils.JDBC;
+import com.utc2.domainstore.config.JDBC;
 import com.utc2.domainstore.view.SceneManager;
 import javafx.application.Platform;
 import javafx.concurrent.Task;

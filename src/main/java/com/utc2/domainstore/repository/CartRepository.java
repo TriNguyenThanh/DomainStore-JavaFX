@@ -4,7 +4,7 @@ import com.utc2.domainstore.entity.database.CartModel;
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.DomainStatusEnum;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
-import com.utc2.domainstore.utils.JDBC;
+import com.utc2.domainstore.config.JDBC;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
