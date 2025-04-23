@@ -38,11 +38,17 @@ public class testService {
 //        DomainServices domainServices = new DomainServices();
 //        JSONObject searchInput = new JSONObject();
 //        searchInput.put("name", "tanVjpProNo1.vn");
-//         // In JSON để kiểm tra nó có chứa "name" không
-//         System.out.println("Test Input: " + searchInput.toString(2));
+//        System.out.println("Test Input: " + searchInput.toString(2));
 //        JSONObject searchResponse = domainServices.search(searchInput);
 //        System.out.println("Search Response: " + searchResponse.toString(2));
 
+          // test kiểm tra tìm kiếm tên miền nếu như người dùng không nhập gì hết
+        DomainServices domainServices = new DomainServices();
+        JSONObject searchInput = new JSONObject();
+        searchInput.put("name", " ");
+        JSONObject searchResponse = domainServices.search(searchInput);
+        System.out.println("Search Response: " + searchResponse.toString(2));
+        
             // test gợi ý tên miền
 //        DomainServices domainServices = new DomainServices();
 //        JSONObject searchInput = new JSONObject();
@@ -88,17 +94,17 @@ public class testService {
 
 ////        //test cart
 //         Khởi tạo CartRepository (giả định)
-        CartRepository cartRepository = new CartRepository();
+//        CartRepository cartRepository = new CartRepository();
 
         // Tạo đối tượng CartServices
-        CartServices cartServices = new CartServices(cartRepository);
+//        CartServices cartServices = new CartServices(cartRepository);
 ////
         // TEST LẤY GIỎ HÀNG NGƯỜI DÙNG
-        JSONObject cartInput = new JSONObject();
-        cartInput.put("cus_id", 4);
-
-        JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
-        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
+//        JSONObject cartInput = new JSONObject();
+//        cartInput.put("cus_id", 4);
+//
+//        JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
+//        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
 
         // TEST THÊM DOMAIN VÀO GIỎ HÀNG
         
