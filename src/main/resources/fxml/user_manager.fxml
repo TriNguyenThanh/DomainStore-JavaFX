@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -37,27 +38,34 @@
                     <children>
                         <BorderPane layoutX="14.0" layoutY="20.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                             <right>
-                                <VBox alignment="CENTER" prefHeight="448.0" prefWidth="196.0" spacing="20.0" BorderPane.alignment="CENTER">
+                                <VBox alignment="BOTTOM_CENTER" prefHeight="448.0" prefWidth="177.0" spacing="20.0" BorderPane.alignment="CENTER">
                                     <children>
-                                        <Button mnemonicParsing="false" text="%remove" />
-                                        <Button mnemonicParsing="false" text="%edit" />
+                              <Button fx:id="btAdd" mnemonicParsing="false" prefHeight="51.0" prefWidth="134.0" text="%add" />
+                                        <Button fx:id="btRemove" mnemonicParsing="false" text="%remove" />
+                                        <Button fx:id="btEdit" mnemonicParsing="false" prefHeight="51.0" prefWidth="134.0" text="%edit" />
                                     </children>
                                     <BorderPane.margin>
                                         <Insets left="10.0" />
                                     </BorderPane.margin>
                                 </VBox>
                             </right>
-                            <center>
-                                <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                    <columns>
-                                        <TableColumn prefWidth="75.0" text="C1" />
-                                        <TableColumn prefWidth="75.0" text="C2" />
-                                    </columns>
-                                    <BorderPane.margin>
-                                        <Insets right="10.0" />
-                                    </BorderPane.margin>
-                                </TableView>
-                            </center>
+                     <center>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <TextField prefHeight="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                      <TableView fx:id="table" prefHeight="448.0" prefWidth="772.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+                                          <columns>
+                                              <TableColumn fx:id="colID" prefWidth="87.9999942779541" text="%id" />
+                                              <TableColumn fx:id="colUsername" prefWidth="120.80005645751953" text="%username" />
+                                    <TableColumn fx:id="colPhone" prefWidth="124.80000305175781" text="%phone" />
+                                    <TableColumn fx:id="colEmail" prefWidth="145.5999755859375" text="%email" />
+                                    <TableColumn fx:id="colPsID" prefWidth="198.39999389648438" text="%personal_id" />
+                                    <TableColumn fx:id="colRole" prefWidth="88.800048828125" text="%role" />
+                                          </columns>
+                                      </TableView>
+                           </children>
+                        </AnchorPane>
+                     </center>
                         </BorderPane>
                     </children>
                 </AnchorPane>

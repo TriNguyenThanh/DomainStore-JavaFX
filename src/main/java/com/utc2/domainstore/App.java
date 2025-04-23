@@ -1,5 +1,6 @@
 package com.utc2.domainstore;
 
+import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.application.Application;
@@ -13,6 +14,7 @@ public class App extends Application {
 
         try {
             UserSession.getInstance().setUserId(1);
+            UserSession.getInstance().setRole(RoleEnum.admin);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

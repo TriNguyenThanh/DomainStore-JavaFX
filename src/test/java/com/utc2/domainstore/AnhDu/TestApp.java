@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 public class TestApp {
     static VnPayService vnPayService = new VnPayService();
+
     public static void main(String[] args) throws IOException {
 
 // ------------ PaymentService -----------
