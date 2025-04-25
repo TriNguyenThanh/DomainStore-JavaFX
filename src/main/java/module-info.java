@@ -9,6 +9,7 @@ module com.utc2.domainstore {
     requires mysql.connector.j;
     requires jdk.compiler;
     requires jdk.httpserver;
+    requires java.desktop;
 
     opens com.utc2.domainstore to javafx.fxml;
     opens com.utc2.domainstore.controller to javafx.fxml;
