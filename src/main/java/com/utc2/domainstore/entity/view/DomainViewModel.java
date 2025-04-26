@@ -4,7 +4,7 @@ public class DomainViewModel {
     private String name;
     private STATUS status;
     private int price;
-    private int years = 1;
+    private int years;
 
     public DomainViewModel() {
 

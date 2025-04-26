@@ -87,7 +87,7 @@ public class ShoppingCartController implements Initializable {
             domainViewModel.setName(domainJson.getString("name"));
             domainViewModel.setStatus(STATUS.valueOf(domainJson.getString("status").toUpperCase()));
             domainViewModel.setPrice(domainJson.getInt("price"));
-//            domainViewModel.setYears(domainJson.getInt("years"));
+            domainViewModel.setYears(domainJson.getInt("year"));
             data.add(domainViewModel);
         }
         return data;
@@ -124,6 +124,11 @@ public class ShoppingCartController implements Initializable {
     }
 
     private void buy() {
-        // Implement the buy logic here
+        ObservableList<DomainViewModel> selectedItems = tbCart.getSelectionModel().getSelectedItems();
+
+        for (DomainViewModel domain : selectedItems) {
+            System.out.println(domain);
+        }
+        remove();
     }
 }

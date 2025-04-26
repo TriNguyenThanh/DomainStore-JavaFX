@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
@@ -67,6 +68,14 @@ public class MainController implements Initializable {
             AnchorPane.setRightAnchor(node, 0.0);
 
             contentArea.getChildren().setAll(node);
+
+            // refresh the content area when press F5
+            contentArea.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.F5) {
+                    load(fxmlPath);
+                }
+            });
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
