@@ -14,12 +14,16 @@ import java.util.List;
 
 public class CartServices implements ICart {
 
-    private final CartRepository cartRepository;
+    private CartRepository cartRepository;
+
+    public CartServices() {
+        this.cartRepository = new CartRepository(); 
+    }
 
     public CartServices(CartRepository cartRepository) {
         this.cartRepository = cartRepository;
     }
-
+    
     @Override
     public JSONObject getShoppingCart(JSONObject jsonInput) {
         JSONObject response = new JSONObject();
@@ -116,6 +120,52 @@ public class CartServices implements ICart {
         } else {
             response.put("status", "failed");
             response.put("message", "No domains added (maybe already in cart)");
+        }
+
+        return response;
+    }
+
+    @Override
+    public JSONObject removeFromCart(JSONObject jsonInput) {
+        int cus_id = jsonInput.getInt("cus_id");
+        JSONArray domainArray = jsonInput.getJSONArray("domain");
+
+        int successCount = 0;
+        JSONObject response = new JSONObject();
+
+        for (int i = 0; i < domainArray.length(); i++) {
+            JSONObject domainJson = domainArray.getJSONObject(i);
+            String domainName = domainJson.getString("name");
+
+            String[] parts = domainName.split("\\.");
+            if (parts.length < 2) {
+                continue;
+            }
+
+            String tld = "." + parts[parts.length - 1];
+            TopLevelDomainModel tldModel = TopLevelDomainRepository.getInstance().getTLDByName(tld);
+
+            if (tldModel == null) {
+                continue;
+            }
+
+            String name = parts[0];
+
+            DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, tldModel.getId());
+            if (domainModel != null) {
+                if (cartRepository.isDomainInCart(cus_id, domainModel.getId())) {
+                    boolean isRemoved = cartRepository.removeFromCart(cus_id, domainModel.getId());
+                    if (isRemoved) successCount++;
+                }
+            }
+        }
+
+        if (successCount > 0) {
+            response.put("status", "success");
+            response.put("message", successCount + " domain(s) removed from cart");
+        } else {
+            response.put("status", "failed");
+            response.put("message", "No domains removed (maybe not found in cart)");
         }
 
         return response;

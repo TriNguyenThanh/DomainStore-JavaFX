@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class DomainServices implements IDomain{
-    private final DomainRepository domainDAO = new DomainRepository();
+    private DomainRepository domainDAO;
     
     // 1. tìm theo tên
     @Override
