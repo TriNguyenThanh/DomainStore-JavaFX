@@ -31,14 +31,7 @@ public class ShoppingCartController implements Initializable {
         JSONObject request = new JSONObject();
         request.put("user_id", UserSession.getInstance().getUserId());
 
-//        IDomain domainServices = new DomainServices();
-//        JSONObject respond = domainServices.getShoppingCart(request);
-//
-//        JSONArray domainList = respond.getJSONArray("domain");
-//
-//        for (Object object : domainList) {
-//
-//        }
+
         return null;
     }
 }
