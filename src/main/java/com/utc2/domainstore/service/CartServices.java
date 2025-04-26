@@ -47,7 +47,8 @@ public class CartServices implements ICart {
             domainJson.put("name", fullDomainName);
             domainJson.put("status", domain.getStatus().toString());
             domainJson.put("price", DomainRepository.getInstance().getTLDPriceByDomainId(domain.getTldId()));
-
+            domainJson.put("year",domain.getYears());
+            
             domainArray.put(domainJson);
         }
 

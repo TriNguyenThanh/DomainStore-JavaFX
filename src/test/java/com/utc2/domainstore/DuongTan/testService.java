@@ -97,14 +97,14 @@ public class testService {
 //        CartRepository cartRepository = new CartRepository();
 
         // Tạo đối tượng CartServices
-//        CartServices cartServices = new CartServices();
+        CartServices cartServices = new CartServices();
 ////
         // TEST LẤY GIỎ HÀNG NGƯỜI DÙNG
-//        JSONObject cartInput = new JSONObject();
-//        cartInput.put("cus_id", 4);
-//
-//        JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
-//        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
+        JSONObject cartInput = new JSONObject();
+        cartInput.put("cus_id", 1);
+
+        JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
+        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
 
         // TEST THÊM DOMAIN VÀO GIỎ HÀNG
         
@@ -113,7 +113,7 @@ public class testService {
 //
 //        JSONArray domainArray = new JSONArray();
 //        JSONObject domain1 = new JSONObject();
-//        domain1.put("name", "yourexample.com");
+//        domain1.put("name", "tanpvjpprono1.com");
 //        domain1.put("status", "available");
 //        domain1.put("price", 299000);
 //        domain1.put("years", 3);
