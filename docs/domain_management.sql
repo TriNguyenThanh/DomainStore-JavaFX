@@ -108,56 +108,56 @@ VALUES
 
 INSERT INTO TopLevelDomain (TLD_text, price) 
 VALUES 
-('.com', 299000),
-('.net', 39000),
-('.org', 299000),
-('.info', 179000),
-('.biz', 99000),
-('.co', 499000),
-('.io', 890000),
-('.ai', 1499000),
-('.me', 299000),
-('.tv', 399000),
-('.xyz', 49000),
-('.love', 59000),
-('.vn', 449000),
-('.dev', 690000),
-('.site', 39000),
-('.online', 39000),
-('.cloud', 59000),
-('.click', 59000),
-('.group', 99000),  -- Thêm .group
-('.mom', 129000),   -- Thêm .mom
-('.asia', 69000),   -- Thêm .asia
-('.icu', 49000),    -- Thêm .icu
-('.art', 59000),    -- Thêm .art
-('.blog', 59000);   -- Thêm .blog
+('.com', 299000),	-- 1
+('.net', 39000),	-- 2
+('.org', 299000),	-- 3
+('.info', 179000),	-- 4
+('.biz', 99000),	-- 5
+('.co', 499000),	-- 6
+('.io', 890000),	-- 7
+('.ai', 1499000),	-- 8
+('.me', 299000),	-- 9
+('.tv', 399000),	-- 10
+('.xyz', 49000),	-- 11
+('.love', 59000),	-- 12
+('.vn', 449000),	-- 13
+('.dev', 690000),	-- 14
+('.site', 39000),	-- 15
+('.online', 39000),	-- 16
+('.cloud', 59000),	-- 17
+('.click', 59000),	-- 18
+('.group', 99000),  -- Thêm .group  19
+('.mom', 129000),   -- Thêm .mom	20
+('.asia', 69000),   -- Thêm .asia	21
+('.icu', 49000),    -- Thêm .icu	22
+('.art', 59000),    -- Thêm .art	23
+('.blog', 59000);   -- Thêm .blog	24
 
 INSERT INTO domains (domain_name, tld_id, status, active_date, years, owner_id)
 VALUES
 
 
 
-('yourexample', 1, 'available', null, null ,null),
+('diamonielts', 1, 'available', null, null ,null),
 ('example', 3, 'sold', '2024-03-15 17:00:00', 1, 3),
 ('testdomain', 6, 'sold', '2024-03-15 17:00:00', 1, 3),
 ('mywebsite', 1, 'sold', '2024-03-15 17:00:00', 1, 3),
 ('yourdomain', 2, 'sold', null, 1, 2),
 ('newproject', 3, 'sold', null, 1, 2),
-('techhub', 4, 'available', null, null ,null),
-('globalinfo', 5, 'available', null, null ,null),
-('vietnamexpert', 6, 'available', null, null ,null),
-('startupvn', 7, 'available', null, null ,null),
-('coolbrand', 1, 'available', null, null ,null),
+('spicydonut', 4, 'available', null, null ,null),
+('globalban', 5, 'available', null, null ,null),
+('vietnamexpert', 5, 'available', null, null ,null),
+('startupvn', 5, 'available', null, null ,null),
+('hotbrand', 1, 'available', null, null ,null),
 ('bestservices', 2, 'sold', null, 1, 2),
-('amazingtech', 3, 'available', null, null ,null),
+('surprisedtech', 3, 'available', null, null ,null),
 ('supercool', 1, 'sold', '2024-04-20 10:00:00', 1, 4),
 ('fastservice', 2, 'sold', '2024-01-21 19:30:00', 2, 1),
 ('amazingproject', 3, 'sold', '2024-04-20 10:00:00', 1, 4),
 ('yourbrand', 4, 'available', null, null ,null),
 ('nextbigthing', 5, 'available', null, null ,null),
 ('enterprisehub', 6, 'sold', '2024-04-20 10:00:00', 1, 4),
-('futurenow', 7, 'available', null, null ,null),
+('futurenow', 24, 'available', null, null ,null),
 ('techstartup', 8, 'sold', null, 1, 5),
 ('digitalworld', 9, 'sold', null , 1, 8),
 ('smartcity', 10, 'sold', null , 1, 8),
@@ -168,7 +168,7 @@ VALUES
 ('universeclick', 15, 'available', null, null ,null),
 ('amazingblog', 16, 'available', null, null ,null),
 ('futurecloud', 17, 'sold', '2024-11-25 9:30:00', 1, 11),
-('bestclick', 18, 'available', null, null ,null),
+('bestclickno1', 18, 'available', null, null ,null),
 ('stronggroup', 19, 'available', null, null ,null),
 ('supermom', 20, 'sold', '2025-03-15 11:20:00', 1, 9),
 ('techasia', 21, 'sold', '2025-03-15 11:20:00', 1, 9),
