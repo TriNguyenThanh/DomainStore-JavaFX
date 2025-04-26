@@ -97,7 +97,7 @@ public class testService {
 //        CartRepository cartRepository = new CartRepository();
 
         // Tạo đối tượng CartServices
-        CartServices cartServices = new CartServices();
+//        CartServices cartServices = new CartServices();
 ////
         // TEST LẤY GIỎ HÀNG NGƯỜI DÙNG
 //        JSONObject cartInput = new JSONObject();
@@ -108,19 +108,37 @@ public class testService {
 
         // TEST THÊM DOMAIN VÀO GIỎ HÀNG
         
-        JSONObject addToCartInput = new JSONObject();
-        addToCartInput.put("cus_id", 1);
+//        JSONObject addToCartInput = new JSONObject();
+//        addToCartInput.put("cus_id", 1);
+//
+//        JSONArray domainArray = new JSONArray();
+//        JSONObject domain1 = new JSONObject();
+//        domain1.put("name", "yourexample.com");
+//        domain1.put("status", "available");
+//        domain1.put("price", 299000);
+//        domain1.put("years", 3);
+//        domainArray.put(domain1); 
+//        addToCartInput.put("domain", domainArray);
+//
+//        JSONObject addToCartResponse = cartServices.addToCart(addToCartInput);
+//        System.out.println("Add to Cart Response: " + addToCartResponse.toString(2));
 
-        JSONArray domainArray = new JSONArray();
-        JSONObject domain1 = new JSONObject();
-        domain1.put("name", "yourexample.com");
-        domain1.put("status", "available");
-        domain1.put("price", 299000);
-        domain1.put("years", 3);
-        domainArray.put(domain1); 
-        addToCartInput.put("domain", domainArray);
+        //TEST xóa khỏi giỏ hàng
 
-        JSONObject addToCartResponse = cartServices.addToCart(addToCartInput);
-        System.out.println("Add to Cart Response: " + addToCartResponse.toString(2));
+//        CartServices cartServices = new CartServices();
+//        JSONObject input = new JSONObject();
+//        input.put("cus_id", 1); 
+//        JSONArray domainArray = new JSONArray();
+//
+//        JSONObject domain1 = new JSONObject();
+//        domain1.put("name", "diamonielts.com"); 
+//        domainArray.put(domain1);
+//
+//        input.put("domain", domainArray);
+//
+//        JSONObject result = cartServices.removeFromCart(input);
+//
+//        System.out.println("Kết quả xóa domain khỏi giỏ:");
+//        System.out.println(result.toString(4));
     }
 }
