@@ -56,6 +56,17 @@ public class testService {
 // 
 //        JSONObject searchResponse = domainServices.suggestion(searchInput);
 //        System.out.println("Search Response: " + searchResponse.toString(2));
+
+        //tìm kiếm tên miền đã bán theo user_id
+        JSONObject input = new JSONObject();
+        input.put("user_id:", 9); 
+
+        // Gọi hàm cần test
+        DomainServices service = new DomainServices(); 
+        JSONObject result = service.searchSoldDomainByCusId(input);
+
+        // In ra kết quả
+        System.out.println(result.toString(4));
         
         // TEST CẬP NHẬT THÔNG TIN NGƯỜI DÙNG (KHÔNG BAO GỒM MẬT KHẨU)
 //        AccountServices accountServices = new AccountServices();
@@ -97,14 +108,14 @@ public class testService {
 //        CartRepository cartRepository = new CartRepository();
 
         // Tạo đối tượng CartServices
-        CartServices cartServices = new CartServices();
+//        CartServices cartServices = new CartServices();
 ////
         // TEST LẤY GIỎ HÀNG NGƯỜI DÙNG
-        JSONObject cartInput = new JSONObject();
-        cartInput.put("cus_id", 1);
-
-        JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
-        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
+//        JSONObject cartInput = new JSONObject();
+//        cartInput.put("cus_id", 1);
+//
+//        JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
+//        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
 
         // TEST THÊM DOMAIN VÀO GIỎ HÀNG
         

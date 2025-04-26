@@ -106,4 +106,33 @@ public class DomainServices implements IDomain{
         response.put("domain", domainArray);
         return response; 
     }
+
+    @Override
+    public JSONObject searchSoldDomainByCusId(JSONObject jsonInput) {
+        int cus_id = jsonInput.getInt("user_id:");
+        
+        List<DomainModel> domainList = DomainRepository.getInstance().getSoldDomains(cus_id);
+        JSONArray domainArray = new JSONArray();
+        
+                for (DomainModel domain : domainList) {
+            TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
+            JSONObject domainJson = new JSONObject();
+
+            // Lấy phần mở rộng tên miền (TLD)
+            String fullDomainName = domain.getDomainName();
+            if (tld != null && tld.getTldText() != null) {
+                fullDomainName += tld.getTldText();
+            }
+
+            domainJson.put("name", fullDomainName);
+            domainJson.put("status", domain.getStatus().toString().toLowerCase());
+            domainJson.put("year", domain.getYears());
+            domainJson.put("active_date", domain.getActiveDate());
+            domainArray.put(domainJson);
+        }
+
+        JSONObject response = new JSONObject();
+        response.put("domain", domainArray);
+        return response; 
+    }
 }
