@@ -17,7 +17,7 @@ public class DomainServices implements IDomain{
     public JSONObject search(JSONObject jsonInput) {
         String domainName = jsonInput.optString("name", "").trim();
 
-        if (domainName.isEmpty()) {
+        if (domainName.isBlank()) {
             JSONArray suggestions = new JSONArray();
             List<DomainModel> domainList = DomainRepository.getInstance().getSuggestedDomains(5);
 

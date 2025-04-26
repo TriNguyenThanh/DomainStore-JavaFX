@@ -206,7 +206,6 @@ public class CartRepository implements IRepository<CartModel>{
 
     public boolean addToCart(int userId, int domainId, int years) {
         if (!isDomainAvailable(domainId)) {
-            System.out.println("Tên miền không khả dụng.");
             return false;
         }
 
@@ -223,5 +222,19 @@ public class CartRepository implements IRepository<CartModel>{
             e.printStackTrace();
         }
         return false;
+    }
+    public boolean isDomainInCart(int customerId, int domainId) {
+        String sql = "SELECT 1 FROM carts WHERE (cus_id = ? AND domain_id = ?)";
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, customerId);
+            stmt.setInt(2, domainId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
