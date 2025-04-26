@@ -1,8 +1,10 @@
 package com.utc2.domainstore.controller;
 
+import com.utc2.domainstore.entity.view.DomainViewModel;
 import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.DomainServices;
 import com.utc2.domainstore.service.IDomain;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -17,6 +19,7 @@ import java.util.ResourceBundle;
 
 public class SearchController implements Initializable {
     private ResourceBundle bundle;
+    private DomainViewModel domainViewModel = new DomainViewModel();
 
     @FXML
     private TextField tfSearch;
@@ -31,6 +34,21 @@ public class SearchController implements Initializable {
     private HBox recomment;
 
     @FXML
+    private void handleButton(ActionEvent e) {
+        if (e.getSource() == btSearch) {
+            handleSearch();
+        } else if (e.getSource() == btAdd) {
+            handleAdd();
+        }
+    }
+
+    private void handleAdd() {
+        System.out.println("Name: " + domainViewModel.getName());
+        System.out.println("Status: " + domainViewModel.getStatus());
+        System.out.println("Price: " + domainViewModel.getPrice());
+        System.out.println("Years: " + domainViewModel.getYears());
+    }
+
     private void handleSearch() {
         String domainName = tfSearch.getText();
         recomment.getChildren().clear();
@@ -40,6 +58,10 @@ public class SearchController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        this.tfSearch.setOnAction(event -> {
+            searchWithDomainName(tfSearch.getText().toLowerCase());
+        });
+        searchWithDomainName("");
     }
 
     private void searchWithDomainName(String domainName) {
@@ -64,6 +86,11 @@ public class SearchController implements Initializable {
                 lbStatus.setText(status);
                 lbPrice.setText(price);
 
+                domainViewModel.setName(name);
+                domainViewModel.setStatus(STATUS.valueOf(status.toUpperCase()));
+                domainViewModel.setPrice(Integer.parseInt(price));
+                domainViewModel.setYears(1);
+
                 lbStatus.setStyle("-fx-text-fill: #00FF00;");
                 lbDomain.setStyle("-fx-text-fill: #00FF00;");
                 lbPrice.setStyle("-fx-text-fill: #00FF00;");
@@ -71,6 +98,14 @@ public class SearchController implements Initializable {
                 Label label = new Label(name);
                 label.setOnMouseClicked(event -> {
                     searchWithDomainName(name);
+                });
+
+                label.setOnMouseEntered(event -> {
+                    label.setStyle("-fx-text-fill: #00FF00;");
+                });
+
+                label.setOnMouseExited(event -> {
+                    label.setStyle("-fx-text-fill: #000000;");
                 });
 
                 recomment.getChildren().add(label);
@@ -83,6 +118,7 @@ public class SearchController implements Initializable {
             lbDomain.setStyle("-fx-text-fill: #FF0000;");
             lbStatus.setStyle("-fx-text-fill: #FF0000;");
             lbPrice.setStyle("-fx-text-fill: #FF0000;");
+
         } else {
             String name = respond.getString("name");
             String status = respond.getString("status");
@@ -100,6 +136,11 @@ public class SearchController implements Initializable {
                 lbStatus.setStyle("-fx-text-fill: #FF0000;");
                 lbPrice.setStyle("-fx-text-fill: #FF0000;");
             }
+
+            domainViewModel.setName(name);
+            domainViewModel.setStatus(STATUS.valueOf(status.toUpperCase()));
+            domainViewModel.setPrice(Integer.parseInt(price));
+            domainViewModel.setYears(1);
         }
     }
 }
