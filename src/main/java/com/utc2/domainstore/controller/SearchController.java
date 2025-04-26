@@ -47,6 +47,7 @@ public class SearchController implements Initializable {
         System.out.println("Status: " + domainViewModel.getStatus());
         System.out.println("Price: " + domainViewModel.getPrice());
         System.out.println("Years: " + domainViewModel.getYears());
+        // add to cart
     }
 
     private void handleSearch() {
