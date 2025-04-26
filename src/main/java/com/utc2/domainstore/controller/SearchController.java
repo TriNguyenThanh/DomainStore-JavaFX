@@ -2,11 +2,15 @@ package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.entity.view.DomainViewModel;
 import com.utc2.domainstore.entity.view.STATUS;
+import com.utc2.domainstore.service.CartServices;
 import com.utc2.domainstore.service.DomainServices;
+import com.utc2.domainstore.service.ICart;
 import com.utc2.domainstore.service.IDomain;
+import com.utc2.domainstore.view.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -43,11 +47,39 @@ public class SearchController implements Initializable {
     }
 
     private void handleAdd() {
-        System.out.println("Name: " + domainViewModel.getName());
-        System.out.println("Status: " + domainViewModel.getStatus());
-        System.out.println("Price: " + domainViewModel.getPrice());
-        System.out.println("Years: " + domainViewModel.getYears());
-        // add to cart
+        if (domainViewModel.getStatus() == STATUS.SOLD) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle(bundle.getString("warning"));
+            alert.setHeaderText(null);
+            alert.setContentText(bundle.getString("notice.chooseAnotherDomain"));
+            alert.showAndWait();
+            return;
+        }
+        JSONObject request = new JSONObject();
+        ICart cartService = new CartServices();
+        request.put("cus_id", UserSession.getInstance().getUserId());
+        JSONArray domainArray = new JSONArray();
+        JSONObject domainJson = new JSONObject();
+        domainJson.put("name", domainViewModel.getName());
+        domainJson.put("status", domainViewModel.getStatus().toString().toLowerCase());
+        domainJson.put("price", domainViewModel.getPrice());
+        domainJson.put("years", 1);
+        domainArray.put(domainJson);
+        request.put("domain", domainArray);
+
+        JSONObject respond = cartService.addToCart(request);
+        String status = respond.getString("status");
+        String message = respond.getString("message");
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Thêm vào giỏ hàng");
+        alert.setHeaderText(null);
+        if (status.equals("success")) {
+            alert.setContentText(bundle.getString("notice.addToCartSuccess"));
+        } else {
+            alert.setContentText(bundle.getString("notice.addToCartFailed") + ": " + message);
+        }
+        alert.showAndWait();
     }
 
     private void handleSearch() {

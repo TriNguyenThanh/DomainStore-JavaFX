@@ -28,10 +28,10 @@
                                     <children>
                                         <TableView fx:id="table" layoutX="11.2" prefHeight="134.0" prefWidth="558.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="10.0">
                                             <columns>
-                                                <TableColumn fx:id="colDomainName" prefWidth="144.0000423192978" text="%domainName" />
-                                                <TableColumn fx:id="colDomainStatus" prefWidth="199.99996948242188" text="%status" />
-                                                <TableColumn fx:id="colDomainYears" prefWidth="164.0" text="%year" />
-                                                <TableColumn fx:id="colDomainPrice" prefWidth="224.0" text="%price" />
+                                                <TableColumn fx:id="colDomainName" prefWidth="240.00000607967377" resizable="false" text="%domainName" />
+                                                <TableColumn fx:id="colDomainStatus" prefWidth="173.5999755859375" resizable="false" text="%status" />
+                                                <TableColumn fx:id="colDomainYears" prefWidth="96.0" resizable="false" text="%year" />
+                                                <TableColumn fx:id="colDomainPrice" prefWidth="227.19999389648433" resizable="false" text="%price" />
                                             </columns>
                                         </TableView>
                                     </children>
@@ -42,7 +42,7 @@
                                     <children>
                                         <HBox layoutX="14.0" layoutY="25.0" prefHeight="100.0" prefWidth="200.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
-                                                <VBox prefHeight="176.0" prefWidth="292.0">
+                                                <VBox prefHeight="176.0" prefWidth="400.0">
                                                     <children>
                                                         <Label text="%username" />
                                                         <Label text="%phone" />
@@ -84,7 +84,7 @@
                     <center>
                         <AnchorPane prefHeight="149.0" prefWidth="527.0" BorderPane.alignment="CENTER">
                             <children>
-                                <HBox prefHeight="146.0" prefWidth="494.0">
+                                <HBox prefHeight="146.0" prefWidth="494.0" AnchorPane.leftAnchor="10.0">
                                     <children>
                                         <VBox prefHeight="146.0" prefWidth="182.0">
                                             <children>

@@ -4,7 +4,7 @@ public class DomainViewModel {
     private String name;
     private STATUS status;
     private int price;
-    private int years;
+    private int years = 1;
 
     public DomainViewModel() {
 
@@ -47,5 +47,18 @@ public class DomainViewModel {
 
     public void setYears(int years) {
         this.years = years;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DomainViewModel that = (DomainViewModel) o;
+        return name.equals(that.name); // Compare based on the 'name' field
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode(); // Use the 'name' field for hash code
     }
 }

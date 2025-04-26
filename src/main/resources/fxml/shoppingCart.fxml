@@ -3,10 +3,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="640.0" prefWidth="1020.0" stylesheets="@../style/cart.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.ShoppingCartController">
@@ -38,8 +40,8 @@
                             <right>
                                 <VBox alignment="CENTER" prefHeight="448.0" prefWidth="196.0" spacing="20.0" BorderPane.alignment="CENTER">
                                     <children>
-                                        <Button fx:id="btRemove" mnemonicParsing="false" text="%remove" />
-                                        <Button fx:id="btBuy" mnemonicParsing="false" text="%buy" />
+                                        <Button fx:id="btRemove" mnemonicParsing="false" onAction="#handleButtonOnAction" text="%remove" />
+                                        <Button fx:id="btBuy" mnemonicParsing="false" onAction="#handleButtonOnAction" text="%buy" />
                                     </children>
                                     <BorderPane.margin>
                                         <Insets left="10.0" />
@@ -51,8 +53,26 @@
                                     <BorderPane.margin>
                                         <Insets right="10.0" />
                                     </BorderPane.margin>
+                           <columns>
+                              <TableColumn fx:id="colDomain" prefWidth="222.40002632141113" text="%domain" />
+                              <TableColumn fx:id="colStatus" minWidth="0.0" prefWidth="136.00001525878906" text="%status" />
+                              <TableColumn fx:id="colPrice" prefWidth="177.60000610351562" text="%price" />
+                              <TableColumn fx:id="colYear" prefWidth="210.39996337890625" text="%year" />
+                           </columns>
                                 </TableView>
                             </center>
+                     <bottom>
+                        <AnchorPane prefHeight="54.0" prefWidth="959.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <HBox layoutY="2.0" prefHeight="50.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <children>
+                                    <Label text="%total" />
+                                    <Label fx:id="lbTotal" prefHeight="35.0" prefWidth="237.0" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                     </bottom>
                         </BorderPane>
                     </children>
                 </AnchorPane>
