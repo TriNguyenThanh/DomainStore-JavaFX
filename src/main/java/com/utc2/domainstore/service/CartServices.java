@@ -89,7 +89,7 @@ public class CartServices implements ICart {
 
             if (!DomainRepository.getInstance().isDomainExists(domainName, domainId.getId())) {
                 // Nếu domain chưa tồn tại trong DB insert mới
-                DomainModel newDomain = new DomainModel(name, domainId.getId(), DomainStatusEnum.available);
+                DomainModel newDomain = new DomainModel(name, domainId.getId(), DomainStatusEnum.available,1);
                 DomainRepository.getInstance().insert(newDomain);
 
                 // Lấy lại domain sau khi insert
