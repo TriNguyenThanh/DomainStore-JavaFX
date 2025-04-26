@@ -1,16 +1,15 @@
 package com.utc2.domainstore.controller;
 
+import com.sun.net.httpserver.HttpServer;
 import com.utc2.domainstore.entity.view.AccountModel;
 import com.utc2.domainstore.entity.view.BillViewModel;
 import com.utc2.domainstore.entity.view.DomainViewModel;
 import com.utc2.domainstore.entity.view.STATUS;
-import com.utc2.domainstore.service.AccountServices;
-import com.utc2.domainstore.service.IAccount;
-import com.utc2.domainstore.service.ITransactionService;
-import com.utc2.domainstore.service.TransactionService;
+import com.utc2.domainstore.service.*;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -22,6 +21,10 @@ import javafx.scene.layout.AnchorPane;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.*;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,8 @@ public class TransactionInfoController implements Initializable {
     private BillViewModel billViewModel;
     private AccountModel accountModel;
     private List<DomainViewModel> domainList;
+
+    private static final VnPayService vnPayService = new VnPayService();
 
     @FXML
     private Label lbUsername, lbPhone, lbEmail, lbBillID, lbDate, lbTotal;
@@ -53,10 +58,61 @@ public class TransactionInfoController implements Initializable {
     @FXML
     private TableColumn<DomainViewModel, Integer> colDomainYears;
 
+    @FXML
+    private void handleButtonOnAction(ActionEvent e) throws IOException {
+        if (e.getSource() == btExport) {
+            // export
+        } else if (e.getSource() == btPay) {
+            // pay
+            pay();
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
         accountModel = getAccountModel();
+    }
+
+    private void pay() throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        server.createContext("/vnpay_return", new PaymentService.VNPayReturnHandler());
+        server.setExecutor(null); // Sử dụng executor mặc định
+        server.start();
+
+        System.out.println("Server đang chạy trên port 8080. Đang đợi callback từ VNPay...");
+
+        int amount = billViewModel.getPrice();
+        System.out.println("So tien can thanh toan: " + amount);
+
+        String orderInfo = billViewModel.getId();
+
+        // Tạo transaction reference là timestamp hiện tại
+        String txnRef = String.valueOf(System.currentTimeMillis());
+
+        // Tạo URL thanh toán
+        String paymentUrl = vnPayService.createPaymentUrl(amount, orderInfo, txnRef);
+
+        System.out.println("\nURL thanh toán đã được tạo:");
+//            System.out.println(paymentUrl);
+        try {
+
+
+            // Kiểm tra xem Desktop có được hỗ trợ không
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                // Tạo URI từ URL
+                URI uri = new URI(paymentUrl);
+                // Mở URL trong trình duyệt mặc định
+                Desktop.getDesktop().browse(uri);
+            } else {
+                System.out.println("Desktop không được hỗ trợ trên hệ thống này.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//            System.out.println("\nMã đơn hàng của bạn: " + txnRef);
+        System.out.println("\nVui lòng sử dụng URL này để thanh toán, sau đó kiểm tra kết quả trên terminal.");
+        System.out.println("Server đang chạy và đợi callback từ VNPay...");
     }
 
     private void displayBillInfo() {

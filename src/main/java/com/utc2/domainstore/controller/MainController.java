@@ -1,7 +1,9 @@
 package com.utc2.domainstore.controller;
 
+import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
+import com.utc2.domainstore.view.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,13 +42,13 @@ public class MainController implements Initializable {
             load("/fxml/transaction.fxml");
         } else if (focus != e.getSource() && e.getSource() == btPayment) {
             load("/fxml/payment.fxml");
-        } else if (focus != e.getSource() && e.getSource() == btUser) {
+        } else if (focus != e.getSource() && e.getSource() == btUser && UserSession.getInstance().getRole() == RoleEnum.admin) {
             load("/fxml/user_manager.fxml");
-        } else if (focus != e.getSource() && e.getSource() == btDomain) {
+        } else if (focus != e.getSource() && e.getSource() == btDomain && UserSession.getInstance().getRole() == RoleEnum.admin) {
             load("/fxml/domain_manager.fxml");
-        } else if (focus != e.getSource() && e.getSource() == btCheckBill) {
+        } else if (focus != e.getSource() && e.getSource() == btCheckBill && UserSession.getInstance().getRole() == RoleEnum.admin) {
             load("/fxml/transaction_manager.fxml");
-        } else if (focus != e.getSource() && e.getSource() == btCheckPayment) {
+        } else if (focus != e.getSource() && e.getSource() == btCheckPayment && UserSession.getInstance().getRole() == RoleEnum.admin) {
             load("/fxml/payment_manager.fxml");
         }
 
@@ -72,11 +74,32 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.bundle = resources;
         focus = btDashBoard;
         load("/fxml/dashboard.fxml");
 
-        this.bundle = resources;
+        roleControll();
         SceneManager.getInstance().setResizable(true);
         SceneManager.getInstance().setMaximized(true);
+    }
+
+    private void roleControll() {
+        if (UserSession.getInstance().getRole() == RoleEnum.user) {
+            btUser.setDisable(true);
+            btUser.setGraphic(null);
+            btUser.setText("");
+
+            btCheckBill.setDisable(true);
+            btCheckBill.setGraphic(null);
+            btCheckBill.setText("");
+
+            btCheckPayment.setDisable(true);
+            btCheckPayment.setGraphic(null);
+            btCheckPayment.setText("");
+
+            btDomain.setDisable(true);
+            btDomain.setGraphic(null);
+            btDomain.setText("");
+        }
     }
 }
