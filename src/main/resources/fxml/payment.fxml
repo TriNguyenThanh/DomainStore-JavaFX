@@ -33,13 +33,12 @@
                         <DropShadow />
                     </effect>
                     <children>
-                        <TableView layoutX="120.0" layoutY="51.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                        <TableView fx:id="table" layoutX="120.0" layoutY="51.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                             <columns>
-                                <TableColumn prefWidth="147.19998359680176" text="%billID" />
-                                <TableColumn prefWidth="176.8000030517578" text="%paymentID" />
-                        <TableColumn prefWidth="192.79989624023438" text="%status" />
-                        <TableColumn prefWidth="188.0" text="%date" />
-                        <TableColumn prefWidth="334.40008544921875" text="x" />
+                                <TableColumn fx:id="colBillID" prefWidth="147.19998359680176" text="%billID" />
+                                <TableColumn fx:id="colPayID" prefWidth="255.9999542236328" text="%paymentID" />
+                        <TableColumn fx:id="colStatus" prefWidth="268.8000183105469" text="%status" />
+                        <TableColumn fx:id="colDate" prefWidth="287.2000732421875" text="%date" />
                             </columns>
                         </TableView>
                     </children>

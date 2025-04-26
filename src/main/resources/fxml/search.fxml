@@ -25,9 +25,9 @@
                         <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" styleClass="header" text="%search" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
                         <Label alignment="CENTER" layoutX="87.0" layoutY="100.0" styleClass="subheader" text="%description.search" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0" />
                     </children>
-               <effect>
-                  <DropShadow />
-               </effect>
+                    <effect>
+                        <DropShadow />
+                    </effect>
                 </AnchorPane>
             </top>
             <center>
@@ -47,7 +47,7 @@
                                     </HBox.margin>
                                 </ImageView>
                                 <TextField fx:id="tfSearch" prefHeight="50.0" prefWidth="500.0" promptText="%placeHolder.search" />
-                                <Button fx:id="btSearch" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="%search" />
+                                <Button fx:id="btSearch" mnemonicParsing="false" onAction="#handleButton" prefHeight="50.0" prefWidth="250.0" text="%search" />
                             </children>
                         </HBox>
                         <HBox layoutX="165.0" layoutY="224.0" prefHeight="100.0" prefWidth="200.0" styleClass="pnResults" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="150.0">
@@ -74,15 +74,16 @@
                                 </VBox>
                                 <StackPane prefHeight="150.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <Button fx:id="btAdd" mnemonicParsing="false" onAction="#handleSearch" prefHeight="50.0" prefWidth="250.0" text="%addToCart" />
+                                        <Button fx:id="btAdd" mnemonicParsing="false" onAction="#handleButton" prefHeight="50.0" prefWidth="250.0" text="%addToCart" />
                                     </children>
                                 </StackPane>
                             </children>
                         </HBox>
+                  <HBox fx:id="recomment" layoutX="14.0" layoutY="106.0" prefHeight="50.0" prefWidth="438.0" spacing="20.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="110.0" />
                     </children>
-               <effect>
-                  <DropShadow />
-               </effect>
+                    <effect>
+                        <DropShadow />
+                    </effect>
                 </AnchorPane>
             </center>
         </BorderPane>

@@ -2,7 +2,7 @@
 package com.utc2.domainstore.repository;
 
 import com.utc2.domainstore.entity.database.TransactionInfoModel;
-import com.utc2.domainstore.utils.JDBC;
+import com.utc2.domainstore.config.JDBC;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

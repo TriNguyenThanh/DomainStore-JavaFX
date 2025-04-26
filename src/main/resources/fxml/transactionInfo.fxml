@@ -9,18 +9,18 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="800.0" prefWidth="600.0" stylesheets="@../style/billInfo.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.TransactionInfoController">
+<AnchorPane prefHeight="800.0" prefWidth="600.0" styleClass="pnBackground" stylesheets="@../style/billInfo.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.TransactionInfoController">
     <children>
         <BorderPane layoutX="78.0" layoutY="33.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
-                <AnchorPane prefHeight="74.0" prefWidth="600.0" styleClass="pnBackground" BorderPane.alignment="CENTER">
+                <AnchorPane prefHeight="74.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                     <children>
                         <Label alignment="CENTER" layoutX="320.0" layoutY="37.0" styleClass="header" text="%bill" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
                     </children>
                 </AnchorPane>
             </top>
             <center>
-                <AnchorPane prefHeight="254.0" prefWidth="600.0" styleClass="pnBackground" BorderPane.alignment="CENTER">
+                <AnchorPane prefHeight="254.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                     <children>
                         <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                             <center>
@@ -78,9 +78,6 @@
             </center>
             <bottom>
                 <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                    <bottom>
-                        <Button fx:id="btExport" mnemonicParsing="false" text="%export" BorderPane.alignment="CENTER" />
-                    </bottom>
                     <right>
                         <AnchorPane fx:id="imgQR" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
                     </right>
@@ -111,6 +108,14 @@
                             </children>
                         </AnchorPane>
                     </center>
+                    <bottom>
+                        <AnchorPane prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                            <children>
+                                <Button fx:id="btExport" layoutX="186.0" mnemonicParsing="false" onAction="#handleButtonOnAction" text="%export" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                <Button fx:id="btPay" layoutX="468.0" mnemonicParsing="false" onAction="#handleButtonOnAction" text="%pay" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                            </children>
+                        </AnchorPane>
+                    </bottom>
                 </BorderPane>
             </bottom>
         </BorderPane>

@@ -4,7 +4,7 @@ package com.utc2.domainstore.repository;
 
 import com.utc2.domainstore.entity.database.PaymentHistoryModel;
 import com.utc2.domainstore.entity.database.PaymentStatusEnum;
-import com.utc2.domainstore.utils.JDBC;
+import com.utc2.domainstore.config.JDBC;
 
 import java.sql.*;
 import java.time.LocalDate;

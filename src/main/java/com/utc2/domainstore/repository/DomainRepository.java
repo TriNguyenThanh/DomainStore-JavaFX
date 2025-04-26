@@ -2,7 +2,7 @@ package com.utc2.domainstore.repository;
 
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.DomainStatusEnum;
-import com.utc2.domainstore.utils.JDBC;
+import com.utc2.domainstore.config.JDBC;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -323,5 +323,31 @@ public class DomainRepository implements IRepository<DomainModel> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    //lấy tên miền ngẫu nhiên
+    public List<DomainModel> getSuggestedDomains(int limit){
+        List<DomainModel> domainList = new ArrayList<>();
+        String sql = "SELECT * FROM domains WHERE status = 'available' ORDER BY RAND() LIMIT " + limit;
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    domainList.add(new DomainModel(
+                            rs.getInt("id"),
+                            rs.getString("domain_name"),
+                            rs.getInt("tld_id"),
+                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
+                            rs.getDate("active_date"),
+                            rs.getInt("years"),
+                            rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
+                            rs.getDate("created_at")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return domainList;
     }
 }
