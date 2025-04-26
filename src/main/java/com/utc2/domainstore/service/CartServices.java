@@ -14,12 +14,16 @@ import java.util.List;
 
 public class CartServices implements ICart {
 
-    private final CartRepository cartRepository;
+    private CartRepository cartRepository;
+
+    public CartServices() {
+        this.cartRepository = new CartRepository(); 
+    }
 
     public CartServices(CartRepository cartRepository) {
         this.cartRepository = cartRepository;
     }
-
+    
     @Override
     public JSONObject getShoppingCart(JSONObject jsonInput) {
         JSONObject response = new JSONObject();

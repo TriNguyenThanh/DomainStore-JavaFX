@@ -37,7 +37,7 @@ public class testService {
 
 //        DomainServices domainServices = new DomainServices();
 //        JSONObject searchInput = new JSONObject();
-//        searchInput.put("name", "tanVjpProNo1.org");
+//        searchInput.put("name", "coolbrand.com");
 //        System.out.println("Test Input: " + searchInput.toString(2));
 //        JSONObject searchResponse = domainServices.search(searchInput);
 //        System.out.println("Search Response: " + searchResponse.toString(2));
@@ -94,10 +94,10 @@ public class testService {
 
 ////        //test cart
 //         Khởi tạo CartRepository (giả định)
-        CartRepository cartRepository = new CartRepository();
+//        CartRepository cartRepository = new CartRepository();
 
         // Tạo đối tượng CartServices
-        CartServices cartServices = new CartServices(cartRepository);
+        CartServices cartServices = new CartServices();
 ////
         // TEST LẤY GIỎ HÀNG NGƯỜI DÙNG
 //        JSONObject cartInput = new JSONObject();
@@ -120,7 +120,6 @@ public class testService {
         domainArray.put(domain1); 
         addToCartInput.put("domain", domainArray);
 
-//
         JSONObject addToCartResponse = cartServices.addToCart(addToCartInput);
         System.out.println("Add to Cart Response: " + addToCartResponse.toString(2));
     }
