@@ -25,7 +25,7 @@ public class MainController implements Initializable {
     private StackPane contentArea;
 
     @FXML
-    private Button btDashBoard, btAccount, btShoppingCart, btSearch, btBill, btPayment, btUser, btDomain, btCheckBill, btCheckPayment;
+    private Button btDashBoard, btAccount, btShoppingCart, btMyDomain, btSearch, btBill, btPayment, btUser, btDomain, btCheckBill, btCheckPayment;
 
     private Button focus;
 
@@ -37,6 +37,8 @@ public class MainController implements Initializable {
             load("/fxml/account.fxml");
         } else if (focus != e.getSource() && e.getSource() == btShoppingCart) {
             load("/fxml/shoppingCart.fxml");
+        } else if (focus != e.getSource() && e.getSource() == btMyDomain) {
+            load("/fxml/myDomain.fxml");
         } else if (focus != e.getSource() && e.getSource() == btSearch) {
             load("/fxml/search.fxml");
         } else if (focus != e.getSource() && e.getSource() == btBill) {

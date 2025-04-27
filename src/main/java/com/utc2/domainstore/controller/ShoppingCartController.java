@@ -125,10 +125,7 @@ public class ShoppingCartController implements Initializable {
 
     private void buy() {
         ObservableList<DomainViewModel> selectedItems = tbCart.getSelectionModel().getSelectedItems();
-
-        for (DomainViewModel domain : selectedItems) {
-            System.out.println(domain);
-        }
         remove();
+        // create a new transaction
     }
 }
