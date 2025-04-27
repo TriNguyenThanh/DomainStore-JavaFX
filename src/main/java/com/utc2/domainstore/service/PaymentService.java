@@ -12,6 +12,7 @@ import com.utc2.domainstore.utils.VnPayUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -25,7 +26,7 @@ public class PaymentService implements  IPaymentService{
     private final PaymentHistoryRepository paymentHistoryDAO = new PaymentHistoryRepository();
     private VnPayConfig vnPayConfig = new VnPayConfig();
     private static VnPayService vnPayService = new VnPayService();
-
+    private static String paymentURL;
     @Override
     public JSONObject getUserPaymentHistory(JSONObject json){
         int userId = json.getInt("user_id");
@@ -45,14 +46,29 @@ public class PaymentService implements  IPaymentService{
     }
 
     @Override
-    public JSONObject createPayment() throws IOException {
+    public boolean createPayment(String transactionId, int total) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/vnpay_return", new VNPayReturnHandler());
         server.setExecutor(null); // Sử dụng executor mặc định
         server.start();
-
-        System.out.println("Server đang chạy trên port 8080. Đang đợi callback từ VNPay...");
-        return null;
+        // Tạo transaction reference là timestamp hiện tại
+        String txnRef = String.valueOf(System.currentTimeMillis());
+        // Tạo URL thanh toán
+        this.paymentURL = vnPayService.createPaymentUrl(total, transactionId, txnRef);
+        try {
+            // Kiểm tra xem Desktop có được hỗ trợ không
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                URI uri = new URI(paymentURL);
+                // Mở URL trong trình duyệt mặc định
+                Desktop.getDesktop().browse(uri);
+                return true;
+            } else {
+                System.out.println("Desktop không được hỗ trợ trên hệ thống này.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
     public static class VNPayReturnHandler implements HttpHandler {
         @Override
@@ -70,7 +86,7 @@ public class PaymentService implements  IPaymentService{
             Map<String, String> paymentResult = vnPayService.processReturnUrl(parameters);
 
             // Tạo response HTML
-            String response = vnPayService.createResponseHTML(paymentResult);
+            String response = vnPayService.createResponseHTML(paymentResult, paymentURL);
 
             // Gửi response về cho client
             byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);

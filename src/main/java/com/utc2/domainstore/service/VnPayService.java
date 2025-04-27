@@ -1,6 +1,9 @@
 package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.config.VnPayConfig;
+import com.utc2.domainstore.entity.database.*;
+import com.utc2.domainstore.repository.PaymentHistoryRepository;
+import com.utc2.domainstore.repository.TransactionInfoRepository;
 import com.utc2.domainstore.utils.VnPayUtils;
 
 import java.io.BufferedReader;
@@ -10,6 +13,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class VnPayService implements IPaymentGateway{
@@ -78,13 +84,15 @@ public class VnPayService implements IPaymentGateway{
     @Override
     public Map<String, String> processReturnUrl(Map<String, String> fields) {
         Map<String, String> result = new HashMap<>();
-
+        TransactionService transactionService = new TransactionService();
+        String transactionId = fields.get("vnp_OrderInfo");
         try {
             // Remove vnp_SecureHash from fields
             String vnp_SecureHash = fields.get("vnp_SecureHash");
             if (vnp_SecureHash == null) {
                 result.put("status", "invalid");
                 result.put("message", "Không tìm thấy chữ ký bảo mật");
+                transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
                 return result;
             }
 
@@ -105,21 +113,32 @@ public class VnPayService implements IPaymentGateway{
                     result.put("txnRef", fields.get("vnp_TxnRef"));
                     result.put("amount", String.valueOf(Long.parseLong(fields.get("vnp_Amount")) / 100));
                     result.put("orderInfo", fields.get("vnp_OrderInfo"));
-                    result.put("payDate", fields.get("vnp_PayDate"));
+                    String datetime = fields.get("vnp_PayDate");
+                    DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+                    LocalDateTime parsedDateTime = LocalDateTime.parse(datetime, inputFormat);
+
+                    DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+                    String formattedDate = parsedDateTime.format(outputFormat);
+                    result.put("payDate", formattedDate );
                     result.put("transactionNo", fields.get("vnp_TransactionNo"));
 
-                    // Cập nhật trạng thái đơn hàng
-//                    updateOrderStatus(fields.get("vnp_TxnRef"), "Đã thanh toán", fields.get("vnp_TransactionNo"));
+                    // Cập nhật database
+                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.COMPLETED);
+                    PaymentHistoryModel paymentHistoryModel = new PaymentHistoryModel(transactionId, fields.get("vnp_TransactionNo"), PaymentTypeEnum.VNPAY.getCode(), PaymentStatusEnum.COMPLETED, LocalDate.now());
+                    PaymentHistoryRepository.getInstance().insert(paymentHistoryModel);
                 } else {
                     // Payment failed
                     result.put("status", "failed");
                     result.put("message", "Thanh toán thất bại. Mã lỗi: " + vnp_ResponseCode);
                     result.put("txnRef", fields.get("vnp_TxnRef"));
+                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
+                    TransactionInfoRepository.getInstance().delete(new TransactionInfoModel(transactionId,null,null));
                 }
             } else {
                 // Invalid signature
                 result.put("status", "invalid");
                 result.put("message", "Chữ ký không hợp lệ");
+                transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -128,33 +147,79 @@ public class VnPayService implements IPaymentGateway{
         }
         return result;
     }
-    static String createResponseHTML(Map<String, String> paymentResult) {
+    static String createResponseHTML(Map<String, String> paymentResult, String paymentURL) {
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>");
-        html.append("<html><head><title>VNPay Payment Result</title>");
+        html.append("<html lang='vi'>");
+        html.append("<head>");
         html.append("<meta charset='UTF-8'>");
-        html.append("<style>body{font-family:Arial,sans-serif;margin:40px;line-height:1.6;}");
-        html.append(".container{max-width:600px;margin:0 auto;padding:20px;border:1px solid #ddd;border-radius:5px;}");
-        html.append(".success{color:green;} .failed{color:red;}</style></head>");
-        html.append("<body><div class='container'>");
+        html.append("<meta name='viewport' content='width=device-width, initial-scale=1.0'>");
+        html.append("<title>Kết quả thanh toán</title>");
+        html.append("<script src='https://cdn.tailwindcss.com'></script>");
+        html.append("<link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css' rel='stylesheet'>");
+        html.append("<style>");
+        html.append("@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }");
+        html.append(".fade-in { animation: fadeIn 0.8s ease-out; }");
+        html.append("</style>");
+        html.append("</head>");
+        html.append("<body class='bg-gray-100 flex items-center justify-center min-h-screen'>");
+        html.append("<div class='container max-w-lg mx-auto p-6 bg-white rounded-xl shadow-lg fade-in'>");
 
         String status = paymentResult.get("status");
         if ("success".equals(status)) {
-            html.append("<h1 class='success'>Thanh toán thành công</h1>");
-            html.append("<p>Mã đơn hàng: ").append(paymentResult.get("txnRef")).append("</p>");
-            html.append("<p>Số tiền: ").append(paymentResult.get("amount")).append(" VND</p>");
-            html.append("<p>Nội dung thanh toán: ").append(paymentResult.get("orderInfo")).append("</p>");
-            html.append("<p>Thời gian: ").append(paymentResult.get("payDate")).append("</p>");
-            html.append("<p>Mã giao dịch: ").append(paymentResult.get("transactionNo")).append("</p>");
+            html.append("<div class='text-center'>");
+            html.append("<i class='fas fa-check-circle text-green-500 text-5xl mb-4'></i>");
+            html.append("<h1 class='text-2xl font-bold text-green-600 mb-4'>Thanh toán thành công!</h1>");
+            html.append("</div>");
+            html.append("<div class='space-y-4'>");
+            html.append("<div class='flex justify-between border-b pb-2'>");
+            html.append("<span class='text-gray-600 font-medium'>Mã đơn hàng:</span>");
+            html.append("<span class='text-gray-800'>").append(paymentResult.get("txnRef")).append("</span>");
+            html.append("</div>");
+            html.append("<div class='flex justify-between border-b pb-2'>");
+            html.append("<span class='text-gray-600 font-medium'>Số tiền:</span>");
+            html.append("<span class='text-gray-800'>").append(paymentResult.get("amount")).append(" VND</span>");
+            html.append("</div>");
+            html.append("<div class='flex justify-between border-b pb-2'>");
+            html.append("<span class='text-gray-600 font-medium'>Nội dung thanh toán:</span>");
+            html.append("<span class='text-gray-800'>").append(paymentResult.get("orderInfo")).append("</span>");
+            html.append("</div>");
+            html.append("<div class='flex justify-between border-b pb-2'>");
+            html.append("<span class='text-gray-600 font-medium'>Thời gian:</span>");
+            html.append("<span class='text-gray-800'>").append(paymentResult.get("payDate")).append("</span>");
+            html.append("</div>");
+            html.append("<div class='flex justify-between border-b pb-2'>");
+            html.append("<span class='text-gray-600 font-medium'>Mã giao dịch:</span>");
+            html.append("<span class='text-gray-800'>").append(paymentResult.get("transactionNo")).append("</span>");
+            html.append("</div>");
+            html.append("</div>");
+            html.append("<div class='mt-6 text-center'>");
+            html.append("<a href='https://vnpay.vn/' class='inline-block bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700 transition duration-300'>Về trang chủ</a>");
+            html.append("</div>");
         } else {
-            html.append("<h1 class='failed'>Thanh toán thất bại</h1>");
+            html.append("<div class='text-center'>");
+            html.append("<i class='fas fa-times-circle text-red-500 text-5xl mb-4'></i>");
+            html.append("<h1 class='text-2xl font-bold text-red-600 mb-4'>Thanh toán thất bại</h1>");
+            html.append("</div>");
+            html.append("<div class='space-y-4'>");
+            html.append("<div class='text-center text-gray-600'>");
             html.append("<p>").append(paymentResult.get("message")).append("</p>");
-            if (paymentResult.containsKey("txnRef")) {
-                html.append("<p>Mã đơn hàng: ").append(paymentResult.get("txnRef")).append("</p>");
-            }
+            html.append("</div>");
+//            if (paymentResult.containsKey("txnRef")) {
+//                html.append("<div class='flex justify-between border-b pb-2'>");
+//                html.append("<span class='text-gray-600 font-medium'>Mã đơn hàng:</span>");
+//                html.append("<span class='text-gray-800'>").append(paymentResult.get("txnRef")).append("</span>");
+//                html.append("</div>");
+//            }
+            html.append("</div>");
+            html.append("<div class='mt-6 text-center'>");
+            html.append("<a href='").append(paymentURL).append("'").append(" class='inline-block bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 transition duration-300'>Thử lại</a>");
+            html.append("</div>");
         }
+
         html.append("</div>");
-        html.append("</body></html>");
+        html.append("</body>");
+        html.append("</html>");
         return html.toString();
     }
 
@@ -182,7 +247,6 @@ public class VnPayService implements IPaymentGateway{
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return response.toString();
     }
 }

@@ -84,12 +84,11 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
             
             // Bước 2: Chuẩn bị câu lệnh để xoá dữ liệu
             String sql = "DELETE FROM transactions_info"
-                    + " WHERE transactions_id = ? and domain_id = ?";
+                    + " WHERE transactions_id = ?;";
             PreparedStatement pst = con.prepareStatement(sql);
             
              // Bước 3: Gán giá trị id
             pst.setString(1, transactionInfo.getTransactionId());
-            pst.setInt(2, transactionInfo.getDomainId());
             // Bước 4: Thực thi câu lệnh UPDATE và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             System.out.println("Xoá dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
