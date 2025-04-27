@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 
 public class TransactionService implements ITransactionService {
 
-    private final ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll_V2();
+    private final ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll_V3();
     private final TransactionRepository transactionRepository = new TransactionRepository();
     private final TransactionInfoRepository transactionInfoRepository = new TransactionInfoRepository();
     private static JSONArray jsonArray;
@@ -74,8 +74,9 @@ public class TransactionService implements ITransactionService {
     }
     @Override
     public JSONObject createTransaction(JSONObject json) throws IOException {
-        // input: chuỗi domain người dùng đăng ký
-        // output: mã hoá đơn, trạng thái
+        // request: domains (JSONObject)
+        // response: transactionId (String), total(int), status (success / failed)
+
         if(json.isEmpty()) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("status", "failed");
@@ -89,10 +90,11 @@ public class TransactionService implements ITransactionService {
         transactionRepository.insert(tran);
         jsonArray = json.getJSONArray("domains"); // request
         int total = processTransactionDetails(transactionId, jsonArray);
-        PaymentService paymentService = new PaymentService();
-        paymentService.createPayment(transactionId, total);
+//        PaymentService paymentService = new PaymentService();
+//        paymentService.createPayment(transactionId, total);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("transaction_id", transactionId);
+        jsonObject.put("transactionId", transactionId);
+        jsonObject.put("total", total);
         jsonObject.put("status", "success");
         return  jsonObject;
     }
@@ -101,7 +103,7 @@ public class TransactionService implements ITransactionService {
         TransactionModel tran = transactionRepository.selectById_V2(transactionId);
         tran.setTransactionStatus(status);
         if(TransactionStatusEnum.COMPLETED.equals(status)){
-            int insert = processTransactionDetails(transactionId, jsonArray);
+            processTransactionDetails(transactionId, jsonArray);
         }
         transactionRepository.update(tran);
     }
@@ -136,5 +138,4 @@ public class TransactionService implements ITransactionService {
         }
         return total;
     }
-
 }

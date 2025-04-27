@@ -1,6 +1,10 @@
 package com.utc2.domainstore.AnhDu;
 
 import com.sun.net.httpserver.HttpServer;
+import com.utc2.domainstore.entity.database.TransactionInfoModel;
+import com.utc2.domainstore.entity.database.TransactionModel;
+import com.utc2.domainstore.repository.TransactionInfoRepository;
+import com.utc2.domainstore.repository.TransactionRepository;
 import com.utc2.domainstore.service.PaymentService;
 import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.service.VnPayService;
@@ -11,6 +15,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class TestApp {
@@ -51,10 +56,10 @@ public class TestApp {
 //        PaymentHistoryRepository.getInstance().delete(p);
         // ------------ Transaction -----------
         // Select All
-//        ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll();
-//        for(TransactionModel tran : transactions){
-//            System.out.println(tran);
-//        }
+        ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll();
+        for(TransactionModel tran : transactions){
+            System.out.println(tran);
+        }
         // SelectById
 //        TransactionModel t =new TransactionModel();
 //        t.setTransactionId("HD001");
@@ -75,8 +80,9 @@ public class TestApp {
         // ------------ Transaction Info -----------
         // Select All
 //        ArrayList<TransactionInfoModel> listTransactionInfo = TransactionInfoRepository.getInstance().selectAll();
-//        for(TransactionInfoModel t : listTransactionInfo)
+//        for(TransactionInfoModel t : listTransactionInfo) {
 //            System.out.println(t);
+//        }
         // SelectById
 //        TransactionInfoModel t =new TransactionInfoModel(); t.setTransactionId("HD001");
 //        System.out.println(TransactionInfoRepository.getInstance().selectById(t));
@@ -103,10 +109,28 @@ public class TestApp {
         domain2.put("price", 50000);
         domain2.put("years", 3);
         domainArray.put(domain2);
-        JSONObject addToCartInput = new JSONObject();
-        addToCartInput.put("user_id", 4);
-        addToCartInput.put("domains", domainArray);
+
+
+        JSONObject domains = new JSONObject();
+        domains.put("user_id", 4);
+        domains.put("domains", domainArray);
+
+        /* tạo hoá đơn
+        request: domains (JSONObject)
+        response: JSONObject{
+                  transactionId (String),
+                  total(int),
+                  status ("success" / "failed")
+                  }  */
         TransactionService transactionService = new TransactionService();
-        JSONObject jsonObject = transactionService.createTransaction(addToCartInput);
+        JSONObject jsonObject = transactionService.createTransaction(domains);
+        /* thanh toán
+        request: JSONObject {
+                    total (int),
+                    transactionId (String)
+                 }
+        response: true / false (boolean) */
+        PaymentService paymentService = new PaymentService();
+        paymentService.createPayment(jsonObject);
     }
 }
