@@ -58,14 +58,15 @@ public class TransactionRepository implements IRepository<TransactionModel> {
 
             // Bước 2: Chuẩn bị câu lệnh để cập nhật dữ liệu
             String sql = "UPDATE transactions "
-                    + "SET user_id = ?,transaction_date = ? "
+                    + "SET user_id = ?,transaction_date = ?, transaction_status = ? "
                     + "WHERE id = ?;";
             PreparedStatement pst = con.prepareStatement(sql);
 
             // Bước 3: Gán giá trị cho các tham số 
             pst.setInt(1, transaction.getUserId());
             pst.setDate(2, Date.valueOf(transaction.getTransactionDate()));
-            pst.setString(3, transaction.getTransactionId());
+            pst.setString(3, String.valueOf(transaction.getTransactionStatus()));
+            pst.setString(4, transaction.getTransactionId());
             // Bước 4: Thực thi câu lệnh UPDATE và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             System.out.println("Cập nhật dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
@@ -271,5 +272,57 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         }
         return listTransaction;
     }
+    public ArrayList<TransactionModel> selectAll_V2() {
+        ArrayList<TransactionModel> listTransaction = new ArrayList<>();
+        try {
+            Connection con = JDBC.getConnection();
+            String sql = "SELECT * FROM transactions ts "
+                    + "ORDER BY ts.id;";
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            TransactionModel t = new TransactionModel();
+            while (rs.next()) {
+                t.setTransactionId(rs.getString("id"));
+                t.setUserId(rs.getInt("user_id"));
+                t.setTransactionDate(rs.getDate("transaction_date").toLocalDate());
+                t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
+                listTransaction.add(t);
+            }
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            pst.close();
+        } catch (SQLException | NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
+        return listTransaction;
+    }
+    public TransactionModel selectById_V2(String transactionId) {
+        TransactionModel t = new TransactionModel();
+        try {
+            // Bước 1: Mở kết nối đến database
+            Connection con = JDBC.getConnection();
+            // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
+            String sql = "SELECT * FROM transactions WHERE id = ? ORDER BY id DESC;";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, transactionId);
 
+            // Bước 3: Thực thi truy vấn và nhận kết quả
+            ResultSet rs = pst.executeQuery();
+
+            // Bước 4: Duyệt qua kết quả và xử lý dữ liệu
+            if (rs.next()) {
+                t.setTransactionId(rs.getString("id"));
+                t.setUserId(rs.getInt("user_id"));
+                t.setTransactionDate(rs.getDate("transaction_date").toLocalDate());
+                t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
+            }
+
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            pst.close();
+        } catch (SQLException | NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
+        return t;
+    }
 }
