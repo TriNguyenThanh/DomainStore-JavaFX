@@ -123,10 +123,11 @@ public class DomainServices implements IDomain{
             if (tld != null && tld.getTldText() != null) {
                 fullDomainName += tld.getTldText();
             }
-
+            
             domainJson.put("name", fullDomainName);
             domainJson.put("status", domain.getStatus().toString().toLowerCase());
             domainJson.put("year", domain.getYears());
+            domainJson.put("price", (tld != null) ? tld.getPrice() : 0);
             domainJson.put("active_date", domain.getActiveDate());
             domainArray.put(domainJson);
         }
