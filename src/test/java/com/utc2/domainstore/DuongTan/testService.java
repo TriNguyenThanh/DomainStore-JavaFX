@@ -59,7 +59,7 @@ public class testService {
 
         //tìm kiếm tên miền đã bán theo user_id
         JSONObject input = new JSONObject();
-        input.put("user_id:", 9); 
+        input.put("user_id:", 1); 
 
         // Gọi hàm cần test
         DomainServices service = new DomainServices(); 
