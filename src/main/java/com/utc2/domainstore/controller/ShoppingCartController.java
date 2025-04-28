@@ -4,6 +4,7 @@ import com.utc2.domainstore.entity.view.DomainViewModel;
 import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.CartServices;
 import com.utc2.domainstore.service.ICart;
+import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ public class ShoppingCartController implements Initializable {
     private Label lbTotal;
 
     @FXML
-    private void handleButtonOnAction(ActionEvent event) {
+    private void handleButtonOnAction(ActionEvent event) throws IOException {
         if (event.getSource() == btRemove) {
             remove();
         } else if (event.getSource() == btBuy) {
@@ -123,9 +125,33 @@ public class ShoppingCartController implements Initializable {
         lbTotal.setText(String.format(": %,3d VND", 0));
     }
 
-    private void buy() {
+    private void buy() throws IOException {
         ObservableList<DomainViewModel> selectedItems = tbCart.getSelectionModel().getSelectedItems();
         remove();
-        // create a new transaction
+        JSONObject request = new JSONObject();
+        request.put("user_id", UserSession.getInstance().getUserId());
+        JSONArray domainArray = new JSONArray();
+        for (DomainViewModel domain : selectedItems) {
+            JSONObject domainJson = new JSONObject();
+            domainJson.put("name", domain.getName());
+            domainArray.put(domainJson);
+        }
+        request.put("domains", domainArray);
+        TransactionService transactionService = new TransactionService();
+        JSONObject respond = transactionService.createTransaction(request);
+        if (respond.getString("status").equals("success")) {
+            // open transaction info page
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(bundle.getString("success"));
+            alert.setHeaderText(null);
+            alert.setContentText(respond.getString("transaction_id"));
+            alert.showAndWait();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(bundle.getString("error"));
+            alert.setHeaderText(null);
+            alert.setContentText("Mua khong thanh cong");
+            alert.showAndWait();
+        }
     }
 }
