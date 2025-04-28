@@ -114,11 +114,10 @@ public class TransactionRepository implements IRepository<TransactionModel> {
             Connection con = JDBC.getConnection();
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
             String sql = "SELECT ts.id transactions_id, ts.user_id, ts.transaction_date,"
-                    + "tsi.domain_id, tsi.price, d.years, ts.transaction_status, p.payment_status, p.payment_date"
+                    + "tsi.domain_id, tsi.price, d.years, ts.transaction_status"
                     + " FROM transactions ts "
                     + "join transactions_info tsi on ts.id = tsi.transactions_id "
                     + "join domains d on tsi.domain_id = d.id "
-                    + "join paymenthistory p on ts.id = p.transaction_id "
                     + "WHERE transactions_id = ?;";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, transaction.getTransactionId());
@@ -135,14 +134,13 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setTransactionDate(rs.getDate("transaction_date").toLocalDate());
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
                     t.setTotalCost(0);
-                    t.setPaymentStatus(PaymentStatusEnum.valueOf(rs.getString("payment_status").toUpperCase()));
                 }
                 TransactionInfoModel tsi = new TransactionInfoModel(rs.getString("transactions_id"),
                         rs.getInt("domain_id"), rs.getInt("price"));
                 t.setTotalCost(t.getTotalCost() + tsi.getPrice());
                 t.getTransactionInfos().add(tsi);
             }
-            // Bước 5: Đóng kết nối 
+            // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
             pst.close();
         } catch (SQLException | NullPointerException e) {
@@ -160,11 +158,10 @@ public class TransactionRepository implements IRepository<TransactionModel> {
 
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
             String sql = "SELECT ts.id transactions_id, ts.user_id, ts.transaction_date,"
-                    + "tsi.domain_id, tsi.price, d.years, ts.transaction_status, p.payment_status, p.payment_date"
+                    + "tsi.domain_id, tsi.price, d.years, ts.transaction_status"
                     + " FROM transactions ts "
                     + "join transactions_info tsi on ts.id = tsi.transactions_id "
                     + "join domains d on tsi.domain_id = d.id "
-                    + "join paymenthistory p on ts.id = p.transaction_id "
                     + "ORDER BY ts.id;";
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -197,13 +194,12 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setUserId(userId);
                     t.setTransactionDate(rs.getDate("transaction_date").toLocalDate());
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
-                    t.setPaymentStatus(PaymentStatusEnum.valueOf(rs.getString("payment_status").toUpperCase()));
                     t.setTotalCost(price);
                     t.getTransactionInfos().add(tsi);
                     listTransaction.add(t);
                 }
             }
-            // Bước 5: Đóng kết nối 
+            // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
             pst.close();
         } catch (SQLException | NullPointerException e) {
@@ -221,11 +217,10 @@ public class TransactionRepository implements IRepository<TransactionModel> {
 
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
             String sql = "SELECT ts.id transactions_id, ts.user_id, ts.transaction_date,"
-                    + "tsi.domain_id, tsi.price, d.years, ts.transaction_status, p.payment_status, p.payment_date"
+                    + "tsi.domain_id, tsi.price, d.years, ts.transaction_status"
                     + " FROM transactions ts "
                     + "join transactions_info tsi on ts.id = tsi.transactions_id "
                     + "join domains d on tsi.domain_id = d.id "
-                    + "join paymenthistory p on ts.id = p.transaction_id "
                     + "WHERE " + condition + ";" ;
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -258,7 +253,6 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setUserId(userId);
                     t.setTransactionDate(rs.getDate("transaction_date").toLocalDate());
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
-                    t.setPaymentStatus(PaymentStatusEnum.valueOf(rs.getString("payment_status").toUpperCase()));
                     t.setTotalCost(price);
                     t.getTransactionInfos().add(tsi);
                     listTransaction.add(t);
@@ -272,7 +266,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         }
         return listTransaction;
     }
-    public ArrayList<TransactionModel> selectAll_V2() {
+    public ArrayList<TransactionModel> selectAll_V3() {
         ArrayList<TransactionModel> listTransaction = new ArrayList<>();
         try {
             Connection con = JDBC.getConnection();
@@ -325,4 +319,5 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         }
         return t;
     }
+
 }

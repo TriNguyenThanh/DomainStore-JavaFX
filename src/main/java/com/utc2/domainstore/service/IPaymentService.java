@@ -6,5 +6,5 @@ import java.io.IOException;
 
 public interface IPaymentService {
     JSONObject getUserPaymentHistory(JSONObject json);
-    boolean createPayment(String transactionId, int total) throws IOException;
+    boolean createPayment(JSONObject json) throws IOException;
 }

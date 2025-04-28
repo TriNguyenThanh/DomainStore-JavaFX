@@ -131,8 +131,8 @@ public class VnPayService implements IPaymentGateway{
                     result.put("status", "failed");
                     result.put("message", "Thanh toán thất bại. Mã lỗi: " + vnp_ResponseCode);
                     result.put("txnRef", fields.get("vnp_TxnRef"));
-                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
-                    TransactionInfoRepository.getInstance().delete(new TransactionInfoModel(transactionId,null,null));
+                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.PENDINGPAYMENT);
+//                    TransactionInfoRepository.getInstance().delete(new TransactionInfoModel(transactionId,null,null));
                 }
             } else {
                 // Invalid signature

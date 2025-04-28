@@ -46,7 +46,10 @@ public class PaymentService implements  IPaymentService{
     }
 
     @Override
-    public boolean createPayment(String transactionId, int total) throws IOException {
+    public boolean createPayment(JSONObject json) throws IOException {
+        // request: total (int), transactionId (String)
+        // response: true / false (boolean)
+
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/vnpay_return", new VNPayReturnHandler());
         server.setExecutor(null); // Sử dụng executor mặc định
@@ -54,7 +57,7 @@ public class PaymentService implements  IPaymentService{
         // Tạo transaction reference là timestamp hiện tại
         String txnRef = String.valueOf(System.currentTimeMillis());
         // Tạo URL thanh toán
-        this.paymentURL = vnPayService.createPaymentUrl(total, transactionId, txnRef);
+        paymentURL = vnPayService.createPaymentUrl(json.getInt("total"), json.getString("transactionId"), txnRef);
         try {
             // Kiểm tra xem Desktop có được hỗ trợ không
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
