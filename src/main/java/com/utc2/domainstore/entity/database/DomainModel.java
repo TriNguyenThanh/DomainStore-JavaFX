@@ -35,7 +35,14 @@ public class DomainModel {
         this.ownerId = ownerId;
         this.createdAt = createdAt;
     }
-
+    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Date activeDate, int years) {
+        this.id = id;
+        this.domainName = domainName;
+        this.tldId = tldId;
+        this.status = status;
+        this.activeDate = activeDate;
+        this.years = years;
+    }
     public DomainModel(String domainName, int tldId, DomainStatusEnum status, int years) {
         this.domainName = domainName;
         this.tldId = tldId;
