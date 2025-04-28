@@ -89,25 +89,32 @@ public class CartServices implements ICart {
 
             if (!DomainRepository.getInstance().isDomainExists(domainName, domainId.getId())) {
                 // Nếu domain chưa tồn tại trong DB insert mới
-                DomainModel newDomain = new DomainModel(name, domainId.getId(), DomainStatusEnum.available,1);
+                DomainModel newDomain = new DomainModel(name, domainId.getId(), DomainStatusEnum.available,years);
                 DomainRepository.getInstance().insert(newDomain);
 
                 // Lấy lại domain sau khi insert
                 DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, domainId.getId());
 
                 // Kiểm tra đã có trong cart chưa
-                if (!cartRepository.isDomainInCart(cus_id, domainModel.getId())) {
-                    boolean isAdded = cartRepository.addToCart(cus_id, domainModel.getId(), years);
+                if (!cartRepository.isDomainInCart2(cus_id, domainModel.getId())) {
+                    boolean isAdded = cartRepository.updateCart(cus_id, domainModel.getId(), years);
                     if (isAdded) successCount++;
                 }
             } else {
                 // Domain đã tồn tại trong DB
                 DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, domainId.getId());
-
                 // Kiểm tra đã có trong cart chưa
-                if (!cartRepository.isDomainInCart(cus_id, domainModel.getId())) {
-                    boolean isAdded = cartRepository.addToCart(cus_id, domainModel.getId(), years);
-                    if (isAdded) successCount++;
+                if (!cartRepository.isDomainInCart(cus_id, domainModel.getId(), years)) {
+                    DomainModel updateDomain = new DomainModel(
+                        domainModel.getId(), 
+                        domainModel.getDomainName(), 
+                        domainModel.getTldId(), 
+                        domainModel.getStatus(), 
+                        domainModel.getActiveDate(),
+                        years);
+                    DomainRepository.getInstance().update(updateDomain);
+                    cartRepository.updateCart(cus_id, domainModel.getId(), years);
+                    successCount++;
                 }
             }
         }
@@ -154,7 +161,7 @@ public class CartServices implements ICart {
 
             DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, tldModel.getId());
             if (domainModel != null) {
-                if (cartRepository.isDomainInCart(cus_id, domainModel.getId())) {
+                if (cartRepository.isDomainInCart2(cus_id, domainModel.getId())) {
                     boolean isRemoved = cartRepository.removeFromCart(cus_id, domainModel.getId());
                     if (isRemoved) successCount++;
                 }

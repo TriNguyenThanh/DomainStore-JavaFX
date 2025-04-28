@@ -14,10 +14,10 @@ public class RegisterServices implements IRegister{
         String email = jsonInput.getString("email");
         String personalId = jsonInput.getString("personal_id");
         String password = jsonInput.getString("password");
+        String role = jsonInput.getString("role");
 
         CustomerRepository customerDAO = new CustomerRepository();
-        JSONObject response = new JSONObject();
-
+        
         if (customerDAO.selectByPhone(phone) != null) {
             return createResponse("failed", "Phone number already exists.");
         }
@@ -29,8 +29,17 @@ public class RegisterServices implements IRegister{
         }
 
         String hashedPassword = PasswordUtils.hashedPassword(password);
-        CustomerModel newCustomer = new CustomerModel(name, email, phone, personalId, hashedPassword, RoleEnum.user);
-        
+
+        // Chuyển String role thành RoleEnum
+        RoleEnum userRole;
+        try {
+            userRole = RoleEnum.valueOf(role.toLowerCase()); 
+        } catch (IllegalArgumentException e) {
+            userRole = RoleEnum.user; 
+        }
+
+        CustomerModel newCustomer = new CustomerModel(name, email, phone, personalId, hashedPassword, userRole);
+
         int result = customerDAO.insert(newCustomer);
         if (result > 0) {
             return createResponse("success", "User registered successfully.");
@@ -38,6 +47,7 @@ public class RegisterServices implements IRegister{
             return createResponse("failed", "Failed to register user.");
         }
     }
+
     
     private JSONObject createResponse(String status, String message) {
         JSONObject response = new JSONObject();

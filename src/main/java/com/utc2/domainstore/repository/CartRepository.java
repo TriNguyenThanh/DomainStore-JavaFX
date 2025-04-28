@@ -205,26 +205,59 @@ public class CartRepository implements IRepository<CartModel>{
         return false;
     }
 
-    public boolean addToCart(int userId, int domainId, int years) {
-        if (!isDomainAvailable(domainId)) {
-            return false;
-        }
+    public boolean updateCart(int userId, int domainId, int years) {
+        String checkSql = "SELECT COUNT(*) FROM carts WHERE cus_id = ? AND domain_id = ?";
+        String updateSql = "UPDATE carts SET years = ? WHERE cus_id = ? AND domain_id = ?";
+        String insertSql = "INSERT INTO carts (cus_id, domain_id, years) VALUES (?, ?, ?)";
 
-        String sql = "INSERT INTO carts (cus_id, domain_id, years) VALUES (?, ?, ?)";
-        try (Connection con = JDBC.getConnection();
-             PreparedStatement pst = con.prepareStatement(sql)) {
+        try (Connection con = JDBC.getConnection()) {
+            // Kiểm tra xem domain đã có trong giỏ chưa
+            try (PreparedStatement checkPst = con.prepareStatement(checkSql)) {
+                checkPst.setInt(1, userId);
+                checkPst.setInt(2, domainId);
 
-            pst.setInt(1, userId);
-            pst.setInt(2, domainId);
-            pst.setInt(3, years);
-
-            return pst.executeUpdate() > 0;
+                try (ResultSet rs = checkPst.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        // Đã có -> Update years
+                        try (PreparedStatement updatePst = con.prepareStatement(updateSql)) {
+                            updatePst.setInt(1, years);
+                            updatePst.setInt(2, userId);
+                            updatePst.setInt(3, domainId);
+                            return updatePst.executeUpdate() > 0;
+                        }
+                    } else {
+                        // Chưa có -> Insert mới
+                        try (PreparedStatement insertPst = con.prepareStatement(insertSql)) {
+                            insertPst.setInt(1, userId);
+                            insertPst.setInt(2, domainId);
+                            insertPst.setInt(3, years);
+                            return insertPst.executeUpdate() > 0;
+                        }
+                    }
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
-    public boolean isDomainInCart(int customerId, int domainId) {
+
+    public boolean isDomainInCart(int customerId, int domainId, int years) {
+        String sql = "SELECT 1 FROM carts JOIN domains domains.id = carts.domain_id WHERE (cus_id = ? AND domain_id = ? AND years = ?)";
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, customerId);
+            stmt.setInt(2, domainId);
+            stmt.setInt(2, years);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean isDomainInCart2(int customerId, int domainId) {
         String sql = "SELECT 1 FROM carts WHERE (cus_id = ? AND domain_id = ?)";
         try (Connection conn = JDBC.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
