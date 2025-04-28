@@ -4,6 +4,7 @@ import com.utc2.domainstore.entity.view.BillViewModel;
 import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.ITransactionService;
 import com.utc2.domainstore.service.TransactionService;
+import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
@@ -22,7 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -35,7 +36,7 @@ public class TransactionController implements Initializable {
     @FXML
     private TableColumn<BillViewModel, String> colID;
     @FXML
-    private TableColumn<BillViewModel, Date> colDate;
+    private TableColumn<BillViewModel, LocalDate> colDate;
     @FXML
     private TableColumn<BillViewModel, STATUS> colStatus;
     @FXML
@@ -51,6 +52,8 @@ public class TransactionController implements Initializable {
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
 
         getSelectedButton.setOnAction(event -> {
             BillViewModel selectedBill = tableView.getSelectionModel().getSelectedItem();
@@ -103,7 +106,7 @@ public class TransactionController implements Initializable {
         for (Object o : list) {
             JSONObject jsonObject = (JSONObject) o;
             String id = jsonObject.getString("id");
-            Date date = Date.valueOf(jsonObject.get("date").toString());
+            LocalDate date = LocalDate.parse(jsonObject.optString("date"));
             STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
             int price = jsonObject.getInt("total_price");
 

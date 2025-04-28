@@ -279,12 +279,3 @@ INSERT INTO PaymentHistory (transaction_id, payment_method, payment_status, paym
 -- HD008: cancelled
 ('HD009', 2, 'completed', '2024-11-25'),
 ('HD010', 3, 'completed', '2025-03-15');
-
-
-
-
-
-
-
-
-

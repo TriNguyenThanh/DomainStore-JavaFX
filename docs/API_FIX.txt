@@ -1,0 +1,2 @@
+- Registor cần thêm role đăng ký
+- 

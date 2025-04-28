@@ -144,7 +144,7 @@ public class ShoppingCartController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(bundle.getString("success"));
             alert.setHeaderText(null);
-            alert.setContentText(respond.getString("transaction_id"));
+            alert.setContentText(respond.getString("transactionId"));
             alert.showAndWait();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);

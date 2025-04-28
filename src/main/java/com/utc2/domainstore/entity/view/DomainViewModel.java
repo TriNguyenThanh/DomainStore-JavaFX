@@ -1,10 +1,13 @@
 package com.utc2.domainstore.entity.view;
 
+import java.time.LocalDate;
+
 public class DomainViewModel {
     private String name;
     private STATUS status;
     private int price;
     private int years;
+    private LocalDate date;
 
     public DomainViewModel() {
 
@@ -15,6 +18,14 @@ public class DomainViewModel {
         this.status = status;
         this.price = price;
         this.years = years;
+    }
+
+    public DomainViewModel(String name, STATUS status, int price, int years, LocalDate date) {
+        this.name = name;
+        this.status = status;
+        this.price = price;
+        this.years = years;
+        this.date = date;
     }
 
     public String getName() {
@@ -47,6 +58,14 @@ public class DomainViewModel {
 
     public void setYears(int years) {
         this.years = years;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     @Override

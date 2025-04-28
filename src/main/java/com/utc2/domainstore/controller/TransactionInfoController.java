@@ -6,6 +6,7 @@ import com.utc2.domainstore.entity.view.BillViewModel;
 import com.utc2.domainstore.entity.view.DomainViewModel;
 import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.*;
+import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -121,7 +122,7 @@ public class TransactionInfoController implements Initializable {
         lbEmail.setText(accountModel.getEmail());
 
         lbBillID.setText(String.valueOf(billViewModel.getId()));
-        lbDate.setText(String.valueOf(billViewModel.getDate()));
+        lbDate.setText(billViewModel.getDate().format(ConfigManager.getInstance().getFormatter()));
         lbTotal.setText(bundle.getString("total") + ": " + billViewModel.getPrice());
         lbStatus.setText(String.valueOf(billViewModel.getStatus()));
     }
