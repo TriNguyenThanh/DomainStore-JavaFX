@@ -12,7 +12,7 @@ public class TransactionModel {
     private PaymentStatusEnum paymentStatus;
     
     private Integer totalCost;
-    private ArrayList<TransactionInfoModel> transactionInfos = new ArrayList<>();
+    private final ArrayList<TransactionInfoModel> transactionInfos = new ArrayList<>();
 
     public TransactionModel() {
     }
@@ -88,10 +88,6 @@ public class TransactionModel {
 
     public ArrayList<TransactionInfoModel> getTransactionInfos() {
         return transactionInfos;
-    }
-
-    public void setTransactionInfos(ArrayList<TransactionInfoModel> transactionInfos) {
-        this.transactionInfos = transactionInfos;
     }
 
     @Override
