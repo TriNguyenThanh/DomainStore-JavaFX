@@ -107,6 +107,8 @@ public class ShoppingCartController implements Initializable {
         for (DomainViewModel domain : selectedItems) {
             JSONObject domainJson = new JSONObject();
             domainJson.put("name", domain.getName());
+            domainJson.put("price", domain.getPrice());
+            domainJson.put("years", domain.getYears());
             domainArray.put(domainJson);
         }
         request.put("domain", domainArray);
@@ -127,13 +129,15 @@ public class ShoppingCartController implements Initializable {
 
     private void buy() throws IOException {
         ObservableList<DomainViewModel> selectedItems = tbCart.getSelectionModel().getSelectedItems();
-        remove();
+
         JSONObject request = new JSONObject();
         request.put("user_id", UserSession.getInstance().getUserId());
         JSONArray domainArray = new JSONArray();
         for (DomainViewModel domain : selectedItems) {
             JSONObject domainJson = new JSONObject();
             domainJson.put("name", domain.getName());
+            domainJson.put("price", domain.getPrice());
+            domainJson.put("years", domain.getYears());
             domainArray.put(domainJson);
         }
         request.put("domains", domainArray);
@@ -153,5 +157,6 @@ public class ShoppingCartController implements Initializable {
             alert.setContentText("Mua khong thanh cong");
             alert.showAndWait();
         }
+        remove();
     }
 }

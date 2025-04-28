@@ -124,6 +124,7 @@ public class RegisterController implements Initializable {
             requestJSON.put("email", emailTextfield.getText());
             requestJSON.put("personal_id", psIDTextfield.getText());
             requestJSON.put("password", passwordField.getText());
+            requestJSON.put("role", "user");
 
             // nhận respone
             try {

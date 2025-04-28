@@ -116,7 +116,7 @@ public class SearchController implements Initializable {
                 String price = String.valueOf(domain.getInt("price"));
 
                 lbDomain.setText(name);
-                lbStatus.setText(status);
+                lbStatus.setText(bundle.getString(String.valueOf(status).toLowerCase()));
                 lbPrice.setText(price);
 
                 domainViewModel.setName(name);
@@ -144,21 +144,24 @@ public class SearchController implements Initializable {
                 recomment.getChildren().add(label);
             }
         } else if (respond.getString("status").equals("failed")) {
-            System.out.println("Khong tim thay");
             lbDomain.setText("");
             lbStatus.setText("");
             lbPrice.setText("");
             lbDomain.setStyle("-fx-text-fill: #FF0000;");
             lbStatus.setStyle("-fx-text-fill: #FF0000;");
             lbPrice.setStyle("-fx-text-fill: #FF0000;");
-
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle(bundle.getString("warning"));
+            alert.setHeaderText(null);
+            alert.setContentText(bundle.getString("notice.domainNotSuported") + ": '" + domainName.substring(domainName.lastIndexOf('.')) + "'");
+            alert.showAndWait();
         } else {
             String name = respond.getString("name");
             String status = respond.getString("status");
             String price = String.valueOf(respond.getInt("price"));
 
             lbDomain.setText(name);
-            lbStatus.setText(status);
+            lbStatus.setText(bundle.getString(String.valueOf(status).toLowerCase()));
             lbPrice.setText(price);
             if (STATUS.valueOf(status.toUpperCase()) == STATUS.AVAILABLE) {
                 lbStatus.setStyle("-fx-text-fill: #00FF00;");

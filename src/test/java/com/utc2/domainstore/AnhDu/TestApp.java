@@ -1,9 +1,6 @@
 package com.utc2.domainstore.AnhDu;
 
-import com.sun.net.httpserver.HttpServer;
-import com.utc2.domainstore.entity.database.TransactionInfoModel;
 import com.utc2.domainstore.entity.database.TransactionModel;
-import com.utc2.domainstore.repository.TransactionInfoRepository;
 import com.utc2.domainstore.repository.TransactionRepository;
 import com.utc2.domainstore.service.PaymentService;
 import com.utc2.domainstore.service.TransactionService;
@@ -11,15 +8,12 @@ import com.utc2.domainstore.service.VnPayService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class TestApp {
     static VnPayService vnPayService = new VnPayService();
+
     public static void main(String[] args) throws IOException {
 
 // ------------ PaymentService -----------
@@ -57,7 +51,7 @@ public class TestApp {
         // ------------ Transaction -----------
         // Select All
         ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll();
-        for(TransactionModel tran : transactions){
+        for (TransactionModel tran : transactions) {
             System.out.println(tran);
         }
         // SelectById
@@ -98,13 +92,13 @@ public class TestApp {
 
         JSONArray domainArray = new JSONArray();
         JSONObject domain1 = new JSONObject();
-        domain1.put("name", "yourbrand.info");
+        domain1.put("name", "diamonielts.com");
         domain1.put("status", "available");
         domain1.put("price", 60000);
         domain1.put("years", 2);
         domainArray.put(domain1);
         JSONObject domain2 = new JSONObject();
-        domain2.put("name", "techhub.info");
+        domain2.put("name", "spicydonut.info");
         domain2.put("status", "available");
         domain2.put("price", 50000);
         domain2.put("years", 3);
