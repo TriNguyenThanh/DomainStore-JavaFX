@@ -7,4 +7,5 @@ public interface IAccount {
     public JSONObject updateUser(JSONObject t);
     public JSONObject updateUserPassword(JSONObject t);
     public JSONObject getAllUserAccount();
+    public JSONObject lockedAccount(JSONObject t);
 }

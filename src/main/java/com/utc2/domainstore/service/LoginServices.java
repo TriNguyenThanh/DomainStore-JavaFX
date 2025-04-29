@@ -16,11 +16,11 @@ public class LoginServices implements ILogin{
         CustomerModel customer = customerDAO.selectByPhone(username);
 
         JSONObject response = new JSONObject();
-        if (customer == null) {
-            response.put("error", "User not found");
+        // Kiểm tra tồn tại và trạng thái bị khóa (xóa mềm)
+        if (customer == null || customer.getIsDeleted()) {
+            response.put("error", "User not found or has been locked");
             return response;
         }
-
         Argon2 argon2 = Argon2Factory.create();
         boolean isVerified = argon2.verify(customer.getPasswordHash(), password);
 
