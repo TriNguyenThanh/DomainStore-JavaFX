@@ -69,38 +69,6 @@ public class TransactionInfoController implements Initializable {
     }
 
     private void pay() throws IOException {
-//        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-//        server.createContext("/vnpay_return", new PaymentService.VNPayReturnHandler());
-//        server.setExecutor(null); // Sử dụng executor mặc định
-//        server.start();
-//
-//        int amount = billViewModel.getPrice();
-//
-//        String orderInfo = billViewModel.getId();
-//
-//        // Tạo transaction reference là timestamp hiện tại
-//        String txnRef = String.valueOf(System.currentTimeMillis());
-//
-//        // Tạo URL thanh toán
-//        String paymentUrl = vnPayService.createPaymentUrl(amount, orderInfo, txnRef);
-//
-////            System.out.println(paymentUrl);
-//        try {
-//
-//
-//            // Kiểm tra xem Desktop có được hỗ trợ không
-//            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-//                // Tạo URI từ URL
-//                URI uri = new URI(paymentUrl);
-//                // Mở URL trong trình duyệt mặc định
-//                Desktop.getDesktop().browse(uri);
-//            } else {
-//                System.out.println("Desktop không được hỗ trợ trên hệ thống này.");
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-////        server.stop(0);
         // Handle the payment return
         JSONObject request = new JSONObject();
         request.put("transactionId", billViewModel.getId());
@@ -115,6 +83,7 @@ public class TransactionInfoController implements Initializable {
             alert.setHeaderText(null);
             alert.setContentText(bundle.getString("notice.paymentSuccess"));
             alert.showAndWait();
+
         } else {
             // Handle failed payment
             Alert alert = new Alert(Alert.AlertType.ERROR);

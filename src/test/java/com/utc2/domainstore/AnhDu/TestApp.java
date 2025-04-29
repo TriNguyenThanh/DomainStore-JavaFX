@@ -118,6 +118,7 @@ public class TestApp {
                   }  */
         TransactionService transactionService = new TransactionService();
         JSONObject jsonObject = transactionService.createTransaction(domains);
+        System.out.println(jsonObject);
         /* thanh toán
         request: JSONObject {
                     total (int),

@@ -8,6 +8,7 @@ public class BillViewModel {
     private STATUS status;
     private int price;
 
+
     public BillViewModel(String id, LocalDate date, STATUS status, int price) {
         this.id = id;
         this.date = date;

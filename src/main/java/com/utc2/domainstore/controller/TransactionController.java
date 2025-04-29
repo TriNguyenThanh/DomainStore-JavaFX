@@ -90,6 +90,7 @@ public class TransactionController implements Initializable {
 
         Scene billInfoScene = new Scene(root);
         billInfoStage.setScene(billInfoScene);
+
         billInfoStage.showAndWait();
     }
 
