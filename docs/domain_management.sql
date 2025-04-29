@@ -5,11 +5,12 @@ USE DOMAINMANAGEMENT;
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL, 
-    email VARCHAR(255) UNIQUE NOT NULL,
-    phone VARCHAR(20) UNIQUE NOT NULL,
-    cccd VARCHAR(20) UNIQUE NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    cccd VARCHAR(20) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('user', 'admin') DEFAULT 'user',
+    is_deleted BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -279,12 +280,3 @@ INSERT INTO PaymentHistory (transaction_id, payment_method, payment_status, paym
 -- HD008: cancelled
 ('HD009', 2, 'completed', '2024-11-25'),
 ('HD010', 3, 'completed', '2025-03-15');
-
-
-
-
-
-
-
-
-

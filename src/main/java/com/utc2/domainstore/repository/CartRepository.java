@@ -243,12 +243,12 @@ public class CartRepository implements IRepository<CartModel>{
     }
 
     public boolean isDomainInCart(int customerId, int domainId, int years) {
-        String sql = "SELECT 1 FROM carts JOIN domains domains.id = carts.domain_id WHERE (cus_id = ? AND domain_id = ? AND years = ?)";
+        String sql = "SELECT * FROM carts WHERE (cus_id = ? AND domain_id = ? AND years = ?)";
         try (Connection conn = JDBC.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, customerId);
             stmt.setInt(2, domainId);
-            stmt.setInt(2, years);
+            stmt.setInt(3, years);
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next();
             }

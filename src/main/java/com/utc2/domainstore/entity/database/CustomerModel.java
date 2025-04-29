@@ -1,4 +1,3 @@
-
 package com.utc2.domainstore.entity.database;
 
 import java.sql.Timestamp;
@@ -11,8 +10,14 @@ public class CustomerModel {
     private String cccd;
     private String passwordHash;
     private RoleEnum role;
+    private boolean isDeleted; // Thêm thuộc tính isDeleted
     private Timestamp createdAt;
+
     public CustomerModel() {
+    }
+
+    public CustomerModel(int id) {
+        this.id = id;
     }
 
     public CustomerModel(String fullName, String email, String phone, String cccd, String passwordHash, RoleEnum role) {
@@ -23,11 +28,13 @@ public class CustomerModel {
         this.passwordHash = passwordHash;
         this.role = role;
     }
-    public CustomerModel(String phone,RoleEnum role) {
+
+    public CustomerModel(String phone, RoleEnum role) {
         this.phone = phone;
         this.role = role;
     }
-    //khong password
+
+    // Không password
     public CustomerModel(int id, String fullName, String email, String phone, String cccd, RoleEnum role, Timestamp createdAt) {
         this.id = id;
         this.fullName = fullName;
@@ -37,7 +44,8 @@ public class CustomerModel {
         this.role = role;
         this.createdAt = createdAt;
     }
-    public CustomerModel(int id, String fullName, String email, String phone, String cccd, String passwordHash, RoleEnum role, Timestamp createdAt) {
+
+    public CustomerModel(int id, String fullName, String email, String phone, String cccd, String passwordHash, RoleEnum role, boolean isDeleted, Timestamp createdAt) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -45,6 +53,7 @@ public class CustomerModel {
         this.cccd = cccd;
         this.passwordHash = passwordHash;
         this.role = role;
+        this.isDeleted = isDeleted;
         this.createdAt = createdAt;
     }
 
@@ -104,6 +113,14 @@ public class CustomerModel {
         this.role = role;
     }
 
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -114,6 +131,15 @@ public class CustomerModel {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", fullName=" + fullName + ", email=" + email + ", phone=" + phone + ", cccd=" + cccd + ", role=" + role + ", createdAt=" + createdAt + '}';
+        return "User{" +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", cccd='" + cccd + '\'' +
+                ", role=" + role +
+                ", isDeleted=" + isDeleted +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
