@@ -103,16 +103,16 @@ public class CartServices implements ICart {
             } else {
                 // Domain đã tồn tại trong DB
                 DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, domainId.getId());
+                DomainModel updateDomain = new DomainModel(
+                    domainModel.getId(), 
+                    domainModel.getDomainName(), 
+                    domainModel.getTldId(), 
+                    domainModel.getStatus(), 
+                    domainModel.getActiveDate(),
+                    years);
+                DomainRepository.getInstance().update(updateDomain);
                 // Kiểm tra đã có trong cart chưa
                 if (!cartRepository.isDomainInCart(cus_id, domainModel.getId(), years)) {
-                    DomainModel updateDomain = new DomainModel(
-                        domainModel.getId(), 
-                        domainModel.getDomainName(), 
-                        domainModel.getTldId(), 
-                        domainModel.getStatus(), 
-                        domainModel.getActiveDate(),
-                        years);
-                    DomainRepository.getInstance().update(updateDomain);
                     cartRepository.updateCart(cus_id, domainModel.getId(), years);
                     successCount++;
                 }
