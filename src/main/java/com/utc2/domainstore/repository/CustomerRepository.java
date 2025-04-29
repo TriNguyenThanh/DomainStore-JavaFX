@@ -51,9 +51,9 @@ public class CustomerRepository implements IRepository<CustomerModel> {
     public int update(CustomerModel customer) {
         String sql;
         if (customer.getPasswordHash() == null || customer.getPasswordHash().isEmpty()) {
-            sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, role=? WHERE id=?";
+            sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, role=?, is_deleted=? WHERE id=?";
         } else {
-            sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, password_hash=?, role=? WHERE id=?";
+            sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, password_hash=?, role=?, is_deleted=? WHERE id=?";
         }
 
         try (Connection con = JDBC.getConnection();
@@ -66,11 +66,13 @@ public class CustomerRepository implements IRepository<CustomerModel> {
 
             if (customer.getPasswordHash() == null || customer.getPasswordHash().isEmpty()) {
                 pst.setString(5, customer.getRole().name());
-                pst.setInt(6, customer.getId());
+                pst.setBoolean(6, customer.getIsDeleted());
+                pst.setInt(7, customer.getId());
             } else {
                 pst.setString(5, customer.getPasswordHash());
                 pst.setString(6, customer.getRole().name());
-                pst.setInt(7, customer.getId());
+                pst.setBoolean(7, customer.getIsDeleted());
+                pst.setInt(8, customer.getId());
             }
 
             return pst.executeUpdate();
@@ -79,6 +81,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
         }
         return 0;
     }
+
 
 
 
@@ -119,6 +122,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                             rs.getString("cccd"),
                             rs.getString("password_hash"),
                             RoleEnum.valueOf(rs.getString("role")),
+                            rs.getBoolean("is_deleted"),
                             rs.getTimestamp("created_at")
                     );
                 }
@@ -147,6 +151,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                         rs.getString("cccd"),
                         rs.getString("password_hash"),
                         RoleEnum.valueOf(rs.getString("role")),
+                        rs.getBoolean("is_deleted"),
                         rs.getTimestamp("created_at")
                 ));
             }
@@ -175,6 +180,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                         rs.getString("cccd"),
                         rs.getString("password_hash"),
                         RoleEnum.valueOf(rs.getString("role")),
+                        rs.getBoolean("is_deleted"),
                         rs.getTimestamp("created_at")
                 ));
             }
@@ -200,6 +206,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                             rs.getString("cccd"),
                             rs.getString("password_hash"),
                             RoleEnum.valueOf(rs.getString("role")),
+                            rs.getBoolean("is_deleted"),
                             rs.getTimestamp("created_at")
                     );
                 }
@@ -226,6 +233,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                             rs.getString("cccd"),
                             rs.getString("password_hash"),
                             RoleEnum.valueOf(rs.getString("role")),
+                            rs.getBoolean("is_deleted"),
                             rs.getTimestamp("created_at")
                     );
                 }
@@ -252,6 +260,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                             rs.getString("cccd"),
                             rs.getString("password_hash"),
                             RoleEnum.valueOf(rs.getString("role")),
+                            rs.getBoolean("is_deleted"),
                             rs.getTimestamp("created_at")
                     );
                 }
