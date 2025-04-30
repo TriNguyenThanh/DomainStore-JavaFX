@@ -86,7 +86,7 @@ public class AccountController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/change_password.fxml"), rb);
             Parent root = fxmlLoader.load();
 
-            changePasswordController controller = fxmlLoader.getController();
+            ChangePasswordController controller = fxmlLoader.getController();
             controller.setData(rootData.getHash_password());
 
             Stage stage = new Stage();
@@ -98,7 +98,7 @@ public class AccountController implements Initializable {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
             rootData = newData = getRootData();
-            
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

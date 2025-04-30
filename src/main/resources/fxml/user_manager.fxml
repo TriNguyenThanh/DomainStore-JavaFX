@@ -4,8 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="640.0" prefWidth="1020.0" stylesheets="@../style/cart.css"
-            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<AnchorPane prefHeight="640.0" prefWidth="1020.0" stylesheets="@../style/subwindow.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.utc2.domainstore.controller.UserManagerController">
     <children>
         <BorderPane layoutX="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
@@ -44,11 +44,11 @@
                                       BorderPane.alignment="CENTER">
                                     <children>
                                         <Button fx:id="btAdd" mnemonicParsing="false" prefHeight="50.0"
-                                                prefWidth="140.0" text="%add"/>
+                                                prefWidth="140.0" text="%add" onAction="#onHandleButton"/>
                                         <Button fx:id="btRemove" mnemonicParsing="false" prefHeight="50.0"
-                                                prefWidth="140.0" text="%remove"/>
+                                                prefWidth="140.0" text="%lock" onAction="#onHandleButton"/>
                                         <Button fx:id="btEdit" mnemonicParsing="false" prefHeight="50.0"
-                                                prefWidth="140.0" text="%edit"/>
+                                                prefWidth="140.0" text="%edit" onAction="#onHandleButton"/>
                                     </children>
                                     <BorderPane.margin>
                                         <Insets left="10.0"/>
@@ -58,7 +58,8 @@
                             <center>
                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                     <children>
-                                        <TextField prefHeight="50.0" promptText="%search" AnchorPane.leftAnchor="0.0"
+                                        <TextField fx:id="tfSearch" prefHeight="50.0" promptText="%search"
+                                                   AnchorPane.leftAnchor="0.0"
                                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
                                         <TableView fx:id="table" prefHeight="448.0" prefWidth="772.0"
                                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
@@ -66,10 +67,11 @@
                                             <columns>
                                                 <TableColumn fx:id="colID" prefWidth="90" text="%id"/>
                                                 <TableColumn fx:id="colUsername" prefWidth="200" text="%username"/>
-                                                <TableColumn fx:id="colPhone" prefWidth="200" text="%phone"/>
+                                                <TableColumn fx:id="colPhone" prefWidth="160" text="%phone"/>
                                                 <TableColumn fx:id="colEmail" prefWidth="150" text="%email"/>
-                                                <TableColumn fx:id="colPsID" prefWidth="200" text="%personal_id"/>
+                                                <TableColumn fx:id="colPsID" prefWidth="150" text="%personal_id"/>
                                                 <TableColumn fx:id="colRole" prefWidth="90" text="%role"/>
+                                                <TableColumn fx:id="colStatus" prefWidth="160" text="%status"/>
                                             </columns>
                                         </TableView>
                                     </children>

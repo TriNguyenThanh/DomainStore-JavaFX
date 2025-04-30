@@ -50,7 +50,7 @@ public class MainController implements Initializable {
         } else if (focus != e.getSource() && e.getSource() == btDomain && UserSession.getInstance().getRole() == RoleEnum.admin) {
             load("/fxml/domain_manager.fxml");
         } else if (focus != e.getSource() && e.getSource() == btCheckBill && UserSession.getInstance().getRole() == RoleEnum.admin) {
-            load("/fxml/transaction_manager.fxml");
+            load("/fxml/confirmTransaction.fxml");
         } else if (focus != e.getSource() && e.getSource() == btCheckPayment && UserSession.getInstance().getRole() == RoleEnum.admin) {
             load("/fxml/payment_manager.fxml");
         }

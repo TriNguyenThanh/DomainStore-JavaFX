@@ -1,37 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-
-<AnchorPane prefHeight="800.0" prefWidth="600.0" styleClass="pnBackground" stylesheets="@../style/billInfo.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.TransactionInfoController">
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="800.0" prefWidth="600.0" styleClass="pnBackground" stylesheets="@../style/billInfo.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.utc2.domainstore.controller.TransactionInfoController">
     <children>
-        <BorderPane layoutX="78.0" layoutY="33.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <BorderPane layoutX="78.0" layoutY="33.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
                 <AnchorPane prefHeight="74.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                     <children>
-                        <Label alignment="CENTER" layoutX="320.0" layoutY="37.0" styleClass="header" text="%bill" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                        <Label alignment="CENTER" layoutX="320.0" layoutY="37.0" styleClass="header" text="%bill"
+                               AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
+                               AnchorPane.topAnchor="10.0"/>
                     </children>
                 </AnchorPane>
             </top>
             <center>
                 <AnchorPane prefHeight="254.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                     <children>
-                        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0"
+                                    AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
+                                    AnchorPane.topAnchor="10.0">
                             <center>
                                 <AnchorPane prefHeight="316.0" prefWidth="579.0" BorderPane.alignment="CENTER">
                                     <children>
-                                        <TableView fx:id="table" layoutX="11.2" prefHeight="134.0" prefWidth="558.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="10.0">
+                                        <TableView fx:id="table" layoutX="11.2" prefHeight="134.0" prefWidth="558.0"
+                                                   AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"
+                                                   AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="10.0">
                                             <columns>
-                                                <TableColumn fx:id="colDomainName" prefWidth="240.00000607967377" resizable="false" text="%domainName" />
-                                                <TableColumn fx:id="colDomainStatus" prefWidth="173.5999755859375" resizable="false" text="%status" />
-                                                <TableColumn fx:id="colDomainYears" prefWidth="96.0" resizable="false" text="%year" />
-                                                <TableColumn fx:id="colDomainPrice" prefWidth="227.19999389648433" resizable="false" text="%price" />
+                                                <TableColumn fx:id="colDomainName" prefWidth="240.00000607967377"
+                                                             resizable="false" text="%domainName"/>
+                                                <TableColumn fx:id="colDomainStatus" prefWidth="173.5999755859375"
+                                                             resizable="false" text="%status"/>
+                                                <TableColumn fx:id="colDomainYears" prefWidth="96.0" resizable="false"
+                                                             text="%year"/>
+                                                <TableColumn fx:id="colDomainPrice" prefWidth="227.19999389648433"
+                                                             resizable="false" text="%price"/>
                                             </columns>
                                         </TableView>
                                     </children>
@@ -40,24 +46,26 @@
                             <top>
                                 <AnchorPane prefHeight="172.0" prefWidth="579.0" BorderPane.alignment="CENTER">
                                     <children>
-                                        <HBox layoutX="14.0" layoutY="25.0" prefHeight="100.0" prefWidth="200.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                        <HBox layoutX="14.0" layoutY="25.0" prefHeight="100.0" prefWidth="200.0"
+                                              spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"
+                                              AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <children>
                                                 <VBox prefHeight="176.0" prefWidth="400.0">
                                                     <children>
-                                                        <Label text="%username" />
-                                                        <Label text="%phone" />
-                                                        <Label text="%email" />
-                                                        <Label text="%billID" />
-                                                        <Label text="%date" />
+                                                        <Label text="%username"/>
+                                                        <Label text="%phone"/>
+                                                        <Label text="%email"/>
+                                                        <Label text="%billID"/>
+                                                        <Label text="%date"/>
                                                     </children>
                                                 </VBox>
                                                 <VBox prefHeight="176.0" prefWidth="687.0">
                                                     <children>
-                                                        <Label fx:id="lbUsername" prefWidth="300.0" />
-                                                        <Label fx:id="lbPhone" prefWidth="300.0" />
-                                                        <Label fx:id="lbEmail" prefWidth="300.0" />
-                                                        <Label fx:id="lbBillID" prefWidth="300.0" />
-                                                        <Label fx:id="lbDate" prefWidth="300.0" />
+                                                        <Label fx:id="lbUsername" prefWidth="300.0"/>
+                                                        <Label fx:id="lbPhone" prefWidth="300.0"/>
+                                                        <Label fx:id="lbEmail" prefWidth="300.0"/>
+                                                        <Label fx:id="lbBillID" prefWidth="300.0"/>
+                                                        <Label fx:id="lbDate" prefWidth="300.0"/>
                                                     </children>
                                                 </VBox>
                                             </children>
@@ -68,7 +76,9 @@
                             <bottom>
                                 <AnchorPane prefHeight="36.0" prefWidth="579.0" BorderPane.alignment="CENTER">
                                     <children>
-                                        <Label fx:id="lbTotal" layoutX="446.0" layoutY="7.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                                        <Label fx:id="lbTotal" layoutX="446.0" layoutY="7.0"
+                                               AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0"
+                                               AnchorPane.topAnchor="10.0"/>
                                     </children>
                                 </AnchorPane>
                             </bottom>
@@ -79,7 +89,7 @@
             <bottom>
                 <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <right>
-                        <AnchorPane fx:id="imgQR" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                        <AnchorPane fx:id="imgQR" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
                     </right>
                     <center>
                         <AnchorPane prefHeight="149.0" prefWidth="527.0" BorderPane.alignment="CENTER">
@@ -88,31 +98,35 @@
                                     <children>
                                         <VBox prefHeight="146.0" prefWidth="182.0">
                                             <children>
-                                                <Label text="%status" />
-                                                <Label text="%paymentID" />
-                                                <Label text="%method" />
-                                                <Label text="%date" />
+                                                <Label text="%status"/>
+                                                <Label text="%paymentID"/>
+                                                <Label text="%method"/>
+                                                <Label text="%date"/>
                                             </children>
                                         </VBox>
                                         <VBox prefHeight="146.0" prefWidth="332.0">
                                             <children>
-                                                <Label fx:id="lbStatus" />
-                                                <Label fx:id="lbPaymentID" />
-                                                <Label fx:id="lbMethod" />
-                                                <Label fx:id="lbPaymentDate" />
+                                                <Label fx:id="lbStatus"/>
+                                                <Label fx:id="lbPaymentID"/>
+                                                <Label fx:id="lbMethod"/>
+                                                <Label fx:id="lbPaymentDate"/>
                                             </children>
                                         </VBox>
                                     </children>
                                 </HBox>
-                                <AnchorPane prefHeight="50.0" prefWidth="579.0" />
+                                <AnchorPane prefHeight="50.0" prefWidth="579.0"/>
                             </children>
                         </AnchorPane>
                     </center>
                     <bottom>
                         <AnchorPane prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                             <children>
-                                <Button fx:id="btExport" layoutX="186.0" mnemonicParsing="false" onAction="#handleButtonOnAction" text="%export" AnchorPane.bottomAnchor="20.0" AnchorPane.topAnchor="0.0" />
-                                <Button fx:id="btPay" layoutX="468.0" mnemonicParsing="false" onAction="#handleButtonOnAction" text="%pay" AnchorPane.bottomAnchor="20.0" AnchorPane.topAnchor="0.0" />
+                                <Button fx:id="btExport" layoutX="186.0" mnemonicParsing="false"
+                                        onAction="#handleButtonOnAction" text="%export" AnchorPane.bottomAnchor="20.0"
+                                        AnchorPane.topAnchor="0.0"/>
+                                <Button fx:id="btPay" layoutX="468.0" mnemonicParsing="false"
+                                        onAction="#handleButtonOnAction" text="%pay" AnchorPane.bottomAnchor="20.0"
+                                        AnchorPane.topAnchor="0.0"/>
                             </children>
                         </AnchorPane>
                     </bottom>

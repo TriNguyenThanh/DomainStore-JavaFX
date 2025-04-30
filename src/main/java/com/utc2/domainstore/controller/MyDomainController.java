@@ -45,7 +45,7 @@ public class MyDomainController implements Initializable {
 
     private void initTable() {
         colDomain.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+//        colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         colYear.setCellValueFactory(new PropertyValueFactory<>("years"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane prefHeight="640.0" prefWidth="1020.0" stylesheets="@../style/subwindow.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.utc2.domainstore.controller.DomainManagerController">
+            fx:controller="com.utc2.domainstore.controller.ConfirmTransactionController">
     <children>
         <BorderPane layoutX="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
                     AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -61,18 +61,17 @@
                                         <TextField fx:id="tfSearch" prefHeight="50.0" promptText="%search"
                                                    AnchorPane.leftAnchor="0.0"
                                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-                                        <TableView fx:id="tbDomain" prefHeight="448.0" prefWidth="772.0"
+                                        <TableView fx:id="tableView" prefHeight="448.0" prefWidth="772.0"
                                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
                                             <BorderPane.margin>
                                                 <Insets right="10.0"/>
                                             </BorderPane.margin>
                                             <columns>
-                                                <TableColumn fx:id="colDomain" prefWidth="250" text="%domain"/>
-                                                <TableColumn fx:id="colStatus" prefWidth="140" text="%status"/>
-                                                <TableColumn fx:id="colPrice" prefWidth="180" text="%price"/>
-                                                <TableColumn fx:id="colDate" prefWidth="250" text="%active_date"/>
-                                                <TableColumn fx:id="colYear" prefWidth="210" text="%year"/>
+                                                <TableColumn fx:id="colID" prefWidth="190.0" text="%billID"/>
+                                                <TableColumn fx:id="colDate" prefWidth="250.0" text="%date"/>
+                                                <TableColumn fx:id="colStatus" prefWidth="320.0" text="%status"/>
+                                                <TableColumn fx:id="colPrice" prefWidth="200.0" text="%price"/>
                                             </columns>
                                         </TableView>
                                     </children>

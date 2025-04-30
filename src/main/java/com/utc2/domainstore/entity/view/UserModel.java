@@ -9,18 +9,20 @@ public class UserModel {
     private String email;
     private String psID;
     private RoleEnum role;
+    private ACCOUNT_STATUS status;
 
     public UserModel() {
-        
+
     }
 
-    public UserModel(int ID, String name, String phone, String email, String psID, RoleEnum role) {
+    public UserModel(int ID, String name, String phone, String email, String psID, RoleEnum role, ACCOUNT_STATUS status) {
         this.ID = ID;
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.psID = psID;
         this.role = role;
+        this.status = status;
     }
 
     public int getID() {
@@ -69,5 +71,13 @@ public class UserModel {
 
     public void setRole(RoleEnum role) {
         this.role = role;
+    }
+
+    public ACCOUNT_STATUS getStatus() {
+        return status;
+    }
+
+    public void setStatus(ACCOUNT_STATUS status) {
+        this.status = status;
     }
 }

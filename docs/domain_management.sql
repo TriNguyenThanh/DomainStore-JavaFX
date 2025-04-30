@@ -139,7 +139,7 @@ VALUES
 
 
 
-('diamonielts', 1, 'available', null, null ,null),
+('diamonielts', 1, 'available', NULL, NULL, null),
 ('example', 3, 'sold', '2024-03-15 17:00:00', 1, 3),
 ('testdomain', 6, 'sold', '2024-03-15 17:00:00', 1, 3),
 ('mywebsite', 1, 'sold', '2024-03-15 17:00:00', 1, 3),
