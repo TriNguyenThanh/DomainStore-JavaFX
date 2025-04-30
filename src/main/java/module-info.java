@@ -11,6 +11,7 @@ module com.utc2.domainstore {
     requires jdk.httpserver;
     requires java.desktop;
     requires jasperreports;
+    requires com.github.librepdf.openpdf;
 
     opens com.utc2.domainstore to javafx.fxml;
     opens com.utc2.domainstore.controller to javafx.fxml;

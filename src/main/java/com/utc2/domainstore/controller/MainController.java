@@ -20,6 +20,19 @@ import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
     private ResourceBundle bundle;
+    private static MainController instance;
+
+    public MainController() {
+        // Private constructor to prevent instantiation
+        instance = this;
+    }
+
+    public static MainController getInstance() {
+        if (instance == null) {
+            instance = new MainController();
+        }
+        return instance;
+    }
 
     @FXML
     private StackPane contentArea;
@@ -58,10 +71,11 @@ public class MainController implements Initializable {
         focus = (Button) e.getSource();
     }
 
-    private void load(String fxmlPath) {
+    public FXMLLoader load(String fxmlPath) {
+        FXMLLoader fxmlLoader = null;
         try {
             ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath), rb);
+            fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath), rb);
             Node node = fxmlLoader.load();
 
             AnchorPane.setTopAnchor(node, 0.0);
@@ -81,6 +95,7 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return fxmlLoader;
     }
 
     @Override

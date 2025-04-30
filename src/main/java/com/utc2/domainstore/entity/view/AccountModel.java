@@ -1,11 +1,15 @@
 package com.utc2.domainstore.entity.view;
 
+import com.utc2.domainstore.entity.database.RoleEnum;
+
 public class AccountModel {
+    private Integer id;
     private String fullName;
     private String phone;
     private String email;
     private String psID;
     private String hash_password;
+    private RoleEnum role;
 
     public AccountModel() {
 
@@ -17,6 +21,33 @@ public class AccountModel {
         this.email = email;
         this.psID = psID;
         this.hash_password = hash_password;
+    }
+
+    public AccountModel(String fullName, String phone, String email, String psID, String hash_password, RoleEnum role) {
+        this.fullName = fullName;
+        this.phone = phone;
+        this.email = email;
+        this.psID = psID;
+        this.hash_password = hash_password;
+        this.role = role;
+    }
+
+    public AccountModel(Integer id, String fullName, String phone, String email, String psID, String hash_password, RoleEnum role) {
+        this.id = id;
+        this.fullName = fullName;
+        this.phone = phone;
+        this.email = email;
+        this.psID = psID;
+        this.hash_password = hash_password;
+        this.role = role;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getFullName() {
@@ -73,5 +104,13 @@ public class AccountModel {
         else if (!accountModel.email.equals(this.email)) return false;
         else if (!accountModel.psID.equals(this.psID)) return false;
         return true;
+    }
+
+    public RoleEnum getRole() {
+        return role;
+    }
+
+    public void setRole(RoleEnum role) {
+        this.role = role;
     }
 }

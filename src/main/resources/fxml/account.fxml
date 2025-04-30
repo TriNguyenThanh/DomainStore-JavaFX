@@ -60,11 +60,7 @@
                         <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
                             <children>
                                 <Label fx:id="lbFullNameErr" styleClass="error"/>
-                                <TextField fx:id="tfUsername" editable="false" prefHeight="50.0">
-                                    <VBox.margin>
-                                        <Insets top="14.0"/>
-                                    </VBox.margin>
-                                </TextField>
+                                <TextField fx:id="tfUsername" editable="false" prefHeight="50.0"/>
                                 <Label fx:id="lbPhoneErr" styleClass="error"/>
                                 <TextField fx:id="tfPhone" editable="false" prefHeight="50.0"/>
                                 <Label fx:id="lbEmailErr" styleClass="error"/>

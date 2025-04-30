@@ -63,10 +63,10 @@ public class RegisterController implements Initializable {
         // kiểm tra số điện thoại
         if (phoneTextfield.getText().isBlank()) {
             flag = false;
-            phoneErr.setText(bundle.getString("error.phoneErr1"));
+            phoneErr.setText(bundle.getString("error.phone1"));
         } else if (!phoneNumberCheck(phoneTextfield.getText())) {
             flag = false;
-            phoneErr.setText(bundle.getString("error.phoneErr2"));
+            phoneErr.setText(bundle.getString("error.phone2"));
         } else {
             phoneErr.setText(" ");
         }

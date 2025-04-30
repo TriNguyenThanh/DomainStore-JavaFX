@@ -3,10 +3,7 @@ package com.utc2.domainstore.view;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ConfigManager {
     private static ConfigManager instance;
@@ -15,7 +12,7 @@ public class ConfigManager {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     private ConfigManager() {
-        languages = List.of("Tiếng việt", "English");
+        languages = new ArrayList<>(List.of("Tiếng việt", "English"));
         settings = new Properties();
         try (InputStream input = getClass().getResourceAsStream("/properties/settings.properties")) {
             if (input != null) {

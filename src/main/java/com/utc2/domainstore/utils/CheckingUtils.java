@@ -24,4 +24,10 @@ public class CheckingUtils {
         String pattern = "^[a-zA-Z0-9@_]{8,16}$";
         return s.matches(pattern);
     }
+
+    // kiểm tra số
+    public static boolean numberCheck(String s) {
+        String pattern = "^[0-9]+$";
+        return s.matches(pattern);
+    }
 }

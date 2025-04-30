@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="640.0" prefWidth="1020.0" stylesheets="@../style/bill.css"
+<AnchorPane prefHeight="640.0" prefWidth="1020.0" stylesheets="@../style/subwindow.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.utc2.domainstore.controller.PaymentController">
     <children>

@@ -16,7 +16,7 @@
 }
 
 .label {
-    -fx-font-size: 24;
+    -fx-font-size: 16;
     -fx-font-weight:bold;
     -fx-text-fill: #000000;
 }
@@ -29,7 +29,7 @@
     -fx-border-radius: 10;
     -fx-border-color: #3F40FF;
 
-    -fx-font-size: 24;
+    -fx-font-size: 16;
     -fx-text-fill: #000000;
 }
 
@@ -44,10 +44,50 @@
     -fx-border-radius: 10;
 
     -fx-text-fill: #FFFFFF;
-    -fx-font-size: 24;
+    -fx-font-size:18;
     -fx-font-weight: bold;
 }
 
 .button:hover {
  -fx-background-color: #3F40FF;
+}
+
+.button:disabled {
+    -fx-background-color: #FFFFFF;
+}
+
+.table-cell {
+    -fx-alignment: CENTER;
+    -fx-font-size: 16;
+}
+
+.custom-combobox {
+    -fx-background-color: white;
+    -fx-border-color: #007acc;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-font-size: 16px;
+}
+
+.custom-combobox .arrow-button {
+    -fx-background-color: #007acc;
+    -fx-background-radius: 0 5 5 0;
+}
+
+.custom-combobox .arrow {
+    -fx-background-color: white;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: white;
+    -fx-border-color: #007acc;
+}
+
+.combo-box-popup .list-cell {
+    -fx-padding: 5 10;
+    -fx-font-size: 14px;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #007acc;
 }

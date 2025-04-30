@@ -47,7 +47,10 @@ public class TransactionController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        initTable();
+    }
 
+    private void initTable() {
         colID.setCellValueFactory(new PropertyValueFactory<>("id"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
