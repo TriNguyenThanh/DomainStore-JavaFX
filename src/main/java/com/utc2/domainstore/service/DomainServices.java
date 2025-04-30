@@ -114,7 +114,7 @@ public class DomainServices implements IDomain{
         List<DomainModel> domainList = DomainRepository.getInstance().getSoldDomains(cus_id);
         JSONArray domainArray = new JSONArray();
         
-                for (DomainModel domain : domainList) {
+        for (DomainModel domain : domainList) {
             TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
             JSONObject domainJson = new JSONObject();
 
@@ -132,6 +132,34 @@ public class DomainServices implements IDomain{
             domainArray.put(domainJson);
         }
 
+        JSONObject response = new JSONObject();
+        response.put("domain", domainArray);
+        return response; 
+    }
+
+    @Override
+    public JSONObject getAllDomains() {
+        List<DomainModel> domainList = DomainRepository.getInstance().selectAll();
+        JSONArray domainArray = new JSONArray();
+        
+        for (DomainModel domain : domainList){
+            TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
+            JSONObject domainJson = new JSONObject();
+            
+            String fullNameDomain = domain.getDomainName();
+            if (tld != null && tld.getTldText() != null){
+                fullNameDomain += tld.getTldText();
+            }
+            
+            domainJson.put("id", domain.getId());
+            domainJson.put("name", fullNameDomain);
+            domainJson.put("status", domain.getStatus().toString().toLowerCase());
+            domainJson.put("year", domain.getYears());
+            domainJson.put("price", (tld != null) ? tld.getPrice() : 0);
+            domainJson.put("active_date", (domain.getActiveDate() != null) ? domain.getActiveDate() : 0);
+            domainJson.put("owner_id", (domain.getOwnerId() != null) ? domain.getOwnerId() : 0);
+            domainArray.put(domainJson);
+        }
         JSONObject response = new JSONObject();
         response.put("domain", domainArray);
         return response; 
