@@ -133,7 +133,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                         rs.getInt("id"),
                         rs.getString("domain_name"),
                         rs.getInt("tld_id"),
-                        DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
+                        DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
                         rs.getDate("active_date"),
                         rs.getInt("years"),
                         rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,

@@ -129,5 +129,10 @@ public class testService {
 //        deleteUserInput.put("user_id", 2);
 //        JSONObject deleteUserResponse = accountServices.lockedAccount(deleteUserInput);
 //        System.out.println("Delete User Response: " + deleteUserResponse.toString(2));
+
+        // ====== TEST 15: Lấy tất cả tên miền ======
+//        DomainServices domainServices = new DomainServices();
+//        JSONObject result = domainServices.getAllDomains();
+//        System.out.println(result.toString(2));
     }
 }
