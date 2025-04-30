@@ -10,6 +10,7 @@ module com.utc2.domainstore {
     requires jdk.compiler;
     requires jdk.httpserver;
     requires java.desktop;
+    requires jasperreports;
 
     opens com.utc2.domainstore to javafx.fxml;
     opens com.utc2.domainstore.controller to javafx.fxml;

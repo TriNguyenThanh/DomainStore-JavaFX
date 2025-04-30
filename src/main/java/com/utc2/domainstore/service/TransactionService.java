@@ -1,14 +1,12 @@
 package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.entity.database.*;
-import com.utc2.domainstore.repository.DomainRepository;
-import com.utc2.domainstore.repository.TopLevelDomainRepository;
-import com.utc2.domainstore.repository.TransactionInfoRepository;
-import com.utc2.domainstore.repository.TransactionRepository;
+import com.utc2.domainstore.repository.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -20,7 +18,7 @@ public class TransactionService implements ITransactionService {
     private final TransactionInfoRepository transactionInfoRepository = new TransactionInfoRepository();
     private static JSONArray jsonArray;
     private static String transactionId;
-
+    private static JSONObject jsonObject;
     @Override
     public JSONObject getAllTransaction() {
         JSONArray jsonArray = new JSONArray();
@@ -75,13 +73,12 @@ public class TransactionService implements ITransactionService {
         result.put("domains", jsonArray);
         return result;
     }
-
     @Override
     public JSONObject createTransaction(JSONObject json) throws IOException {
         // request: domains (JSONObject)
         // response: transactionId (String), total(int), status (success / failed)
 
-        if (json.isEmpty()) {
+        if(json.isEmpty()) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("status", "failed");
             return jsonObject;
@@ -92,38 +89,47 @@ public class TransactionService implements ITransactionService {
         tran.setUserId(json.getInt("user_id")); // request
         tran.setTransactionDate(LocalDate.now());
         transactionRepository.insert(tran);
+        jsonObject = json;
         jsonArray = json.getJSONArray("domains"); // request
         int total = processTransactionDetails(transactionId, jsonArray);
-//        PaymentService paymentService = new PaymentService();
-//        paymentService.createPayment(transactionId, total);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("transactionId", transactionId);
         jsonObject.put("total", total);
         jsonObject.put("status", "success");
-        return jsonObject;
+        return  jsonObject;
     }
-
     @Override
-    public void updateTransactionStatus(String transactionId, TransactionStatusEnum status) {
+    public void updateTransactionStatus(String transactionId, TransactionStatusEnum status){
         TransactionModel tran = transactionRepository.selectById_V2(transactionId);
         tran.setTransactionStatus(status);
-        if (TransactionStatusEnum.COMPLETED.equals(status)) {
-            processTransactionDetails(transactionId, jsonArray);
+        if(TransactionStatusEnum.COMPLETED.equals(status)){
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject json = jsonArray.getJSONObject(i);
+                int domainId = getDomainByName(json.getString("name"));
+                DomainModel d = new DomainModel(); d.setId(domainId);
+                DomainModel domain = DomainRepository.getInstance().selectById(d);
+                int price = json.getInt("price");
+                int years = json.getInt("years");
+                domain.setYears(years);
+                domain.setStatus(DomainStatusEnum.sold);
+                domain.setActiveDate(Date.valueOf(LocalDate.now()));
+                domain.setOwnerId(jsonObject.getInt("user_id"));
+
+                DomainRepository.getInstance().update(domain);
+                transactionInfoRepository.insert(new TransactionInfoModel(transactionId, domainId, price));
+            }
         }
         transactionRepository.update(tran);
     }
-
     //Tạo transactionId
-    private String generateTransactionId() {
-        if (transactions.isEmpty()) return "HD001";
+    private String generateTransactionId(){
+        if(transactions.isEmpty()) return "HD001";
         String lastId = transactions.getLast().getTransactionId();
-        int number = Integer.parseInt(lastId.substring(2));
-        ++number;
+        int number = Integer.parseInt(lastId.substring(2)); ++number;
         return String.format("HD%03d", number);
     }
-
     // Lấy domain_id
-    private int getDomainByName(String name) {
+    private int getDomainByName(String name){
         int index = name.indexOf('.');
         String domainName = name.substring(0, index);
         String tldText = name.substring(index);
@@ -135,7 +141,6 @@ public class TransactionService implements ITransactionService {
             throw new NoSuchElementException("Domain not found!");
         }
     }
-
     private int processTransactionDetails(String transactionId, JSONArray jsonArray) {
         int total = 0;
         for (int i = 0; i < jsonArray.length(); i++) {
