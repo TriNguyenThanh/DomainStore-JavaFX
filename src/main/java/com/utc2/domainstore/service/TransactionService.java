@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -17,7 +18,7 @@ public class TransactionService implements ITransactionService {
     private final TransactionInfoRepository transactionInfoRepository = new TransactionInfoRepository();
     private static JSONArray jsonArray;
     private static String transactionId;
-
+    private static JSONObject jsonObject;
     @Override
     public JSONObject getAllTransaction() {
         JSONArray jsonArray = new JSONArray();
@@ -88,10 +89,9 @@ public class TransactionService implements ITransactionService {
         tran.setUserId(json.getInt("user_id")); // request
         tran.setTransactionDate(LocalDate.now());
         transactionRepository.insert(tran);
+        jsonObject = json;
         jsonArray = json.getJSONArray("domains"); // request
         int total = processTransactionDetails(transactionId, jsonArray);
-//        PaymentService paymentService = new PaymentService();
-//        paymentService.createPayment(transactionId, total);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("transactionId", transactionId);
         jsonObject.put("total", total);
@@ -103,7 +103,21 @@ public class TransactionService implements ITransactionService {
         TransactionModel tran = transactionRepository.selectById_V2(transactionId);
         tran.setTransactionStatus(status);
         if(TransactionStatusEnum.COMPLETED.equals(status)){
-            processTransactionDetails(transactionId, jsonArray);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject json = jsonArray.getJSONObject(i);
+                int domainId = getDomainByName(json.getString("name"));
+                DomainModel d = new DomainModel(); d.setId(domainId);
+                DomainModel domain = DomainRepository.getInstance().selectById(d);
+                int price = json.getInt("price");
+                int years = json.getInt("years");
+                domain.setYears(years);
+                domain.setStatus(DomainStatusEnum.sold);
+                domain.setActiveDate(Date.valueOf(LocalDate.now()));
+                domain.setOwnerId(jsonObject.getInt("user_id"));
+
+                DomainRepository.getInstance().update(domain);
+                transactionInfoRepository.insert(new TransactionInfoModel(transactionId, domainId, price));
+            }
         }
         transactionRepository.update(tran);
     }
