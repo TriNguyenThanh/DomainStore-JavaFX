@@ -134,5 +134,19 @@ public class testService {
 //        DomainServices domainServices = new DomainServices();
 //        JSONObject result = domainServices.getAllDomains();
 //        System.out.println(result.toString(2));
+
+        // ====== TEST 16: Update tld ======
+        TopLevelDomainServices tldServices = new TopLevelDomainServices();
+        JSONObject updateTLD = new JSONObject();
+        updateTLD.put("id", 1);
+        updateTLD.put("TLD_text", ".ubuntu");
+        updateTLD.put("price", 200000);
+        JSONObject result = tldServices.updateTLD(updateTLD);
+        System.out.println(result.toString(2));
+
+        // ====== TEST 17: Lấy tất cả tld ======
+//        TopLevelDomainServices tldServices = new TopLevelDomainServices();
+//        JSONObject result = tldServices.getAllTLD();
+//        System.out.println(result.toString(2));
     }
 }

@@ -109,7 +109,7 @@ public class DomainServices implements IDomain{
 
     @Override
     public JSONObject searchSoldDomainByCusId(JSONObject jsonInput) {
-        int cus_id = jsonInput.getInt("user_id:");
+        int cus_id = jsonInput.getInt("user_id");
         
         List<DomainModel> domainList = DomainRepository.getInstance().getSoldDomains(cus_id);
         JSONArray domainArray = new JSONArray();
