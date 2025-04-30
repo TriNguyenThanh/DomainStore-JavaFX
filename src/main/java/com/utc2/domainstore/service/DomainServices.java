@@ -1,18 +1,17 @@
 package com.utc2.domainstore.service;
 
+import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
-import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.repository.TopLevelDomainRepository;
 import com.utc2.domainstore.utils.DomainUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.List;
 
-public class DomainServices implements IDomain {
+public class DomainServices implements IDomain{
     private DomainRepository domainDAO;
-
+    
     // 1. tìm theo tên
     @Override
     public JSONObject search(JSONObject jsonInput) {
@@ -25,11 +24,11 @@ public class DomainServices implements IDomain {
             for (DomainModel domain : domainList) {
                 JSONObject items = new JSONObject();
                 TopLevelDomainModel tld = TopLevelDomainRepository.getInstance()
-                        .selectById(new TopLevelDomainModel(domain.getTldId()));
+                    .selectById(new TopLevelDomainModel(domain.getTldId()));
 
                 String fullDomainName = domain.getDomainName();
                 if (tld != null && tld.getTldText() != null) {
-                    fullDomainName += tld.getTldText();
+                    fullDomainName += tld.getTldText(); 
                 }
 
                 items.put("name", fullDomainName);
@@ -69,15 +68,14 @@ public class DomainServices implements IDomain {
             response.put("price", 0);
         }
 
-        response.put("name", domainName);
-        return response;
+        response.put("name", domainName); 
+        return response; 
     }
-
     private JSONObject createErrorResponse(String message) {
-        JSONObject response = new JSONObject();
-        response.put("status", "failed");
-        response.put("message", message);
-        return response;
+         JSONObject response = new JSONObject();
+         response.put("status", "failed");
+         response.put("message", message);
+         return response;
     }
 
     //2. Gợi ý tên miền
@@ -106,16 +104,16 @@ public class DomainServices implements IDomain {
 
         JSONObject response = new JSONObject();
         response.put("domain", domainArray);
-        return response;
+        return response; 
     }
 
     @Override
     public JSONObject searchSoldDomainByCusId(JSONObject jsonInput) {
         int cus_id = jsonInput.getInt("user_id");
-
+        
         List<DomainModel> domainList = DomainRepository.getInstance().getSoldDomains(cus_id);
         JSONArray domainArray = new JSONArray();
-
+        
         for (DomainModel domain : domainList) {
             TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
             JSONObject domainJson = new JSONObject();
@@ -125,7 +123,7 @@ public class DomainServices implements IDomain {
             if (tld != null && tld.getTldText() != null) {
                 fullDomainName += tld.getTldText();
             }
-
+            
             domainJson.put("name", fullDomainName);
             domainJson.put("status", domain.getStatus().toString().toLowerCase());
             domainJson.put("year", domain.getYears());
@@ -136,23 +134,23 @@ public class DomainServices implements IDomain {
 
         JSONObject response = new JSONObject();
         response.put("domain", domainArray);
-        return response;
+        return response; 
     }
 
     @Override
     public JSONObject getAllDomains() {
         List<DomainModel> domainList = DomainRepository.getInstance().selectAll();
         JSONArray domainArray = new JSONArray();
-
-        for (DomainModel domain : domainList) {
+        
+        for (DomainModel domain : domainList){
             TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
             JSONObject domainJson = new JSONObject();
-
+            
             String fullNameDomain = domain.getDomainName();
-            if (tld != null && tld.getTldText() != null) {
+            if (tld != null && tld.getTldText() != null){
                 fullNameDomain += tld.getTldText();
             }
-
+            
             domainJson.put("id", domain.getId());
             domainJson.put("name", fullNameDomain);
             domainJson.put("status", domain.getStatus().toString().toLowerCase());
@@ -164,6 +162,6 @@ public class DomainServices implements IDomain {
         }
         JSONObject response = new JSONObject();
         response.put("domain", domainArray);
-        return response;
+        return response; 
     }
 }

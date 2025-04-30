@@ -97,19 +97,19 @@ public class testService {
 //        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
 
         // ====== TEST 12: Thêm domain vào giỏ hàng ======
-//        CartServices cartServices = new CartServices();
-//        JSONObject addToCartInput = new JSONObject();
-//        addToCartInput.put("cus_id", 1);
-//        JSONArray domainArray = new JSONArray();
-//        JSONObject domain1 = new JSONObject();
-//        domain1.put("name", "tanvip.com");
-//        domain1.put("status", "available");
-//        domain1.put("price", 299000);
-//        domain1.put("years", 2);
-//        domainArray.put(domain1);
-//        addToCartInput.put("domain", domainArray);
-//        JSONObject addToCartResponse = cartServices.addToCart(addToCartInput);
-//        System.out.println("Add to Cart Response: " + addToCartResponse.toString(2));
+        CartServices cartServices = new CartServices();
+        JSONObject addToCartInput = new JSONObject();
+        addToCartInput.put("cus_id", 1);
+        JSONArray domainArray = new JSONArray();
+        JSONObject domain1 = new JSONObject();
+        domain1.put("name", "diamonielts.com");
+        domain1.put("status", "available");
+        domain1.put("price", 299000);
+        domain1.put("years", 2);
+        domainArray.put(domain1);
+        addToCartInput.put("domain", domainArray);
+        JSONObject addToCartResponse = cartServices.addToCart(addToCartInput);
+        System.out.println("Add to Cart Response: " + addToCartResponse.toString(2));
 
         // ====== TEST 13: Xóa domain khỏi giỏ hàng ======
 //        CartServices cartServices = new CartServices();
@@ -133,6 +133,20 @@ public class testService {
         // ====== TEST 15: Lấy tất cả tên miền ======
 //        DomainServices domainServices = new DomainServices();
 //        JSONObject result = domainServices.getAllDomains();
+//        System.out.println(result.toString(2));
+
+        // ====== TEST 16: Update tld ======
+//        TopLevelDomainServices tldServices = new TopLevelDomainServices();
+//        JSONObject updateTLD = new JSONObject();
+//        updateTLD.put("id", 1);
+//        updateTLD.put("TLD_text", ".ubuntu");
+//        updateTLD.put("price", 200000);
+//        JSONObject result = tldServices.updateTLD(updateTLD);
+//        System.out.println(result.toString(2));
+
+        // ====== TEST 17: Lấy tất cả tld ======
+//        TopLevelDomainServices tldServices = new TopLevelDomainServices();
+//        JSONObject result = tldServices.getAllTLD();
 //        System.out.println(result.toString(2));
     }
 }
