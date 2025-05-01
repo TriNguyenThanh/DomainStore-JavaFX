@@ -203,7 +203,8 @@ VALUES
 ('techasia', 21, 'sold', '2025-03-15 11:20:00', 1, 9),
 ('globalbusiness', 22, 'sold', '2025-03-15 11:20:00', 1, 9),
 ('creativeart12', 23, 'available', null, 1 ,null),
-('topblog21', 24, 'available', null, 1 ,null);
+('topblog21', 24, 'available', null, 1 ,null),
+('topblog21', 1, 'available', null, null ,null);
 
 INSERT INTO carts (cus_id, domain_id, years) VALUES
 (1, 1, 1),
