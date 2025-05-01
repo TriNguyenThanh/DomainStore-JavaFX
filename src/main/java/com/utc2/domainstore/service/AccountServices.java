@@ -52,9 +52,19 @@ public class AccountServices implements IAccount {
         String email = jsonInput.has("email") ? jsonInput.getString("email") : existingUser.getEmail();
         String personalId = jsonInput.has("personal_id") ? jsonInput.getString("personal_id") : existingUser.getCccd();
 
+        // Xử lý role (nếu có)
+        RoleEnum role = existingUser.getRole();
+        if (jsonInput.has("role")) {
+            try {
+                role = RoleEnum.valueOf(jsonInput.getString("role")); // ví dụ: "user" hoặc "admin"
+            } catch (IllegalArgumentException e) {
+                return createResponse("failed", "Invalid role value");
+            }
+        }
+
         // Cập nhật thông tin
         CustomerModel updatedUser = new CustomerModel(
-                existingUser.getId(), name, email, phone, personalId, existingUser.getRole(), new Timestamp(System.currentTimeMillis())
+                existingUser.getId(), name, email, phone, personalId, role, new Timestamp(System.currentTimeMillis())
         );
 
         int result = customerDAO.update(updatedUser);
