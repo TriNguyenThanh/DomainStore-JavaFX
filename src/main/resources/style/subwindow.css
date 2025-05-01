@@ -21,6 +21,12 @@
     -fx-text-fill: #000000;
 }
 
+.label.header2 {
+    -fx-font-size: 24;
+    -fx-font-weight:bold;
+    -fx-text-fill: #000000;
+}
+
 .text-field {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 10;

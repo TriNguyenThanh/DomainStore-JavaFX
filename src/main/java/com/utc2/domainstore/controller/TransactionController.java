@@ -6,6 +6,7 @@ import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.ITransactionService;
 import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
+import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
@@ -58,6 +59,7 @@ public class TransactionController implements Initializable {
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
 
+        colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
 
         getSelectedButton.setOnAction(event -> {

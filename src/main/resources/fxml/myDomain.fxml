@@ -47,7 +47,6 @@
                                     </BorderPane.margin>
                                     <columns>
                                         <TableColumn fx:id="colDomain" prefWidth="250" text="%domain"/>
-                                        <!--                                        <TableColumn fx:id="colStatus" prefWidth="140" text="%status"/>-->
                                         <TableColumn fx:id="colPrice" prefWidth="180" text="%price"/>
                                         <TableColumn fx:id="colDate" prefWidth="250" text="%active_date"/>
                                         <TableColumn fx:id="colYear" prefWidth="210" text="%year"/>
@@ -55,7 +54,8 @@
                                 </TableView>
                             </center>
                             <bottom>
-                                <Button mnemonicParsing="false" text="%update" BorderPane.alignment="CENTER">
+                                <Button fx:id="btUpdate" mnemonicParsing="false" text="%update"
+                                        BorderPane.alignment="CENTER">
                                     <BorderPane.margin>
                                         <Insets top="10.0"/>
                                     </BorderPane.margin>

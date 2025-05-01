@@ -38,7 +38,7 @@ public class MainController implements Initializable {
     private StackPane contentArea;
 
     @FXML
-    private Button btDashBoard, btAccount, btShoppingCart, btMyDomain, btSearch, btBill, btPayment, btUser, btDomain, btCheckBill, btCheckPayment;
+    private Button btDashBoard, btAccount, btShoppingCart, btMyDomain, btSearch, btBill, btPayment, btUser, btDomain, btCheckBill, btTLD;
 
     private Button focus;
 
@@ -64,11 +64,15 @@ public class MainController implements Initializable {
             load("/fxml/domain_manager.fxml");
         } else if (focus != e.getSource() && e.getSource() == btCheckBill && UserSession.getInstance().getRole() == RoleEnum.admin) {
             load("/fxml/confirmTransaction.fxml");
-        } else if (focus != e.getSource() && e.getSource() == btCheckPayment && UserSession.getInstance().getRole() == RoleEnum.admin) {
-            load("/fxml/payment_manager.fxml");
+        } else if (focus != e.getSource() && e.getSource() == btTLD && UserSession.getInstance().getRole() == RoleEnum.admin) {
+            load("/fxml/tld_manager.fxml");
         }
 
         focus = (Button) e.getSource();
+    }
+
+    public void setFocus(Button button) {
+        this.focus = button;
     }
 
     public FXMLLoader load(String fxmlPath) {
@@ -95,6 +99,7 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        focus = null;
         return fxmlLoader;
     }
 
@@ -119,9 +124,9 @@ public class MainController implements Initializable {
             btCheckBill.setGraphic(null);
             btCheckBill.setText("");
 
-            btCheckPayment.setDisable(true);
-            btCheckPayment.setGraphic(null);
-            btCheckPayment.setText("");
+            btTLD.setDisable(true);
+            btTLD.setGraphic(null);
+            btTLD.setText("");
 
             btDomain.setDisable(true);
             btDomain.setGraphic(null);

@@ -36,7 +36,7 @@
                     </effect>
                     <children>
                         <Button fx:id="getSelectedButton" layoutX="406.0" layoutY="444.0" mnemonicParsing="false"
-                                text="%information" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0"/>
+                                text="%pay" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0"/>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="120.0"
                                     AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0"
                                     AnchorPane.topAnchor="20.0">

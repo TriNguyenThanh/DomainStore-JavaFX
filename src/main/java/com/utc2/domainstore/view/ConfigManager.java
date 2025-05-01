@@ -2,6 +2,7 @@ package com.utc2.domainstore.view;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -9,14 +10,17 @@ public class ConfigManager {
     private static ConfigManager instance;
     private final Properties settings;
     private List<String> languages;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private DateTimeFormatter dateTimeFormatter;
+    private NumberFormat numberFormatter;
 
     private ConfigManager() {
+        dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         languages = new ArrayList<>(List.of("Tiếng việt", "English"));
         settings = new Properties();
         try (InputStream input = getClass().getResourceAsStream("/properties/settings.properties")) {
             if (input != null) {
                 settings.load(input);
+                numberFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             } else {
                 throw new IOException("No found settings.properties!");
             }
@@ -56,11 +60,20 @@ public class ConfigManager {
         return ResourceBundle.getBundle(languageProperty, locale);
     }
 
-    public DateTimeFormatter getFormatter() {
-        return formatter;
+    public void setDateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+        this.dateTimeFormatter = dateTimeFormatter;
     }
 
-    public void setFormatter(DateTimeFormatter formatter) {
-        this.formatter = formatter;
+    public DateTimeFormatter getDateTimeFormatter() {
+        return dateTimeFormatter;
     }
+
+    public void setNumberFormatter(NumberFormat formatter) {
+        this.numberFormatter = formatter;
+    }
+
+    public NumberFormat getNumberFormatter() {
+        return numberFormatter;
+    }
+
 }

@@ -26,7 +26,7 @@
                 </AnchorPane>
             </top>
             <center>
-                <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="pnBackground"
+                <AnchorPane fx:id="pnContainer" prefHeight="200.0" prefWidth="200.0" styleClass="pnBackground"
                             BorderPane.alignment="CENTER">
                     <BorderPane.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
@@ -35,17 +35,28 @@
                         <DropShadow/>
                     </effect>
                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0" AnchorPane.leftAnchor="70.0"
+                              AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="70.0">
+                            <children>
+                                <TextField fx:id="tfSearch" prefHeight="50.0" prefWidth="300.0" promptText="%search"/>
+                            </children>
+                        </HBox>
+
                         <TableView fx:id="table" layoutX="120.0" layoutY="51.0" prefHeight="200.0" prefWidth="200.0"
-                                   AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0"
-                                   AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                   AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="70.0"
+                                   AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="130.0">
                             <columns>
-                                <TableColumn fx:id="colBillID" prefWidth="147.19998359680176" text="%billID"/>
-                                <TableColumn fx:id="colPayID" prefWidth="173.60003662109375" text="%paymentID"/>
-                                <TableColumn fx:id="colMethod" prefWidth="207.199951171875" text="%method"/>
-                                <TableColumn fx:id="colStatus" prefWidth="196.79998779296875" text="%status"/>
-                                <TableColumn fx:id="colDate" prefWidth="312.79998779296875" text="%date"/>
+                                <TableColumn fx:id="colBillID" prefWidth="150" text="%billID"/>
+                                <TableColumn fx:id="colPayID" prefWidth="150" text="%paymentID"/>
+                                <TableColumn fx:id="colPrice" prefWidth="150" text="%price"/>
+                                <TableColumn fx:id="colMethod" prefWidth="200" text="%method"/>
+                                <TableColumn fx:id="colStatus" prefWidth="200" text="%status"/>
+                                <TableColumn fx:id="colDate" prefWidth="240" text="%date"/>
                             </columns>
                         </TableView>
+                        <Button fx:id="btBack" layoutX="51.0" layoutY="14.0" mnemonicParsing="false"
+                                onAction="#onHandleButton" prefHeight="30.0" text="%back" AnchorPane.leftAnchor="10.0"
+                                AnchorPane.topAnchor="10.0"/>
                     </children>
                 </AnchorPane>
             </center>

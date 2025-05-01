@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="640.0" prefWidth="1020.0" stylesheets="@../style/subwindow.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.utc2.domainstore.controller.TLDManagerController">
+    <children>
+        <BorderPane layoutX="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <AnchorPane prefHeight="110.0" prefWidth="999.0" styleClass="pnBackground"
+                            BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </BorderPane.margin>
+                    <children>
+                        <Label alignment="CENTER" layoutX="434.0" layoutY="14.0" styleClass="header"
+                               text="%paymentManager" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0"
+                               AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0"/>
+                    </children>
+                    <effect>
+                        <DropShadow/>
+                    </effect>
+                </AnchorPane>
+            </top>
+            <center>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0"
+                            BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </BorderPane.margin>
+                    <effect>
+                        <DropShadow/>
+                    </effect>
+                    <children>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"
+                                    styleClass="pnBackground"
+                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="500.0"
+                                    AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+                            <children>
+                                <TextField fx:id="tfSearch" prefHeight="50.0" prefWidth="300.0"
+                                           promptText="%search"
+                                           AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="10.0"/>
+                                <TableView fx:id="table" prefHeight="448.0" prefWidth="470.0"
+                                           AnchorPane.bottomAnchor="80.0"
+                                           AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="70.0">
+                                    <columns>
+                                        <TableColumn fx:id="colID" prefWidth="150" text="%id"/>
+                                        <TableColumn fx:id="colText" prefWidth="150" text="%tld"/>
+                                        <TableColumn fx:id="colPrice" prefWidth="150" text="%price"/>
+                                    </columns>
+                                </TableView>
+                                <HBox AnchorPane.leftAnchor="120.0" AnchorPane.bottomAnchor="10.0" spacing="30"
+                                      prefWidth="470" alignment="CENTER">
+                                    <children>
+                                        <Button fx:id="btAdd" mnemonicParsing="false"
+                                                onAction="#onHandleButton"
+                                                prefHeight="50.0" prefWidth="150.0" text="%add"/>
+                                        <Button fx:id="btEdit" mnemonicParsing="false"
+                                                onAction="#onHandleButton"
+                                                prefHeight="50.0" prefWidth="150.0" text="%edit"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </AnchorPane>
+                        <AnchorPane AnchorPane.leftAnchor="750.0" AnchorPane.rightAnchor="0.0"
+                                    AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" styleClass="pnBackground">
+                            <VBox AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
+                                  AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0" alignment="CENTER">
+                                <AnchorPane prefHeight="100.0" prefWidth="200.0">
+                                    <Label text="%tld" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0"
+                                           prefWidth="180" alignment="CENTER_RIGHT"/>
+                                    <TextField fx:id="tfTLD" promptText="%tld" AnchorPane.leftAnchor="210.0"
+                                               AnchorPane.topAnchor="10.0" prefWidth="200"/>
+                                </AnchorPane>
+                                <AnchorPane prefHeight="100.0" prefWidth="200.0">
+                                    <Label text="%price" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0"
+                                           prefWidth="180" alignment="CENTER_RIGHT"/>
+                                    <TextField fx:id="tfPrice" promptText="%price" AnchorPane.leftAnchor="210.0"
+                                               AnchorPane.topAnchor="10.0" prefWidth="200"/>
+                                </AnchorPane>
+                            </VBox>
+                            <HBox AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
+                                  AnchorPane.bottomAnchor="10.0" spacing="30" prefWidth="470" alignment="CENTER">
+                                <children>
+                                    <Button fx:id="btCancel" mnemonicParsing="false"
+                                            onAction="#onHandleButton"
+                                            prefHeight="50.0" prefWidth="150.0" text="%cancel"/>
+                                    <Button fx:id="btSave" mnemonicParsing="false"
+                                            onAction="#onHandleButton"
+                                            prefHeight="50.0" prefWidth="150.0" text="%save"/>
+                                </children>
+                            </HBox>
+                        </AnchorPane>
+                    </children>
+                </AnchorPane>
+            </center>
+        </BorderPane>
+    </children>
+</AnchorPane>

@@ -5,6 +5,7 @@ import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.DomainServices;
 import com.utc2.domainstore.service.IDomain;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
+import com.utc2.domainstore.utils.MoneyCellFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -38,7 +39,7 @@ public class DomainManagerController implements Initializable {
     @FXML
     private TableColumn<DomainViewModel, LocalDate> colDate;
     @FXML
-    private TableColumn<DomainViewModel, Integer> colOwner;
+    private TableColumn<DomainViewModel, String> colOwner;
     @FXML
     private Button btAdd, btRemove;
     @FXML
@@ -51,8 +52,10 @@ public class DomainManagerController implements Initializable {
         // Handle button click event
         if (event.getSource() == btAdd) {
             // Perform action based on the button clicked
+            handleAddButton();
         } else if (event.getSource() == btRemove) {
             // Perform action based on the button clicked
+            handleRemoveButton();
         }
     }
 
@@ -66,15 +69,21 @@ public class DomainManagerController implements Initializable {
     }
 
     private void initTable() {
+        // Set up the table columns
         colDomain.setCellValueFactory(new PropertyValueFactory<>("name"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         colYear.setCellValueFactory(new PropertyValueFactory<>("years"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-        colOwner.setCellValueFactory(new PropertyValueFactory<>("ownerId"));
+        colOwner.setCellValueFactory(new PropertyValueFactory<>("ownerName"));
 
+        colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
 
+        updateTable();
+    }
+
+    private void updateTable() {
         ObservableList<DomainViewModel> observableList = FXCollections.observableArrayList(data);
         FilteredList<DomainViewModel> filteredData = new FilteredList<>(observableList, p -> true);
 
@@ -85,6 +94,17 @@ public class DomainManagerController implements Initializable {
         tbDomain.setItems(filteredData);
     }
 
+    // Handle remove button actions
+    private void handleRemoveButton() {
+
+    }
+
+    // Handle add button actions
+    private void handleAddButton() {
+
+    }
+
+    // Get data from the server
     private List<DomainViewModel> getData() {
         List<DomainViewModel> list = new ArrayList<>();
         IDomain domainService = new DomainServices();
@@ -97,22 +117,25 @@ public class DomainManagerController implements Initializable {
                 Integer price = domain.getInt("price");
                 Integer years = null;
                 Integer ownerId = null;
-
+                String ownerName = null;
                 String activeDate = domain.get("active_date").toString();
                 LocalDate date = null;
+
                 if (!activeDate.equals("0")) {
                     date = LocalDate.parse(activeDate);
                     years = domain.getInt("year");
                     ownerId = domain.getInt("owner_id");
+                    ownerName = domain.getString("user_name");
                 }
 
-                DomainViewModel domainViewModel = new DomainViewModel(name, status, price, years, date, ownerId);
+                DomainViewModel domainViewModel = new DomainViewModel(name, status, price, years, date, ownerId, ownerName);
                 list.add(domainViewModel);
             }
         }
         return list;
     }
 
+    // Update the filtered list based on the search text and selected status
     private void updateFilteredData(FilteredList<DomainViewModel> filteredData) {
         filteredData.setPredicate(domain -> {
             String searchText = tfSearch.getText().toLowerCase();

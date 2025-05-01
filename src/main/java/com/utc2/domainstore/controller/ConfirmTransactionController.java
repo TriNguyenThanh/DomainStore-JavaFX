@@ -6,6 +6,7 @@ import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.ITransactionService;
 import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
+import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
@@ -33,6 +34,7 @@ import java.util.ResourceBundle;
 public class ConfirmTransactionController implements Initializable {
     private ResourceBundle bundle;
 
+    // FXML components
     @FXML
     private TableView<BillViewModel> tableView;
     @FXML
@@ -57,11 +59,8 @@ public class ConfirmTransactionController implements Initializable {
                 openBillInfo(selectedBill);
             } else {
                 // show an error message
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle(bundle.getString("warning"));
-                alert.setHeaderText(null);
-                alert.setContentText(bundle.getString("error.noSelect"));
-                alert.showAndWait();
+                SceneManager.getInstance().showDialog(Alert.AlertType.WARNING,
+                        bundle.getString("warning"), null, bundle.getString("error.noSelect"));
             }
         }
     }
@@ -72,16 +71,22 @@ public class ConfirmTransactionController implements Initializable {
         initTable();
     }
 
+    // Method to initialize the table
     private void initTable() {
+        // Set up the table columns
         colID.setCellValueFactory(new PropertyValueFactory<>("id"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
 
+        colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
 
-        tableView.setPlaceholder(new TextField(bundle.getString("placeHolder.tableEmpty")));
+        updateTable();
+    }
 
+    // Method to update the table with data
+    private void updateTable() {
         ObservableList<BillViewModel> billObservableList = FXCollections.observableArrayList(getData());
         FilteredList<BillViewModel> filteredList = new FilteredList<>(billObservableList, b -> true);
 
@@ -98,9 +103,11 @@ public class ConfirmTransactionController implements Initializable {
         tableView.setItems(filteredList);
     }
 
+    // get data from server
     private List<BillViewModel> getData() {
         List<BillViewModel> bills = new ArrayList<>();
 
+        // Create a request to get all transactions
         JSONObject request = new JSONObject();
         request.put("user_id", UserSession.getInstance().getUserId());
 
@@ -108,6 +115,7 @@ public class ConfirmTransactionController implements Initializable {
         JSONObject respond = transactionService.getAllTransaction();
         JSONArray list = respond.getJSONArray("transactions");
 
+        // parse the response
         for (Object o : list) {
             JSONObject jsonObject = (JSONObject) o;
             STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
@@ -124,6 +132,7 @@ public class ConfirmTransactionController implements Initializable {
         return bills;
     }
 
+    // Method to handle opening the bill information
     private void openBillInfo(BillViewModel selectedBill) {
         Stage billInfoStage = new Stage();
         billInfoStage.setTitle(bundle.getString("information"));

@@ -5,10 +5,13 @@ package com.utc2.domainstore.view;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SceneManager {
@@ -101,5 +104,16 @@ public class SceneManager {
             throw new IllegalStateException("Stage has not been initialized");
         }
         stage.centerOnScreen();
+    }
+
+    public Optional<ButtonType> showDialog(Alert.AlertType type, String title, String headerText, String contentText) {
+        if (stage == null) {
+            throw new IllegalStateException("Stage has not been initialized");
+        }
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        return alert.showAndWait();
     }
 }
