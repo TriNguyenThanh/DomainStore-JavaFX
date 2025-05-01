@@ -20,6 +20,9 @@ public class DomainServices implements IDomain{
     public JSONObject search(JSONObject jsonInput) {
         String domainName = jsonInput.optString("name", "").trim();
 
+        JSONObject response = new JSONObject();
+
+        // Nếu không nhập tên miền => gợi ý ngẫu nhiên
         if (domainName.isBlank()) {
             JSONArray suggestions = new JSONArray();
             List<DomainModel> domainList = DomainRepository.getInstance().getSuggestedDomains(5);
@@ -27,11 +30,11 @@ public class DomainServices implements IDomain{
             for (DomainModel domain : domainList) {
                 JSONObject items = new JSONObject();
                 TopLevelDomainModel tld = TopLevelDomainRepository.getInstance()
-                    .selectById(new TopLevelDomainModel(domain.getTldId()));
+                        .selectById(new TopLevelDomainModel(domain.getTldId()));
 
                 String fullDomainName = domain.getDomainName();
                 if (tld != null && tld.getTldText() != null) {
-                    fullDomainName += tld.getTldText(); 
+                    fullDomainName += tld.getTldText();
                 }
 
                 items.put("name", fullDomainName);
@@ -40,13 +43,13 @@ public class DomainServices implements IDomain{
                 suggestions.put(items);
             }
 
-            JSONObject response = new JSONObject();
             response.put("domain", suggestions);
             return response;
         }
 
         // Nếu có nhập tên miền
         String[] parts = domainName.split("\\.");
+        String namePart = parts[0]; // ví dụ: example
         String tld;
         if (parts.length < 2) {
             tld = ".com";
@@ -54,25 +57,41 @@ public class DomainServices implements IDomain{
         } else {
             tld = "." + parts[parts.length - 1];
         }
-        TopLevelDomainModel tldModel = TopLevelDomainRepository.getInstance().getTLDByName(tld);
 
+        TopLevelDomainModel tldModel = TopLevelDomainRepository.getInstance().getTLDByName(tld);
         if (tldModel == null) {
             return createErrorResponse("TLD is not supported.");
         }
 
         String domainStatus = DomainUtils.getDomainInfo(domainName);
-        JSONObject response = new JSONObject();
 
-        if ("Nofound".equals(domainStatus)) {
-            response.put("status", "available");
-            response.put("price", tldModel.getPrice());
-        } else {
-            response.put("status", "sold");
-            response.put("price", 0);
+        // Tạo JSON chứa thông tin domain nhập vào
+        JSONObject domainInfo = new JSONObject();
+        domainInfo.put("name", domainName);
+        domainInfo.put("status", "Nofound".equals(domainStatus) ? "available" : "sold");
+        domainInfo.put("price", "Nofound".equals(domainStatus) ? tldModel.getPrice() : 0);
+        domainInfo.put("type", "primary");
+
+        // Gọi hàm suggestion để lấy các TLD khác cùng tên
+        JSONObject suggestionInput = new JSONObject();
+        suggestionInput.put("name", namePart);
+        JSONObject suggestionResult = suggestion(suggestionInput);
+        JSONArray suggestions = suggestionResult.optJSONArray("domain");
+
+        // Gộp domain chính và các suggestion
+        JSONArray domainArray = new JSONArray();
+        domainArray.put(domainInfo);
+
+        for (int i = 0; i < suggestions.length(); i++) {
+            JSONObject item = suggestions.getJSONObject(i);
+            if (!item.getString("name").equalsIgnoreCase(domainName)) {
+                item.put("type", "suggestion");
+                domainArray.put(item);
+            }
         }
 
-        response.put("name", domainName); 
-        return response; 
+        response.put("domain", domainArray);
+        return response;
     }
     private JSONObject createErrorResponse(String message) {
          JSONObject response = new JSONObject();
@@ -86,7 +105,7 @@ public class DomainServices implements IDomain{
     public JSONObject suggestion(JSONObject jsonInput) {
         String domainName = jsonInput.getString("name");
 
-        List<DomainModel> domainList = domainDAO.searchByName(domainName);
+        List<DomainModel> domainList = DomainRepository.getInstance().searchByName(domainName);
         JSONArray domainArray = new JSONArray();
 
         for (DomainModel domain : domainList) {
