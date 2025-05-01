@@ -49,7 +49,7 @@ public class DomainServices implements IDomain{
 
         // Nếu có nhập tên miền
         String[] parts = domainName.split("\\.");
-        String namePart = parts[0]; // ví dụ: example
+        String namePart = parts[0]; // example
         String tld;
         if (parts.length < 2) {
             tld = ".com";
@@ -65,30 +65,55 @@ public class DomainServices implements IDomain{
 
         String domainStatus = DomainUtils.getDomainInfo(domainName);
 
-        // Tạo JSON chứa thông tin domain nhập vào
+        // Kiểm tra và thêm domain chính vào DB nếu chưa có
+        DomainModel primaryDomain = DomainRepository.getInstance()
+                .getDomainByNameAndTld(namePart, tldModel.getId());
+        if (primaryDomain == null) {
+            primaryDomain = new DomainModel();
+            primaryDomain.setDomainName(namePart);
+            primaryDomain.setTldId(tldModel.getId());
+            primaryDomain.setStatus("Nofound".equals(domainStatus) ? DomainStatusEnum.available : DomainStatusEnum.sold);
+            DomainRepository.getInstance().insert(primaryDomain);
+        }
+
+        // Tạo JSON thông tin domain chính
         JSONObject domainInfo = new JSONObject();
         domainInfo.put("name", domainName);
-        domainInfo.put("status", "Nofound".equals(domainStatus) ? "available" : "sold");
-        domainInfo.put("price", "Nofound".equals(domainStatus) ? tldModel.getPrice() : 0);
-        domainInfo.put("type", "primary");
+        domainInfo.put("status", primaryDomain.getStatus().toString().toLowerCase());
+        domainInfo.put("price", tldModel.getPrice());
 
-        // Gọi hàm suggestion để lấy các TLD khác cùng tên
-        JSONObject suggestionInput = new JSONObject();
-        suggestionInput.put("name", namePart);
-        JSONObject suggestionResult = suggestion(suggestionInput);
-        JSONArray suggestions = suggestionResult.optJSONArray("domain");
-
-        // Gộp domain chính và các suggestion
+        // Các TLD gợi ý
+        String[] popularTLDs = new String[] { ".net", ".org", ".vn", ".info", ".biz" };
         JSONArray domainArray = new JSONArray();
-        domainArray.put(domainInfo);
 
-        for (int i = 0; i < suggestions.length(); i++) {
-            JSONObject item = suggestions.getJSONObject(i);
-            if (!item.getString("name").equalsIgnoreCase(domainName)) {
-                item.put("type", "suggestion");
-                domainArray.put(item);
+        for (String suggestTLD : popularTLDs) {
+            if (suggestTLD.equalsIgnoreCase(tld)) continue;
+
+            TopLevelDomainModel suggestTLDModel = TopLevelDomainRepository.getInstance().getTLDByName(suggestTLD);
+            if (suggestTLDModel == null) continue;
+
+            String suggestedDomainName = namePart + suggestTLD;
+
+            // Kiểm tra và thêm domain nếu chưa có
+            DomainModel existingDomain = DomainRepository.getInstance()
+                    .getDomainByNameAndTld(namePart, suggestTLDModel.getId());
+            if (existingDomain == null) {
+                existingDomain = new DomainModel();
+                existingDomain.setDomainName(namePart);
+                existingDomain.setTldId(suggestTLDModel.getId());
+                existingDomain.setStatus(DomainStatusEnum.available);
+                DomainRepository.getInstance().insert(existingDomain);
             }
+
+            JSONObject item = new JSONObject();
+            item.put("name", suggestedDomainName);
+            item.put("status", existingDomain.getStatus().toString().toLowerCase());
+            item.put("price", suggestTLDModel.getPrice());
+
+            domainArray.put(item);
         }
+
+        domainArray.put(domainInfo);
 
         response.put("domain", domainArray);
         return response;
