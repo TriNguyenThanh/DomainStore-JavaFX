@@ -31,7 +31,7 @@ public class PaymentController implements Initializable {
     @FXML
     private TableColumn<PaymentViewModel, String> colBillID;
     @FXML
-    private TableColumn<PaymentViewModel, Integer> colPayID;
+    private TableColumn<PaymentViewModel, String> colPayID;
     @FXML
     private TableColumn<PaymentViewModel, STATUS> colStatus;
     @FXML
@@ -68,7 +68,7 @@ public class PaymentController implements Initializable {
 
         for (Object o : array) {
             JSONObject payment = (JSONObject) o;
-            int id = payment.getInt("payment_id");
+            String id = payment.getString("payment_id");
             String ts_id = payment.getString("transaction_id");
             String method = payment.get("method").toString();
             String date = payment.get("date").toString();

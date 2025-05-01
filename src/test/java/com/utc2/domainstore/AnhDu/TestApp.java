@@ -1,30 +1,39 @@
 package com.utc2.domainstore.AnhDu;
 
+import com.sun.net.httpserver.HttpServer;
+import com.utc2.domainstore.entity.database.TransactionInfoModel;
 import com.utc2.domainstore.entity.database.TransactionModel;
+import com.utc2.domainstore.repository.TransactionInfoRepository;
 import com.utc2.domainstore.repository.TransactionRepository;
+import com.utc2.domainstore.service.GenerateService;
 import com.utc2.domainstore.service.PaymentService;
 import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.service.VnPayService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class TestApp {
     static VnPayService vnPayService = new VnPayService();
-
     public static void main(String[] args) throws IOException {
 
 // ------------ PaymentService -----------
 //        JSONObject json = new JSONObject();
-//        json.put("user_id", 1);
+//        json.put("user_id", 3);
+//        json.put("transaction_id", "HD010");
 //        PaymentService t = new PaymentService();
 //        System.out.println(t.getUserPaymentHistory(json));
+//        System.out.println(t.getTransactionPaymentHistory(json));
 // ------------ TransactionService -----------
 //        JSONObject json = new JSONObject();
-//        json.put("user_id", 1);
-//        json.put("transaction_id", "HD001");
+//        json.put("user_id", 6);
+//        json.put("transaction_id", "HD012");
 //        TransactionService t = new TransactionService();
 //        System.out.println(t.getAllUserTransaction(json));
 //        System.out.println(t.getAllTransaction());
@@ -50,10 +59,10 @@ public class TestApp {
 //        PaymentHistoryRepository.getInstance().delete(p);
         // ------------ Transaction -----------
         // Select All
-        ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll();
-        for (TransactionModel tran : transactions) {
-            System.out.println(tran);
-        }
+//        ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll();
+//        for(TransactionModel tran : transactions){
+//            System.out.println(tran);
+//        }
         // SelectById
 //        TransactionModel t =new TransactionModel();
 //        t.setTransactionId("HD001");
@@ -94,19 +103,18 @@ public class TestApp {
         JSONObject domain1 = new JSONObject();
         domain1.put("name", "diamonielts.com");
         domain1.put("status", "available");
-        domain1.put("price", 60000);
+        domain1.put("price", 299000);
         domain1.put("years", 2);
         domainArray.put(domain1);
         JSONObject domain2 = new JSONObject();
-        domain2.put("name", "spicydonut.info");
+        domain2.put("name", "globalban.biz");
         domain2.put("status", "available");
-        domain2.put("price", 50000);
+        domain2.put("price", 99000);
         domain2.put("years", 3);
         domainArray.put(domain2);
 
-
         JSONObject domains = new JSONObject();
-        domains.put("user_id", 4);
+        domains.put("user_id", 6);
         domains.put("domains", domainArray);
 
         /* tạo hoá đơn
@@ -116,16 +124,18 @@ public class TestApp {
                   total(int),
                   status ("success" / "failed")
                   }  */
-        TransactionService transactionService = new TransactionService();
-        JSONObject jsonObject = transactionService.createTransaction(domains);
-        System.out.println(jsonObject);
+//        TransactionService transactionService = new TransactionService();
+//        JSONObject jsonObject = transactionService.createTransaction(domains);
         /* thanh toán
         request: JSONObject {
                     total (int),
                     transactionId (String)
                  }
         response: true / false (boolean) */
-        PaymentService paymentService = new PaymentService();
-        paymentService.createPayment(jsonObject);
+//        PaymentService paymentService = new PaymentService();
+//        paymentService.createPayment(jsonObject);
+//          Tạo hoá đơn pdf
+//        GenerateService generateService = new GenerateService();
+//        generateService.generateInvoicePDF("HD005");
     }
 }

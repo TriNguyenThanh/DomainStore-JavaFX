@@ -222,7 +222,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
 
         for (Object o : array) {
             JSONObject payment = (JSONObject) o;
-            int id = payment.getInt("payment_id");
+            String id = payment.getString("payment_id");
             String ts_id = payment.getString("transaction_id");
             String method = payment.get("method").toString();
             String date = payment.get("date").toString();

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class PaymentViewModel {
     private String billID;
-    private int paymentID;
+    private String paymentID;
     private STATUS status;
     private LocalDate paymentDate;
     private String method;
@@ -12,7 +12,7 @@ public class PaymentViewModel {
     public PaymentViewModel() {
     }
 
-    public PaymentViewModel(String billID, int paymentID, String method, STATUS status, LocalDate paymentDate) {
+    public PaymentViewModel(String billID, String paymentID, String method, STATUS status, LocalDate paymentDate) {
         this.billID = billID;
         this.paymentID = paymentID;
         this.status = status;
@@ -28,11 +28,11 @@ public class PaymentViewModel {
         this.billID = billID;
     }
 
-    public int getPaymentID() {
+    public String getPaymentID() {
         return paymentID;
     }
 
-    public void setPaymentID(int paymentID) {
+    public void setPaymentID(String paymentID) {
         this.paymentID = paymentID;
     }
 
