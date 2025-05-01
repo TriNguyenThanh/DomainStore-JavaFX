@@ -77,7 +77,7 @@ public class PaymentService implements  IPaymentService{
         JSONArray jsonArray = new JSONArray();
         for (PaymentHistoryModel p : paymentHistoryDAO.selectByCondition(condition)) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("payment_id", p.getPaymentId());
+            jsonObject.put("payment_id", p.getPaymentCode());
             String transactionId = p.getTransactionId();
             jsonObject.put("transaction_id", transactionId);
             ArrayList<TransactionInfoModel> list = TransactionInfoRepository.getInstance().selectByCondition("transactions_id = '" + transactionId + "'");
