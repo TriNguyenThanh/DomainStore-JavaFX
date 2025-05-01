@@ -162,5 +162,26 @@ public class testService {
 //        b.put("name", "example.org");
 //        JSONObject result = a.deleteAvailableDomain(b);
 //        System.out.println(result.toString(2));
+
+        // ====== TEST 19: Xóa domain ======
+        CartServices cartServices = new CartServices();
+        JSONObject addToCartInput = new JSONObject();
+        addToCartInput.put("cus_id", 1);
+        JSONArray domainArray = new JSONArray();
+        JSONObject domain1 = new JSONObject();
+        domain1.put("name", "diamonielts.com");
+        domain1.put("status", "available");
+        domain1.put("price", 299000);
+        domain1.put("years", 2);
+        domainArray.put(domain1);
+        JSONObject domain2 = new JSONObject();
+        domain2.put("name", "futurenow52.blog");
+        domain2.put("status", "available");
+        domain2.put("price", 59000);
+        domain2.put("years", 3);
+        domainArray.put(domain2);
+        addToCartInput.put("domain", domainArray);
+        JSONObject addToCartResponse = cartServices.updateCart(addToCartInput);
+        System.out.println("Update to Cart Response: " + addToCartResponse.toString(2));
     }
 }

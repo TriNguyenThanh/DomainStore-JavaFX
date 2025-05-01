@@ -24,5 +24,6 @@ module com.utc2.domainstore {
     exports com.utc2.domainstore.entity.view;
     exports com.utc2.domainstore.entity.database;
     exports com.utc2.domainstore.view;
+    exports com.utc2.domainstore.service;
     requires jakarta.mail;
 }
