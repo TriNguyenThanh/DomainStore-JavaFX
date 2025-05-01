@@ -48,7 +48,7 @@ public class GenerateService implements IGenerateService{
             data.put("invoiceDate", parsedDate.format(outputFormat));
             data.put("transactionId", transactionId);
             if(payment != null){
-                data.put("paymentMethod", String.valueOf(PaymentTypeEnum.getPaymentMethod(payment.getPaymentId())));
+                data.put("paymentMethod", String.valueOf(PaymentTypeEnum.getPaymentMethod(payment.getPaymentMethodId())));
                 if(PaymentStatusEnum.COMPLETED.equals(payment.getPaymentStatus())) {
                     data.put("paymentStatus", "ĐÃ THANH TOÁN");
                 }else data.put("paymentStatus", "CHƯA THANH TOÁN");
