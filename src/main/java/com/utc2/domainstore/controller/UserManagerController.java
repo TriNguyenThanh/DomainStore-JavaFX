@@ -2,7 +2,7 @@ package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.entity.view.ACCOUNT_STATUS;
-import com.utc2.domainstore.entity.view.Method;
+import com.utc2.domainstore.entity.view.METHOD;
 import com.utc2.domainstore.entity.view.UserModel;
 import com.utc2.domainstore.service.AccountServices;
 import com.utc2.domainstore.service.IAccount;
@@ -136,7 +136,7 @@ public class UserManagerController implements Initializable {
         // Logic to add user
         // After adding, refresh the table
         CreateAccountController createAccountController = MainController.getInstance().load("/fxml/createAccount.fxml").getController();
-        createAccountController.setMethod(Method.ADD);
+        createAccountController.setMethod(METHOD.ADD);
     }
 
     private void handleRemoveUser() {
@@ -184,7 +184,7 @@ public class UserManagerController implements Initializable {
             // Open edit dialog with selected user data
             // Logic to update the user in the list
             CreateAccountController createAccountController = MainController.getInstance().load("/fxml/createAccount.fxml").getController();
-            createAccountController.setMethod(Method.UPDATE);
+            createAccountController.setMethod(METHOD.UPDATE);
             createAccountController.setUserModel(selectedUser);
         }
     }

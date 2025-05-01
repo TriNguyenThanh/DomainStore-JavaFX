@@ -56,6 +56,10 @@
     -fx-background-color: #FFFFFF;
 }
 
+.button:pressed {
+    -fx-background-color: #0000C6;
+}
+
 .table-cell {
     -fx-alignment: CENTER;
     -fx-font-size: 16;

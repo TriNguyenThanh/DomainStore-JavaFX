@@ -1,13 +1,13 @@
-
 package com.utc2.domainstore.service;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.utc2.domainstore.config.VnPayConfig;
-import com.utc2.domainstore.repository.PaymentHistoryRepository;
+import com.utc2.domainstore.controller.TransactionInfoController;
 import com.utc2.domainstore.entity.database.PaymentHistoryModel;
 import com.utc2.domainstore.entity.database.PaymentTypeEnum;
+import com.utc2.domainstore.repository.PaymentHistoryRepository;
 import com.utc2.domainstore.utils.VnPayUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,14 +21,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class PaymentService implements  IPaymentService{
+public class PaymentService implements IPaymentService {
     private ArrayList<PaymentHistoryModel> listPaymentHistory = PaymentHistoryRepository.getInstance().selectAll();
     private final PaymentHistoryRepository paymentHistoryDAO = new PaymentHistoryRepository();
     private VnPayConfig vnPayConfig = new VnPayConfig();
     private static VnPayService vnPayService = new VnPayService();
     private static String paymentURL;
+
     @Override
-    public JSONObject getUserPaymentHistory(JSONObject json){
+    public JSONObject getUserPaymentHistory(JSONObject json) {
         int userId = json.getInt("user_id");
         JSONArray jsonArray = new JSONArray();
         for (PaymentHistoryModel p : paymentHistoryDAO.selectByCondition("user_id = " + userId)) {
@@ -51,7 +52,10 @@ public class PaymentService implements  IPaymentService{
         // response: true / false (boolean)
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-        server.createContext("/vnpay_return", new VNPayReturnHandler());
+        //modify VNPanReturnHanler to use TransactionInfoController listener
+//        server.createContext("/vnpay_return", new VNPayReturnHandler());
+        TransactionInfoController transactionInfoController = TransactionInfoController.getInstance();
+        server.createContext("/vnpay_return", new VNPayReturnHandler(transactionInfoController));
         server.setExecutor(null); // Sử dụng executor mặc định
         server.start();
         // Tạo transaction reference là timestamp hiện tại
@@ -73,7 +77,14 @@ public class PaymentService implements  IPaymentService{
         }
         return false;
     }
+
     public static class VNPayReturnHandler implements HttpHandler {
+        private final PaymentListener listener;
+
+        public VNPayReturnHandler(PaymentListener listener) {
+            this.listener = listener;
+        }
+
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             // Lấy URI chứa các tham số trả về từ VNPay

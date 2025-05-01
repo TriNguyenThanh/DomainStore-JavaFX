@@ -18,9 +18,8 @@
                     </BorderPane.margin>
                     <children>
                         <Label alignment="CENTER" layoutX="434.0" layoutY="14.0" styleClass="header"
-                               text="%billsManager"
-                               AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0"
-                               AnchorPane.topAnchor="14.0"/>
+                               text="%billsManager" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0"
+                               AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0"/>
                     </children>
                     <effect>
                         <DropShadow/>
@@ -40,31 +39,12 @@
                         <BorderPane layoutX="14.0" layoutY="20.0" prefHeight="200.0" prefWidth="200.0"
                                     AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0"
                                     AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
-                            <right>
-                                <VBox alignment="BOTTOM_CENTER" prefHeight="448.0" prefWidth="177.0" spacing="20.0"
-                                      BorderPane.alignment="CENTER">
-                                    <children>
-                                        <Button fx:id="btAdd" mnemonicParsing="false" prefHeight="50.0"
-                                                prefWidth="140.0" text="%add" onAction="#onHandleButton"/>
-                                        <Button fx:id="btRemove" mnemonicParsing="false" prefHeight="50.0"
-                                                prefWidth="140.0" text="%lock" onAction="#onHandleButton"/>
-                                        <Button fx:id="btEdit" mnemonicParsing="false" prefHeight="50.0"
-                                                prefWidth="140.0" text="%edit" onAction="#onHandleButton"/>
-                                    </children>
-                                    <BorderPane.margin>
-                                        <Insets left="10.0"/>
-                                    </BorderPane.margin>
-                                </VBox>
-                            </right>
                             <center>
                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                     <children>
-                                        <TextField fx:id="tfSearch" prefHeight="50.0" promptText="%search"
-                                                   AnchorPane.leftAnchor="0.0"
-                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
                                         <TableView fx:id="tableView" prefHeight="448.0" prefWidth="772.0"
                                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
+                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <BorderPane.margin>
                                                 <Insets right="10.0"/>
                                             </BorderPane.margin>
@@ -78,6 +58,26 @@
                                     </children>
                                 </AnchorPane>
                             </center>
+                            <top>
+                                <HBox prefHeight="50.0" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <TextField fx:id="tfSearch" prefHeight="30.0" prefWidth="300.0"
+                                                   promptText="%search">
+                                            <HBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </HBox.margin>
+                                        </TextField>
+                                    </children>
+                                </HBox>
+                            </top>
+                            <bottom>
+                                <StackPane prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <Button fx:id="btInfo" mnemonicParsing="false" text="%information"
+                                                onAction="#onHandleButton"/>
+                                    </children>
+                                </StackPane>
+                            </bottom>
                         </BorderPane>
                     </children>
                 </AnchorPane>

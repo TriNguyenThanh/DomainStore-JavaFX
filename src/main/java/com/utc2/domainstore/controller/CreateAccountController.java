@@ -1,7 +1,7 @@
 package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.entity.database.RoleEnum;
-import com.utc2.domainstore.entity.view.Method;
+import com.utc2.domainstore.entity.view.METHOD;
 import com.utc2.domainstore.entity.view.UserModel;
 import com.utc2.domainstore.service.AccountServices;
 import com.utc2.domainstore.service.IAccount;
@@ -26,7 +26,7 @@ public class CreateAccountController implements Initializable {
     private UserModel data;
     private UserModel newData = new UserModel();
     private IAccount accountServices = new AccountServices();
-    private Method method;
+    private METHOD method;
 
     // FXML
     @FXML
@@ -59,13 +59,13 @@ public class CreateAccountController implements Initializable {
         cbRole.setValue(RoleEnum.user);
     }
 
-    public void setMethod(Method method) {
+    public void setMethod(METHOD method) {
         this.method = method;
 
         // hide change password button
-        if (method == Method.ADD) {
+        if (method == METHOD.ADD) {
             btChangePassword.setDisable(true);
-        } else if (method == Method.UPDATE) {
+        } else if (method == METHOD.UPDATE) {
             tfPass.setDisable(true);
             tfPass.setEditable(false);
         }
@@ -91,7 +91,7 @@ public class CreateAccountController implements Initializable {
         newData.setRole(cbRole.getValue());
         newData.setPassword(tfPass.getText());
 
-        if (method == Method.UPDATE && newData.getID() == UserSession.getInstance().getUserId()) {
+        if (method == METHOD.UPDATE && newData.getID() == UserSession.getInstance().getUserId()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Invalid Selection");
             alert.setHeaderText(null);
@@ -113,10 +113,10 @@ public class CreateAccountController implements Initializable {
             request.put("role", cbRole.getValue().toString());
 
             JSONObject response = null;
-            if (method == Method.ADD) {
+            if (method == METHOD.ADD) {
                 IRegister registerServices = new RegisterServices();
                 response = registerServices.addToDB(request);
-            } else if (method == Method.UPDATE) {
+            } else if (method == METHOD.UPDATE) {
                 if (!newData.equals(data)) {
                     // cập nhật thông tin người dùng
                     response = accountServices.updateUser(request);
@@ -174,7 +174,7 @@ public class CreateAccountController implements Initializable {
         lbPassErr.setText(" ");
 
         // đặt lại trạng thái của trường mật khẩu
-        if (method == Method.UPDATE) {
+        if (method == METHOD.UPDATE) {
             tfPass.setDisable(true);
             tfPass.setEditable(false);
         }
@@ -226,7 +226,7 @@ public class CreateAccountController implements Initializable {
         }
 
         // kiểm tra mật khẩu
-        if (method == Method.ADD) {
+        if (method == METHOD.ADD) {
             if (newData.getPassword().isBlank()) {
                 flag = false;
                 lbPassErr.setText(bundle.getString("error.password1"));

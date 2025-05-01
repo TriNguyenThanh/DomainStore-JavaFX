@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="800.0" prefWidth="600.0" styleClass="pnBackground" stylesheets="@../style/billInfo.css"
+<AnchorPane prefHeight="800.0" prefWidth="600.0" styleClass="pnBackground" stylesheets="@../style/subwindow.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.utc2.domainstore.controller.TransactionInfoController">
     <children>
@@ -119,16 +119,19 @@
                         </AnchorPane>
                     </center>
                     <bottom>
-                        <AnchorPane prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                        <HBox fx:id="btContainer" prefHeight="50.0" prefWidth="200.0" spacing="30.0" alignment="CENTER"
+                              AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                             <children>
-                                <Button fx:id="btExport" layoutX="186.0" mnemonicParsing="false"
-                                        onAction="#handleButtonOnAction" text="%export" AnchorPane.bottomAnchor="20.0"
-                                        AnchorPane.topAnchor="0.0"/>
-                                <Button fx:id="btPay" layoutX="468.0" mnemonicParsing="false"
-                                        onAction="#handleButtonOnAction" text="%pay" AnchorPane.bottomAnchor="20.0"
-                                        AnchorPane.topAnchor="0.0"/>
+                                <Button fx:id="btExport" mnemonicParsing="false" onAction="#handleButtonOnAction"
+                                        text="%export"/>
+                                <Button fx:id="btPay" mnemonicParsing="false" onAction="#handleButtonOnAction"
+                                        text="%pay"/>
+                                <Button fx:id="btAccept" mnemonicParsing="false" onAction="#handleButtonOnAction"
+                                        text="%accept"/>
+                                <Button fx:id="btCancel" mnemonicParsing="false" onAction="#handleButtonOnAction"
+                                        text="%cancel"/>
                             </children>
-                        </AnchorPane>
+                        </HBox>
                     </bottom>
                 </BorderPane>
             </bottom>

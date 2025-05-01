@@ -1,11 +1,13 @@
 package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.entity.view.BillViewModel;
+import com.utc2.domainstore.entity.view.METHOD;
 import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.ITransactionService;
 import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
+import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -90,10 +92,17 @@ public class TransactionController implements Initializable {
 
         TransactionInfoController transactionInfoController = loader.getController();
         transactionInfoController.setBillViewModel(selectedBill);
+        if (selectedBill.getStatus() == STATUS.COMPLETED || selectedBill.getStatus() == STATUS.CANCELLED) {
+            transactionInfoController.setMethod(METHOD.REVIEW);
+        } else if (selectedBill.getStatus() == STATUS.PENDINGPAYMENT || selectedBill.getStatus() == STATUS.PENDINGCONFIRM) {
+            transactionInfoController.setMethod(METHOD.PAY);
+        }
 
         Scene billInfoScene = new Scene(root);
         billInfoStage.setScene(billInfoScene);
 
+        billInfoStage.initOwner(SceneManager.getInstance().getStage());
+        billInfoStage.initModality(javafx.stage.Modality.WINDOW_MODAL);
         billInfoStage.showAndWait();
     }
 

@@ -5,12 +5,13 @@ import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.DomainServices;
 import com.utc2.domainstore.service.IDomain;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.json.JSONObject;
 
@@ -38,9 +39,12 @@ public class DomainManagerController implements Initializable {
     private TableColumn<DomainViewModel, LocalDate> colDate;
     @FXML
     private TableColumn<DomainViewModel, Integer> colOwner;
-
     @FXML
-    private Button btAdd, btRemove, btEdit;
+    private Button btAdd, btRemove;
+    @FXML
+    private TextField tfSearch;
+    @FXML
+    private ComboBox<String> cbStatus;
 
     @FXML
     private void onHandleButton(ActionEvent event) {
@@ -49,8 +53,6 @@ public class DomainManagerController implements Initializable {
             // Perform action based on the button clicked
         } else if (event.getSource() == btRemove) {
             // Perform action based on the button clicked
-        } else if (event.getSource() == btEdit) {
-            // Perform action based on the button clicked
         }
     }
 
@@ -58,6 +60,8 @@ public class DomainManagerController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
         data = getData();
+
+        cbStatus.getItems().addAll(List.of("", STATUS.AVAILABLE.toString(), STATUS.SOLD.toString()));
         initTable();
     }
 
@@ -71,8 +75,14 @@ public class DomainManagerController implements Initializable {
 
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
 
-        tbDomain.getItems().clear();
-        tbDomain.getItems().addAll(data);
+        ObservableList<DomainViewModel> observableList = FXCollections.observableArrayList(data);
+        FilteredList<DomainViewModel> filteredData = new FilteredList<>(observableList, p -> true);
+
+        // Add a listener to the filter property of the filtered list
+        tfSearch.textProperty().addListener((observable, oldValue, newValue) -> updateFilteredData(filteredData));
+        cbStatus.valueProperty().addListener((observable, oldValue, newValue) -> updateFilteredData(filteredData));
+//        tbDomain.getItems().clear();
+        tbDomain.setItems(filteredData);
     }
 
     private List<DomainViewModel> getData() {
@@ -101,5 +111,21 @@ public class DomainManagerController implements Initializable {
             }
         }
         return list;
+    }
+
+    private void updateFilteredData(FilteredList<DomainViewModel> filteredData) {
+        filteredData.setPredicate(domain -> {
+            String searchText = tfSearch.getText().toLowerCase();
+            String selectedStatus = cbStatus.getValue();
+
+            // 1. Check if the domain name contains the search text
+            boolean matchesSearch = domain.getName().toLowerCase().contains(searchText);
+
+            // 2. Check if the domain status matches the selected status
+            boolean matchesStatus = selectedStatus == null || selectedStatus.isEmpty() || domain.getStatus().toString().equalsIgnoreCase(selectedStatus);
+
+            // 3. Return true if both conditions are met
+            return matchesSearch && matchesStatus;
+        });
     }
 }
