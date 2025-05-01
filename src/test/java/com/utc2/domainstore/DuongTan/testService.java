@@ -90,11 +90,11 @@ public class testService {
 //        System.out.println("Get All Users Response: " + getAllUsersResponse.toString(2));
 
         // ====== TEST 11: Lấy giỏ hàng người dùng ======
-        CartServices cartServices = new CartServices();
-        JSONObject cartInput = new JSONObject();
-        cartInput.put("cus_id", 1);
-        JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
-        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
+//        CartServices cartServices = new CartServices();
+//        JSONObject cartInput = new JSONObject();
+//        cartInput.put("cus_id", 1);
+//        JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
+//        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
 
         // ====== TEST 12: Thêm domain vào giỏ hàng ======
 //        CartServices cartServices = new CartServices();
@@ -162,5 +162,26 @@ public class testService {
 //        b.put("name", "example.org");
 //        JSONObject result = a.deleteAvailableDomain(b);
 //        System.out.println(result.toString(2));
+
+        // ====== TEST 19: Xóa domain ======
+        CartServices cartServices = new CartServices();
+        JSONObject addToCartInput = new JSONObject();
+        addToCartInput.put("cus_id", 1);
+        JSONArray domainArray = new JSONArray();
+        JSONObject domain1 = new JSONObject();
+        domain1.put("name", "diamonielts.com");
+        domain1.put("status", "available");
+        domain1.put("price", 299000);
+        domain1.put("years", 2);
+        domainArray.put(domain1);
+        JSONObject domain2 = new JSONObject();
+        domain2.put("name", "futurenow52.blog");
+        domain2.put("status", "available");
+        domain2.put("price", 59000);
+        domain2.put("years", 3);
+        domainArray.put(domain2);
+        addToCartInput.put("domain", domainArray);
+        JSONObject addToCartResponse = cartServices.updateCart(addToCartInput);
+        System.out.println("Update to Cart Response: " + addToCartResponse.toString(2));
     }
 }
