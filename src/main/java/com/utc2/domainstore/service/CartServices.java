@@ -6,7 +6,6 @@ import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import com.utc2.domainstore.repository.CartRepository;
 import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.repository.TopLevelDomainRepository;
-import java.sql.Timestamp;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,7 +13,11 @@ import java.util.List;
 
 public class CartServices implements ICart {
 
-    private final CartRepository cartRepository;
+    private CartRepository cartRepository;
+
+    public CartServices() {
+        this.cartRepository = new CartRepository();
+    }
 
     public CartServices(CartRepository cartRepository) {
         this.cartRepository = cartRepository;
@@ -43,6 +46,7 @@ public class CartServices implements ICart {
             domainJson.put("name", fullDomainName);
             domainJson.put("status", domain.getStatus().toString());
             domainJson.put("price", DomainRepository.getInstance().getTLDPriceByDomainId(domain.getTldId()));
+            domainJson.put("year", domain.getYears());
 
             domainArray.put(domainJson);
         }
@@ -84,25 +88,32 @@ public class CartServices implements ICart {
 
             if (!DomainRepository.getInstance().isDomainExists(domainName, domainId.getId())) {
                 // Nếu domain chưa tồn tại trong DB insert mới
-                DomainModel newDomain = new DomainModel(name, domainId.getId(), DomainStatusEnum.available);
+                DomainModel newDomain = new DomainModel(name, domainId.getId(), DomainStatusEnum.available, years);
                 DomainRepository.getInstance().insert(newDomain);
 
                 // Lấy lại domain sau khi insert
                 DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, domainId.getId());
 
                 // Kiểm tra đã có trong cart chưa
-                if (!cartRepository.isDomainInCart(cus_id, domainModel.getId())) {
-                    boolean isAdded = cartRepository.addToCart(cus_id, domainModel.getId(), years);
+                if (!cartRepository.isDomainInCart2(cus_id, domainModel.getId())) {
+                    boolean isAdded = cartRepository.updateCart(cus_id, domainModel.getId(), years);
                     if (isAdded) successCount++;
                 }
             } else {
                 // Domain đã tồn tại trong DB
                 DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, domainId.getId());
-
+                DomainModel updateDomain = new DomainModel(
+                        domainModel.getId(),
+                        domainModel.getDomainName(),
+                        domainModel.getTldId(),
+                        domainModel.getStatus(),
+                        domainModel.getActiveDate(),
+                        years);
+                DomainRepository.getInstance().update(updateDomain);
                 // Kiểm tra đã có trong cart chưa
-                if (!cartRepository.isDomainInCart(cus_id, domainModel.getId())) {
-                    boolean isAdded = cartRepository.addToCart(cus_id, domainModel.getId(), years);
-                    if (isAdded) successCount++;
+                if (!cartRepository.isDomainInCart(cus_id, domainModel.getId(), years)) {
+                    cartRepository.updateCart(cus_id, domainModel.getId(), years);
+                    successCount++;
                 }
             }
         }
@@ -116,6 +127,52 @@ public class CartServices implements ICart {
         } else {
             response.put("status", "failed");
             response.put("message", "No domains added (maybe already in cart)");
+        }
+
+        return response;
+    }
+
+    @Override
+    public JSONObject removeFromCart(JSONObject jsonInput) {
+        int cus_id = jsonInput.getInt("cus_id");
+        JSONArray domainArray = jsonInput.getJSONArray("domain");
+
+        int successCount = 0;
+        JSONObject response = new JSONObject();
+
+        for (int i = 0; i < domainArray.length(); i++) {
+            JSONObject domainJson = domainArray.getJSONObject(i);
+            String domainName = domainJson.getString("name");
+
+            String[] parts = domainName.split("\\.");
+            if (parts.length < 2) {
+                continue;
+            }
+
+            String tld = "." + parts[parts.length - 1];
+            TopLevelDomainModel tldModel = TopLevelDomainRepository.getInstance().getTLDByName(tld);
+
+            if (tldModel == null) {
+                continue;
+            }
+
+            String name = parts[0];
+
+            DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, tldModel.getId());
+            if (domainModel != null) {
+                if (cartRepository.isDomainInCart2(cus_id, domainModel.getId())) {
+                    boolean isRemoved = cartRepository.removeFromCart(cus_id, domainModel.getId());
+                    if (isRemoved) successCount++;
+                }
+            }
+        }
+
+        if (successCount > 0) {
+            response.put("status", "success");
+            response.put("message", successCount + " domain(s) removed from cart");
+        } else {
+            response.put("status", "failed");
+            response.put("message", "No domains removed (maybe not found in cart)");
         }
 
         return response;

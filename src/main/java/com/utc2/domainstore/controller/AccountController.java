@@ -65,6 +65,48 @@ public class AccountController implements Initializable {
         }
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        bundle = resources;
+        rootData = getRootData();
+        newData = null;
+        displayData();
+        rootPane.parentProperty().addListener((obs, oldParent, newParent) -> {
+            if (newParent == null) {
+                onRemovedFromScene();
+            }
+        });
+    }
+
+    private AccountModel getRootData() {
+        JSONObject request = new JSONObject();
+        request.put("user_id", UserSession.getInstance().getUserId());
+
+        IAccount accountServices = new AccountServices();
+        JSONObject respond = accountServices.getUserInformation(request);
+
+        String fullname = respond.getString("username");
+        String phone = respond.getString("phone");
+        String email = respond.getString("email");
+        String psID = respond.getString("personal_id");
+        String pass = respond.getString("password");
+
+        return new AccountModel(fullname, phone, email, psID, pass);
+    }
+
+    private void displayData() {
+        tfUsername.setText(rootData.getFullName());
+        tfPhone.setText(rootData.getPhone());
+        tfEmail.setText(rootData.getEmail());
+        tfPsID.setText(rootData.getPsID());
+        tfPass.setText("11111111");
+    }
+
+    private void onRemovedFromScene() {
+        //check the difference
+        save();
+    }
+
     private void logout() {
         edit(false);
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -86,7 +128,7 @@ public class AccountController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/change_password.fxml"), rb);
             Parent root = fxmlLoader.load();
 
-            changePasswordController controller = fxmlLoader.getController();
+            ChangePasswordController controller = fxmlLoader.getController();
             controller.setData(rootData.getHash_password());
 
             Stage stage = new Stage();
@@ -98,7 +140,7 @@ public class AccountController implements Initializable {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
             rootData = newData = getRootData();
-            
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -235,47 +277,5 @@ public class AccountController implements Initializable {
             tfEmail.setStyle("-fx-border-color: #FFFFFF");
             tfPsID.setStyle("-fx-border-color: #FFFFFF");
         }
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        bundle = resources;
-        rootData = getRootData();
-        newData = null;
-        displayData();
-        rootPane.parentProperty().addListener((obs, oldParent, newParent) -> {
-            if (newParent == null) {
-                onRemovedFromScene();
-            }
-        });
-    }
-
-    private AccountModel getRootData() {
-        JSONObject request = new JSONObject();
-        request.put("user_id", UserSession.getInstance().getUserId());
-
-        IAccount accountServices = new AccountServices();
-        JSONObject respond = accountServices.getUserInformation(request);
-
-        String fullname = respond.getString("username");
-        String phone = respond.getString("phone");
-        String email = respond.getString("email");
-        String psID = respond.getString("personal_id");
-        String pass = respond.getString("password");
-
-        return new AccountModel(fullname, phone, email, psID, pass);
-    }
-
-    private void displayData() {
-        tfUsername.setText(rootData.getFullName());
-        tfPhone.setText(rootData.getPhone());
-        tfEmail.setText(rootData.getEmail());
-        tfPsID.setText(rootData.getPsID());
-        tfPass.setText("11111111");
-    }
-
-    private void onRemovedFromScene() {
-        //check the difference
-        save();
     }
 }

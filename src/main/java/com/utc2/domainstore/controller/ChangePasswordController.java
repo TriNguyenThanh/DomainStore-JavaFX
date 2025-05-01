@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 
 import static com.utc2.domainstore.utils.PasswordUtils.checkPassword;
 
-public class changePasswordController implements Initializable {
+public class ChangePasswordController implements Initializable {
     private ResourceBundle bundle;
     private String hash_pass;
 

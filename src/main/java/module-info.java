@@ -10,6 +10,8 @@ module com.utc2.domainstore {
     requires jdk.compiler;
     requires jdk.httpserver;
     requires java.desktop;
+    requires jasperreports;
+    requires com.github.librepdf.openpdf;
 
     opens com.utc2.domainstore to javafx.fxml;
     opens com.utc2.domainstore.controller to javafx.fxml;
@@ -22,4 +24,5 @@ module com.utc2.domainstore {
     exports com.utc2.domainstore.entity.view;
     exports com.utc2.domainstore.entity.database;
     exports com.utc2.domainstore.view;
+    requires jakarta.mail;
 }

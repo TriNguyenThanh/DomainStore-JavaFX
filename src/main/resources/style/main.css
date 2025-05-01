@@ -23,10 +23,10 @@
 
 .btSideBarItem {
     -fx-background-color: #FFFFFF;
-    -fx-background-radius: 10;
-    -fx-border-color: #0000C6;
+    -fx-background-radius: 0 10 10 0;
+    -fx-border-color: #326FFF;
     -fx-border-width: 0 0 0 0;
-    -fx-border-radius: 10;
+    -fx-border-radius: 0 10 10 0;
 
     -fx-text-fill: #000000;
     -fx-font-size: 20;
@@ -35,6 +35,13 @@
 
 .btSideBarItem:hover {
     -fx-border-width: 1 1 1 10;
+    -fx-background-color: #326FFF;
+}
+
+.btSideBarItem:pressed {
+    -fx-border-width: 1 1 1 10;
+    -fx-border-color: #0000C6;
+    -fx-background-color: #0000C6;
 }
 
 .label {

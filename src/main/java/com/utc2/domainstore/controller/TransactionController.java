@@ -1,10 +1,13 @@
 package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.entity.view.BillViewModel;
+import com.utc2.domainstore.entity.view.METHOD;
 import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.ITransactionService;
 import com.utc2.domainstore.service.TransactionService;
+import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
+import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -35,7 +38,7 @@ public class TransactionController implements Initializable {
     @FXML
     private TableColumn<BillViewModel, String> colID;
     @FXML
-    private TableColumn<BillViewModel, Date> colDate;
+    private TableColumn<BillViewModel, LocalDate> colDate;
     @FXML
     private TableColumn<BillViewModel, STATUS> colStatus;
     @FXML
@@ -46,11 +49,16 @@ public class TransactionController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        initTable();
+    }
 
+    private void initTable() {
         colID.setCellValueFactory(new PropertyValueFactory<>("id"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
 
         getSelectedButton.setOnAction(event -> {
             BillViewModel selectedBill = tableView.getSelectionModel().getSelectedItem();
@@ -84,10 +92,21 @@ public class TransactionController implements Initializable {
 
         TransactionInfoController transactionInfoController = loader.getController();
         transactionInfoController.setBillViewModel(selectedBill);
+        if (selectedBill.getStatus() == STATUS.COMPLETED || selectedBill.getStatus() == STATUS.CANCELLED) {
+            transactionInfoController.setMethod(METHOD.REVIEW);
+        } else if (selectedBill.getStatus() == STATUS.PENDINGPAYMENT || selectedBill.getStatus() == STATUS.PENDINGCONFIRM) {
+            transactionInfoController.setMethod(METHOD.PAY);
+        }
 
         Scene billInfoScene = new Scene(root);
         billInfoStage.setScene(billInfoScene);
+
+        billInfoStage.initOwner(SceneManager.getInstance().getStage());
+        billInfoStage.initModality(javafx.stage.Modality.WINDOW_MODAL);
         billInfoStage.showAndWait();
+
+        // Sau khi đóng cửa sổ, cập nhật lại bảng
+        initTable();
     }
 
     private List<BillViewModel> getData() {
@@ -103,7 +122,7 @@ public class TransactionController implements Initializable {
         for (Object o : list) {
             JSONObject jsonObject = (JSONObject) o;
             String id = jsonObject.getString("id");
-            Date date = Date.valueOf(jsonObject.get("date").toString());
+            LocalDate date = LocalDate.parse(jsonObject.optString("date"));
             STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
             int price = jsonObject.getInt("total_price");
 

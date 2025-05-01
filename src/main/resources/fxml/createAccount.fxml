@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane fx:id="rootPane" prefHeight="640.0" prefWidth="1020.0" styleClass="pnBackground"
+            stylesheets="@../style/subwindow.css" xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.CreateAccountController">
+    <AnchorPane layoutX="154.0" layoutY="210.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <BorderPane layoutX="10" layoutY="200.0" prefHeight="450.0" prefWidth="1000.0" styleClass="pnBackground"
+                    AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0">
+            <left>
+                <VBox prefHeight="454.0" prefWidth="300.0" spacing="10.0" BorderPane.alignment="CENTER">
+                    <Label styleClass="error"/>
+                    <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0" text="%role">
+                        <VBox.margin>
+                            <Insets right="10.0"/>
+                        </VBox.margin>
+                    </Label>
+                    <Label styleClass="error"/>
+                    <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0" text="%username">
+                        <VBox.margin>
+                            <Insets right="10.0"/>
+                        </VBox.margin>
+                    </Label>
+                    <Label styleClass="error"/>
+                    <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0" text="%phone">
+                        <VBox.margin>
+                            <Insets right="10.0"/>
+                        </VBox.margin>
+                    </Label>
+                    <Label styleClass="error"/>
+                    <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0" text="%email">
+                        <VBox.margin>
+                            <Insets right="10.0"/>
+                        </VBox.margin>
+                    </Label>
+                    <Label styleClass="error"/>
+                    <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0" text="%personal_id">
+                        <VBox.margin>
+                            <Insets right="10.0"/>
+                        </VBox.margin>
+                    </Label>
+                    <Label styleClass="error"/>
+                    <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0" text="%password">
+                        <VBox.margin>
+                            <Insets right="10.0"/>
+                        </VBox.margin>
+                    </Label>
+                </VBox>
+            </left>
+            <center>
+                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+                    <Label styleClass="error"/>
+                    <ComboBox fx:id="cbRole" maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="200.0"/>
+                    <Label fx:id="lbFullNameErr" styleClass="error"/>
+                    <TextField fx:id="tfUsername" prefHeight="50.0"/>
+                    <Label fx:id="lbPhoneErr" styleClass="error"/>
+                    <TextField fx:id="tfPhone" prefHeight="50.0"/>
+                    <Label fx:id="lbEmailErr" styleClass="error"/>
+                    <TextField fx:id="tfEmail" prefHeight="50.0"/>
+                    <Label fx:id="lbPsIDErr" styleClass="error"/>
+                    <TextField fx:id="tfPsID" prefHeight="50.0"/>
+                    <Label fx:id="lbPassErr" styleClass="error"/>
+                    <TextField fx:id="tfPass" prefHeight="50.0"/>
+                </VBox>
+            </center>
+            <top>
+                <StackPane prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <Label styleClass="header" text="%createAccount"/>
+                </StackPane>
+            </top>
+            <bottom>
+                <AnchorPane prefHeight="66.0" prefWidth="1020.0" BorderPane.alignment="CENTER">
+                    <HBox alignment="CENTER" spacing="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Button fx:id="btCancel" mnemonicParsing="false" text="%cancel"
+                                onAction="#handleButtonOnAction"/>
+                        <Button fx:id="btSave" mnemonicParsing="false" text="%save"
+                                onAction="#handleButtonOnAction"/>
+                        <Button fx:id="btChangePassword" mnemonicParsing="false" text="%changePass"
+                                onAction="#handleButtonOnAction"/>
+                    </HBox>
+
+                </AnchorPane>
+            </bottom>
+        </BorderPane>
+        <Button fx:id="btBack" mnemonicParsing="false" text="%back" AnchorPane.leftAnchor="10.0"
+                AnchorPane.topAnchor="10.0" onAction="#handleButtonOnAction"/>
+    </AnchorPane>
+</AnchorPane>

@@ -18,10 +18,10 @@ public class AccountServices implements IAccount {
     public JSONObject getUserInformation(JSONObject jsonInput) {
         int user_id = jsonInput.getInt("user_id");
 
-        CustomerModel customer = new CustomerModel(user_id, "", "", "", "", "", RoleEnum.user, null);
+        CustomerModel customer = new CustomerModel(user_id, "", "", "", "", "", RoleEnum.user, false, null);
         CustomerModel find = customerDAO.selectById(customer);
-        if (find == null) {
-            return createResponse("failed", "User not found");
+        if (find == null || find.getIsDeleted() == true) {
+            return createResponse("failed", "User not found or is locked (deleted)");
         }
 
         JSONObject response = new JSONObject();
@@ -41,7 +41,7 @@ public class AccountServices implements IAccount {
         int userId = jsonInput.getInt("user_id");
 
         // Lấy dữ liệu user cũ từ database
-        CustomerModel existingUser = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", "", RoleEnum.user, null));
+        CustomerModel existingUser = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", "", RoleEnum.user, false, null));
         if (existingUser == null) {
             return createResponse("failed", "User not found");
         }
@@ -52,9 +52,19 @@ public class AccountServices implements IAccount {
         String email = jsonInput.has("email") ? jsonInput.getString("email") : existingUser.getEmail();
         String personalId = jsonInput.has("personal_id") ? jsonInput.getString("personal_id") : existingUser.getCccd();
 
+        // Xử lý role (nếu có)
+        RoleEnum role = existingUser.getRole();
+        if (jsonInput.has("role")) {
+            try {
+                role = RoleEnum.valueOf(jsonInput.getString("role")); // ví dụ: "user" hoặc "admin"
+            } catch (IllegalArgumentException e) {
+                return createResponse("failed", "Invalid role value");
+            }
+        }
+
         // Cập nhật thông tin
         CustomerModel updatedUser = new CustomerModel(
-                existingUser.getId(), name, email, phone, personalId, existingUser.getRole(), new Timestamp(System.currentTimeMillis())
+                existingUser.getId(), name, email, phone, personalId, role, new Timestamp(System.currentTimeMillis())
         );
 
         int result = customerDAO.update(updatedUser);
@@ -70,7 +80,7 @@ public class AccountServices implements IAccount {
         String password = jsonInput.getString("password");
 
         //kiểm tra người dùng có tồn tại hay không
-        CustomerModel existingCustomer = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", "", RoleEnum.user, null));
+        CustomerModel existingCustomer = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", "", RoleEnum.user, false, null));
         if (existingCustomer == null) {
             return createResponse("failed", "User not found");
         }
@@ -98,7 +108,7 @@ public class AccountServices implements IAccount {
             userJson.put("email", user.getEmail());
             userJson.put("personal_id", user.getCccd());
             userJson.put("role", user.getRole());
-            
+            userJson.put("is_deleted", user.getIsDeleted());
             userArray.put(userJson);
         }
 
@@ -113,5 +123,26 @@ public class AccountServices implements IAccount {
         response.put("status", status);
         response.put("message", message);
         return response;
+    }
+
+    //xóa tài khoản
+    @Override
+    public JSONObject lockedAccount(JSONObject jsonInput) {
+        int user_id = jsonInput.getInt("user_id");
+
+        // Lấy user hiện tại từ DB
+        CustomerModel existingUser = CustomerRepository.getInstance().selectById(new CustomerModel(user_id));
+        if (existingUser == null) {
+            return createResponse("failed", "User not found");
+        }
+
+        // Đặt cờ is_deleted = true
+        existingUser.setDeleted(true);
+
+        // Cập nhật lại người dùng
+        int resultUpdate = CustomerRepository.getInstance().update(existingUser);
+
+        return resultUpdate > 0 ? createResponse("success", "User locked successfully")
+                : createResponse("failed", "Lock failed");
     }
 }

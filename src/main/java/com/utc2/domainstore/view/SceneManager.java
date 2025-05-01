@@ -25,6 +25,10 @@ public class SceneManager {
     public static void init(Stage inputStage) {
         if (stage == null) {
             stage = inputStage;
+            stage.setOnCloseRequest(event -> {
+                event.consume();
+                Platform.exit();
+            });
         }
     }
 
@@ -42,6 +46,7 @@ public class SceneManager {
             stage.setResizable(true);
             stage.setScene(scene);
             stage.sizeToScene();
+            stage.centerOnScreen();
             if (!resizable) {
                 stage.setResizable(false);
             }
@@ -89,5 +94,12 @@ public class SceneManager {
         Platform.runLater(() -> {
             stage.setMaximized(maximized);
         });
+    }
+
+    public void center() {
+        if (stage == null) {
+            throw new IllegalStateException("Stage has not been initialized");
+        }
+        stage.centerOnScreen();
     }
 }

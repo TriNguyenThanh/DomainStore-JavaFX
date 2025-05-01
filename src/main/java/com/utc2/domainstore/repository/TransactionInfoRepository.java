@@ -84,12 +84,11 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
             
             // Bước 2: Chuẩn bị câu lệnh để xoá dữ liệu
             String sql = "DELETE FROM transactions_info"
-                    + " WHERE transactions_id = ? and domain_id = ?";
+                    + " WHERE transactions_id = ?;";
             PreparedStatement pst = con.prepareStatement(sql);
             
              // Bước 3: Gán giá trị id
             pst.setString(1, transactionInfo.getTransactionId());
-            pst.setInt(2, transactionInfo.getDomainId());
             // Bước 4: Thực thi câu lệnh UPDATE và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             System.out.println("Xoá dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
@@ -103,7 +102,6 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
 
     @Override
     public TransactionInfoModel selectById(TransactionInfoModel transactionInfo) {
-        TransactionInfoModel t = new TransactionInfoModel();
         try {
             // Bước 1: Mở kết nối đến database
             Connection con = JDBC.getConnection(); 
@@ -116,11 +114,13 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
             ResultSet rs = pst.executeQuery();
             
             // Bước 4: Duyệt qua kết quả và xử lý dữ liệu
-            while(rs.next()){
+            if(rs.next()){
+                TransactionInfoModel t = new TransactionInfoModel();
                 // Lấy dữ liệu từ ResultSet
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));
                 t.setPrice(rs.getInt("price"));
+                return t;
             }
             // Bước 5: Đóng kết nối 
             JDBC.closeConnection(con);
@@ -128,13 +128,12 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
         } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
         }
-        return t;
+        return null;
     }
 
     @Override
     public ArrayList<TransactionInfoModel> selectAll() {
         ArrayList<TransactionInfoModel> listTransactionInfo = new ArrayList<>();
-        TransactionInfoModel t = new TransactionInfoModel();
         try {
             // Bước 1: Mở kết nối đến database
             Connection con = JDBC.getConnection(); 
@@ -148,6 +147,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
             
             // Bước 4: Duyệt qua kết quả và xử lý dữ liệu
             while(rs.next()){
+                TransactionInfoModel t = new TransactionInfoModel();
                 // Lấy dữ liệu từ ResultSet
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));
@@ -167,7 +167,6 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
     @Override
     public ArrayList<TransactionInfoModel> selectByCondition(String condition) {
         ArrayList<TransactionInfoModel> listTransactionInfo = new ArrayList<>();
-        TransactionInfoModel t = new TransactionInfoModel();
         try {
             // Bước 1: Mở kết nối đến database
             Connection con = JDBC.getConnection(); 
@@ -180,6 +179,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
             
             // Bước 4: Duyệt qua kết quả và xử lý dữ liệu
             while(rs.next()){
+                TransactionInfoModel t = new TransactionInfoModel();
                 // Lấy dữ liệu từ ResultSet
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));

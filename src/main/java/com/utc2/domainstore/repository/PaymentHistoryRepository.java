@@ -116,9 +116,9 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
             // Bước 1: Mở kết nối đến database
             Connection con = JDBC.getConnection(); 
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
-            String sql = "SELECT * FROM paymenthistory WHERE id = ?";
+            String sql = "SELECT * FROM paymenthistory WHERE transaction_id = ?";
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, paymentHistory.getPaymentId());
+            pst.setString(1, paymentHistory.getTransactionId());
             
             // Bước 3: Thực thi truy vấn và nhận kết quả
             ResultSet rs = pst.executeQuery();

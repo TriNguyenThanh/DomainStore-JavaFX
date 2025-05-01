@@ -1,0 +1,570 @@
+<!-- Created with Jaspersoft Studio version 7.0.0.final using JasperReports Library version 7.0.0-b478feaa9aab4375eba71de77b4ca138ad2f62aa  -->
+<jasperReport name="invoice_domain" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="886a073c-faca-4949-8b36-508f43c34558" ignorePagination="true">
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#7F93AD">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#EBECED">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<conditionalStyle backcolor="#EBECED">
+			<conditionExpression><![CDATA[new Boolean($V{REPORT_COUNT}.intValue()%2==0)]]></conditionExpression>
+		</conditionalStyle>
+	</style>
+	<style name="Table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_CH" mode="Opaque" backcolor="#271756">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<dataset name="TABLR_DATASET" uuid="8ffbf3c7-c788-4f41-9d97-7eea63887ae8">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BEAN_DATA_ADAPTOR"/>
+		<query language="sql"><![CDATA[]]></query>
+		<field name="domainName" class="java.lang.String"/>
+		<field name="years" class="java.lang.Integer"/>
+		<field name="price" class="java.lang.Integer"/>
+		<variable name="total" calculation="Sum" class="java.lang.Integer">
+			<expression><![CDATA[$F{years} * $F{price}]]></expression>
+		</variable>
+		<group name="yearsGroup">
+			<expression><![CDATA[$F{years}]]></expression>
+		</group>
+	</dataset>
+	<parameter name="TABLE_DATA_SOURCE" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<query language="sql"><![CDATA[]]></query>
+	<field name="fullName" class="java.lang.String"/>
+	<field name="phone" class="java.lang.String"/>
+	<field name="email" class="java.lang.String"/>
+	<field name="transactionDate" class="java.lang.String"/>
+	<field name="total" class="java.lang.Integer"/>
+	<field name="invoiceDate" class="java.lang.String"/>
+	<field name="transactionId" class="java.lang.String"/>
+	<field name="paymentMethod" class="java.lang.String"/>
+	<field name="paymentStatus" class="java.lang.String"/>
+	<field name="accountName" class="java.lang.String"/>
+	<field name="accountNumber" class="java.lang.String"/>
+	<field name="bank" class="java.lang.String"/>
+	<field name="content" class="java.lang.String"/>
+	<background splitType="Stretch"/>
+	<columnHeader height="100">
+		<element kind="image" uuid="67715cff-051f-410c-b3f8-08c2921f3149" x="14" y="2" width="80" height="88">
+			<expression><![CDATA["https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/LogoUTC.jpg/1200px-LogoUTC.jpg"]]></expression>
+			<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+		</element>
+		<element kind="staticText" uuid="4cc0d2ed-fd08-4100-a107-ad6e77e023f0" x="211" y="2" width="242" height="30" forecolor="#271756" fontName="Arial" fontSize="20.0" pdfFontName="fonts\arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<paragraph leftIndent="10"/>
+			<text><![CDATA[HOÁ ĐƠN DỊCH VỤ]]></text>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			<box>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="staticText" uuid="f54d5791-0b4f-4ec1-87d4-8963e156e4cd" x="211" y="35" width="65" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts\arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="false" hTextAlign="Left" vTextAlign="Middle">
+			<paragraph leftIndent="10"/>
+			<text><![CDATA[Ngày tạo:]]></text>
+			<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<box>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="textField" uuid="09d0a494-9575-4501-9ac6-0308ed6ba4d8" x="276" y="35" width="200" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" hTextAlign="Left" vTextAlign="Middle">
+			<paragraph leftIndent="0"/>
+			<expression><![CDATA[$F{invoiceDate}]]></expression>
+			<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+		</element>
+		<element kind="staticText" uuid="821bb694-61fb-46a7-9098-b74d127c7022" x="211" y="68" width="95" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts\arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="false" hTextAlign="Left" vTextAlign="Middle">
+			<paragraph leftIndent="10"/>
+			<text><![CDATA[Ngày giao dịch:]]></text>
+			<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<box>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+			</box>
+		</element>
+		<element kind="textField" uuid="34c55ab4-32a3-4955-b952-84166cf45a3b" x="306" y="68" width="200" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" hTextAlign="Left" vTextAlign="Middle">
+			<paragraph leftIndent="1"/>
+			<expression><![CDATA[$F{transactionDate}]]></expression>
+			<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</columnHeader>
+	<detail>
+		<band height="300" splitType="Stretch">
+			<element kind="staticText" uuid="bf54d20f-ea73-422c-a18c-af5ad3fcde37" x="280" y="50" width="68" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="false" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Họ và tên:]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			</element>
+			<element kind="line" uuid="41a412a8-0b39-4f32-be21-42f997145736" x="0" y="1" width="555" height="1" forecolor="#271756">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			</element>
+			<element kind="staticText" uuid="637523d7-3813-4f09-88d2-c6108bd24a8a" x="0" y="205" width="230" height="30" forecolor="#271756" fontName="Arial" fontSize="14.0" pdfFontName="fonts/arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" hTextAlign="Left" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Thông tin đăng ký tên miền]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			</element>
+			<element kind="component" uuid="fd6d8114-6fad-4cd7-87cf-faafa567e8eb" x="0" y="240" width="555" height="60">
+				<component kind="table">
+					<datasetRun uuid="2fa2e2f6-0a57-425e-9215-794f87b2295d" subDataset="TABLR_DATASET">
+						<dataSourceExpression><![CDATA[$P{TABLE_DATA_SOURCE}]]></dataSourceExpression>
+					</datasetRun>
+					<tableFooter/>
+					<column kind="single" uuid="1d351e43-8d49-4893-87c3-32aedeb0da50" width="240">
+						<columnHeader height="30" rowSpan="1" style="Table 1_CH">
+							<element kind="staticText" uuid="9417b18a-a02e-4f93-938d-80354fae3ffc" x="0" y="0" width="240" height="30" forecolor="#FFFFFF" fontName="Arial" fontSize="12.0" pdfFontName="fonts\arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" hTextAlign="Center" vTextAlign="Middle">
+								<text><![CDATA[Tên miền]]></text>
+								<box>
+									<pen lineColor="#A6A6A6"/>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+							</element>
+							<box style="Table 1_CH">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</columnHeader>
+						<columnFooter height="30" rowSpan="1" style="Table 1_CH">
+							<element kind="staticText" uuid="1873e2a0-cd98-4944-aa77-948b680d5aeb" mode="Opaque" x="0" y="0" width="240" height="30" backcolor="#FFFFFF" fontName="Arial" fontSize="12.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+								<paragraph leftIndent="0" rightIndent="3"/>
+								<text><![CDATA[]]></text>
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+							</element>
+							<box style="Table 1_CH">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</columnFooter>
+						<detailCell height="30" style="Table 1_TD">
+							<element kind="textField" uuid="289ffe7d-737d-44b5-84d8-944af6f0a095" x="0" y="0" width="240" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts\arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" hTextAlign="Center" vTextAlign="Middle">
+								<paragraph leftIndent="12"/>
+								<expression><![CDATA[$F{domainName}]]></expression>
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<box>
+									<pen lineColor="#F9F9F9"/>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#A6A6A6"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#A6A6A6"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+							</element>
+							<box style="Table 1_TD">
+								<pen lineColor="#F9F9F9"/>
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</detailCell>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+					</column>
+					<column kind="single" uuid="cff687d8-1559-42f7-a869-1e7fd27d626c" width="110">
+						<columnHeader height="30" rowSpan="1" style="Table 1_CH">
+							<element kind="staticText" uuid="18e66679-2819-4d58-9b4e-73b83d6fe640" x="0" y="0" width="110" height="30" forecolor="#FFFFFF" fontName="Arial" fontSize="12.0" pdfFontName="fonts\arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" hTextAlign="Center" vTextAlign="Middle">
+								<text><![CDATA[Thời hạn]]></text>
+								<box>
+									<pen lineColor="#A6A6A6"/>
+								</box>
+							</element>
+							<box style="Table 1_CH">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</columnHeader>
+						<columnFooter height="30" rowSpan="1" style="Table 1_CH">
+							<element kind="staticText" uuid="04425b04-7cb0-486d-8f4b-7a12cfdbc757" mode="Opaque" x="0" y="0" width="110" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" hTextAlign="Right" vTextAlign="Middle">
+								<paragraph rightIndent="7"/>
+								<text><![CDATA[Tổng tiền]]></text>
+								<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+							</element>
+							<box style="Table 1_CH">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</columnFooter>
+						<detailCell height="30" style="Table 1_TD">
+							<element kind="textField" uuid="722cc32d-b664-4f6c-91b5-6753dce2a326" x="0" y="0" width="110" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts\arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" hTextAlign="Center" vTextAlign="Middle">
+								<paragraph leftIndent="12"/>
+								<expression><![CDATA[$F{years} + " năm"]]></expression>
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<box>
+									<pen lineColor="#A6A6A6"/>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#A6A6A6"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#A6A6A6"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+							</element>
+							<box style="Table 1_TD">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</detailCell>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+					</column>
+					<column kind="single" uuid="d52bb717-05b4-4544-becc-041e9741810b" width="205">
+						<columnHeader height="30" rowSpan="1" style="Table 1_CH">
+							<element kind="staticText" uuid="a8976744-0188-4437-9c9b-9c35f9eb2158" x="0" y="0" width="205" height="30" forecolor="#FFFFFF" fontName="Arial" fontSize="12.0" pdfFontName="fonts\arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" hTextAlign="Center" vTextAlign="Middle">
+								<text><![CDATA[Đơn giá ]]></text>
+								<box>
+									<pen lineColor="#A6A6A6"/>
+								</box>
+							</element>
+							<box style="Table 1_CH">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</columnHeader>
+						<columnFooter height="30" rowSpan="1" style="Table 1_CH">
+							<element kind="textField" uuid="4e619460-052c-4b84-ab45-d1d23a4ffedc" mode="Opaque" x="0" y="0" width="205" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts\arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" hTextAlign="Center" vTextAlign="Middle">
+								<paragraph leftIndent="5"/>
+								<expression><![CDATA[ String.format("%,d", $V{total}) + " đ"]]></expression>
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="pixel"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+							</element>
+							<box style="Table 1_CH">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</columnFooter>
+						<detailCell height="30" style="Table 1_TD">
+							<element kind="textField" uuid="6e758882-6d96-4fa3-9884-a31018a84b80" x="0" y="0" width="205" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts\arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" hTextAlign="Center" vTextAlign="Middle">
+								<paragraph leftIndent="10"/>
+								<expression><![CDATA[String.format( "%,d",$F{price}) + " đ"]]></expression>
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<box>
+									<pen lineColor="#A6A6A6"/>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#A6A6A6"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#A6A6A6"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+							</element>
+							<box style="Table 1_TD">
+								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</detailCell>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<property name="com.jaspersoft.studio.layout"/>
+					</column>
+				</component>
+				<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+				<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
+				<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
+				<property name="com.jaspersoft.studio.table.style.detail" value="Table 1_TD"/>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			</element>
+			<element kind="textField" uuid="586a0bfe-5d64-4f05-9591-5c4839b35073" x="348" y="50" width="195" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" hTextAlign="Left" vTextAlign="Middle">
+				<paragraph leftIndent="1"/>
+				<expression><![CDATA[$F{fullName}]]></expression>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			</element>
+			<element kind="line" uuid="a8282485-00de-4e2b-a07a-d25237046d94" x="0" y="44" width="250" height="1" forecolor="#F9CC01">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			</element>
+			<element kind="staticText" uuid="b02a4045-1884-46fb-98e4-5928cd10fb1a" x="0" y="8" width="180" height="30" forecolor="#271756" fontName="Arial" fontSize="14.0" pdfFontName="fonts\arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Nhà cung cấp dịch vụ]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			</element>
+			<element kind="line" uuid="aed3c937-5bef-4c55-b764-82b690146292" x="280" y="44" width="275" height="1" forecolor="#F9CC01">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			</element>
+			<element kind="staticText" uuid="50a0dfb4-eeeb-489f-bb4c-db4d8272e750" x="280" y="8" width="105" height="30" forecolor="#271756" fontName="Arial" fontSize="14.0" pdfFontName="fonts\arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Khách hàng]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			</element>
+			<element kind="staticText" uuid="4ab07ab7-0b57-43ca-90ae-265ae8c9946a" x="0" y="50" width="250" height="30" forecolor="#333333" fontName="Arial" fontSize="14.0" pdfFontName="fonts\arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[UTC2 Domain Store]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			</element>
+			<element kind="staticText" uuid="34d21782-142f-49e4-ab7a-c0c33129d556" x="0" y="85" width="250" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="false" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Điện thoại: 0987654321]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</element>
+			<element kind="staticText" uuid="c68374ee-50bb-447d-9e61-772c01175960" x="0" y="125" width="250" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="false" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Email: support@utc2.edu.vn]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			</element>
+			<element kind="staticText" uuid="aebf0a2e-d6b2-4db9-a99c-5f54807c4664" x="280" y="85" width="85" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="false" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Số điện thoại:]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			</element>
+			<element kind="textField" uuid="967be7ec-9c1a-43e6-858f-184795495627" x="365" y="85" width="175" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" hTextAlign="Left" vTextAlign="Middle">
+				<paragraph leftIndent="1"/>
+				<expression><![CDATA[$F{phone}]]></expression>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			</element>
+			<element kind="staticText" uuid="d042aedd-1536-46f8-a3dc-b3666659160b" x="280" y="125" width="45" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="false" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Email:]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			</element>
+			<element kind="textField" uuid="9ad4b9af-0aec-4248-b1e9-bef25a5e2f52" x="325" y="125" width="220" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" hTextAlign="Left" vTextAlign="Middle">
+				<paragraph leftIndent="1"/>
+				<expression><![CDATA[$F{email}]]></expression>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			</element>
+			<element kind="staticText" uuid="d77f9eb3-b372-435d-8f90-12da1e2ed7b7" x="0" y="165" width="100" height="30" forecolor="#333333" fontName="Arial" fontSize="14.0" pdfFontName="fonts/arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Mã hoá đơn:]]></text>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			</element>
+			<element kind="textField" uuid="f8bd2909-34df-4e5d-9faa-9142c5d271e3" x="100" y="165" width="160" height="30" forecolor="#333333" fontName="Arial" fontSize="14.0" pdfFontName="fonts/arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" hTextAlign="Left" vTextAlign="Middle">
+				<paragraph leftIndent="1"/>
+				<expression><![CDATA[$F{transactionId}]]></expression>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			</element>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</detail>
+	<columnFooter height="375">
+		<element kind="frame" uuid="c7fe9f99-833d-4361-aa9f-a97d9974a37c" mode="Opaque" x="0" y="7" width="555" height="290" backcolor="#F9F9F9">
+			<element kind="staticText" uuid="71468c35-f7f5-4383-9759-6d967193d372" x="0" y="6" width="190" height="30" forecolor="#271756" fontName="Arial" fontSize="14.0" pdfFontName="fonts/arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Thông tin thanh toán]]></text>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+			</element>
+			<element kind="line" uuid="5db7e599-3548-4cd5-a256-d4831dde924b" x="10" y="39" width="525" height="1" forecolor="#F9CC01">
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+			</element>
+			<element kind="staticText" uuid="3e95bbba-76f7-464b-85b7-72306156bc02" x="0" y="50" width="157" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Phương thức thanh toán:]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			</element>
+			<element kind="staticText" uuid="b62368cc-07ff-48d4-8122-76b760e2188a" x="0" y="90" width="95" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Tên tài khoản:]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			</element>
+			<element kind="staticText" uuid="67632aa9-d744-4271-96ad-d6d9edf9216d" x="0" y="130" width="90" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Số tài khoản:]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			</element>
+			<element kind="staticText" uuid="902d4553-781b-44dd-99c3-28b8623a6805" x="0" y="170" width="80" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Ngân hàng:]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			</element>
+			<element kind="staticText" uuid="c06289f9-9fba-4c13-9b13-e8842183de43" x="0" y="210" width="150" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" vTextAlign="Middle">
+				<paragraph leftIndent="10"/>
+				<text><![CDATA[Nội dung chuyển khoản:]]></text>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			</element>
+			<element kind="staticText" uuid="35d0b411-e4c3-483a-a94f-84b02891277c" mode="Opaque" x="20" y="250" width="30" height="30" forecolor="#271756" backcolor="#F9F9F9" fontName="Arial" fontSize="16.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<text><![CDATA[]]></text>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid" lineColor="#F9F9F9"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+			</element>
+			<element kind="textField" uuid="f887e8d1-6bfc-45ca-9452-b6e2041bc99e" x="157" y="50" width="230" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" hTextAlign="Left" vTextAlign="Middle">
+				<paragraph leftIndent="1"/>
+				<expression><![CDATA[$F{paymentMethod}]]></expression>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			</element>
+			<element kind="textField" uuid="270e71d5-f6f0-413a-a544-4dc7cafa9529" x="95" y="90" width="275" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" vTextAlign="Middle">
+				<paragraph leftIndent="1"/>
+				<expression><![CDATA[$F{accountName}]]></expression>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			</element>
+			<element kind="textField" uuid="3a66189c-b2dd-4af0-90dd-065e0500af7d" x="90" y="130" width="205" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" vTextAlign="Middle">
+				<paragraph leftIndent="1"/>
+				<expression><![CDATA[$F{accountNumber}]]></expression>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			</element>
+			<element kind="textField" uuid="26a82f69-1267-4d76-9b9e-8075c8206844" x="80" y="170" width="205" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" vTextAlign="Middle">
+				<paragraph leftIndent="1"/>
+				<expression><![CDATA[$F{bank}]]></expression>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			</element>
+			<element kind="textField" uuid="f90d34a3-d3d9-4281-adb7-f48ecbb43cfc" x="150" y="210" width="205" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arial.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" vTextAlign="Middle">
+				<paragraph leftIndent="1"/>
+				<expression><![CDATA[$F{content}]]></expression>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<property name="com.jaspersoft.studio.unit.x" value="px"/>
+			</element>
+			<element kind="textField" uuid="1cd06f65-abb4-470b-be7a-6838346bb48c" x="183" y="250" width="366" height="30" forecolor="#271756" fontName="Arial" fontSize="14.0" pdfFontName="fonts/arialbd.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" bold="true" hTextAlign="Center" vTextAlign="Middle">
+				<paragraph leftIndent="0"/>
+				<expression><![CDATA[$F{paymentStatus}]]></expression>
+				<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid" lineColor="#271756"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+			</element>
+		</element>
+		<element kind="line" uuid="8fb70ce2-71c0-4966-9cab-85bae715b673" x="0" y="298" width="555" height="1" forecolor="#271756">
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<property name="com.jaspersoft.studio.unit.y" value="px"/>
+		</element>
+		<element kind="staticText" uuid="0dcdce62-1760-46c8-abb7-b6e718ef1a10" x="96" y="305" width="378" height="30" forecolor="#271756" fontName="Arial" fontSize="12.0" pdfFontName="fonts/arialbi.ttf" pdfEncoding="Identity-H" pdfEmbedded="true" italic="true" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi!]]></text>
+		</element>
+		<element kind="staticText" uuid="5d5ffcd1-ba69-4af6-b2e2-840f0a174370" x="5" y="340" width="544" height="30" forecolor="#333333" fontName="Arial" fontSize="12.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[© 2025 DOMAINSTORE. All rights reserved]]></text>
+			<property name="com.jaspersoft.studio.unit.y" value="px"/>
+		</element>
+		<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	</columnFooter>
+</jasperReport>

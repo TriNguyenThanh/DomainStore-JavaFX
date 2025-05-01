@@ -133,7 +133,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                         rs.getInt("id"),
                         rs.getString("domain_name"),
                         rs.getInt("tld_id"),
-                        DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
+                        DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
                         rs.getDate("active_date"),
                         rs.getInt("years"),
                         rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
@@ -331,6 +331,32 @@ public class DomainRepository implements IRepository<DomainModel> {
         String sql = "SELECT * FROM domains WHERE status = 'available' ORDER BY RAND() LIMIT " + limit;
         try (Connection conn = JDBC.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    domainList.add(new DomainModel(
+                            rs.getInt("id"),
+                            rs.getString("domain_name"),
+                            rs.getInt("tld_id"),
+                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
+                            rs.getDate("active_date"),
+                            rs.getInt("years"),
+                            rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
+                            rs.getDate("created_at")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return domainList;
+    }
+    //lấy những tên miền đã mua của 1 người nào đó
+    public List<DomainModel> getSoldDomains(int user_id){
+        List<DomainModel> domainList = new ArrayList<>();
+        String sql = "SELECT * FROM domains WHERE status = 'sold' and owner_id = ?";
+        try (Connection conn = JDBC.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, user_id);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     domainList.add(new DomainModel(

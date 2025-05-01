@@ -1,52 +1,48 @@
 package com.utc2.domainstore.controller;
 
-import com.sun.net.httpserver.HttpServer;
-import com.utc2.domainstore.entity.view.AccountModel;
-import com.utc2.domainstore.entity.view.BillViewModel;
-import com.utc2.domainstore.entity.view.DomainViewModel;
-import com.utc2.domainstore.entity.view.STATUS;
+import com.utc2.domainstore.entity.database.TransactionStatusEnum;
+import com.utc2.domainstore.entity.view.*;
 import com.utc2.domainstore.service.*;
+import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.UserSession;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.URI;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
-public class TransactionInfoController implements Initializable {
+public class TransactionInfoController implements Initializable, PaymentListener {
     private ResourceBundle bundle;
     private BillViewModel billViewModel;
     private AccountModel accountModel;
     private List<DomainViewModel> domainList;
-
-    private static final VnPayService vnPayService = new VnPayService();
+    private PaymentViewModel paymentViewModel;
+    private METHOD method;
+    private ITransactionService transactionService = new TransactionService();
 
     @FXML
     private Label lbUsername, lbPhone, lbEmail, lbBillID, lbDate, lbTotal;
     @FXML
     private Label lbStatus, lbPaymentID, lbMethod, lbPaymentDate;
     @FXML
-    private AnchorPane imgQR;
+    private Button btExport, btPay, btAccept, btCancel;
     @FXML
-    private Button btExport, btPay;
-
+    private HBox btContainer;
     @FXML
     private TableView<DomainViewModel> table;
     @FXML
@@ -62,9 +58,16 @@ public class TransactionInfoController implements Initializable {
     private void handleButtonOnAction(ActionEvent e) throws IOException {
         if (e.getSource() == btExport) {
             // export
+            hanldleExport();
         } else if (e.getSource() == btPay) {
             // pay
-            pay();
+            handlePay();
+        } else if (e.getSource() == btAccept) {
+            // accept
+            handleAccept();
+        } else if (e.getSource() == btCancel) {
+            // cancel
+            handleCancel();
         }
     }
 
@@ -74,45 +77,62 @@ public class TransactionInfoController implements Initializable {
         accountModel = getAccountModel();
     }
 
-    private void pay() throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-        server.createContext("/vnpay_return", new PaymentService.VNPayReturnHandler());
-        server.setExecutor(null); // Sử dụng executor mặc định
-        server.start();
-
-        System.out.println("Server đang chạy trên port 8080. Đang đợi callback từ VNPay...");
-
-        int amount = billViewModel.getPrice();
-        System.out.println("So tien can thanh toan: " + amount);
-
-        String orderInfo = billViewModel.getId();
-
-        // Tạo transaction reference là timestamp hiện tại
-        String txnRef = String.valueOf(System.currentTimeMillis());
-
-        // Tạo URL thanh toán
-        String paymentUrl = vnPayService.createPaymentUrl(amount, orderInfo, txnRef);
-
-        System.out.println("\nURL thanh toán đã được tạo:");
-//            System.out.println(paymentUrl);
-        try {
-
-
-            // Kiểm tra xem Desktop có được hỗ trợ không
-            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                // Tạo URI từ URL
-                URI uri = new URI(paymentUrl);
-                // Mở URL trong trình duyệt mặc định
-                Desktop.getDesktop().browse(uri);
-            } else {
-                System.out.println("Desktop không được hỗ trợ trên hệ thống này.");
+    public void setMethod(METHOD method) {
+        this.method = method;
+        List<Button> buttons = new ArrayList<>();
+        if (method == METHOD.PAY) {
+            // Set up for payment
+            buttons.add(btPay);
+        } else if (method == METHOD.CONFIRM) {
+            // Set up for confirmation
+            buttons.add(btAccept);
+            buttons.add(btCancel);
+        } else if (method == METHOD.REVIEW) {
+            // Set up for review
+            if (billViewModel.getStatus() == STATUS.COMPLETED) {
+                buttons.add(btExport);
+                paymentViewModel = getPaymentViewModel();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
         }
-//            System.out.println("\nMã đơn hàng của bạn: " + txnRef);
-        System.out.println("\nVui lòng sử dụng URL này để thanh toán, sau đó kiểm tra kết quả trên terminal.");
-        System.out.println("Server đang chạy và đợi callback từ VNPay...");
+        btContainer.getChildren().clear();
+        btContainer.getChildren().addAll(buttons);
+        displayBillInfo();
+    }
+
+    private void handlePay() throws IOException {
+        // Handle the payment return
+        JSONObject request = new JSONObject();
+        request.put("transactionId", billViewModel.getId());
+        request.put("total", billViewModel.getPrice());
+
+        PaymentService paymentService = new PaymentService();
+        paymentService.setListener(this);
+        boolean success = paymentService.createPayment(request);
+        System.out.println("Open payment website: " + success);
+    }
+
+    private void handleAccept() {
+        // Handle the accept action
+        transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.PENDINGPAYMENT);
+        System.out.println("Transaction accepted: " + billViewModel.getId());
+        // close the window
+        ((Stage) btAccept.getScene().getWindow()).close();
+    }
+
+    private void handleCancel() {
+        // Handle the cancel action
+        transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.CANCELLED);
+        System.out.println("Transaction canceled: " + billViewModel.getId());
+        ((Stage) btCancel.getScene().getWindow()).close();
+    }
+
+    private void hanldleExport() {
+        // Handle the export action
+        System.out.println("Exporting transaction: " + billViewModel.getId());
+        // Implement export logic here
+        GenerateService generateService = new GenerateService();
+        generateService.generateInvoicePDF(billViewModel.getId());
     }
 
     private void displayBillInfo() {
@@ -121,29 +141,22 @@ public class TransactionInfoController implements Initializable {
         lbEmail.setText(accountModel.getEmail());
 
         lbBillID.setText(String.valueOf(billViewModel.getId()));
-        lbDate.setText(String.valueOf(billViewModel.getDate()));
+        lbDate.setText(billViewModel.getDate().format(ConfigManager.getInstance().getFormatter()));
         lbTotal.setText(bundle.getString("total") + ": " + billViewModel.getPrice());
         lbStatus.setText(String.valueOf(billViewModel.getStatus()));
+
+        if (paymentViewModel != null) {
+            lbPaymentID.setText(String.valueOf(paymentViewModel.getPaymentID()));
+            lbMethod.setText(paymentViewModel.getMethod());
+            lbPaymentDate.setText(paymentViewModel.getPaymentDate().format(ConfigManager.getInstance().getFormatter()));
+        } else {
+            lbPaymentID.setText("");
+            lbMethod.setText("");
+            lbPaymentDate.setText("");
+        }
     }
 
     private void initTable() {
-        JSONObject request = new JSONObject();
-        request.put("transaction_id", billViewModel.getId());
-        ITransactionService transactionServices = new TransactionService();
-        JSONObject respond = transactionServices.getTransactionInfomation(request);
-        JSONArray jsonArray = respond.getJSONArray("domains");
-
-        domainList = new ArrayList<>();
-        for (Object o : jsonArray) {
-            JSONObject jsonObject = (JSONObject) o;
-            DomainViewModel domainViewModel = new DomainViewModel();
-            domainViewModel.setName(jsonObject.getString("name"));
-            domainViewModel.setStatus(STATUS.valueOf(jsonObject.get("status").toString().toUpperCase()));
-            domainViewModel.setPrice(jsonObject.getInt("price"));
-            domainViewModel.setYears(jsonObject.getInt("years"));
-            domainList.add(domainViewModel);
-        }
-
         colDomainName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colDomainPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         colDomainStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
@@ -155,11 +168,10 @@ public class TransactionInfoController implements Initializable {
 
     public void setBillViewModel(BillViewModel billViewModel) {
         this.billViewModel = billViewModel;
-        displayBillInfo();
+        domainList = getDomainList();
         initTable();
+        displayBillInfo();
     }
-
-//    private
 
     private AccountModel getAccountModel() {
         JSONObject request = new JSONObject();
@@ -175,5 +187,69 @@ public class TransactionInfoController implements Initializable {
         String pass = respond.getString("password");
 
         return new AccountModel(fullname, phone, email, psID, pass);
+    }
+
+    private List<DomainViewModel> getDomainList() {
+        List<DomainViewModel> domains = new ArrayList<>();
+
+        JSONObject request = new JSONObject();
+        request.put("transaction_id", billViewModel.getId());
+
+        ITransactionService transactionService = new TransactionService();
+        JSONObject respond = transactionService.getTransactionInfomation(request);
+        JSONArray list = respond.getJSONArray("domains");
+
+        for (Object o : list) {
+            JSONObject jsonObject = (JSONObject) o;
+            String name = jsonObject.getString("name");
+            STATUS status = STATUS.valueOf(jsonObject.get("status").toString().toUpperCase());
+            int price = jsonObject.getInt("price");
+            int years = jsonObject.getInt("years");
+
+            domains.add(new DomainViewModel(name, status, price, years, null));
+        }
+
+        return domains;
+    }
+
+    private PaymentViewModel getPaymentViewModel() {
+        JSONObject request = new JSONObject();
+        request.put("user_id", UserSession.getInstance().getUserId());
+
+        IPaymentService paymentService = new PaymentService();
+        JSONObject respond = paymentService.getUserPaymentHistory(request);
+        JSONArray array = respond.getJSONArray("paymentHistory");
+
+        for (Object o : array) {
+            JSONObject payment = (JSONObject) o;
+            String id = payment.getString("payment_id");
+            String ts_id = payment.getString("transaction_id");
+            String method = payment.get("method").toString();
+            String date = payment.get("date").toString();
+            String status = payment.get("status").toString();
+
+            if (ts_id.equals(billViewModel.getId())) {
+                return new PaymentViewModel(ts_id, id, method, STATUS.valueOf(status), LocalDate.parse(date));
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void onPaymentProcessed(Map<String, String> paymentResult) {
+        Platform.runLater(() -> {
+            if (paymentResult.get("status").equals("success")) {
+                transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.COMPLETED);
+                billViewModel.setStatus(STATUS.COMPLETED);
+                paymentViewModel = getPaymentViewModel();
+                setMethod(METHOD.REVIEW);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(bundle.getString("error"));
+                alert.setHeaderText(null);
+                alert.setContentText(bundle.getString("notice.paymentFailed"));
+                alert.showAndWait();
+            }
+        });
     }
 }
