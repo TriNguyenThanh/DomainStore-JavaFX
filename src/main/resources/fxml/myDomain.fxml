@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="640.0" prefWidth="1020.0" stylesheets="@../style/subwindow.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.utc2.domainstore.controller.MyDomainController">
+    <children>
+        <BorderPane layoutX="14.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <AnchorPane prefHeight="110.0" prefWidth="999.0" styleClass="pnBackground"
+                            BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </BorderPane.margin>
+                    <children>
+                        <Label alignment="CENTER" layoutX="434.0" layoutY="14.0" styleClass="header" text="%myDomain"
+                               AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0"
+                               AnchorPane.topAnchor="14.0"/>
+                    </children>
+                    <effect>
+                        <DropShadow/>
+                    </effect>
+                </AnchorPane>
+            </top>
+            <center>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="pnBackground"
+                            BorderPane.alignment="CENTER">
+                    <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </BorderPane.margin>
+                    <effect>
+                        <DropShadow/>
+                    </effect>
+                    <children>
+                        <BorderPane layoutX="14.0" layoutY="20.0" prefHeight="200.0" prefWidth="200.0"
+                                    AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0"
+                                    AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                            <center>
+                                <TableView fx:id="tbDomain" prefHeight="200.0" prefWidth="200.0"
+                                           BorderPane.alignment="CENTER">
+                                    <BorderPane.margin>
+                                        <Insets right="10.0"/>
+                                    </BorderPane.margin>
+                                    <columns>
+                                        <TableColumn fx:id="colDomain" prefWidth="250" text="%domain"/>
+                                        <!--                                        <TableColumn fx:id="colStatus" prefWidth="140" text="%status"/>-->
+                                        <TableColumn fx:id="colPrice" prefWidth="180" text="%price"/>
+                                        <TableColumn fx:id="colDate" prefWidth="250" text="%active_date"/>
+                                        <TableColumn fx:id="colYear" prefWidth="210" text="%year"/>
+                                    </columns>
+                                </TableView>
+                            </center>
+                            <bottom>
+                                <Button mnemonicParsing="false" text="%update" BorderPane.alignment="CENTER">
+                                    <BorderPane.margin>
+                                        <Insets top="10.0"/>
+                                    </BorderPane.margin>
+                                </Button>
+                            </bottom>
+                        </BorderPane>
+                    </children>
+                </AnchorPane>
+            </center>
+        </BorderPane>
+    </children>
+</AnchorPane>

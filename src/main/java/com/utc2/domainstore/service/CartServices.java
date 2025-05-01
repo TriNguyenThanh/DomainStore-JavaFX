@@ -6,7 +6,6 @@ import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import com.utc2.domainstore.repository.CartRepository;
 import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.repository.TopLevelDomainRepository;
-import java.sql.Timestamp;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,13 +16,13 @@ public class CartServices implements ICart {
     private CartRepository cartRepository;
 
     public CartServices() {
-        this.cartRepository = new CartRepository(); 
+        this.cartRepository = new CartRepository();
     }
 
     public CartServices(CartRepository cartRepository) {
         this.cartRepository = cartRepository;
     }
-    
+
     @Override
     public JSONObject getShoppingCart(JSONObject jsonInput) {
         JSONObject response = new JSONObject();
@@ -47,8 +46,8 @@ public class CartServices implements ICart {
             domainJson.put("name", fullDomainName);
             domainJson.put("status", domain.getStatus().toString());
             domainJson.put("price", DomainRepository.getInstance().getTLDPriceByDomainId(domain.getTldId()));
-            domainJson.put("year",domain.getYears());
-            
+            domainJson.put("year", domain.getYears());
+
             domainArray.put(domainJson);
         }
 
@@ -89,7 +88,7 @@ public class CartServices implements ICart {
 
             if (!DomainRepository.getInstance().isDomainExists(domainName, domainId.getId())) {
                 // Nếu domain chưa tồn tại trong DB insert mới
-                DomainModel newDomain = new DomainModel(name, domainId.getId(), DomainStatusEnum.available,years);
+                DomainModel newDomain = new DomainModel(name, domainId.getId(), DomainStatusEnum.available, years);
                 DomainRepository.getInstance().insert(newDomain);
 
                 // Lấy lại domain sau khi insert
@@ -104,12 +103,12 @@ public class CartServices implements ICart {
                 // Domain đã tồn tại trong DB
                 DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, domainId.getId());
                 DomainModel updateDomain = new DomainModel(
-                    domainModel.getId(), 
-                    domainModel.getDomainName(), 
-                    domainModel.getTldId(), 
-                    domainModel.getStatus(), 
-                    domainModel.getActiveDate(),
-                    years);
+                        domainModel.getId(),
+                        domainModel.getDomainName(),
+                        domainModel.getTldId(),
+                        domainModel.getStatus(),
+                        domainModel.getActiveDate(),
+                        years);
                 DomainRepository.getInstance().update(updateDomain);
                 // Kiểm tra đã có trong cart chưa
                 if (!cartRepository.isDomainInCart(cus_id, domainModel.getId(), years)) {

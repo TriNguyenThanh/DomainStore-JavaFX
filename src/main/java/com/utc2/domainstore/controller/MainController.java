@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
@@ -19,12 +20,25 @@ import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
     private ResourceBundle bundle;
+    private static MainController instance;
+
+    public MainController() {
+        // Private constructor to prevent instantiation
+        instance = this;
+    }
+
+    public static MainController getInstance() {
+        if (instance == null) {
+            instance = new MainController();
+        }
+        return instance;
+    }
 
     @FXML
     private StackPane contentArea;
 
     @FXML
-    private Button btDashBoard, btAccount, btShoppingCart, btSearch, btBill, btPayment, btUser, btDomain, btCheckBill, btCheckPayment;
+    private Button btDashBoard, btAccount, btShoppingCart, btMyDomain, btSearch, btBill, btPayment, btUser, btDomain, btCheckBill, btCheckPayment;
 
     private Button focus;
 
@@ -36,6 +50,8 @@ public class MainController implements Initializable {
             load("/fxml/account.fxml");
         } else if (focus != e.getSource() && e.getSource() == btShoppingCart) {
             load("/fxml/shoppingCart.fxml");
+        } else if (focus != e.getSource() && e.getSource() == btMyDomain) {
+            load("/fxml/myDomain.fxml");
         } else if (focus != e.getSource() && e.getSource() == btSearch) {
             load("/fxml/search.fxml");
         } else if (focus != e.getSource() && e.getSource() == btBill) {
@@ -47,7 +63,7 @@ public class MainController implements Initializable {
         } else if (focus != e.getSource() && e.getSource() == btDomain && UserSession.getInstance().getRole() == RoleEnum.admin) {
             load("/fxml/domain_manager.fxml");
         } else if (focus != e.getSource() && e.getSource() == btCheckBill && UserSession.getInstance().getRole() == RoleEnum.admin) {
-            load("/fxml/transaction_manager.fxml");
+            load("/fxml/confirmTransaction.fxml");
         } else if (focus != e.getSource() && e.getSource() == btCheckPayment && UserSession.getInstance().getRole() == RoleEnum.admin) {
             load("/fxml/payment_manager.fxml");
         }
@@ -55,10 +71,11 @@ public class MainController implements Initializable {
         focus = (Button) e.getSource();
     }
 
-    private void load(String fxmlPath) {
+    public FXMLLoader load(String fxmlPath) {
+        FXMLLoader fxmlLoader = null;
         try {
             ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath), rb);
+            fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath), rb);
             Node node = fxmlLoader.load();
 
             AnchorPane.setTopAnchor(node, 0.0);
@@ -67,9 +84,18 @@ public class MainController implements Initializable {
             AnchorPane.setRightAnchor(node, 0.0);
 
             contentArea.getChildren().setAll(node);
+
+            // refresh the content area when press F5
+            contentArea.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.F5) {
+                    load(fxmlPath);
+                }
+            });
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return fxmlLoader;
     }
 
     @Override

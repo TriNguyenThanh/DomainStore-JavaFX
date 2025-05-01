@@ -1,21 +1,23 @@
 package com.utc2.domainstore.entity.view;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class PaymentViewModel {
     private String billID;
     private String paymentID;
     private STATUS status;
-    private Date paymentDate;
+    private LocalDate paymentDate;
+    private String method;
 
     public PaymentViewModel() {
     }
 
-    public PaymentViewModel(String billID, String paymentID, STATUS status, Date paymentDate) {
+    public PaymentViewModel(String billID, String paymentID, String method, STATUS status, LocalDate paymentDate) {
         this.billID = billID;
         this.paymentID = paymentID;
         this.status = status;
         this.paymentDate = paymentDate;
+        this.method = method;
     }
 
     public String getBillID() {
@@ -42,11 +44,34 @@ public class PaymentViewModel {
         this.status = status;
     }
 
-    public Date getPaymentDate() {
+    public LocalDate getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(Date paymentDate) {
+    public String getPaymentDateString() {
+        return String.format("%02d/02d/04d", paymentDate.getDayOfMonth(), paymentDate.getMonthValue(), paymentDate.getYear());
+    }
+
+    public void setPaymentDate(LocalDate paymentDate) {
         this.paymentDate = paymentDate;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    @Override
+    public String toString() {
+        return "PaymentViewModel{" +
+                "billID='" + billID + '\'' +
+                ", paymentID='" + paymentID + '\'' +
+                ", status=" + status +
+                ", paymentDate=" + getPaymentDateString() +
+                ", method='" + method + '\'' +
+                '}';
     }
 }

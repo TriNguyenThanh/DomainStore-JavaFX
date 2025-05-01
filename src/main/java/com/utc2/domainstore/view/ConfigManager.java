@@ -2,18 +2,17 @@ package com.utc2.domainstore.view;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class ConfigManager {
     private static ConfigManager instance;
     private final Properties settings;
     private List<String> languages;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     private ConfigManager() {
-        languages = List.of("Tiếng việt", "English");
+        languages = new ArrayList<>(List.of("Tiếng việt", "English"));
         settings = new Properties();
         try (InputStream input = getClass().getResourceAsStream("/properties/settings.properties")) {
             if (input != null) {
@@ -55,5 +54,13 @@ public class ConfigManager {
         String languageProperty = String.format("properties.%s", lang);
         Locale locale = new Locale(lang);
         return ResourceBundle.getBundle(languageProperty, locale);
+    }
+
+    public DateTimeFormatter getFormatter() {
+        return formatter;
+    }
+
+    public void setFormatter(DateTimeFormatter formatter) {
+        this.formatter = formatter;
     }
 }

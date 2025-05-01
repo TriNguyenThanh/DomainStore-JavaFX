@@ -63,10 +63,10 @@ public class RegisterController implements Initializable {
         // kiểm tra số điện thoại
         if (phoneTextfield.getText().isBlank()) {
             flag = false;
-            phoneErr.setText(bundle.getString("error.phoneErr1"));
+            phoneErr.setText(bundle.getString("error.phone1"));
         } else if (!phoneNumberCheck(phoneTextfield.getText())) {
             flag = false;
-            phoneErr.setText(bundle.getString("error.phoneErr2"));
+            phoneErr.setText(bundle.getString("error.phone2"));
         } else {
             phoneErr.setText(" ");
         }
@@ -124,6 +124,7 @@ public class RegisterController implements Initializable {
             requestJSON.put("email", emailTextfield.getText());
             requestJSON.put("personal_id", psIDTextfield.getText());
             requestJSON.put("password", passwordField.getText());
+            requestJSON.put("role", "user");
 
             // nhận respone
             try {

@@ -24,9 +24,18 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class PaymentService implements  IPaymentService{
+    private ArrayList<PaymentHistoryModel> listPaymentHistory = PaymentHistoryRepository.getInstance().selectAll();
     private final PaymentHistoryRepository paymentHistoryDAO = new PaymentHistoryRepository();
+    private VnPayConfig vnPayConfig = new VnPayConfig();
     private static VnPayService vnPayService = new VnPayService();
     private static String paymentURL;
+
+    private static PaymentListener listener; // thêm dòng này
+
+    public void setListener(PaymentListener l) {
+        listener = l;
+    }
+
     @Override
     public JSONObject getUserPaymentHistory(JSONObject json){
         int userId = json.getInt("user_id");
@@ -118,6 +127,11 @@ public class PaymentService implements  IPaymentService{
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
+
+            // Gọi listener để thông báo kết quả thanh toán
+            if (listener != null) {
+                listener.onPaymentProcessed(paymentResult);
+            }
 
             // In kết quả ra console
             System.out.println("Kết quả xử lý thanh toán:");

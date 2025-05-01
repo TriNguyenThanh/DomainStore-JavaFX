@@ -1,11 +1,9 @@
 package com.utc2.domainstore.repository;
 
-
-import com.utc2.domainstore.entity.database.PaymentStatusEnum;
+import com.utc2.domainstore.config.JDBC;
 import com.utc2.domainstore.entity.database.TransactionInfoModel;
 import com.utc2.domainstore.entity.database.TransactionModel;
 import com.utc2.domainstore.entity.database.TransactionStatusEnum;
-import com.utc2.domainstore.config.JDBC;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -35,7 +33,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
 
             // Bước 4: Thực thi câu lệnh INSERT và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
-            for(TransactionInfoModel ti : transaction.getTransactionInfos()){
+            for (TransactionInfoModel ti : transaction.getTransactionInfos()) {
                 TransactionInfoRepository.getInstance().insert(ti);
                 rowsAffected++;
             }
@@ -221,7 +219,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     + " FROM transactions ts "
                     + "join transactions_info tsi on ts.id = tsi.transactions_id "
                     + "join domains d on tsi.domain_id = d.id "
-                    + "WHERE " + condition + ";" ;
+                    + "WHERE " + condition + ";";
             PreparedStatement pst = con.prepareStatement(sql);
 
             // Bước 3: Thực thi truy vấn và nhận kết quả
@@ -266,6 +264,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         }
         return listTransaction;
     }
+
     public ArrayList<TransactionModel> selectAll_V3() {
         ArrayList<TransactionModel> listTransaction = new ArrayList<>();
         try {
@@ -290,6 +289,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         }
         return listTransaction;
     }
+
     public TransactionModel selectById_V2(String transactionId) {
         TransactionModel t = new TransactionModel();
         try {

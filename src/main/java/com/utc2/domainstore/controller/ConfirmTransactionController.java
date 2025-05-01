@@ -11,13 +11,13 @@ import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class TransactionController implements Initializable {
+public class ConfirmTransactionController implements Initializable {
     private ResourceBundle bundle;
 
     @FXML
@@ -44,7 +44,27 @@ public class TransactionController implements Initializable {
     @FXML
     private TableColumn<BillViewModel, Integer> colPrice;
     @FXML
-    private Button getSelectedButton;
+    private TextField tfSearch;
+    @FXML
+    private Button btInfo;
+
+    @FXML
+    private void onHandleButton(ActionEvent e) {
+        if (e.getSource() == btInfo) {
+            BillViewModel selectedBill = tableView.getSelectionModel().getSelectedItem();
+            if (selectedBill != null) {
+                // open the bill detail view
+                openBillInfo(selectedBill);
+            } else {
+                // show an error message
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle(bundle.getString("warning"));
+                alert.setHeaderText(null);
+                alert.setContentText(bundle.getString("error.noSelect"));
+                alert.showAndWait();
+            }
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -60,23 +80,51 @@ public class TransactionController implements Initializable {
 
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
 
-        getSelectedButton.setOnAction(event -> {
-            BillViewModel selectedBill = tableView.getSelectionModel().getSelectedItem();
-            if (selectedBill != null) {
-//                System.out.println("Selected Bill: " + selectedBill);
-                // mở một cửa sổ mới với thông tin chi tiết của hóa đơn
-                BillInfo(selectedBill);
-            }
-//            else {
-//                System.out.println("No row selected");
-//            }
-        });
+        tableView.setPlaceholder(new TextField(bundle.getString("placeHolder.tableEmpty")));
 
         ObservableList<BillViewModel> billObservableList = FXCollections.observableArrayList(getData());
-        tableView.setItems(billObservableList);
+        FilteredList<BillViewModel> filteredList = new FilteredList<>(billObservableList, b -> true);
+
+        tfSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredList.setPredicate(billViewModel -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                return billViewModel.getId().toLowerCase().contains(lowerCaseFilter);
+            });
+        });
+
+        tableView.setItems(filteredList);
     }
 
-    private void BillInfo(BillViewModel selectedBill) {
+    private List<BillViewModel> getData() {
+        List<BillViewModel> bills = new ArrayList<>();
+
+        JSONObject request = new JSONObject();
+        request.put("user_id", UserSession.getInstance().getUserId());
+
+        ITransactionService transactionService = new TransactionService();
+        JSONObject respond = transactionService.getAllTransaction();
+        JSONArray list = respond.getJSONArray("transactions");
+
+        for (Object o : list) {
+            JSONObject jsonObject = (JSONObject) o;
+            STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
+            if (status != STATUS.PENDINGCONFIRM) {
+                continue;
+            }
+            String id = jsonObject.getString("id");
+            LocalDate date = LocalDate.parse(jsonObject.optString("date"));
+            int price = jsonObject.getInt("total_price");
+
+            bills.add(new BillViewModel(id, date, status, price));
+        }
+
+        return bills;
+    }
+
+    private void openBillInfo(BillViewModel selectedBill) {
         Stage billInfoStage = new Stage();
         billInfoStage.setTitle(bundle.getString("information"));
         billInfoStage.setResizable(false);
@@ -92,11 +140,7 @@ public class TransactionController implements Initializable {
 
         TransactionInfoController transactionInfoController = loader.getController();
         transactionInfoController.setBillViewModel(selectedBill);
-        if (selectedBill.getStatus() == STATUS.COMPLETED || selectedBill.getStatus() == STATUS.CANCELLED) {
-            transactionInfoController.setMethod(METHOD.REVIEW);
-        } else if (selectedBill.getStatus() == STATUS.PENDINGPAYMENT || selectedBill.getStatus() == STATUS.PENDINGCONFIRM) {
-            transactionInfoController.setMethod(METHOD.PAY);
-        }
+        transactionInfoController.setMethod(METHOD.CONFIRM);
 
         Scene billInfoScene = new Scene(root);
         billInfoStage.setScene(billInfoScene);
@@ -105,30 +149,6 @@ public class TransactionController implements Initializable {
         billInfoStage.initModality(javafx.stage.Modality.WINDOW_MODAL);
         billInfoStage.showAndWait();
 
-        // Sau khi đóng cửa sổ, cập nhật lại bảng
         initTable();
-    }
-
-    private List<BillViewModel> getData() {
-        List<BillViewModel> bills = new ArrayList<>();
-
-        JSONObject request = new JSONObject();
-        request.put("user_id", UserSession.getInstance().getUserId());
-
-        ITransactionService transactionService = new TransactionService();
-        JSONObject respond = transactionService.getAllUserTransaction(request);
-        JSONArray list = respond.getJSONArray("transactions");
-
-        for (Object o : list) {
-            JSONObject jsonObject = (JSONObject) o;
-            String id = jsonObject.getString("id");
-            LocalDate date = LocalDate.parse(jsonObject.optString("date"));
-            STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
-            int price = jsonObject.getInt("total_price");
-
-            bills.add(new BillViewModel(id, date, status, price));
-        }
-
-        return bills;
     }
 }
