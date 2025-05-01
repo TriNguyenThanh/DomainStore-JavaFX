@@ -1,5 +1,8 @@
 package com.utc2.domainstore.service;
 
+import com.utc2.domainstore.entity.database.CustomerModel;
+import com.utc2.domainstore.entity.database.DomainStatusEnum;
+import com.utc2.domainstore.repository.CustomerRepository;
 import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
@@ -158,10 +161,126 @@ public class DomainServices implements IDomain{
             domainJson.put("price", (tld != null) ? tld.getPrice() : 0);
             domainJson.put("active_date", (domain.getActiveDate() != null) ? domain.getActiveDate() : 0);
             domainJson.put("owner_id", (domain.getOwnerId() != null) ? domain.getOwnerId() : 0);
+            // Thêm phần lấy tên người dùng nếu đã bán
+            if ("sold".equalsIgnoreCase(domain.getStatus().toString()) && domain.getOwnerId() != null) {
+                CustomerModel owner = CustomerRepository.getInstance().selectById(new CustomerModel(domain.getOwnerId()));
+                domainJson.put("user_name", (owner != null) ? owner.getFullName() : JSONObject.NULL);
+            } else {
+                domainJson.put("user_name", JSONObject.NULL);
+            }
             domainArray.put(domainJson);
         }
         JSONObject response = new JSONObject();
         response.put("domain", domainArray);
         return response; 
+    }
+
+    @Override
+    public JSONObject insertNewDomain(JSONObject jsonInput) {
+        JSONObject response = new JSONObject();
+
+        if (!jsonInput.has("name")) {
+            response.put("status", "error");
+            response.put("message", "Missing 'name' field.");
+            return response;
+        }
+
+        String fullName = jsonInput.getString("name").toLowerCase().trim();
+
+        int dotIndex = fullName.lastIndexOf('.');
+        if (dotIndex == -1 || dotIndex == fullName.length() - 1) {
+            response.put("status", "error");
+            response.put("message", "Invalid domain format.");
+            return response;
+        }
+
+        String domainName = fullName.substring(0, dotIndex);
+        String tldText = "." + fullName.substring(dotIndex + 1);
+
+        // Lấy TLD từ database
+        TopLevelDomainModel tld = TopLevelDomainRepository.getInstance().getTLDByName(tldText);
+        if (tld == null) {
+            response.put("status", "error");
+            response.put("message", "Top-level domain not supported.");
+            return response;
+        }
+
+        // Kiểm tra domain đã tồn tại chưa
+        DomainModel existing = DomainRepository.getInstance().getDomainByNameAndTld(domainName, tld.getId());
+        if (existing != null) {
+            response.put("status", "error");
+            response.put("message", "Domain name is already taken.");
+            return response;
+        }
+
+        // Thêm domain mới vào database
+        DomainModel newDomain = new DomainModel();
+        newDomain.setDomainName(domainName);
+        newDomain.setTldId(tld.getId());
+        newDomain.setStatus(DomainStatusEnum.available);
+
+        int insertSuccess = DomainRepository.getInstance().insert(newDomain);
+        if (insertSuccess > 0) {
+            response.put("status", "success");
+            response.put("message", "Domain name is available for registration.");
+        } else {
+            response.put("status", "error");
+            response.put("message", "Failed to insert new domain.");
+        }
+        return response;
+    }
+
+    @Override
+    public JSONObject deleteAvailableDomain(JSONObject jsonObject) {
+        JSONObject response = new JSONObject();
+
+        if (!jsonObject.has("name")) {
+            response.put("status", "failed");
+            response.put("message", "Missing 'name' field.");
+            return response;
+        }
+
+        String fullName = jsonObject.getString("name").toLowerCase().trim();
+        int dotIndex = fullName.lastIndexOf('.');
+
+        if (dotIndex == -1 || dotIndex == fullName.length() - 1) {
+            response.put("status", "failed");
+            response.put("message", "Invalid domain format.");
+            return response;
+        }
+
+        String domainName = fullName.substring(0, dotIndex);
+        String tldText = "." + fullName.substring(dotIndex + 1);
+
+        TopLevelDomainModel tld = TopLevelDomainRepository.getInstance().getTLDByName(tldText);
+        if (tld == null) {
+            response.put("status", "failed");
+            response.put("message", "Top-level domain not supported.");
+            return response;
+        }
+
+        DomainModel domain = DomainRepository.getInstance().getDomainByNameAndTld(domainName, tld.getId());
+        if (domain == null) {
+            response.put("status", "failed");
+            response.put("message", "Domain not found.");
+            return response;
+        }
+
+        if (!"available".equalsIgnoreCase(domain.getStatus().toString())) {
+            response.put("status", "failed");
+            response.put("message", "Only available domains can be deleted.");
+            return response;
+        }
+
+        int deleted = DomainRepository.getInstance().delete(domain);
+        if (deleted > 0) {
+            response.put("status", "success");
+            response.put("message", "Domain deleted successfully.");
+        } else {
+            response.put("status", "failed");
+            response.put("message", "Failed to delete domain.");
+        }
+
+        return response;
     }
 }
