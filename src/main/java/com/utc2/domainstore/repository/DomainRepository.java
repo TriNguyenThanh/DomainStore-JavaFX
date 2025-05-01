@@ -324,6 +324,22 @@ public class DomainRepository implements IRepository<DomainModel> {
         }
         return null;
     }
+    public Integer getTLDPriceByTldId(int tldId) {
+        String sql = "SELECT price FROM TopLevelDomain WHERE id = ?";
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setInt(1, tldId);
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("price");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     //lấy tên miền ngẫu nhiên
     public List<DomainModel> getSuggestedDomains(int limit){

@@ -19,6 +19,7 @@ public class DomainViewModel {
         this.status = status;
         this.price = price;
         this.years = years;
+        this.date = date;
     }
 
     public DomainViewModel(String name, STATUS status, Integer price, Integer years, LocalDate date, Integer ownerId) {

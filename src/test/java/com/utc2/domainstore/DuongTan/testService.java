@@ -90,11 +90,11 @@ public class testService {
 //        System.out.println("Get All Users Response: " + getAllUsersResponse.toString(2));
 
         // ====== TEST 11: Lấy giỏ hàng người dùng ======
-//        CartServices cartServices = new CartServices();
-//        JSONObject cartInput = new JSONObject();
-//        cartInput.put("cus_id", 1);
-//        JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
-//        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
+        CartServices cartServices = new CartServices();
+        JSONObject cartInput = new JSONObject();
+        cartInput.put("cus_id", 1);
+        JSONObject cartResponse = cartServices.getShoppingCart(cartInput);
+        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
 
         // ====== TEST 12: Thêm domain vào giỏ hàng ======
 //        CartServices cartServices = new CartServices();
