@@ -97,19 +97,19 @@ public class testService {
 //        System.out.println("Shopping Cart Response: " + cartResponse.toString(2));
 
         // ====== TEST 12: Thêm domain vào giỏ hàng ======
-        CartServices cartServices = new CartServices();
-        JSONObject addToCartInput = new JSONObject();
-        addToCartInput.put("cus_id", 1);
-        JSONArray domainArray = new JSONArray();
-        JSONObject domain1 = new JSONObject();
-        domain1.put("name", "diamonielts.com");
-        domain1.put("status", "available");
-        domain1.put("price", 299000);
-        domain1.put("years", 2);
-        domainArray.put(domain1);
-        addToCartInput.put("domain", domainArray);
-        JSONObject addToCartResponse = cartServices.addToCart(addToCartInput);
-        System.out.println("Add to Cart Response: " + addToCartResponse.toString(2));
+//        CartServices cartServices = new CartServices();
+//        JSONObject addToCartInput = new JSONObject();
+//        addToCartInput.put("cus_id", 1);
+//        JSONArray domainArray = new JSONArray();
+//        JSONObject domain1 = new JSONObject();
+//        domain1.put("name", "diamonielts.com");
+//        domain1.put("status", "available");
+//        domain1.put("price", 299000);
+//        domain1.put("years", 2);
+//        domainArray.put(domain1);
+//        addToCartInput.put("domain", domainArray);
+//        JSONObject addToCartResponse = cartServices.addToCart(addToCartInput);
+//        System.out.println("Add to Cart Response: " + addToCartResponse.toString(2));
 
         // ====== TEST 13: Xóa domain khỏi giỏ hàng ======
 //        CartServices cartServices = new CartServices();
@@ -147,6 +147,20 @@ public class testService {
         // ====== TEST 17: Lấy tất cả tld ======
 //        TopLevelDomainServices tldServices = new TopLevelDomainServices();
 //        JSONObject result = tldServices.getAllTLD();
+//        System.out.println(result.toString(2));
+
+        // ====== TEST 18: Thêm domain ======
+//        DomainServices a = new DomainServices();
+//        JSONObject b = new JSONObject();
+//        b.put("name", "diamonielts.net");
+//        JSONObject result = a.insertNewDomain(b);
+//        System.out.println(result.toString(2));
+
+        // ====== TEST 19: Xóa domain ======
+//        DomainServices a = new DomainServices();
+//        JSONObject b = new JSONObject();
+//        b.put("name", "example.org");
+//        JSONObject result = a.deleteAvailableDomain(b);
 //        System.out.println(result.toString(2));
     }
 }

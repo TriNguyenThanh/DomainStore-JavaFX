@@ -7,4 +7,6 @@ public interface IDomain {
     public JSONObject suggestion(JSONObject jsonInput);
     public JSONObject searchSoldDomainByCusId(JSONObject jsonInput);
     public JSONObject getAllDomains();
+    public JSONObject insertNewDomain(JSONObject jsonInput);
+    public JSONObject deleteAvailableDomain(JSONObject jsonObject);
 }
