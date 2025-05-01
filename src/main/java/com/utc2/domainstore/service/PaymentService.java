@@ -5,9 +5,11 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.utc2.domainstore.config.VnPayConfig;
+import com.utc2.domainstore.entity.database.TransactionInfoModel;
 import com.utc2.domainstore.repository.PaymentHistoryRepository;
 import com.utc2.domainstore.entity.database.PaymentHistoryModel;
 import com.utc2.domainstore.entity.database.PaymentTypeEnum;
+import com.utc2.domainstore.repository.TransactionInfoRepository;
 import com.utc2.domainstore.utils.VnPayUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,24 +24,22 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class PaymentService implements  IPaymentService{
-    private ArrayList<PaymentHistoryModel> listPaymentHistory = PaymentHistoryRepository.getInstance().selectAll();
     private final PaymentHistoryRepository paymentHistoryDAO = new PaymentHistoryRepository();
-    private VnPayConfig vnPayConfig = new VnPayConfig();
     private static VnPayService vnPayService = new VnPayService();
     private static String paymentURL;
     @Override
     public JSONObject getUserPaymentHistory(JSONObject json){
         int userId = json.getInt("user_id");
-        JSONArray jsonArray = new JSONArray();
-        for (PaymentHistoryModel p : paymentHistoryDAO.selectByCondition("user_id = " + userId)) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("payment_id", p.getPaymentId());
-            jsonObject.put("transaction_id", p.getTransactionId());
-            jsonObject.put("method", PaymentTypeEnum.getPaymentMethod(p.getPaymentMethodId()));
-            jsonObject.put("date", p.getPaymentDate());
-            jsonObject.put("status", p.getPaymentStatus());
-            jsonArray.put(jsonObject);
-        }
+        JSONArray jsonArray = result("user_id = " + userId);
+        JSONObject result = new JSONObject();
+        result.put("paymentHistory", jsonArray);
+        return result;
+    }
+
+    @Override
+    public JSONObject getTransactionPaymentHistory(JSONObject json) {
+        String transactionId = json.getString("transaction_id");
+        JSONArray jsonArray = result("transaction_id = '" + transactionId + "'");
         JSONObject result = new JSONObject();
         result.put("paymentHistory", jsonArray);
         return result;
@@ -72,6 +72,26 @@ public class PaymentService implements  IPaymentService{
             e.printStackTrace();
         }
         return false;
+    }
+    private JSONArray result(String condition){
+        JSONArray jsonArray = new JSONArray();
+        for (PaymentHistoryModel p : paymentHistoryDAO.selectByCondition(condition)) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("payment_id", p.getPaymentCode());
+            String transactionId = p.getTransactionId();
+            jsonObject.put("transaction_id", transactionId);
+            ArrayList<TransactionInfoModel> list = TransactionInfoRepository.getInstance().selectByCondition("transactions_id = '" + transactionId + "'");
+            int total = 0;
+            for(TransactionInfoModel tran : list){
+                total += tran.getPrice();
+            }
+            jsonObject.put("total", total);
+            jsonObject.put("method", PaymentTypeEnum.getPaymentMethod(p.getPaymentMethodId()));
+            jsonObject.put("date", p.getPaymentDate());
+            jsonObject.put("status", p.getPaymentStatus());
+            jsonArray.put(jsonObject);
+        }
+        return jsonArray;
     }
     public static class VNPayReturnHandler implements HttpHandler {
         @Override
