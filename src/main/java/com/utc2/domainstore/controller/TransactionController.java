@@ -104,6 +104,9 @@ public class TransactionController implements Initializable {
         billInfoStage.initOwner(SceneManager.getInstance().getStage());
         billInfoStage.initModality(javafx.stage.Modality.WINDOW_MODAL);
         billInfoStage.showAndWait();
+
+        // Sau khi đóng cửa sổ, cập nhật lại bảng
+        initTable();
     }
 
     private List<BillViewModel> getData() {

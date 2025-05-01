@@ -5,15 +5,13 @@ import com.utc2.domainstore.entity.view.*;
 import com.utc2.domainstore.service.*;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.UserSession;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -35,15 +33,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
     private List<DomainViewModel> domainList;
     private PaymentViewModel paymentViewModel;
     private METHOD method;
-    private static TransactionInfoController instance;
-
-    public TransactionInfoController() {
-        instance = this;
-    }
-
-    public static TransactionInfoController getInstance() {
-        return instance;
-    }
+    private ITransactionService transactionService = new TransactionService();
 
     @FXML
     private Label lbUsername, lbPhone, lbEmail, lbBillID, lbDate, lbTotal;
@@ -89,22 +79,24 @@ public class TransactionInfoController implements Initializable, PaymentListener
 
     public void setMethod(METHOD method) {
         this.method = method;
-        List<Button> buttons = new ArrayList<>(List.of(btPay, btAccept, btCancel, btExport));
+        List<Button> buttons = new ArrayList<>();
         if (method == METHOD.PAY) {
             // Set up for payment
-            buttons.remove(btPay);
+            buttons.add(btPay);
         } else if (method == METHOD.CONFIRM) {
             // Set up for confirmation
-            buttons.removeAll(List.of(btAccept, btCancel));
+            buttons.add(btAccept);
+            buttons.add(btCancel);
         } else if (method == METHOD.REVIEW) {
             // Set up for review
             if (billViewModel.getStatus() == STATUS.COMPLETED) {
-                buttons.remove(btExport);
+                buttons.add(btExport);
                 paymentViewModel = getPaymentViewModel();
             }
 
         }
-        btContainer.getChildren().removeAll(buttons);
+        btContainer.getChildren().clear();
+        btContainer.getChildren().addAll(buttons);
         displayBillInfo();
     }
 
@@ -114,15 +106,14 @@ public class TransactionInfoController implements Initializable, PaymentListener
         request.put("transactionId", billViewModel.getId());
         request.put("total", billViewModel.getPrice());
 
-        IPaymentService paymentService = new PaymentService();
+        PaymentService paymentService = new PaymentService();
+        paymentService.setListener(this);
         boolean success = paymentService.createPayment(request);
         System.out.println("Open payment website: " + success);
-//        ((Stage) btPay.getScene().getWindow()).close();
     }
 
     private void handleAccept() {
         // Handle the accept action
-        ITransactionService transactionService = new TransactionService();
         transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.PENDINGPAYMENT);
         System.out.println("Transaction accepted: " + billViewModel.getId());
         // close the window
@@ -131,7 +122,6 @@ public class TransactionInfoController implements Initializable, PaymentListener
 
     private void handleCancel() {
         // Handle the cancel action
-        ITransactionService transactionService = new TransactionService();
         transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.CANCELLED);
         System.out.println("Transaction canceled: " + billViewModel.getId());
         ((Stage) btCancel.getScene().getWindow()).close();
@@ -141,6 +131,8 @@ public class TransactionInfoController implements Initializable, PaymentListener
         // Handle the export action
         System.out.println("Exporting transaction: " + billViewModel.getId());
         // Implement export logic here
+        GenerateService generateService = new GenerateService();
+        generateService.generateInvoicePDF(billViewModel.getId());
     }
 
     private void displayBillInfo() {
@@ -245,12 +237,19 @@ public class TransactionInfoController implements Initializable, PaymentListener
 
     @Override
     public void onPaymentProcessed(Map<String, String> paymentResult) {
-//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//        alert.setTitle(bundle.getString("notice"));
-//        alert.setHeaderText(bundle.getString("notice.paymentSuccess"));
-//        alert.setContentText(bundle.getString("notice.paymentSuccess") + "\n" + paymentResult);
-//        alert.showAndWait();
-
-        System.out.println("Toi thanh toan thanh cong");
+        Platform.runLater(() -> {
+            if (paymentResult.get("status").equals("success")) {
+                transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.COMPLETED);
+                billViewModel.setStatus(STATUS.COMPLETED);
+                paymentViewModel = getPaymentViewModel();
+                setMethod(METHOD.REVIEW);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(bundle.getString("error"));
+                alert.setHeaderText(null);
+                alert.setContentText(bundle.getString("notice.paymentFailed"));
+                alert.showAndWait();
+            }
+        });
     }
 }

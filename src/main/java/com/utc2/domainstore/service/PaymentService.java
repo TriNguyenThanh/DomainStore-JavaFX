@@ -4,7 +4,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.utc2.domainstore.config.VnPayConfig;
-import com.utc2.domainstore.controller.TransactionInfoController;
 import com.utc2.domainstore.entity.database.PaymentHistoryModel;
 import com.utc2.domainstore.entity.database.PaymentTypeEnum;
 import com.utc2.domainstore.repository.PaymentHistoryRepository;
@@ -27,6 +26,12 @@ public class PaymentService implements IPaymentService {
     private VnPayConfig vnPayConfig = new VnPayConfig();
     private static VnPayService vnPayService = new VnPayService();
     private static String paymentURL;
+
+    private static PaymentListener listener; // thêm dòng này
+
+    public void setListener(PaymentListener l) {
+        listener = l;
+    }
 
     @Override
     public JSONObject getUserPaymentHistory(JSONObject json) {
@@ -52,10 +57,7 @@ public class PaymentService implements IPaymentService {
         // response: true / false (boolean)
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-        //modify VNPanReturnHanler to use TransactionInfoController listener
-//        server.createContext("/vnpay_return", new VNPayReturnHandler());
-        TransactionInfoController transactionInfoController = TransactionInfoController.getInstance();
-        server.createContext("/vnpay_return", new VNPayReturnHandler(transactionInfoController));
+        server.createContext("/vnpay_return", new VNPayReturnHandler());
         server.setExecutor(null); // Sử dụng executor mặc định
         server.start();
         // Tạo transaction reference là timestamp hiện tại
@@ -79,12 +81,6 @@ public class PaymentService implements IPaymentService {
     }
 
     public static class VNPayReturnHandler implements HttpHandler {
-        private final PaymentListener listener;
-
-        public VNPayReturnHandler(PaymentListener listener) {
-            this.listener = listener;
-        }
-
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             // Lấy URI chứa các tham số trả về từ VNPay
@@ -109,6 +105,11 @@ public class PaymentService implements IPaymentService {
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
+
+            // Gọi listener để thông báo kết quả thanh toán
+            if (listener != null) {
+                listener.onPaymentProcessed(paymentResult);
+            }
 
             // In kết quả ra console
             System.out.println("Kết quả xử lý thanh toán:");

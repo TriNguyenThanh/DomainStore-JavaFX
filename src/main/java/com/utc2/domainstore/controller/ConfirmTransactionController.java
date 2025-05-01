@@ -7,6 +7,7 @@ import com.utc2.domainstore.service.ITransactionService;
 import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
+import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -144,6 +145,10 @@ public class ConfirmTransactionController implements Initializable {
         Scene billInfoScene = new Scene(root);
         billInfoStage.setScene(billInfoScene);
 
+        billInfoStage.initOwner(SceneManager.getInstance().getStage());
+        billInfoStage.initModality(javafx.stage.Modality.WINDOW_MODAL);
         billInfoStage.showAndWait();
+
+        initTable();
     }
 }

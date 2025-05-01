@@ -25,6 +25,10 @@ public class SceneManager {
     public static void init(Stage inputStage) {
         if (stage == null) {
             stage = inputStage;
+            stage.setOnCloseRequest(event -> {
+                event.consume();
+                Platform.exit();
+            });
         }
     }
 
