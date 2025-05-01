@@ -3,6 +3,8 @@ package com.utc2.domainstore.service;
 import com.utc2.domainstore.service.DomainNotifierServices;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class DomainNotifierRunner {
     public static void main(String[] args) {
@@ -19,6 +21,12 @@ public class DomainNotifierRunner {
 
             System.out.println("Kết quả gửi email:");
             System.out.println(notifyResult.toString(2));
+            // Lấy thời gian hiện tại và định dạng
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+            System.out.println("Thời gian gửi email: " + now.format(formatter));
+            System.out.println("============================================================");
         } else {
             System.err.println("Lỗi khi lấy dữ liệu domain: " +
                     expiringDomainsResponse.getString("message"));
