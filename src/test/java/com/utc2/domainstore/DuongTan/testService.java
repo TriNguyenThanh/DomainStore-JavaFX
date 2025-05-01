@@ -187,7 +187,7 @@ public class testService {
         // ====== TEST 21: Search ten mien ======
 //        DomainServices a = new DomainServices();
 //        JSONObject b = new JSONObject();
-//        b.put("name", "diamonielts.com");
+//        b.put("name", "domain.c");
 //        JSONObject result = a.search(b);
 //        System.out.println(result.toString(2));
     }

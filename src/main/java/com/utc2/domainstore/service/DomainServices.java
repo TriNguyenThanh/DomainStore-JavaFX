@@ -48,6 +48,12 @@ public class DomainServices implements IDomain{
         }
 
         // Nếu có nhập tên miền
+        String domainPattern = "^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z]{2,})+$";
+        if (!domainName.matches(domainPattern)) {
+            return createErrorResponse("Tên miền không đúng định dạng.");
+        }
+
+        // Tách tên & TLD
         String[] parts = domainName.split("\\.");
         String namePart = parts[0]; // example
         String tld;
@@ -60,7 +66,7 @@ public class DomainServices implements IDomain{
 
         TopLevelDomainModel tldModel = TopLevelDomainRepository.getInstance().getTLDByName(tld);
         if (tldModel == null) {
-            return createErrorResponse("TLD is not supported.");
+            return createErrorResponse("TLD không được hỗ trợ.");
         }
 
         String domainStatus = DomainUtils.getDomainInfo(domainName);
@@ -94,7 +100,6 @@ public class DomainServices implements IDomain{
 
             String suggestedDomainName = namePart + suggestTLD;
 
-            // Kiểm tra và thêm domain nếu chưa có
             DomainModel existingDomain = DomainRepository.getInstance()
                     .getDomainByNameAndTld(namePart, suggestTLDModel.getId());
             if (existingDomain == null) {
@@ -113,6 +118,7 @@ public class DomainServices implements IDomain{
             domainArray.put(item);
         }
 
+        // Đưa domain chính vào cuối danh sách
         domainArray.put(domainInfo);
 
         response.put("domain", domainArray);
@@ -124,7 +130,14 @@ public class DomainServices implements IDomain{
          response.put("message", message);
          return response;
     }
+    private String cleanDomainInput(String input) {
+        return input.replaceAll("[^a-zA-Z0-9\\.-]", "").toLowerCase();
+    }
 
+    private boolean isValidDomainFormat(String domain) {
+        String regex = "^[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z]{2,})+$";
+        return domain.matches(regex);
+    }
     //2. Gợi ý tên miền
     @Override
     public JSONObject suggestion(JSONObject jsonInput) {
