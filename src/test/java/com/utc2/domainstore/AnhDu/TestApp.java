@@ -107,7 +107,7 @@ public class TestApp {
         domain1.put("years", 2);
         domainArray.put(domain1);
         JSONObject domain2 = new JSONObject();
-        domain2.put("name", "globalban.biz");
+        domain2.put("name", "globalban3.biz");
         domain2.put("status", "available");
         domain2.put("price", 99000);
         domain2.put("years", 3);
@@ -124,16 +124,16 @@ public class TestApp {
                   total(int),
                   status ("success" / "failed")
                   }  */
-//        TransactionService transactionService = new TransactionService();
-//        JSONObject jsonObject = transactionService.createTransaction(domains);
+        TransactionService transactionService = new TransactionService();
+        JSONObject jsonObject = transactionService.createTransaction(domains);
         /* thanh toán
         request: JSONObject {
                     total (int),
                     transactionId (String)
                  }
         response: true / false (boolean) */
-//        PaymentService paymentService = new PaymentService();
-//        paymentService.createPayment(jsonObject);
+        PaymentService paymentService = new PaymentService();
+        paymentService.createPayment(jsonObject);
 //          Tạo hoá đơn pdf
 //        GenerateService generateService = new GenerateService();
 //        generateService.generateInvoicePDF("HD005");
