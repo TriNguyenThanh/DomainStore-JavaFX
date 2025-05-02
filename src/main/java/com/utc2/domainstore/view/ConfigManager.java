@@ -22,7 +22,8 @@ public class ConfigManager {
              InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
 
             settings.load(reader);
-            numberFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String lang = settings.getProperty("locale", "vi_VN");
+            numberFormatter = NumberFormat.getCurrencyInstance(new Locale(lang.substring(0, lang.lastIndexOf('_')), lang.substring(lang.lastIndexOf('_') + 1)));
         } catch (Exception e) {
             e.printStackTrace();
         }

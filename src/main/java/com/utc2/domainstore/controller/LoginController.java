@@ -15,6 +15,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
+    private ResourceBundle bundle;
+
+    // FXML components
     @FXML
     private TextField usernameField;
     @FXML
@@ -28,8 +31,35 @@ public class LoginController implements Initializable {
     @FXML
     private ComboBox<String> cbLanguage;
 
-    private ResourceBundle bundle;
+    @FXML
+    private void changeLanguage() {
+        String selectedLanguage = cbLanguage.getValue();
+        ConfigManager.getInstance().updateSetting("language", selectedLanguage);
+//        SceneManager.getInstance().setLanguage(selectedLanguage);
+//        bundle = ConfigManager.getInstance().getLanguageBundle();
+//        usernameField.setPromptText(bundle.getString("login.username"));
+//        passwordField.setPromptText(bundle.getString("login.password"));
+//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//        alert.setTitle(bundle.getString("login.languageChange"));
+//        alert.setHeaderText(null);
+//        alert.setContentText(bundle.getString("login.languageChangeContent"));
+//        Op alert.showAndWait();
+    }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.bundle = resources;
+        this.cbLanguage.getItems().addAll(ConfigManager.getInstance().getLanguages());
+        this.cbLanguage.setValue(ConfigManager.getInstance().getSetting("language", ""));
+        SceneManager.getInstance().setResizable(false);
+        SceneManager.getInstance().setMaximized(false);
+
+        passwordField.setOnAction(event -> {
+            login();
+        });
+    }
+
+    // handle login
     public void login() {
         passwordFieldOnInputMethodTextChanged();
         boolean flag = true;
@@ -79,6 +109,7 @@ public class LoginController implements Initializable {
         }
     }
 
+    // handle register
     public void register() {
         SceneManager.getInstance().switchScene("/fxml/register.fxml");
     }
@@ -93,22 +124,6 @@ public class LoginController implements Initializable {
         }
     }
 
-    @FXML
-    private void changeLanguage() {
-        String selectedLanguage = cbLanguage.getValue();
-        ConfigManager.getInstance().updateSetting("language", selectedLanguage);
-//        SceneManager.getInstance().setLanguage(selectedLanguage);
-//        bundle = ConfigManager.getInstance().getLanguageBundle();
-//        usernameField.setPromptText(bundle.getString("login.username"));
-//        passwordField.setPromptText(bundle.getString("login.password"));
-//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//        alert.setTitle(bundle.getString("login.languageChange"));
-//        alert.setHeaderText(null);
-//        alert.setContentText(bundle.getString("login.languageChangeContent"));
-//        Op alert.showAndWait();
-
-    }
-
     public void passwordFieldOnInputMethodTextChanged() {
         if (passwordCheckbox.isSelected()) {
             passwordField.setText(passwordField.getPromptText());
@@ -116,14 +131,5 @@ public class LoginController implements Initializable {
             passwordField.positionCaret(passwordField.getText().length());
             passwordCheckbox.setSelected(false);
         }
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.bundle = resources;
-        this.cbLanguage.getItems().addAll(ConfigManager.getInstance().getLanguages());
-        this.cbLanguage.setValue(ConfigManager.getInstance().getSetting("language", ""));
-        SceneManager.getInstance().setResizable(false);
-        SceneManager.getInstance().setMaximized(false);
     }
 }

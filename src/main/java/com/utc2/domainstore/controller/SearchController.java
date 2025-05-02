@@ -18,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -185,81 +186,70 @@ public class SearchController implements Initializable {
             // parse the response
             recomment.getChildren().clear();
             JSONArray results = respond.getJSONArray("domain");
+
+            String name = "", status = "", price = "";
+
             for (Object o : results) {
                 JSONObject domain = (JSONObject) o;
-                String name = domain.getString("name");
-                String status = domain.getString("status");
-                String price = String.valueOf(domain.getInt("price"));
-
-                // Update UI
-                lbDomain.setText(name);
-                lbStatus.setText(bundle.getString(String.valueOf(status).toLowerCase()));
-                lbPrice.setText(ConfigManager.getInstance().getNumberFormatter().format(Integer.parseInt(price)));
-
-                domainViewModel.setName(name);
-                domainViewModel.setStatus(STATUS.valueOf(status.toUpperCase()));
-                domainViewModel.setPrice(Integer.parseInt(price));
-                domainViewModel.setYears(1);
-
-                lbStatus.setStyle("-fx-text-fill: #00FF00;");
-                lbDomain.setStyle("-fx-text-fill: #00FF00;");
-                lbPrice.setStyle("-fx-text-fill: #00FF00;");
+                name = domain.getString("name");
+                status = domain.getString("status");
+                price = String.valueOf(domain.getInt("price"));
 
                 // set event for label
-                Label label = new Label(name);
-                label.setPrefWidth(Region.USE_COMPUTED_SIZE);
-                label.setPrefHeight(Region.USE_COMPUTED_SIZE);
-
-                label.setOnMouseClicked(event -> {
-                    searchWithDomainName(name);
-                });
-
-                label.setOnMouseEntered(event -> {
-                    label.setStyle("-fx-text-fill: #00FF00;");
-                });
-
-                label.setOnMouseExited(event -> {
-                    label.setStyle("-fx-text-fill: #000000;");
-                });
+                Label label = getLabel(name);
 
                 recomment.getChildren().add(label);
             }
+            updateResultUI(name, status, price);
+            recomment.getChildren().remove(recomment.getChildren().getLast());
         } else if (respond.getString("status").equals("failed")) {
             lbDomain.setText("");
             lbStatus.setText("");
             lbPrice.setText("");
-            lbDomain.setStyle("-fx-text-fill: #FF0000;");
-            lbStatus.setStyle("-fx-text-fill: #FF0000;");
-            lbPrice.setStyle("-fx-text-fill: #FF0000;");
 
             // Show the error message
             SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("error"), null, bundle.getString("notice.domainNotSuported"));
-        } else {
-            // parse the response
-            String name = respond.getString("name");
-            String status = respond.getString("status");
-            String price = String.valueOf(respond.getInt("price"));
+        }
+    }
 
-            // Update UI
-            lbDomain.setText(name);
-            lbStatus.setText(bundle.getString(String.valueOf(status).toLowerCase()));
-            lbPrice.setText(ConfigManager.getInstance().getNumberFormatter().format(Integer.parseInt(price)));
+    @NotNull
+    private Label getLabel(String name) {
+        Label label = new Label(name);
+        label.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        label.setPrefHeight(Region.USE_COMPUTED_SIZE);
 
-            if (STATUS.valueOf(status.toUpperCase()) == STATUS.AVAILABLE) {
-                lbStatus.setStyle("-fx-text-fill: #00FF00;");
-                lbDomain.setStyle("-fx-text-fill: #00FF00;");
-                lbPrice.setStyle("-fx-text-fill: #00FF00;");
-            } else if (STATUS.valueOf(status.toUpperCase()) == STATUS.SOLD) {
-                lbDomain.setStyle("-fx-text-fill: #FF0000;");
-                lbStatus.setStyle("-fx-text-fill: #FF0000;");
-                lbPrice.setStyle("-fx-text-fill: #FF0000;");
-            }
+        label.setOnMouseClicked(event -> {
+            searchWithDomainName(name);
+        });
 
-            // set domainViewModel
-            domainViewModel.setName(name);
-            domainViewModel.setStatus(STATUS.valueOf(status.toUpperCase()));
-            domainViewModel.setPrice(Integer.parseInt(price));
-            domainViewModel.setYears(1);
+        label.setOnMouseEntered(event -> {
+            label.setStyle("-fx-text-fill: #00FF00;");
+        });
+
+        label.setOnMouseExited(event -> {
+            label.setStyle("-fx-text-fill: #000000;");
+        });
+        return label;
+    }
+
+    private void updateResultUI(String name, String status, String price) {
+        lbDomain.setText(name);
+        lbStatus.setText(bundle.getString(String.valueOf(status).toLowerCase()));
+        lbPrice.setText(ConfigManager.getInstance().getNumberFormatter().format(Integer.parseInt(price)));
+
+        domainViewModel.setName(name);
+        domainViewModel.setStatus(STATUS.valueOf(status.toUpperCase()));
+        domainViewModel.setPrice(Integer.parseInt(price));
+        domainViewModel.setYears(1);
+
+        if (status.equals("available")) {
+            lbStatus.setStyle("-fx-text-fill: #00FF00;");
+            lbDomain.setStyle("-fx-text-fill: #00FF00;");
+            lbPrice.setStyle("-fx-text-fill: #00FF00;");
+        } else if (status.equals("sold")) {
+            lbDomain.setStyle("-fx-text-fill: #FF0000;");
+            lbStatus.setStyle("-fx-text-fill: #FF0000;");
+            lbPrice.setStyle("-fx-text-fill: #FF0000;");
         }
     }
 
