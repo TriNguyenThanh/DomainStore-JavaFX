@@ -33,6 +33,7 @@ public class GenerateService implements IGenerateService{
         TransactionModel tran = TransactionRepository.getInstance().selectById(new TransactionModel(transactionId, null, null));
         CustomerModel cus = CustomerRepository.getInstance().selectById(new CustomerModel(tran.getUserId()));
         PaymentHistoryModel payment = PaymentHistoryRepository.getInstance().selectById(new PaymentHistoryModel(transactionId, null, null, null, null));
+        copyFont();
 //        URL resource = GenerateService.class.getClassLoader().getResource("report/invoice_domain.jasper");
 //        String jasperFilePath = null;
 //        if (resource != null) jasperFilePath = resource.getPath();
