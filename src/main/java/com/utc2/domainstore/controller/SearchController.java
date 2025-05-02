@@ -2,30 +2,34 @@ package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.entity.view.DomainViewModel;
 import com.utc2.domainstore.entity.view.STATUS;
-import com.utc2.domainstore.service.CartServices;
-import com.utc2.domainstore.service.DomainServices;
-import com.utc2.domainstore.service.ICart;
-import com.utc2.domainstore.service.IDomain;
+import com.utc2.domainstore.entity.view.TLDViewModel;
+import com.utc2.domainstore.service.*;
+import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
+import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class SearchController implements Initializable {
     private ResourceBundle bundle;
     private DomainViewModel domainViewModel = new DomainViewModel();
+    private static boolean isSearch = false;
+    private static Integer searchCount = 0;
+    private static Task<Void> currentSearchTask;
 
     // FXML components
     @FXML
@@ -36,6 +40,12 @@ public class SearchController implements Initializable {
     private Label lbDomain, lbStatus, lbPrice;
     @FXML
     private HBox recomment;
+    @FXML
+    private TableView<TLDViewModel> tbTLD;
+    @FXML
+    private TableColumn<TLDViewModel, String> colName;
+    @FXML
+    private TableColumn<TLDViewModel, Integer> colPrice;
 
     @FXML
     private void handleButton(ActionEvent e) {
@@ -86,18 +96,74 @@ public class SearchController implements Initializable {
 
     // Method to handle the search button click
     private void handleSearch() {
+        if (isSearch) {
+            // Cancel the current search task if it's running
+            if (currentSearchTask != null && currentSearchTask.isRunning()) {
+                currentSearchTask.cancel();
+            }
+        }
+
+        isSearch = true;
+        searchCount++;
+        System.out.println("Search count: " + searchCount);
         String domainName = tfSearch.getText();
         recomment.getChildren().clear();
-        searchWithDomainName(domainName.toLowerCase());
+
+        // Check if the domain name has a dot
+        if (!domainName.isBlank() && !domainName.contains(".")) {
+            domainName = domainName + ".com";
+        }
+
+        // Create a new search task
+        String finalDomainName = domainName;
+        currentSearchTask = new Task<>() {
+            @Override
+            protected Void call() {
+                searchWithDomainName(finalDomainName.toLowerCase());
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                isSearch = false; // Reset the flag after the search is complete
+            }
+
+            @Override
+            protected void cancelled() {
+                super.cancelled();
+                isSearch = false; // Reset the flag if the task is canceled
+            }
+
+            @Override
+            protected void failed() {
+                super.failed();
+                isSearch = false; // Reset the flag if the task fails
+            }
+        };
+
+        // Run the task in a background thread
+        new Thread(currentSearchTask).start();
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
         this.tfSearch.setOnAction(event -> {
-            searchWithDomainName(tfSearch.getText().toLowerCase());
+            if (!isSearch)
+                handleSearch();
         });
-//        searchWithDomainName("");
+        initTable();
+    }
+
+    private void initTable() {
+        // init column
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
+
+        // set data
+        tbTLD.setItems(FXCollections.observableArrayList(getAllTLD()));
     }
 
     // Method to search for a domain name
@@ -113,6 +179,7 @@ public class SearchController implements Initializable {
         // Update UI
         if (respond.has("domain")) {
             // parse the response
+            recomment.getChildren().clear();
             JSONArray results = respond.getJSONArray("domain");
             for (Object o : results) {
                 JSONObject domain = (JSONObject) o;
@@ -159,7 +226,7 @@ public class SearchController implements Initializable {
             lbPrice.setStyle("-fx-text-fill: #FF0000;");
 
             // Show the error message
-            SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("error"), null, bundle.getString("notice.domainNotSuported") + ": '" + domainName.substring(domainName.lastIndexOf('.')) + "'");
+            SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("error"), null, bundle.getString("notice.domainNotSuported"));
         } else {
             // parse the response
             String name = respond.getString("name");
@@ -187,5 +254,24 @@ public class SearchController implements Initializable {
             domainViewModel.setPrice(Integer.parseInt(price));
             domainViewModel.setYears(1);
         }
+    }
+
+    // get all TLD
+    public List<TLDViewModel> getAllTLD() {
+        List<TLDViewModel> tldList = new ArrayList<>();
+        ITopLevelDomain topLevelDomainService = new TopLevelDomainServices();
+        JSONObject respond = topLevelDomainService.getAllTLD();
+        if (respond.has("tld")) {
+            JSONArray tlds = respond.getJSONArray("tld");
+            for (Object o : tlds) {
+                JSONObject tld = (JSONObject) o;
+                String name = tld.getString("TLD_text");
+                Integer price = tld.getInt("price");
+                Integer id = tld.getInt("id");
+
+                tldList.add(new TLDViewModel(id, name, price));
+            }
+        }
+        return tldList;
     }
 }

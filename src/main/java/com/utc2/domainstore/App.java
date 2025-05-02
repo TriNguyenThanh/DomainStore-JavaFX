@@ -19,7 +19,7 @@ public class App extends Application {
             throw new RuntimeException(e);
         }
         SceneManager.init(stage);
-        SceneManager.getInstance().switchScene("/fxml/start.fxml");
+        SceneManager.getInstance().switchScene("/fxml/main.fxml");
 //        MainController.getInstance().load("/fxml/main.fxml");
         SceneManager.getInstance().setTitle("UTC2 - Domain Store");
         SceneManager.getInstance().setIcon("/image/logoUTC2.png");
