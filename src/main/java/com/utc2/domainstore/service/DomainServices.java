@@ -74,10 +74,13 @@ public class DomainServices implements IDomain{
         // Kiểm tra và thêm domain chính vào DB nếu chưa có
         DomainModel primaryDomain = DomainRepository.getInstance()
                 .getDomainByNameAndTld(namePart, tldModel.getId());
+//        boolean isNew = false;
         if (primaryDomain == null) {
+//            isNew = true;
             primaryDomain = new DomainModel();
             primaryDomain.setDomainName(namePart);
             primaryDomain.setTldId(tldModel.getId());
+            primaryDomain.setYears(1);
             primaryDomain.setStatus("Nofound".equals(domainStatus) ? DomainStatusEnum.available : DomainStatusEnum.sold);
             DomainRepository.getInstance().insert(primaryDomain);
         }
@@ -86,7 +89,7 @@ public class DomainServices implements IDomain{
         JSONObject domainInfo = new JSONObject();
         domainInfo.put("name", domainName);
         domainInfo.put("status", primaryDomain.getStatus().toString().toLowerCase());
-        domainInfo.put("price", tldModel.getPrice());
+        domainInfo.put("price", primaryDomain.getStatus() == DomainStatusEnum.available ? tldModel.getPrice() : 0);
 
         // Các TLD gợi ý
         String[] popularTLDs = new String[] { ".net", ".org", ".vn", ".info", ".biz" };

@@ -112,7 +112,7 @@ CREATE INDEX idx_payment_history_date ON PaymentHistory(payment_date);
 
 INSERT INTO users (full_name, email, phone, cccd, password_hash, role)
 VALUES 
-('Nguyễn Thành Trí', 'tringuyen@gmail.com', '0987654321', '027205011960', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+('Nguyễn Thành Trí', 'tringuyenntt1505@gmail.com', '0987654321', '027205011960', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0987654321 password: pass123456@
 ('Lê Nguyễn Anh Dự', 'dule@gmail.com', '0912345678', '027205011961', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0912345678 password: pass123456@
@@ -164,9 +164,6 @@ VALUES
 
 INSERT INTO domains (domain_name, tld_id, status, active_date, years, owner_id)
 VALUES
-
-
-
 ('diamonielts', 1, 'available', null, 1 ,null),
 ('example', 3, 'sold', '2024-05-07 17:00:00', 1, 3),
 ('testdomain', 6, 'sold', '2024-05-07 17:00:00', 1, 3),
@@ -195,7 +192,7 @@ VALUES
 ('connectasia321', 13, 'available', null, 1, null),
 ('cloudhub', 14, 'available', null, 1, null),
 ('universeclick1', 15, 'available', null, 1 ,null),
-('amazingblog5', 16, 'available', null, null ,null),
+('amazingblog5', 16, 'available', null, 1 ,null),
 ('futurecloud', 17, 'sold', '2024-11-25 9:30:00', 1, 11),
 ('bestclickno1', 18, 'available', null, 1 ,null),
 ('stronggroup15', 19, 'available', null, 1 ,null),
@@ -204,7 +201,7 @@ VALUES
 ('globalbusiness', 22, 'sold', '2025-03-15 11:20:00', 1, 9),
 ('creativeart12', 23, 'available', null, 1 ,null),
 ('topblog21', 24, 'available', null, 1 ,null),
-('topblog21', 1, 'available', null, null ,null);
+('topblog21', 1, 'available', null, 1 ,null);
 
 INSERT INTO carts (cus_id, domain_id, years) VALUES
 (1, 1, 1),
@@ -240,7 +237,7 @@ INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VAL
 
 INSERT INTO Transactions_info (transactions_id, domain_id, price) VALUES
 -- HD001
-('HD001', 15, 39000),
+('HD001', 15, 78000),
 
 -- HD002 (cancelled)
 ('HD002', 11, 299000),
@@ -301,15 +298,14 @@ VALUES
 ('ZaloPay');
 
 INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
-('HD001', 14965327, 1, 'completed', '2024-01-21'),
+('HD001', '14931583', 1, 'completed', '2025-01-21'),
 -- HD002: cancelled
-('HD004', 15264114, 3, 'completed', '2024-03-15'),
--- HD005: cancelled 
-('HD006', 18655656, 4, 'completed', '2024-04-20'),
+('HD004', '14936383', 1, 'completed', '2024-05-07'),
+-- HD005: cancelled
+('HD006', '14938357', 1, 'completed', '2025-04-20'),
 -- HD008: cancelled
-('HD009', 17879521, 2, 'completed', '2024-11-25'),
-('HD010', 15857415, 3, 'completed', '2025-03-15');
-
+('HD009', '14933277', 1, 'completed', '2024-11-25'),
+('HD010', '14939457', 1, 'completed', '2025-03-15');
 
 -- tạo sự kiện tự động cập nhật lại domain khi hết hạn kích hoạt
 SET GLOBAL event_scheduler = ON;
