@@ -8,6 +8,7 @@ import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -16,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -119,7 +121,9 @@ public class SearchController implements Initializable {
         currentSearchTask = new Task<>() {
             @Override
             protected Void call() {
-                searchWithDomainName(finalDomainName.toLowerCase());
+                Platform.runLater(() -> {
+                    searchWithDomainName(finalDomainName.toLowerCase());
+                });
                 return null;
             }
 
@@ -150,9 +154,9 @@ public class SearchController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
         this.tfSearch.setOnAction(event -> {
-            if (!isSearch)
-                handleSearch();
+            handleSearch();
         });
+        recomment.setPrefWidth(Region.USE_COMPUTED_SIZE);
         initTable();
     }
 
@@ -203,6 +207,9 @@ public class SearchController implements Initializable {
 
                 // set event for label
                 Label label = new Label(name);
+                label.setPrefWidth(Region.USE_COMPUTED_SIZE);
+                label.setPrefHeight(Region.USE_COMPUTED_SIZE);
+
                 label.setOnMouseClicked(event -> {
                     searchWithDomainName(name);
                 });
