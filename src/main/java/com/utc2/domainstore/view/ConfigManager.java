@@ -1,7 +1,8 @@
 package com.utc2.domainstore.view;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -17,14 +18,12 @@ public class ConfigManager {
         dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         languages = new ArrayList<>(List.of("Tiếng việt", "English"));
         settings = new Properties();
-        try (InputStream input = getClass().getResourceAsStream("/properties/settings.properties")) {
-            if (input != null) {
-                settings.load(input);
-                numberFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-            } else {
-                throw new IOException("No found settings.properties!");
-            }
-        } catch (IOException e) {
+        try (InputStream input = getClass().getResourceAsStream("/properties/settings.properties");
+             InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
+
+            settings.load(reader);
+            numberFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

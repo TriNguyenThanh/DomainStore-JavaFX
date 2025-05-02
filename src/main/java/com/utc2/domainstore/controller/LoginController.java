@@ -122,7 +122,7 @@ public class LoginController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
         this.cbLanguage.getItems().addAll(ConfigManager.getInstance().getLanguages());
-        this.cbLanguage.setValue(ConfigManager.getInstance().getSetting("language", "Tiếng việt"));
+        this.cbLanguage.setValue(ConfigManager.getInstance().getSetting("language", ""));
         SceneManager.getInstance().setResizable(false);
         SceneManager.getInstance().setMaximized(false);
     }
