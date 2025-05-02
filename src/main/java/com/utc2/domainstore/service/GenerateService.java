@@ -12,12 +12,10 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,8 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GenerateService implements IGenerateService{
+public class GenerateService implements IGenerateService {
     private final DomainRepository domainRepo = new DomainRepository();
+
     @Override
     public void generateInvoicePDF(String transactionId) {
         TransactionModel tran = TransactionRepository.getInstance().selectById(new TransactionModel(transactionId, null, null));
@@ -42,10 +41,10 @@ public class GenerateService implements IGenerateService{
             InputStream jasperStream = getClass().getResourceAsStream("/report/invoice_domain.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
             Map<String, Object> data = new HashMap<>();
-            DateTimeFormatter inputFormat =  DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            DateTimeFormatter outputFormat =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-            data.put("fullName",cus.getFullName());
+            data.put("fullName", cus.getFullName());
             data.put("phone", cus.getPhone());
             data.put("email", cus.getEmail());
             String transactionDate = String.valueOf(tran.getTransactionDate());
@@ -55,16 +54,16 @@ public class GenerateService implements IGenerateService{
             parsedDate = LocalDate.parse(String.valueOf(Date.valueOf(LocalDate.now())), inputFormat);
             data.put("invoiceDate", parsedDate.format(outputFormat));
             data.put("transactionId", transactionId);
-            if(payment != null){
+            if (payment != null) {
                 data.put("paymentMethod", String.valueOf(PaymentTypeEnum.getPaymentMethod(payment.getPaymentMethodId())));
-                if(PaymentStatusEnum.COMPLETED.equals(payment.getPaymentStatus())) {
+                if (PaymentStatusEnum.COMPLETED.equals(payment.getPaymentStatus())) {
                     data.put("paymentStatus", "ĐÃ THANH TOÁN");
-                }else data.put("paymentStatus", "CHƯA THANH TOÁN");
+                } else data.put("paymentStatus", "CHƯA THANH TOÁN");
                 data.put("accountName", cus.getFullName());
                 data.put("accountNumber", "9704198526191432198");
                 data.put("bank", "NCB - Ngân hàng Quốc Dân");
                 data.put("content", "Thanh toán hóa đơn " + transactionId);
-            }else{
+            } else {
                 data.put("paymentMethod", "Không");
                 data.put("paymentStatus", "CHƯA THANH TOÁN");
                 data.put("accountName", "Không");
@@ -72,11 +71,12 @@ public class GenerateService implements IGenerateService{
                 data.put("bank", "Không");
                 data.put("content", "Không");
             }
-            List<Map<String, Object>> list = new ArrayList<>(); list.add(data);
+            List<Map<String, Object>> list = new ArrayList<>();
+            list.add(data);
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
 
             List<Map<String, Object>> dataDomain = new ArrayList<>();
-            for(TransactionInfoModel t : tran.getTransactionInfos()){
+            for (TransactionInfoModel t : tran.getTransactionInfos()) {
                 DomainModel domain = domainRepo.selectById(new DomainModel(t.getDomainId(), null, 0, null, null, 0));
                 Map<String, Object> mp = new HashMap<>();
                 TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
@@ -106,13 +106,16 @@ public class GenerateService implements IGenerateService{
             JasperExportManager.exportReportToPdfFile(jasperPrint, pdfPath);
 
             String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Đường dẫn đến file chrome.exe
-            new ProcessBuilder(chromePath, pdfPath).start();
+            String command = "cmd /c start \"\" \"" + pdfPath + "\"";
+            Runtime.getRuntime().exec(command);
+//            new ProcessBuilder(chromePath, pdfPath).start();
         } catch (JRException | IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
-    private void copyFont(){
+
+    private void copyFont() {
         String sourceDir = "C:\\Windows\\Fonts";
         String destinationDir = "C:\\Fonts_Arial";
 
