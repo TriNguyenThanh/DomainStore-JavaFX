@@ -164,9 +164,6 @@ VALUES
 
 INSERT INTO domains (domain_name, tld_id, status, active_date, years, owner_id)
 VALUES
-
-
-
 ('diamonielts', 1, 'available', null, 1 ,null),
 ('example', 3, 'sold', '2025-04-05 17:00:00', 1, 3),
 ('testdomain', 6, 'sold', '2025-03-15 17:00:00', 1, 3),
@@ -240,7 +237,7 @@ INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VAL
 
 INSERT INTO Transactions_info (transactions_id, domain_id, price) VALUES
 -- HD001
-('HD001', 15, 39000),
+('HD001', 15, 78000),
 
 -- HD002 (cancelled)
 ('HD002', 11, 299000),
@@ -300,16 +297,15 @@ VALUES
 ('CreditCard'),
 ('ZaloPay');
 
-INSERT INTO PaymentHistory (transaction_id, payment_method, payment_status, payment_date) VALUES
-('HD001', 1, 'completed', '2024-01-21'),
+INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
+('HD001', '14931583', 1, 'completed', '2024-01-21'),
 -- HD002: cancelled
-('HD004', 3, 'completed', '2024-03-15'),
--- HD005: cancelled 
-('HD006', 4, 'completed', '2024-04-20'),
+('HD004', '14936383', 1, 'completed', '2024-03-15'),
+-- HD005: cancelled
+('HD006', '14938357', 1, 'completed', '2024-04-20'),
 -- HD008: cancelled
-('HD009', 2, 'completed', '2024-11-25'),
-('HD010', 3, 'completed', '2025-03-15');
-
+('HD009', '14933277', 1, 'completed', '2024-11-25'),
+('HD010', '14939457', 1, 'completed', '2025-03-15');
 
 -- tạo sự kiện tự động cập nhật lại domain khi hết hạn kích hoạt
 SET GLOBAL event_scheduler = ON;
