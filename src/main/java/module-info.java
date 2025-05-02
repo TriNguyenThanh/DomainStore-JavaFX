@@ -27,4 +27,5 @@ module com.utc2.domainstore {
     exports com.utc2.domainstore.service;
     requires jakarta.mail;
     requires annotations;
+    requires org.apache.commons.io;
 }

@@ -71,8 +71,34 @@ public class MainController implements Initializable {
         focus = (Button) e.getSource();
     }
 
-    public void setFocus(Button button) {
-        this.focus = button;
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.bundle = resources;
+        focus = btDashBoard;
+        load("/fxml/dashboard.fxml");
+
+        roleControll();
+        SceneManager.getInstance().setMaximized(true);
+    }
+
+    private void roleControll() {
+        if (UserSession.getInstance().getRole() == RoleEnum.user) {
+            btUser.setDisable(true);
+            btUser.setGraphic(null);
+            btUser.setText("");
+
+            btCheckBill.setDisable(true);
+            btCheckBill.setGraphic(null);
+            btCheckBill.setText("");
+
+            btTLD.setDisable(true);
+            btTLD.setGraphic(null);
+            btTLD.setText("");
+
+            btDomain.setDisable(true);
+            btDomain.setGraphic(null);
+            btDomain.setText("");
+        }
     }
 
     public FXMLLoader load(String fxmlPath) {
@@ -103,34 +129,7 @@ public class MainController implements Initializable {
         return fxmlLoader;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.bundle = resources;
-        focus = btDashBoard;
-        load("/fxml/dashboard.fxml");
-
-        roleControll();
-        SceneManager.getInstance().setResizable(true);
-        SceneManager.getInstance().setMaximized(true);
-    }
-
-    private void roleControll() {
-        if (UserSession.getInstance().getRole() == RoleEnum.user) {
-            btUser.setDisable(true);
-            btUser.setGraphic(null);
-            btUser.setText("");
-
-            btCheckBill.setDisable(true);
-            btCheckBill.setGraphic(null);
-            btCheckBill.setText("");
-
-            btTLD.setDisable(true);
-            btTLD.setGraphic(null);
-            btTLD.setText("");
-
-            btDomain.setDisable(true);
-            btDomain.setGraphic(null);
-            btDomain.setText("");
-        }
+    public void setFocus(Button button) {
+        this.focus = button;
     }
 }

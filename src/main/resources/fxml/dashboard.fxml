@@ -13,39 +13,44 @@
                 <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" prefHeight="100.0" styleClass="lbHeader"
                        text="%dashboard" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0"
                        AnchorPane.topAnchor="14.0"/>
-                <HBox layoutX="14.0" layoutY="114.0" prefHeight="200.0" AnchorPane.leftAnchor="14.0"
-                      AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="134.0">
-                    <children>
-                        <Button fx:id="btAccount" alignment="CENTER" mnemonicParsing="false"
-                                onAction="#handleButtonOnAction" prefHeight="200.0" prefWidth="200.0" text="%account"
-                                wrapText="true" HBox.hgrow="ALWAYS">
-                            <HBox.margin>
-                                <Insets left="48.0" right="24.0"/>
-                            </HBox.margin>
-                        </Button>
-                        <Button fx:id="btSearch" alignment="CENTER" mnemonicParsing="false"
-                                onAction="#handleButtonOnAction" prefHeight="200.0" prefWidth="200.0" text="%search"
-                                textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS">
-                            <HBox.margin>
-                                <Insets left="24.0" right="24.0"/>
-                            </HBox.margin>
-                        </Button>
-                        <Button fx:id="btBill" alignment="CENTER" mnemonicParsing="false"
-                                onAction="#handleButtonOnAction" prefHeight="200.0" prefWidth="200.0" text="%bill"
-                                textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS">
-                            <HBox.margin>
-                                <Insets left="24.0" right="24.0"/>
-                            </HBox.margin>
-                        </Button>
-                        <Button fx:id="btPayment" alignment="CENTER" mnemonicParsing="false"
-                                onAction="#handleButtonOnAction" prefHeight="200.0" prefWidth="200.0"
-                                text="%paymentHistory" textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS">
-                            <HBox.margin>
-                                <Insets left="24.0" right="48.0"/>
-                            </HBox.margin>
-                        </Button>
-                    </children>
-                </HBox>
+                <AnchorPane layoutX="14.0" layoutY="114.0" prefHeight="200.0" AnchorPane.leftAnchor="14.0"
+                            AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="134.0" AnchorPane.bottomAnchor="0.0">
+                    <HBox layoutX="14.0" layoutY="114.0" prefHeight="200.0" AnchorPane.leftAnchor="0.0"
+                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <children>
+                            <Button fx:id="btAccount" alignment="CENTER" mnemonicParsing="false"
+                                    onAction="#handleButtonOnAction" prefHeight="200.0" prefWidth="200.0"
+                                    text="%account"
+                                    wrapText="true" HBox.hgrow="ALWAYS">
+                                <HBox.margin>
+                                    <Insets left="48.0" right="24.0"/>
+                                </HBox.margin>
+                            </Button>
+                            <Button fx:id="btSearch" alignment="CENTER" mnemonicParsing="false"
+                                    onAction="#handleButtonOnAction" prefHeight="200.0" prefWidth="200.0" text="%search"
+                                    textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS">
+                                <HBox.margin>
+                                    <Insets left="24.0" right="24.0"/>
+                                </HBox.margin>
+                            </Button>
+                            <Button fx:id="btBill" alignment="CENTER" mnemonicParsing="false"
+                                    onAction="#handleButtonOnAction" prefHeight="200.0" prefWidth="200.0" text="%bill"
+                                    textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS">
+                                <HBox.margin>
+                                    <Insets left="24.0" right="24.0"/>
+                                </HBox.margin>
+                            </Button>
+                            <Button fx:id="btPayment" alignment="CENTER" mnemonicParsing="false"
+                                    onAction="#handleButtonOnAction" prefHeight="200.0" prefWidth="200.0"
+                                    text="%paymentHistory" textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS">
+                                <HBox.margin>
+                                    <Insets left="24.0" right="48.0"/>
+                                </HBox.margin>
+                            </Button>
+                        </children>
+                    </HBox>
+                    <ComboBox fx:id="cbLanguage" AnchorPane.rightAnchor="10" AnchorPane.bottomAnchor="10"/>
+                </AnchorPane>
             </children>
         </AnchorPane>
     </children>

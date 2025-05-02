@@ -20,7 +20,10 @@ public class MoneyCellFactory {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(formatter.format(item));
+                    // format the item as currency
+                    Double value = Double.valueOf(item);
+                    value = value / ConfigManager.getInstance().getRate(ConfigManager.getInstance().getSetting("language", "English"));
+                    setText(formatter.format(value));
                 }
             }
         };

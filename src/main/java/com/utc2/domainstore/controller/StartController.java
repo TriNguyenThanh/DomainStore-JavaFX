@@ -95,7 +95,7 @@ public class StartController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
-        SceneManager.getInstance().setResizable(false);
+//        SceneManager.getInstance().setResizable(false);
 
         int i = 1;
         while (bundle.containsKey("task" + i)) {
