@@ -5,6 +5,7 @@ import com.utc2.domainstore.repository.CustomerRepository;
 import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.repository.PaymentHistoryRepository;
 import com.utc2.domainstore.repository.TransactionRepository;
+import com.utc2.domainstore.utils.EmailUtil;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -105,6 +106,8 @@ public class GenerateService implements IGenerateService{
             String pdfPath = invoiceDir.getAbsolutePath() + File.separator + transactionId + "_" + safeName + dateTime + ".pdf";
             JasperExportManager.exportReportToPdfFile(jasperPrint, pdfPath);
 
+            EmailUtil.sendEmailFile("tringuyenntt1505@gmail.com", "Hoá đơn dịch vụ UTC2 Domain Store",
+                    "Cảm ơn Quý khách đã sử dụng dịch vụ UTC2 Domain Store" , pdfPath);
             String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Đường dẫn đến file chrome.exe
             new ProcessBuilder(chromePath, pdfPath).start();
         } catch (JRException | IOException e) {

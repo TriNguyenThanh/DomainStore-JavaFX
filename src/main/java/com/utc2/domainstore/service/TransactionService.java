@@ -130,7 +130,7 @@ public class TransactionService implements ITransactionService {
             // gửi thông báo email
             SoldDomainNotifierServices notifier = new SoldDomainNotifierServices();
 //        notifier.notifySoldDomains(cus.getEmail(),domains);
-            notifier.notifySoldDomains("dule1028a@gmail.com",domains);
+            notifier.notifySoldDomains("tringuyenntt1505@gmail.com",domains);
             transactionRepository.update(tran);
         }
     }
