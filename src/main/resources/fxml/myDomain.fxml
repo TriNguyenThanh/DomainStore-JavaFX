@@ -40,18 +40,25 @@
                                     AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0"
                                     AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                             <center>
-                                <TableView fx:id="tbDomain" prefHeight="200.0" prefWidth="200.0"
-                                           BorderPane.alignment="CENTER">
-                                    <BorderPane.margin>
-                                        <Insets right="10.0"/>
-                                    </BorderPane.margin>
-                                    <columns>
-                                        <TableColumn fx:id="colDomain" prefWidth="250" text="%domain"/>
-                                        <TableColumn fx:id="colPrice" prefWidth="180" text="%price"/>
-                                        <TableColumn fx:id="colDate" prefWidth="250" text="%active_date"/>
-                                        <TableColumn fx:id="colYear" prefWidth="210" text="%year"/>
-                                    </columns>
-                                </TableView>
+                                <AnchorPane>
+                                    <TextField fx:id="tfSearch" prefHeight="50.0" prefWidth="300.0"
+                                               AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="10.0"
+                                               promptText="%search"/>
+                                    <TableView fx:id="tbDomain" prefHeight="200.0" prefWidth="200.0"
+                                               AnchorPane.topAnchor="80.0" AnchorPane.leftAnchor="100.0"
+                                               AnchorPane.rightAnchor="100.0" AnchorPane.bottomAnchor="20.0"
+                                               BorderPane.alignment="CENTER">
+                                        <BorderPane.margin>
+                                            <Insets right="10.0"/>
+                                        </BorderPane.margin>
+                                        <columns>
+                                            <TableColumn fx:id="colDomain" prefWidth="250" text="%domain"/>
+                                            <TableColumn fx:id="colPrice" prefWidth="180" text="%price"/>
+                                            <TableColumn fx:id="colDate" prefWidth="250" text="%active_date"/>
+                                            <TableColumn fx:id="colYear" prefWidth="210" text="%year"/>
+                                        </columns>
+                                    </TableView>
+                                </AnchorPane>
                             </center>
                             <bottom>
                                 <Button fx:id="btUpdate" mnemonicParsing="false" text="%update"

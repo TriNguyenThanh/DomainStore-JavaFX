@@ -129,7 +129,7 @@
                                 <Button fx:id="btAccept" mnemonicParsing="false" onAction="#handleButtonOnAction"
                                         text="%accept"/>
                                 <Button fx:id="btCancel" mnemonicParsing="false" onAction="#handleButtonOnAction"
-                                        text="%cancel"/>
+                                        text="%remove"/>
                             </children>
                         </HBox>
                     </bottom>

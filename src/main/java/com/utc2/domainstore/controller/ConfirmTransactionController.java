@@ -82,6 +82,20 @@ public class ConfirmTransactionController implements Initializable {
         colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
 
+        tableView.setPlaceholder(new Label(bundle.getString("placeHolder.tableEmpty")));
+
+        tableView.setOnMouseClicked(event -> {
+            BillViewModel selectedBill = tableView.getSelectionModel().getSelectedItem();
+            if (selectedBill == null) {
+                return;
+            }
+            // nếu nhấn đúp chuột vào dòng trong bảng
+            if (event.getClickCount() == 2) {
+
+                openBillInfo(selectedBill);
+            }
+        });
+
         updateTable();
     }
 

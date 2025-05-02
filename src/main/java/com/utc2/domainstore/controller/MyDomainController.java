@@ -8,11 +8,10 @@ import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,6 +35,8 @@ public class MyDomainController implements Initializable {
     private TableColumn<DomainViewModel, LocalDate> colDate;
     @FXML
     private Button btUpdate;
+    @FXML
+    private TextField tfSearch;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -54,7 +55,25 @@ public class MyDomainController implements Initializable {
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
         colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
 
-        tbDomain.setItems(FXCollections.observableArrayList(getData()));
+        tbDomain.setPlaceholder(new Label(bundle.getString("placeHolder.tableEmpty")));
+
+        updateTable();
+    }
+
+    private void updateTable() {
+        FilteredList<DomainViewModel> filteredData = new FilteredList<>(FXCollections.observableArrayList(getData()), p -> true);
+        // Set the filter predicate
+        tfSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(domain -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true; // Show all items
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                return domain.getName().toLowerCase().contains(lowerCaseFilter) ||
+                        domain.getPrice().toString().contains(lowerCaseFilter);
+            });
+        });
+        tbDomain.setItems(filteredData);
     }
 
     // Method to get data from the server

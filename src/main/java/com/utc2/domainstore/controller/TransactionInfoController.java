@@ -84,6 +84,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
         if (method == METHOD.PAY) {
             // Set up for payment
             buttons.add(btPay);
+            buttons.add(btCancel);
         } else if (method == METHOD.CONFIRM) {
             // Set up for confirmation
             buttons.add(btAccept);

@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -115,5 +116,9 @@ public class SceneManager {
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
         return alert.showAndWait();
+    }
+
+    public Image getIcon(String s, Integer width, Integer height) {
+        return new Image(getClass().getResourceAsStream(s), width, height, false, true);
     }
 }

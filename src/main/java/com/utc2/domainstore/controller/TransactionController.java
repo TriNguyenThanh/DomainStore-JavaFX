@@ -50,6 +50,7 @@ public class TransactionController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        getSelectedButton.setVisible(false);
         initTable();
     }
 
@@ -62,10 +63,32 @@ public class TransactionController implements Initializable {
         colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
 
+        tableView.setOnMouseClicked(event -> {
+            BillViewModel selectedBill = tableView.getSelectionModel().getSelectedItem();
+            if (selectedBill == null) {
+                getSelectedButton.setVisible(false);
+                return;
+            }
+            getSelectedButton.setVisible(true);
+            // thay đổi text của nút theo trạng thái của hóa đơn
+            if (selectedBill.getStatus() == STATUS.COMPLETED || selectedBill.getStatus() == STATUS.CANCELLED) {
+                getSelectedButton.setText(bundle.getString("review"));
+            } else if (selectedBill.getStatus() == STATUS.PENDINGCONFIRM) {
+                getSelectedButton.setText(bundle.getString("confirm"));
+            } else if (selectedBill.getStatus() == STATUS.PENDINGPAYMENT) {
+                getSelectedButton.setText(bundle.getString("pay"));
+            }
+
+            // nếu nhấn đúp chuột vào dòng trong bảng
+            if (event.getClickCount() == 2) {
+
+                BillInfo(selectedBill);
+            }
+        });
+
         getSelectedButton.setOnAction(event -> {
             BillViewModel selectedBill = tableView.getSelectionModel().getSelectedItem();
             if (selectedBill != null) {
-//                System.out.println("Selected Bill: " + selectedBill);
                 // mở một cửa sổ mới với thông tin chi tiết của hóa đơn
                 BillInfo(selectedBill);
             }

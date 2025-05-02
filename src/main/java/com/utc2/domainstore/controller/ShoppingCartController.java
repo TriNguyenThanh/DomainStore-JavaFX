@@ -140,11 +140,11 @@ public class ShoppingCartController implements Initializable {
         ObservableList<DomainViewModel> selectedItems = tbCart.getSelectionModel().getSelectedItems();
         // check if there is no item selected
         if (selectedItems.isEmpty()) {
-            SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("notice"), bundle.getString("notice.selectDomain"), bundle.getString("notice.selectDomain"));
+            SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("notice"), null, bundle.getString("error.noSelect"));
             return;
         }
         // update the cart
-
+        updateCart(selectedItems);
 
         // create transaction
         JSONObject request = new JSONObject();
@@ -190,6 +190,7 @@ public class ShoppingCartController implements Initializable {
             domainJson.put("name", domain.getName());
             domainJson.put("price", domain.getPrice());
             domainJson.put("years", domain.getYears());
+            domainJson.put("status", domain.getStatus().toString().toLowerCase());
             domainArray.put(domainJson);
         }
         request.put("domain", domainArray);
@@ -197,11 +198,7 @@ public class ShoppingCartController implements Initializable {
         if (response.getString("status").equals("success")) {
             System.out.println("Updated successfully");
         } else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(bundle.getString("error"));
-            alert.setHeaderText(null);
-            alert.setContentText(bundle.getString("update_failed"));
-            alert.showAndWait();
+            SceneManager.getInstance().showDialog(Alert.AlertType.ERROR, bundle.getString("error"), bundle.getString("notice"), bundle.getString("notice.updateCartFailed"));
         }
     }
 }

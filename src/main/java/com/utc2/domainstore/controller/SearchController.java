@@ -97,7 +97,7 @@ public class SearchController implements Initializable {
         this.tfSearch.setOnAction(event -> {
             searchWithDomainName(tfSearch.getText().toLowerCase());
         });
-        searchWithDomainName("");
+//        searchWithDomainName("");
     }
 
     // Method to search for a domain name
