@@ -300,7 +300,7 @@ VALUES
 INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
 ('HD001', '14931583', 1, 'completed', '2025-01-21'),
 -- HD002: cancelled
-('HD004', '14936383', 1, 'completed', '2024-05-07'),
+('HD004', '14936383', 1, 'completed', '2025-05-07'),
 -- HD005: cancelled
 ('HD006', '14938357', 1, 'completed', '2025-04-20'),
 -- HD008: cancelled
