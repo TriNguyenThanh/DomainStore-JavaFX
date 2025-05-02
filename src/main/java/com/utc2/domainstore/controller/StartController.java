@@ -75,11 +75,8 @@ public class StartController implements Initializable {
 
                     Platform.runLater(() -> {
                         container.getChildren().add(newTask);
-                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                        alert.setTitle(title);
-                        alert.setHeaderText(header);
-                        alert.setContentText(content);
-                        alert.showAndWait();
+                        // show alert and exit the application
+                        SceneManager.getInstance().showDialog(Alert.AlertType.ERROR, title, header, content);
                         Platform.exit();
                     });
                     break;
@@ -98,7 +95,7 @@ public class StartController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
-        SceneManager.getInstance().setResizable(false);
+//        SceneManager.getInstance().setResizable(false);
 
         int i = 1;
         while (bundle.containsKey("task" + i)) {

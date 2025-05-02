@@ -1,5 +1,6 @@
 package com.utc2.domainstore.utils;
 
+import com.utc2.domainstore.view.ConfigManager;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
@@ -8,7 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class LocalDateCellFactory {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter formatter = ConfigManager.getInstance().getDateTimeFormatter();
 
     public static <T> Callback<TableColumn<T, LocalDate>, TableCell<T, LocalDate>> forTableColumn() {
         return column -> new TableCell<>() {
@@ -18,7 +19,7 @@ public class LocalDateCellFactory {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(item.format(formatter));
+                    setText(formatter.format(item));
                 }
             }
         };

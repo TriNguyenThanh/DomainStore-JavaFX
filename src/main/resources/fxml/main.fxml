@@ -185,10 +185,10 @@
                                         </ImageView>
                                     </graphic>
                                 </Button>
-                                <Button fx:id="btCheckPayment" alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                <Button fx:id="btTLD" alignment="BASELINE_LEFT" graphicTextGap="10.0"
                                         mnemonicParsing="false" onAction="#handleButtonOnAction" prefHeight="50.0"
                                         prefWidth="300.0" styleClass="btSideBarItem" stylesheets="@../style/main.css"
-                                        text="%paymentManager" wrapText="true">
+                                        text="%tld_management" wrapText="true">
                                     <graphic>
                                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
                                                    preserveRatio="true">

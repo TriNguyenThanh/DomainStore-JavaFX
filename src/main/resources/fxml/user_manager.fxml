@@ -51,6 +51,9 @@
                                                 prefHeight="50.0" prefWidth="140.0" text="%lock"/>
                                         <Button fx:id="btActive" mnemonicParsing="false" onAction="#onHandleButton"
                                                 prefHeight="50.0" prefWidth="140.0" text="%active"/>
+                                        <Button fx:id="btPaymentHistory" mnemonicParsing="false"
+                                                onAction="#onHandleButton"
+                                                prefHeight="50.0" prefWidth="140.0" text="%paymentHistory"/>
                                     </children>
                                     <BorderPane.margin>
                                         <Insets left="10.0"/>

@@ -1,6 +1,7 @@
 package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.view.ConfigManager;
+import com.utc2.domainstore.view.SceneManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
@@ -22,6 +24,8 @@ public class DashBoardController implements Initializable {
 
     @FXML
     private AnchorPane contentArea;
+    @FXML
+    private ComboBox<String> cbLanguage;
 
     @FXML
     public void handleButtonOnAction(ActionEvent e) {
@@ -34,6 +38,13 @@ public class DashBoardController implements Initializable {
         } else if (e.getSource() == btPayment) {
             changeView("/fxml/payment.fxml");
         }
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        bundle = resources;
+
+        SceneManager.getInstance().initLanguageComboBox(cbLanguage);
     }
 
     private void changeView(String fxmlPath) {
@@ -51,10 +62,5 @@ public class DashBoardController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        bundle = resources;
     }
 }

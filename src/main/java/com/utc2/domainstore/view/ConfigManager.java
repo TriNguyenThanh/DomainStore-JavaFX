@@ -1,26 +1,37 @@
 package com.utc2.domainstore.view;
 
-import java.io.IOException;
+import com.utc2.domainstore.utils.JSONReader;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.*;
 
 public class ConfigManager {
     private static ConfigManager instance;
     private final Properties settings;
-    private List<String> languages;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private Map<String, Locale> languageMap = new HashMap<>();
+    private Map<String, Integer> rateMap = new HashMap<>();
+    private DateTimeFormatter dateTimeFormatter;
+    private NumberFormat numberFormatter;
 
     private ConfigManager() {
-        languages = new ArrayList<>(List.of("Tiếng việt", "English"));
         settings = new Properties();
-        try (InputStream input = getClass().getResourceAsStream("/properties/settings.properties")) {
-            if (input != null) {
-                settings.load(input);
-            } else {
-                throw new IOException("No found settings.properties!");
-            }
-        } catch (IOException e) {
+        try (InputStream input = getClass().getResourceAsStream("/properties/settings.properties");
+             InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
+
+            settings.load(reader);
+            numberFormatter = NumberFormat.getCurrencyInstance(getLocale());
+            dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(getLocale());
+            loadLanguage();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -32,12 +43,21 @@ public class ConfigManager {
         return instance;
     }
 
-    public void setLanguages(List<String> languages) {
-        this.languages = languages;
-    }
+    private void loadLanguage() {
+        JSONObject jsonObject = JSONReader.loadJSON("/json/language.json");
+        if (jsonObject != null) {
+            JSONArray jsonArray = jsonObject.getJSONArray("languages");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject languageObject = jsonArray.getJSONObject(i);
+                String name = languageObject.getString("name");
+                String code = languageObject.getString("code");
+                String localeName = languageObject.getString("locale");
+                Integer rate = languageObject.getInt("rate");
 
-    public List<String> getLanguages() {
-        return languages;
+                languageMap.put(name, new Locale(code, localeName));
+                rateMap.put(name, rate);
+            }
+        }
     }
 
     public String getSetting(String key, String defaultValue) {
@@ -45,22 +65,51 @@ public class ConfigManager {
     }
 
     public void updateSetting(String key, String value) {
-        settings.replace(key, value);
-        System.out.println("Updated setting: " + key + " = " + value);
+        settings.setProperty(key, value);
+        try (OutputStream output = new FileOutputStream(getClass().getResource("/properties/settings.properties").getPath())) {
+            settings.store(output, "Updated settings");
+            System.out.println("Updated setting: " + key + " = " + value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public ResourceBundle getLanguageBundle() {
         String lang = getSetting("locale", "vi_VN");
         String languageProperty = String.format("properties.%s", lang);
-        Locale locale = new Locale(lang);
-        return ResourceBundle.getBundle(languageProperty, locale);
+        return ResourceBundle.getBundle(languageProperty, getLocale());
     }
 
-    public DateTimeFormatter getFormatter() {
-        return formatter;
+    public void setDateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
+        this.dateTimeFormatter = dateTimeFormatter;
     }
 
-    public void setFormatter(DateTimeFormatter formatter) {
-        this.formatter = formatter;
+    public DateTimeFormatter getDateTimeFormatter() {
+        return dateTimeFormatter;
+    }
+
+    public void setNumberFormatter(NumberFormat formatter) {
+        this.numberFormatter = formatter;
+    }
+
+    public NumberFormat getNumberFormatter() {
+        return numberFormatter;
+    }
+
+    public Locale getLocale() {
+        String lang = settings.getProperty("locale", "vi_VN");
+        return new Locale(lang.substring(0, lang.lastIndexOf('_')), lang.substring(lang.lastIndexOf('_') + 1));
+    }
+
+    public List<String> getLanguages() {
+        return new ArrayList<>(languageMap.keySet());
+    }
+
+    public Locale getLanguageLocale(String name) {
+        return languageMap.get(name);
+    }
+
+    public Integer getRate(String name) {
+        return rateMap.get(name);
     }
 }

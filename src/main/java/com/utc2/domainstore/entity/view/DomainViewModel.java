@@ -8,13 +8,14 @@ public class DomainViewModel {
     private Integer price;
     private Integer years;
     private LocalDate date;
-    private Integer OwnerId;
+    private Integer ownerID;
+    private String ownerName;
 
     public DomainViewModel() {
 
     }
 
-    public DomainViewModel(String name, STATUS status, int price, int years, LocalDate date) {
+    public DomainViewModel(String name, STATUS status, Integer price, Integer years, LocalDate date) {
         this.name = name;
         this.status = status;
         this.price = price;
@@ -22,13 +23,14 @@ public class DomainViewModel {
         this.date = date;
     }
 
-    public DomainViewModel(String name, STATUS status, Integer price, Integer years, LocalDate date, Integer ownerId) {
+    public DomainViewModel(String name, STATUS status, Integer price, Integer years, LocalDate date, Integer ownerID, String ownerName) {
         this.name = name;
         this.status = status;
         this.price = price;
         this.years = years;
         this.date = date;
-        this.OwnerId = ownerId;
+        this.ownerID = ownerID;
+        this.ownerName = ownerName;
     }
 
     public String getName() {
@@ -71,12 +73,20 @@ public class DomainViewModel {
         this.date = date;
     }
 
-    public Integer getOwnerId() {
-        return OwnerId;
+    public Integer getOwnerID() {
+        return ownerID;
     }
 
-    public void setOwnerId(Integer ownerId) {
-        OwnerId = ownerId;
+    public void setOwnerID(Integer ownerID) {
+        this.ownerID = ownerID;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 
     @Override

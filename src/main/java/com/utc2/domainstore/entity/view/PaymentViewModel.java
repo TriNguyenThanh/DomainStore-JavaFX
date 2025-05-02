@@ -8,6 +8,7 @@ public class PaymentViewModel {
     private STATUS status;
     private LocalDate paymentDate;
     private String method;
+    private Integer price;
 
     public PaymentViewModel() {
     }
@@ -18,6 +19,23 @@ public class PaymentViewModel {
         this.status = status;
         this.paymentDate = paymentDate;
         this.method = method;
+    }
+
+    public PaymentViewModel(String billID, String paymentID, String method, STATUS status, LocalDate paymentDate, Integer price) {
+        this.billID = billID;
+        this.paymentID = paymentID;
+        this.status = status;
+        this.paymentDate = paymentDate;
+        this.method = method;
+        this.price = price;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
     public String getBillID() {

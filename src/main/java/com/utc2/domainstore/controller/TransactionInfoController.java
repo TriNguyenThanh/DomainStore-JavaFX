@@ -3,6 +3,7 @@ package com.utc2.domainstore.controller;
 import com.utc2.domainstore.entity.database.TransactionStatusEnum;
 import com.utc2.domainstore.entity.view.*;
 import com.utc2.domainstore.service.*;
+import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.application.Platform;
@@ -83,6 +84,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
         if (method == METHOD.PAY) {
             // Set up for payment
             buttons.add(btPay);
+            buttons.add(btCancel);
         } else if (method == METHOD.CONFIRM) {
             // Set up for confirmation
             buttons.add(btAccept);
@@ -141,14 +143,14 @@ public class TransactionInfoController implements Initializable, PaymentListener
         lbEmail.setText(accountModel.getEmail());
 
         lbBillID.setText(String.valueOf(billViewModel.getId()));
-        lbDate.setText(billViewModel.getDate().format(ConfigManager.getInstance().getFormatter()));
-        lbTotal.setText(bundle.getString("total") + ": " + billViewModel.getPrice());
+        lbDate.setText(billViewModel.getDate().format(ConfigManager.getInstance().getDateTimeFormatter()));
+        lbTotal.setText(bundle.getString("total") + ": " + ConfigManager.getInstance().getNumberFormatter().format(billViewModel.getPrice()));
         lbStatus.setText(String.valueOf(billViewModel.getStatus()));
 
         if (paymentViewModel != null) {
             lbPaymentID.setText(String.valueOf(paymentViewModel.getPaymentID()));
             lbMethod.setText(paymentViewModel.getMethod());
-            lbPaymentDate.setText(paymentViewModel.getPaymentDate().format(ConfigManager.getInstance().getFormatter()));
+            lbPaymentDate.setText(paymentViewModel.getPaymentDate().format(ConfigManager.getInstance().getDateTimeFormatter()));
         } else {
             lbPaymentID.setText("");
             lbMethod.setText("");
@@ -161,6 +163,8 @@ public class TransactionInfoController implements Initializable, PaymentListener
         colDomainPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         colDomainStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colDomainYears.setCellValueFactory(new PropertyValueFactory<>("years"));
+
+        colDomainPrice.setCellFactory(MoneyCellFactory.forTableColumn());
 
         ObservableList<DomainViewModel> observableList = FXCollections.observableArrayList(domainList);
         table.setItems(observableList);

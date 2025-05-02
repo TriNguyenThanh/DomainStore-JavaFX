@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="163.0" prefWidth="378.0" stylesheets="@../style/subwindow.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.utc2.domainstore.controller.AddDomainController">
+    <children>
+        <Label alignment="CENTER_RIGHT" layoutX="14.0" layoutY="64.0" prefHeight="30.0" prefWidth="150.0"
+               text="%domainName" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="64.0"/>
+        <TextField fx:id="tfName" layoutX="73.0" layoutY="14.0" prefHeight="30.0" prefWidth="250.0"
+                   promptText="%domainName" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0"/>
+        <ComboBox fx:id="cbTLD" layoutX="320.0" layoutY="28.0" prefHeight="35.0" prefWidth="100.0"
+                  AnchorPane.bottomAnchor="117.39999999999999" AnchorPane.rightAnchor="10.0"
+                  AnchorPane.topAnchor="10.0"/>
+        <Label fx:id="lbDomain" layoutX="169.0" layoutY="66.0" prefHeight="30.0" prefWidth="200.0">
+            <padding>
+                <Insets left="10.0"/>
+            </padding>
+        </Label>
+        <HBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="30.0" AnchorPane.bottomAnchor="10.0"
+              AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+            <children>
+                <Button fx:id="btCancel" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="%cancel"
+                        onAction="#onHandleButton"/>
+                <Button fx:id="btSave" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="%save"
+                        onAction="#onHandleButton"/>
+            </children>
+        </HBox>
+    </children>
+</AnchorPane>
