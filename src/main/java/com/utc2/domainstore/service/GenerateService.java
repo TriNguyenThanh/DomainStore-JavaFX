@@ -7,10 +7,15 @@ import com.utc2.domainstore.repository.PaymentHistoryRepository;
 import com.utc2.domainstore.repository.TransactionRepository;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -28,11 +33,14 @@ public class GenerateService implements IGenerateService{
         TransactionModel tran = TransactionRepository.getInstance().selectById(new TransactionModel(transactionId, null, null));
         CustomerModel cus = CustomerRepository.getInstance().selectById(new CustomerModel(tran.getUserId()));
         PaymentHistoryModel payment = PaymentHistoryRepository.getInstance().selectById(new PaymentHistoryModel(transactionId, null, null, null, null));
-        URL resource = GenerateService.class.getClassLoader().getResource("report/invoice_domain.jrxml");
-        String jasperFilePath = null;
-        if (resource != null) jasperFilePath = resource.getPath();
+        copyFont();
+//        URL resource = GenerateService.class.getClassLoader().getResource("report/invoice_domain.jasper");
+//        String jasperFilePath = null;
+//        if (resource != null) jasperFilePath = resource.getPath();
         try {
-            JasperReport jasperReport = JasperCompileManager.compileReport(jasperFilePath);
+//            JasperReport jasperReport = JasperCompileManager.compileReport(jasperFilePath);
+            InputStream jasperStream = getClass().getResourceAsStream("/report/invoice_domain.jasper");
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
             Map<String, Object> data = new HashMap<>();
             DateTimeFormatter inputFormat =  DateTimeFormatter.ofPattern("yyyy-MM-dd");
             DateTimeFormatter outputFormat =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -104,5 +112,36 @@ public class GenerateService implements IGenerateService{
             throw new RuntimeException(e);
         }
     }
+    private void copyFont(){
+        String sourceDir = "C:\\Windows\\Fonts";
+        String destinationDir = "C:\\Fonts_Arial";
 
+        try {
+            Path sourcePath = Paths.get(sourceDir);
+            Path destinationPath = Paths.get(destinationDir);
+
+            if (!Files.exists(sourcePath)) {
+                throw new IOException("Thư mục nguồn không tồn tại: " + sourceDir);
+            }
+
+            Files.createDirectories(destinationPath);
+
+            try (var stream = Files.walk(sourcePath)) {
+                stream.forEach(source -> {
+                    try {
+                        Path destination = destinationPath.resolve(sourcePath.relativize(source));
+                        if (Files.isDirectory(source)) {
+                            Files.createDirectories(destination);
+                        } else if (!Files.exists(destination)) { // Chỉ copy nếu file đích chưa tồn tại
+                            Files.copy(source, destination);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        } catch (IOException e) {
+            System.err.println("Lỗi khi copy project: " + e.getMessage());
+        }
+    }
 }

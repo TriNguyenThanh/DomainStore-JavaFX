@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class TransactionService implements ITransactionService {
@@ -100,7 +101,9 @@ public class TransactionService implements ITransactionService {
     }
     @Override
     public void updateTransactionStatus(String transactionId, TransactionStatusEnum status){
+        List<String> domains = new ArrayList<>();
         TransactionModel tran = transactionRepository.selectById_V2(transactionId);
+        CustomerModel cus = CustomerRepository.getInstance().selectById(new CustomerModel(jsonObject.getInt("user_id")));
         tran.setTransactionStatus(status);
         if(TransactionStatusEnum.COMPLETED.equals(status)){
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -108,18 +111,28 @@ public class TransactionService implements ITransactionService {
                 int domainId = getDomainByName(json.getString("name"));
                 DomainModel d = new DomainModel(); d.setId(domainId);
                 DomainModel domain = DomainRepository.getInstance().selectById(d);
+                // Thêm tên miền vào List<String>
+                domains.add(domain.getDomainName()
+                        + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
+                // Set các giá trị để update domain
                 int price = json.getInt("price");
                 int years = json.getInt("years");
                 domain.setYears(years);
                 domain.setStatus(DomainStatusEnum.sold);
                 domain.setActiveDate(Date.valueOf(LocalDate.now()));
-                domain.setOwnerId(jsonObject.getInt("user_id"));
+                domain.setOwnerId(cus.getId());
 
+                // update domain
                 DomainRepository.getInstance().update(domain);
+                // thêm chi tiết hoá đơn
                 transactionInfoRepository.insert(new TransactionInfoModel(transactionId, domainId, price));
             }
+            // gửi thông báo email
+            SoldDomainNotifierServices notifier = new SoldDomainNotifierServices();
+//        notifier.notifySoldDomains(cus.getEmail(),domains);
+            notifier.notifySoldDomains("dule1028a@gmail.com",domains);
+            transactionRepository.update(tran);
         }
-        transactionRepository.update(tran);
     }
     //Tạo transactionId
     private String generateTransactionId(){
