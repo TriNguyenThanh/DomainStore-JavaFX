@@ -20,7 +20,6 @@ public class TransactionService implements ITransactionService {
     private static JSONArray jsonArray;
     private static String transactionId;
     private static JSONObject jsonObject;
-
     @Override
     public JSONObject getAllTransaction() {
         JSONArray jsonArray = new JSONArray();
@@ -75,13 +74,12 @@ public class TransactionService implements ITransactionService {
         result.put("domains", jsonArray);
         return result;
     }
-
     @Override
     public JSONObject createTransaction(JSONObject json) throws IOException {
         // request: domains (JSONObject)
         // response: transactionId (String), total(int), status (success / failed)
 
-        if (json.isEmpty()) {
+        if(json.isEmpty()) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("status", "failed");
             return jsonObject;
@@ -95,25 +93,23 @@ public class TransactionService implements ITransactionService {
         jsonObject = json;
         jsonArray = json.getJSONArray("domains"); // request
         int total = processTransactionDetails(transactionId, jsonArray);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("transactionId", transactionId);
-        jsonObject.put("total", total);
-        jsonObject.put("status", "success");
-        return jsonObject;
+        JSONObject response = new JSONObject();
+        response.put("transactionId", transactionId);
+        response.put("total", total);
+        response.put("status", "success");
+        return  response;
     }
-
     @Override
-    public void updateTransactionStatus(String transactionId, TransactionStatusEnum status) {
+    public void updateTransactionStatus(String transactionId, TransactionStatusEnum status){
         List<String> domains = new ArrayList<>();
         TransactionModel tran = transactionRepository.selectById_V2(transactionId);
-        CustomerModel cus = CustomerRepository.getInstance().selectById(new CustomerModel(jsonObject.getInt("cus_id")));
+        CustomerModel cus = CustomerRepository.getInstance().selectById(new CustomerModel(jsonObject.getInt("user_id")));
         tran.setTransactionStatus(status);
-        if (TransactionStatusEnum.COMPLETED.equals(status)) {
+        if(TransactionStatusEnum.COMPLETED.equals(status)){
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject json = jsonArray.getJSONObject(i);
                 int domainId = getDomainByName(json.getString("name"));
-                DomainModel d = new DomainModel();
-                d.setId(domainId);
+                DomainModel d = new DomainModel(); d.setId(domainId);
                 DomainModel domain = DomainRepository.getInstance().selectById(d);
                 // Thêm tên miền vào List<String>
                 domains.add(domain.getDomainName()
@@ -134,22 +130,19 @@ public class TransactionService implements ITransactionService {
             // gửi thông báo email
             SoldDomainNotifierServices notifier = new SoldDomainNotifierServices();
 //        notifier.notifySoldDomains(cus.getEmail(),domains);
-            notifier.notifySoldDomains("tringuyenntt1505@gmail.com", domains);
+            notifier.notifySoldDomains("tringuyenntt1505@gmail.com",domains);
             transactionRepository.update(tran);
         }
     }
-
     //Tạo transactionId
-    private String generateTransactionId() {
-        if (transactions.isEmpty()) return "HD001";
+    private String generateTransactionId(){
+        if(transactions.isEmpty()) return "HD001";
         String lastId = transactions.getLast().getTransactionId();
-        int number = Integer.parseInt(lastId.substring(2));
-        ++number;
+        int number = Integer.parseInt(lastId.substring(2)); ++number;
         return String.format("HD%03d", number);
     }
-
     // Lấy domain_id
-    private int getDomainByName(String name) {
+    private int getDomainByName(String name){
         int index = name.indexOf('.');
         String domainName = name.substring(0, index);
         String tldText = name.substring(index);
@@ -161,7 +154,6 @@ public class TransactionService implements ITransactionService {
             throw new NoSuchElementException("Domain not found!");
         }
     }
-
     private int processTransactionDetails(String transactionId, JSONArray jsonArray) {
         int total = 0;
         for (int i = 0; i < jsonArray.length(); i++) {
