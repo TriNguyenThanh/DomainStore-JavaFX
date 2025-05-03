@@ -16,7 +16,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class DomainNotifierServices {
+public class DomainNotifierServices implements IDomainNotifier{
     public JSONObject notifyExpiringDomains(JSONArray jsonInput) {
         JSONObject response = new JSONObject();
         int count = 0;
@@ -28,7 +28,7 @@ public class DomainNotifierServices {
             JSONObject item = jsonInput.getJSONObject(i);
             String email = item.getString("email");
             String domain = item.getString("domain_name");
-            String expiredDate = item.getString("expired_date"); 
+            String expiredDate = item.getString("expired_date");
             String fullDomain = domain + " (hết hạn: " + expiredDate + ")";
 
             if (!email.contains("@")) {
