@@ -106,7 +106,7 @@ public class GenerateService implements IGenerateService {
             String pdfPath = invoiceDir.getAbsolutePath() + File.separator + transactionId + "_" + safeName + dateTime + ".pdf";
             JasperExportManager.exportReportToPdfFile(jasperPrint, pdfPath);
 
-            EmailUtil.sendEmailFile("tringuyenntt1505@gmail.com", "Hoá đơn dịch vụ UTC2 Domain Store",
+            EmailUtil.sendEmailFile(cus.getEmail(), "Hoá đơn dịch vụ UTC2 Domain Store",
                     "Cảm ơn Quý khách đã sử dụng dịch vụ UTC2 Domain Store" , pdfPath);
             String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Đường dẫn đến file chrome.exe
             String command = "cmd /c start \"\" \"" + pdfPath + "\"";

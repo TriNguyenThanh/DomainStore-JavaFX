@@ -93,11 +93,11 @@ public class TransactionService implements ITransactionService {
         jsonObject = json;
         jsonArray = json.getJSONArray("domains"); // request
         int total = processTransactionDetails(transactionId, jsonArray);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("transactionId", transactionId);
-        jsonObject.put("total", total);
-        jsonObject.put("status", "success");
-        return  jsonObject;
+        JSONObject response = new JSONObject();
+        response.put("transactionId", transactionId);
+        response.put("total", total);
+        response.put("status", "success");
+        return  response;
     }
     @Override
     public void updateTransactionStatus(String transactionId, TransactionStatusEnum status){
