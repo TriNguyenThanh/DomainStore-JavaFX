@@ -31,7 +31,6 @@ public class SearchController implements Initializable {
     private ResourceBundle bundle;
     private DomainViewModel domainViewModel = new DomainViewModel();
     private static boolean isSearch = false;
-    private static Integer searchCount = 0;
     private static Task<Void> currentSearchTask;
 
     // FXML components
@@ -52,6 +51,10 @@ public class SearchController implements Initializable {
 
     @FXML
     private void handleButton(ActionEvent e) {
+        if (isSearch) {
+            return;
+        }
+
         if (e.getSource() == btSearch) {
             handleSearch();
         } else if (e.getSource() == btAdd) {
@@ -107,8 +110,6 @@ public class SearchController implements Initializable {
         }
 
         isSearch = true;
-        searchCount++;
-        System.out.println("Search count: " + searchCount);
         String domainName = tfSearch.getText();
         recomment.getChildren().clear();
 
@@ -119,6 +120,7 @@ public class SearchController implements Initializable {
 
         // Create a new search task
         String finalDomainName = domainName;
+        System.out.println("Search domain: " + finalDomainName);
         currentSearchTask = new Task<>() {
             @Override
             protected Void call() {
@@ -131,19 +133,16 @@ public class SearchController implements Initializable {
             @Override
             protected void succeeded() {
                 super.succeeded();
-                isSearch = false; // Reset the flag after the search is complete
             }
 
             @Override
             protected void cancelled() {
                 super.cancelled();
-                isSearch = false; // Reset the flag if the task is canceled
             }
 
             @Override
             protected void failed() {
                 super.failed();
-                isSearch = false; // Reset the flag if the task fails
             }
         };
 
@@ -167,6 +166,11 @@ public class SearchController implements Initializable {
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
 
+        updateTable();
+    }
+
+    // update table data
+    private void updateTable() {
         // set data
         tbTLD.setItems(FXCollections.observableArrayList(getAllTLD()));
     }
@@ -212,14 +216,18 @@ public class SearchController implements Initializable {
         }
     }
 
+    // define new label for recommend domain
     @NotNull
     private Label getLabel(String name) {
         Label label = new Label(name);
         label.setPrefWidth(Region.USE_COMPUTED_SIZE);
-        label.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        label.setPrefHeight(30d);
 
         label.setOnMouseClicked(event -> {
-            searchWithDomainName(name);
+            // set the text to the search field
+            tfSearch.setText(label.getText());
+            if (!isSearch)
+                handleSearch();
         });
 
         label.setOnMouseEntered(event -> {
@@ -251,6 +259,8 @@ public class SearchController implements Initializable {
             lbStatus.setStyle("-fx-text-fill: #FF0000;");
             lbPrice.setStyle("-fx-text-fill: #FF0000;");
         }
+
+        isSearch = false;
     }
 
     // get all TLD

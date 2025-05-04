@@ -1,8 +1,8 @@
 package com.utc2.domainstore.view;
 
-//import animatefx.animation.Shake;
-
 import com.utc2.domainstore.App;
+import com.utc2.domainstore.utils.LocalDateCellFactory;
+import com.utc2.domainstore.utils.MoneyCellFactory;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -123,9 +122,14 @@ public class SceneManager {
 
     public void initLanguageComboBox(ComboBox<String> comboBox) {
         ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
+
+        // set value to comboBox
         comboBox.getItems().addAll(ConfigManager.getInstance().getLanguages());
+
+        // set default value to comboBox
         comboBox.setValue(ConfigManager.getInstance().getSetting("language", ""));
 
+        // set action to comboBox
         comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             String selectedLanguage = comboBox.getSelectionModel().getSelectedItem();
             if (selectedLanguage == null) {
@@ -133,10 +137,11 @@ public class SceneManager {
             } else {
                 System.out.println("Selected language.json: " + selectedLanguage);
             }
-            Locale locale = ConfigManager.getInstance().getLanguageLocale(selectedLanguage);
-            String localeName = locale.getLanguage() + "_" + locale.getCountry();
-            ConfigManager.getInstance().updateSetting("language", selectedLanguage);
-            ConfigManager.getInstance().updateSetting("locale", localeName);
+            ConfigManager.getInstance().updateLanguage(selectedLanguage);
+
+            // update formatters
+            LocalDateCellFactory.setFormatter(ConfigManager.getInstance().getDateTimeFormatter());
+            MoneyCellFactory.setFormatter(ConfigManager.getInstance().getNumberFormatter());
 
             Optional<ButtonType> button = SceneManager.getInstance().showDialog(Alert.AlertType.CONFIRMATION, rb.getString("languageChange"), rb.getString("languageChange"), rb.getString("restart"));
             if (button.isPresent() && button.get() == ButtonType.OK) {

@@ -149,9 +149,10 @@ public class TransactionController implements Initializable {
             String id = jsonObject.getString("id");
             LocalDate date = LocalDate.parse(jsonObject.optString("date"));
             STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
-            int price = jsonObject.getInt("total_price");
-
-            bills.add(new BillViewModel(id, date, status, price));
+            Integer price = jsonObject.getInt("total_price");
+            Integer userId = jsonObject.getInt("user_id");
+            
+            bills.add(new BillViewModel(id, date, status, price, userId));
         }
 
         return bills;
