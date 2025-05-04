@@ -1,0 +1,4 @@
+*bug: Lỗi khi xác nhận đơn hàng.
+- Nếu là đơn hàng được tạo thông qua hàm createTransaction() - hóa đơn được tạo trong chương trình thì sử dụng bình thường
+- Nếu là đơn hàng có sẵn trong database thì sẽ bị lỗi null pointer object 
+ -> theo debug thì do controller chỉ gọi hàm updateTransaction(), jsonObject bị null do chưa được khởi tạo gây ra lỗi null pointer

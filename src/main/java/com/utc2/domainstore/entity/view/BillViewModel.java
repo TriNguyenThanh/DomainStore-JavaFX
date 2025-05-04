@@ -6,18 +6,18 @@ public class BillViewModel {
     private String id;
     private LocalDate date;
     private STATUS status;
-    private int price;
+    private Integer price;
+    private Integer userId;
 
-
-    public BillViewModel(String id, LocalDate date, STATUS status, int price) {
+    public BillViewModel(String id, LocalDate date, STATUS status, Integer price, Integer userId) {
         this.id = id;
         this.date = date;
         this.status = status;
         this.price = price;
+        this.userId = userId;
     }
 
     public BillViewModel() {
-
     }
 
     public String getId() {
@@ -44,11 +44,19 @@ public class BillViewModel {
         this.status = status;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

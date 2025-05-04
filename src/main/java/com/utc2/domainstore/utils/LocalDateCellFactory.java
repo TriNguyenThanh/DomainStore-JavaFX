@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class LocalDateCellFactory {
-    private static final DateTimeFormatter formatter = ConfigManager.getInstance().getDateTimeFormatter();
+    private static DateTimeFormatter formatter = ConfigManager.getInstance().getDateTimeFormatter();
 
     public static <T> Callback<TableColumn<T, LocalDate>, TableCell<T, LocalDate>> forTableColumn() {
         return column -> new TableCell<>() {
@@ -23,5 +23,9 @@ public class LocalDateCellFactory {
                 }
             }
         };
+    }
+
+    public static void setFormatter(DateTimeFormatter newFormatter) {
+        formatter = newFormatter;
     }
 }

@@ -4,10 +4,7 @@ import com.utc2.domainstore.utils.JSONReader;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
@@ -16,15 +13,15 @@ import java.util.*;
 
 public class ConfigManager {
     private static ConfigManager instance;
-    private final Properties settings;
-    private Map<String, Locale> languageMap = new HashMap<>();
-    private Map<String, Integer> rateMap = new HashMap<>();
+    private Properties settings;
+    private final Map<String, Locale> languageMap = new HashMap<>();
+    private final Map<String, Integer> rateMap = new HashMap<>();
     private DateTimeFormatter dateTimeFormatter;
     private NumberFormat numberFormatter;
 
     private ConfigManager() {
         settings = new Properties();
-        try (InputStream input = getClass().getResourceAsStream("/properties/settings.properties");
+        try (InputStream input = new FileInputStream("config/settings.properties");
              InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
 
             settings.load(reader);
@@ -64,14 +61,28 @@ public class ConfigManager {
         return settings.getProperty(key, defaultValue);
     }
 
+    // update setting.properties
     public void updateSetting(String key, String value) {
         settings.setProperty(key, value);
-        try (OutputStream output = new FileOutputStream(getClass().getResource("/properties/settings.properties").getPath())) {
-            settings.store(output, "Updated settings");
+        try (OutputStream output = new FileOutputStream("config/settings.properties", false);) {
+            OutputStreamWriter writer = new OutputStreamWriter(output, StandardCharsets.UTF_8);
+            settings.store(output, null);
             System.out.println("Updated setting: " + key + " = " + value);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateLanguage(String language) {
+        // update setting.properties
+        updateSetting("language", language);
+        Locale locale = getLanguageLocale(language);
+        String localeName = locale.getLanguage() + "_" + locale.getCountry();
+        updateSetting("locale", localeName);
+
+        // update dateTimeFormatter and numberFormatter
+        dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(getLocale());
+        numberFormatter = NumberFormat.getCurrencyInstance(getLocale());
     }
 
     public ResourceBundle getLanguageBundle() {

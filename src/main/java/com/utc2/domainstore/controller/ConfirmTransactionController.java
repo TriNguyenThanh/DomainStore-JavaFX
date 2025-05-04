@@ -9,7 +9,6 @@ import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
-import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -91,7 +90,6 @@ public class ConfirmTransactionController implements Initializable {
             }
             // nếu nhấn đúp chuột vào dòng trong bảng
             if (event.getClickCount() == 2) {
-
                 openBillInfo(selectedBill);
             }
         });
@@ -121,10 +119,6 @@ public class ConfirmTransactionController implements Initializable {
     private List<BillViewModel> getData() {
         List<BillViewModel> bills = new ArrayList<>();
 
-        // Create a request to get all transactions
-        JSONObject request = new JSONObject();
-        request.put("user_id", UserSession.getInstance().getUserId());
-
         ITransactionService transactionService = new TransactionService();
         JSONObject respond = transactionService.getAllTransaction();
         JSONArray list = respond.getJSONArray("transactions");
@@ -138,9 +132,10 @@ public class ConfirmTransactionController implements Initializable {
             }
             String id = jsonObject.getString("id");
             LocalDate date = LocalDate.parse(jsonObject.optString("date"));
-            int price = jsonObject.getInt("total_price");
+            Integer price = jsonObject.getInt("total_price");
+            Integer userId = jsonObject.getInt("user_id");
 
-            bills.add(new BillViewModel(id, date, status, price));
+            bills.add(new BillViewModel(id, date, status, price, userId));
         }
 
         return bills;

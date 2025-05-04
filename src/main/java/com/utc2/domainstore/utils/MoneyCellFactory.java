@@ -22,10 +22,14 @@ public class MoneyCellFactory {
                 } else {
                     // format the item as currency
                     Double value = Double.valueOf(item);
-                    value = value / ConfigManager.getInstance().getRate(ConfigManager.getInstance().getSetting("language", "English"));
+                    value = value / ConfigManager.getInstance().getRate(ConfigManager.getInstance().getSetting("language", "Tiếng Việt"));
                     setText(formatter.format(value));
                 }
             }
         };
+    }
+
+    public static void setFormatter(NumberFormat newFormatter) {
+        formatter = newFormatter;
     }
 }
