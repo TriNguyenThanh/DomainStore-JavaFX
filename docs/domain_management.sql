@@ -160,7 +160,16 @@ VALUES
 ('.asia', 69000),   -- Thêm .asia	21
 ('.icu', 49000),    -- Thêm .icu	22
 ('.art', 59000),    -- Thêm .art	23
-('.blog', 59000);   -- Thêm .blog	24
+('.blog', 59000),   -- Thêm .blog	24
+('.com.vn', 550000),   -- 25
+('.net.vn', 450000),   -- 26
+('.org.vn', 350000),   -- 27
+('.edu.vn', 100000),        -- 28 
+('.gov.vn', 100000),        -- 29 
+('.com.my', 500000),     -- 30: Malaysia
+('.edu.au', 300000),     -- 31: Úc (giáo dục)
+('.co.uk', 450000),      -- 32: UK doanh nghiệp
+('.gov.ph', 200000);     -- 33: Chính phủ Philippines
 
 INSERT INTO domains (domain_name, tld_id, status, active_date, years, owner_id)
 VALUES
@@ -201,7 +210,16 @@ VALUES
 ('globalbusiness', 22, 'sold', '2025-03-15 11:20:00', 1, 9),
 ('creativeart12', 23, 'available', null, 1 ,null),
 ('topblog21', 24, 'available', null, 1 ,null),
-('topblog21', 1, 'available', null, 1 ,null);
+('topblog21', 1, 'available', null, 1 ,null),
+('tanvipprono1', 25, 'available', null, 1 ,null),
+('vietnamnetworksiucap', 26, 'available', null, 1, null),
+('secondnewgreenworld', 27, 'available', null, 1, null),
+('hocviencnttgtvt', 28, 'available', null, 1, null),
+('chinhphuvn', 29, 'available', null, 1, null),
+('techmalaysianah', 30, 'available', null, 1, null),
+('monashlocaluniversity', 31, 'available', null, 1, null),
+('ukenterprisesseller', 32, 'available', null, 1, null),
+('healthdeptseek', 33, 'available', null, 1, null);
 
 INSERT INTO carts (cus_id, domain_id, years) VALUES
 (1, 1, 1),
