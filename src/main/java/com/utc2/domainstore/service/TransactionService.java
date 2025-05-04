@@ -63,7 +63,8 @@ public class TransactionService implements ITransactionService {
             DomainModel d = new DomainModel();
             d.setId(ti.getDomainId());
             DomainModel domain = DomainRepository.getInstance().selectById(d);
-            jsonObject.put("name", domain.getDomainName());
+            jsonObject.put("name", domain.getDomainName()
+                    + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
             jsonObject.put("status", domain.getStatus());
             jsonObject.put("price", domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
             jsonObject.put("years", domain.getYears());
