@@ -17,9 +17,6 @@ public class TransactionService implements ITransactionService {
     private final ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll_V3();
     private final TransactionRepository transactionRepository = new TransactionRepository();
     private final TransactionInfoRepository transactionInfoRepository = new TransactionInfoRepository();
-    private static JSONArray jsonArray;
-    private static String transactionId;
-    private static JSONObject jsonObject;
     @Override
     public JSONObject getAllTransaction() {
         JSONArray jsonArray = new JSONArray();
@@ -29,6 +26,7 @@ public class TransactionService implements ITransactionService {
             jsonObject.put("date", t.getTransactionDate());
             jsonObject.put("status", t.getTransactionStatus());
             jsonObject.put("total_price", t.getTotalCost());
+            jsonObject.put("user_id", t.getUserId());
             jsonArray.put(jsonObject);
         }
         JSONObject result = new JSONObject();
@@ -46,6 +44,7 @@ public class TransactionService implements ITransactionService {
             jsonObject.put("date", t.getTransactionDate());
             jsonObject.put("status", t.getTransactionStatus());
             jsonObject.put("total_price", t.getTotalCost());
+            jsonObject.put("user_id", t.getUserId());
             jsonArray.put(jsonObject);
         }
         JSONObject result = new JSONObject();
@@ -57,8 +56,8 @@ public class TransactionService implements ITransactionService {
     public JSONObject getTransactionInfomation(JSONObject json) {
         String transactionId = json.getString("transaction_id");
         JSONArray jsonArray = new JSONArray();
-        TransactionModel t = new TransactionModel();
-        t.setTransactionId(transactionId);
+        TransactionModel t = TransactionRepository.getInstance().selectById_V2(transactionId);
+//        t.setTransactionId(transactionId);
         for (TransactionInfoModel ti : transactionRepository.selectById(t).getTransactionInfos()) {
             JSONObject jsonObject = new JSONObject();
             DomainModel d = new DomainModel();
@@ -71,6 +70,7 @@ public class TransactionService implements ITransactionService {
             jsonArray.put(jsonObject);
         }
         JSONObject result = new JSONObject();
+        result.put("user_id", t.getUserId());
         result.put("domains", jsonArray);
         return result;
     }
@@ -79,20 +79,23 @@ public class TransactionService implements ITransactionService {
         // request: domains (JSONObject)
         // response: transactionId (String), total(int), status (success / failed)
 
+        //Nếu request rỗng
         if(json.isEmpty()) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("status", "failed");
             return jsonObject;
         }
+
         TransactionModel tran = new TransactionModel();
-        transactionId = generateTransactionId();
+        String transactionId = generateTransactionId(); // lưu biến static transactionId
         tran.setTransactionId(transactionId);
         tran.setUserId(json.getInt("user_id")); // request
         tran.setTransactionDate(LocalDate.now());
-        transactionRepository.insert(tran);
-        jsonObject = json;
-        jsonArray = json.getJSONArray("domains"); // request
-        int total = processTransactionDetails(transactionId, jsonArray);
+        transactionRepository.insert(tran); // thêm hoá đơn mới
+
+        int total = processTransactionDetails(transactionId, json.getJSONArray("domains")); // tính tổng của 1 hoá đơn
+
+        // trả response cho frontend
         JSONObject response = new JSONObject();
         response.put("transactionId", transactionId);
         response.put("total", total);
@@ -101,38 +104,39 @@ public class TransactionService implements ITransactionService {
     }
     @Override
     public void updateTransactionStatus(String transactionId, TransactionStatusEnum status){
+        // Lưu tên tên miền để thông báo về email
         List<String> domains = new ArrayList<>();
+
         TransactionModel tran = transactionRepository.selectById_V2(transactionId);
-        CustomerModel cus = CustomerRepository.getInstance().selectById(new CustomerModel(jsonObject.getInt("user_id")));
-        tran.setTransactionStatus(status);
-        if(TransactionStatusEnum.COMPLETED.equals(status)){
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject json = jsonArray.getJSONObject(i);
-                int domainId = getDomainByName(json.getString("name"));
-                DomainModel d = new DomainModel(); d.setId(domainId);
-                DomainModel domain = DomainRepository.getInstance().selectById(d);
+        CustomerModel cus = CustomerRepository.getInstance().selectById(new CustomerModel(tran.getUserId()));
+        ArrayList<TransactionInfoModel> listTranInfo = TransactionInfoRepository.getInstance().selectByCondition("transactions_id = '" + transactionId + "'");
+
+        if(TransactionStatusEnum.COMPLETED.equals(status)){ // Trạng thái thành công
+            for (TransactionInfoModel transactionInfoModel : listTranInfo) { // duyệt qua từng chi tiết hoá đơn
+                int domainId = transactionInfoModel.getDomainId(); // tìm id tên miền
+                DomainModel d = new DomainModel();
+                d.setId(domainId);
+                DomainModel domain = DomainRepository.getInstance().selectById(d); // Lấy dữ liệu tên miền
                 // Thêm tên miền vào List<String>
                 domains.add(domain.getDomainName()
                         + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
-                // Set các giá trị để update domain
-                int price = json.getInt("price");
-                int years = json.getInt("years");
-                domain.setYears(years);
+
+                // Cập nhật thông tin domain
                 domain.setStatus(DomainStatusEnum.sold);
                 domain.setActiveDate(Date.valueOf(LocalDate.now()));
                 domain.setOwnerId(cus.getId());
 
-                // update domain
                 DomainRepository.getInstance().update(domain);
-                // thêm chi tiết hoá đơn
-                transactionInfoRepository.insert(new TransactionInfoModel(transactionId, domainId, price));
             }
             // gửi thông báo email
             SoldDomainNotifierServices notifier = new SoldDomainNotifierServices();
-//        notifier.notifySoldDomains(cus.getEmail(),domains);
-            notifier.notifySoldDomains("tringuyenntt1505@gmail.com",domains);
-            transactionRepository.update(tran);
+            notifier.notifySoldDomains(cus.getEmail(),domains);
+        }else if(TransactionStatusEnum.CANCELLED.equals(status)){
+            TransactionRepository.getInstance().delete(new TransactionModel(transactionId, null, null));
         }
+        // Cập nhật trạng thái hoá đơn
+        tran.setTransactionStatus(status);
+        transactionRepository.update(tran);
     }
     //Tạo transactionId
     private String generateTransactionId(){
@@ -159,7 +163,11 @@ public class TransactionService implements ITransactionService {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             int domainId = getDomainByName(jsonObject.getString("name"));
-            int price = jsonObject.getInt("price") * jsonObject.getInt("years");
+            int year = jsonObject.getInt("years");
+            int price = jsonObject.getInt("price") * year;
+            DomainModel d = DomainRepository.getInstance().selectById(new DomainModel(domainId, null, 0, null, null, 0));
+            d.setYears(year);
+            DomainRepository.getInstance().update(d);
             total += price;
             transactionInfoRepository.insert(new TransactionInfoModel(transactionId, domainId, price));
         }
