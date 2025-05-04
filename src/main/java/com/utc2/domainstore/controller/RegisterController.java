@@ -4,10 +4,7 @@ import com.utc2.domainstore.service.RegisterServices;
 import com.utc2.domainstore.view.SceneManager;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,6 +41,9 @@ public class RegisterController implements Initializable {
     private Label passwordErr;
     @FXML
     private Label confirmPasswordErr;
+
+    @FXML
+    private ComboBox<String> cbLanguages;
 
     @FXML
     private CheckBox passwordCheckBox;
@@ -190,6 +190,7 @@ public class RegisterController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        SceneManager.getInstance().initLanguageComboBox(cbLanguages);
         SceneManager.getInstance().setResizable(false);
     }
 }
