@@ -21,6 +21,12 @@
     -fx-text-fill: #000000;
 }
 
+.label.header2 {
+    -fx-font-size: 24;
+    -fx-font-weight:bold;
+    -fx-text-fill: #000000;
+}
+
 .text-field {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 10;
@@ -60,9 +66,34 @@
     -fx-background-color: #0000C6;
 }
 
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: #326FFF;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+
+}
+
+.table-view:focused {
+    -fx-focus-color: transparent;
+}
+
 .table-cell {
-    -fx-alignment: CENTER;
-    -fx-font-size: 16;
+    -fx-border-color: transparent;
+    -fx-font-size: 16px;
+    -fx-text-fill: #000000;
+    -fx-alignment: center;
+}
+.table-row-cell {
+    -fx-background-color: #FFFFFF;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #FFFFFF;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #BACFFF;
 }
 
 .custom-combobox {

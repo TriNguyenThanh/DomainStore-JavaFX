@@ -79,7 +79,7 @@ CREATE TABLE Transactions_info (
     domain_id INT NOT NULL,
     price INT UNSIGNED NOT NULL, 
     
-    FOREIGN KEY (transactions_id) REFERENCES Transactions(id),
+    FOREIGN KEY (transactions_id) REFERENCES Transactions(id) ON DELETE CASCADE,
     FOREIGN KEY (Domain_id) REFERENCES domains(id),
     PRIMARY KEY(Domain_id, transactions_id)
 );
@@ -112,27 +112,27 @@ CREATE INDEX idx_payment_history_date ON PaymentHistory(payment_date);
 
 INSERT INTO users (full_name, email, phone, cccd, password_hash, role)
 VALUES 
-('Nguyễn Thành Trí', 'tringuyen@example.com', '0987654321', '027205011960', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+('Nguyễn Thành Trí', 'tringuyenntt1505@gmail.com', '0987654321', '027205011960', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0987654321 password: pass123456@
-('Âu Dương Tấn', 'auduongtan321@gmail.com', '0912345678', '027205011961', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+('Lê Nguyễn Anh Dự', 'dule1028a@gmail.com', '0912345678', '027205011961', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0912345678 password: pass123456@
-('Lê Nguyễn Anh Dự', 'dule@example.com', '0923456789', '027205011962', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+('Âu Dương Tấn', 'auduongtan321@gmail.com', '0923456789', '027205011962', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0923456789 password: pass123456@
-('Phạm Anh Dũng', 'dung.pham@example.com', '0934567890', '027205011963', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Phạm Anh Dũng', 'dung.pham@gmail.com', '0934567890', '027205011963', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0934567890 password: pass123456@
-('Ngô Thanh Hoa', 'hoa.ngo@example.com', '0945678901', '027205011964', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Ngô Thanh Hoa', 'hoa.ngo@gmail.com', '0945678901', '027205011964', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0945678901 password: pass123456@
-('Hoàng Tuấn Khang', 'khang.hoang@example.com', '0956789012', '027205011965', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Hoàng Tuấn Khang', 'khang.hoang@gmail.com', '0956789012', '027205011965', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0956789012 password: pass123456@
-('Bùi Diễm Lan', 'lan.bui@example.com', '0967890123', '027205011966', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Bùi Diễm Lan', 'lan.bui@gmail.com', '0967890123', '027205011966', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0967890123 password: pass123456@
-('Đặng Thành Nam', 'nam.dang@example.com', '0978901234', '027205011967', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Đặng Thành Nam', 'nam.dang@gmail.com', '0978901234', '027205011967', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0978901234 password: pass123456@
-('Võ Minh Nhật', 'nhat.vo@example.com', '0989012345', '027205011968', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Võ Minh Nhật', 'nhat.vo@gmail.com', '0989012345', '027205011968', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0989012345 password: pass123456@
-('Nguyễn Thị Oanh', 'oanh.nguyen@example.com', '0990123456', '027205011969', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Nguyễn Thị Oanh', 'oanh.nguyen@gmail.com', '0990123456', '027205011969', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0990123456 password: pass123456@
-('Đỗ Quang Phúc', 'phuc.do@example.com', '0901234567', '027205011970', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user');
+('Đỗ Quang Phúc', 'phuc.do@gmail.com', '0901234567', '027205011970', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user');
 -- user:0901234567 password: pass123456@
 
 INSERT INTO TopLevelDomain (TLD_text, price) 
@@ -160,25 +160,31 @@ VALUES
 ('.asia', 69000),   -- Thêm .asia	21
 ('.icu', 49000),    -- Thêm .icu	22
 ('.art', 59000),    -- Thêm .art	23
-('.blog', 59000);   -- Thêm .blog	24
+('.blog', 59000),   -- Thêm .blog	24
+('.com.vn', 550000),   -- 25
+('.net.vn', 450000),   -- 26
+('.org.vn', 350000),   -- 27
+('.edu.vn', 100000),        -- 28 
+('.gov.vn', 100000),        -- 29 
+('.com.my', 500000),     -- 30: Malaysia
+('.edu.au', 300000),     -- 31: Úc (giáo dục)
+('.co.uk', 450000),      -- 32: UK doanh nghiệp
+('.gov.ph', 200000);     -- 33: Chính phủ Philippines
 
 INSERT INTO domains (domain_name, tld_id, status, active_date, years, owner_id)
 VALUES
-
-
-
 ('diamonielts', 1, 'available', null, 1 ,null),
-('example', 3, 'sold', '2025-04-05 17:00:00', 1, 3),
-('testdomain', 6, 'sold', '2025-03-15 17:00:00', 1, 3),
-('mywebsite', 1, 'sold', '2025-03-15 17:00:00', 1, 3),
-('yourdomain', 2, 'sold', '2025-03-15 17:00:00', 1, 2),
-('newproject', 3, 'sold', '2024-05-07 23:45:00', 1, 2),
+('example', 3, 'sold', '2024-05-07 17:00:00', 1, 3),
+('testdomain', 6, 'sold', '2024-05-07 17:00:00', 1, 3),
+('mywebsite', 1, 'sold', '2024-05-07 17:00:00', 1, 3),
+('yourdomain123', 2, 'available', null , 1, null),
+('newproject3213', 3, 'available', null , 1, null),
 ('spicydonut1', 4, 'available', null, 1 ,null),
 ('globalban3', 5, 'available', null, 1 ,null),
 ('vietnamexpert4', 5, 'available', null, 1 ,null),
 ('startupvn5', 5, 'available', null, 1 ,null),
 ('hotbrandno2', 1, 'available', null, 1 ,null),
-('bestservices', 2, 'sold', '2025-03-15 17:00:00', 1, 2),
+('bestservicesno12', 2, 'available',null, 1, null),
 ('surprisedtech1', 3, 'available', null, 1 ,null),
 ('supercool', 1, 'sold', '2025-04-20 10:00:00', 1, 4),
 ('fastservice', 2, 'sold', '2025-01-21 19:30:00', 2, 1),
@@ -187,23 +193,33 @@ VALUES
 ('nextbigthing2', 5, 'available', null, 1 ,null),
 ('enterprisehub', 6, 'sold', '2025-04-20 10:00:00', 1, 4),
 ('futurenow52', 24, 'available', null, 1 ,null),
-('techstartup', 8, 'sold', '2025-03-15 17:00:00', 1, 5),
-('digitalworld', 9, 'sold', '2025-03-16 17:00:00', 1, 8),
-('smartcity', 10, 'sold', '2025-03-16 17:00:00' , 1, 8),
-('globalmarket', 11, 'sold', '2025-03-16 17:00:00' , 1, 8),
+('techstartupbo', 8, 'available', null, 1, null),
+('eradigitalworld', 9, 'available', null, 1, null),
+('smartcityhcm', 10, 'available', null , 1, null),
+('globalsupermarket23', 11, 'available', null , 1, null),
 ('nextlevel', 12, 'sold', '2024-11-25 9:30:00', 1, 11),
-('connectasia', 13, 'sold', '2025-03-16 17:00:00', 1, 5),
-('cloudhub', 14, 'sold', '2025-03-16 17:00:00', 1, 5),
-('universeclick1', 15, 'available', null, null ,null),
-('amazingblog5', 16, 'available', null, null ,null),
+('connectasia321', 13, 'available', null, 1, null),
+('cloudhub', 14, 'available', null, 1, null),
+('universeclick1', 15, 'available', null, 1 ,null),
+('amazingblog5', 16, 'available', null, 1 ,null),
 ('futurecloud', 17, 'sold', '2024-11-25 9:30:00', 1, 11),
 ('bestclickno1', 18, 'available', null, 1 ,null),
-('stronggroup15', 19, 'available', null, null ,null),
+('stronggroup15', 19, 'available', null, 1 ,null),
 ('supermom', 20, 'sold', '2025-03-15 11:20:00', 1, 9),
 ('techasia', 21, 'sold', '2025-03-15 11:20:00', 1, 9),
 ('globalbusiness', 22, 'sold', '2025-03-15 11:20:00', 1, 9),
 ('creativeart12', 23, 'available', null, 1 ,null),
-('topblog21', 24, 'available', null, 1 ,null);
+('topblog21', 24, 'available', null, 1 ,null),
+('topblog21', 1, 'available', null, 1 ,null),
+('tanvipprono1', 25, 'available', null, 1 ,null),
+('vietnamnetworksiucap', 26, 'available', null, 1, null),
+('secondnewgreenworld', 27, 'available', null, 1, null),
+('hocviencnttgtvt', 28, 'available', null, 1, null),
+('chinhphuvn', 29, 'available', null, 1, null),
+('techmalaysianah', 30, 'available', null, 1, null),
+('monashlocaluniversity', 31, 'available', null, 1, null),
+('ukenterprisesseller', 32, 'available', null, 1, null),
+('healthdeptseek', 33, 'available', null, 1, null);
 
 INSERT INTO carts (cus_id, domain_id, years) VALUES
 (1, 1, 1),
@@ -234,12 +250,12 @@ INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VAL
 ('HD008', 10, '2024-08-20', 'cancelled'),
 ('HD009', 11, '2024-11-25', 'completed'),
 ('HD010', 9, '2025-03-15', 'completed'),
-('HD011', 5, '2025-03-25', 'pendingPayment');
+('HD011', 5, '2025-03-25', 'pendingConfirm');
 
 
 INSERT INTO Transactions_info (transactions_id, domain_id, price) VALUES
 -- HD001
-('HD001', 15, 39000),
+('HD001', 15, 78000),
 
 -- HD002 (cancelled)
 ('HD002', 11, 299000),
@@ -299,16 +315,15 @@ VALUES
 ('CreditCard'),
 ('ZaloPay');
 
-INSERT INTO PaymentHistory (transaction_id, payment_method, payment_status, payment_date) VALUES
-('HD001', 1, 'completed', '2024-01-21'),
+INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
+('HD001', '14931583', 1, 'completed', '2025-01-21'),
 -- HD002: cancelled
-('HD004', 3, 'completed', '2024-03-15'),
--- HD005: cancelled 
-('HD006', 4, 'completed', '2024-04-20'),
+('HD004', '14936383', 1, 'completed', '2025-05-07'),
+-- HD005: cancelled
+('HD006', '14938357', 1, 'completed', '2025-04-20'),
 -- HD008: cancelled
-('HD009', 2, 'completed', '2024-11-25'),
-('HD010', 3, 'completed', '2025-03-15');
-
+('HD009', '14933277', 1, 'completed', '2024-11-25'),
+('HD010', '14939457', 1, 'completed', '2025-03-15');
 
 -- tạo sự kiện tự động cập nhật lại domain khi hết hạn kích hoạt
 SET GLOBAL event_scheduler = ON;

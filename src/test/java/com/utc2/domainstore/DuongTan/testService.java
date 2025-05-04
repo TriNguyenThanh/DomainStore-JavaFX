@@ -33,9 +33,9 @@ public class testService {
         // ====== TEST 3: Tìm kiếm domain theo tên ======
 //        DomainServices domainServices = new DomainServices();
 //        JSONObject searchInput = new JSONObject();
-//        searchInput.put("name", "coolbrand.com");
+//        searchInput.put("name", " ");
 //        JSONObject searchResponse = domainServices.search(searchInput);
-//        System.out.println("Search Response: " + searchResponse.toString(2));
+//        System.out.println(searchResponse.toString(2));
 
         // ====== TEST 4: Tìm kiếm domain khi không nhập gì ======
 //        DomainServices domainServices = new DomainServices();
@@ -105,11 +105,17 @@ public class testService {
 //        domain1.put("name", "diamonielts.com");
 //        domain1.put("status", "available");
 //        domain1.put("price", 299000);
-//        domain1.put("years", 2);
+//        domain1.put("years", 3);
 //        domainArray.put(domain1);
+//        JSONObject domain2 = new JSONObject();
+//        domain2.put("name", "tanvjp.com");
+//        domain2.put("status", "available");
+//        domain2.put("price", 299000);
+//        domain2.put("years", 3);
+//        domainArray.put(domain2);
 //        addToCartInput.put("domain", domainArray);
 //        JSONObject addToCartResponse = cartServices.addToCart(addToCartInput);
-//        System.out.println("Add to Cart Response: " + addToCartResponse.toString(2));
+//        System.out.println(addToCartResponse.toString(2));
 
         // ====== TEST 13: Xóa domain khỏi giỏ hàng ======
 //        CartServices cartServices = new CartServices();
@@ -161,6 +167,34 @@ public class testService {
 //        JSONObject b = new JSONObject();
 //        b.put("name", "example.org");
 //        JSONObject result = a.deleteAvailableDomain(b);
+//        System.out.println(result.toString(2));
+
+        // ====== TEST 20: Update domain ======
+//        CartServices cartServices = new CartServices();
+//        JSONObject addToCartInput = new JSONObject();
+//        addToCartInput.put("cus_id", 1);
+//        JSONArray domainArray = new JSONArray();
+//        JSONObject domain1 = new JSONObject();
+//        domain1.put("name", "diamonielts.com");
+//        domain1.put("status", "available");
+//        domain1.put("price", 299000);
+//        domain1.put("years", 2);
+//        domainArray.put(domain1);
+//        JSONObject domain2 = new JSONObject();
+//        domain2.put("name", "futurenow52.blog");
+//        domain2.put("status", "available");
+//        domain2.put("price", 59000);
+//        domain2.put("years", 3);
+//        domainArray.put(domain2);
+//        addToCartInput.put("domain", domainArray);
+//        JSONObject addToCartResponse = cartServices.updateCart(addToCartInput);
+//        System.out.println("Update to Cart Response: " + addToCartResponse.toString(2));
+
+        // ====== TEST 21: Search ten mien ======
+//        DomainServices a = new DomainServices();
+//        JSONObject b = new JSONObject();
+//        b.put("name", "domain.c");
+//        JSONObject result = a.search(b);
 //        System.out.println(result.toString(2));
     }
 }

@@ -27,7 +27,7 @@
                         </HBox.margin>
                     </Label>
                 </HBox>
-                <ComboBox layoutX="14.0" layoutY="762.0" prefWidth="150.0" styleClass="combobox"
+                <ComboBox fx:id="cbLanguages" layoutX="14.0" layoutY="762.0" prefWidth="150.0" styleClass="combobox"
                           stylesheets="@../style/register.css"/>
                 <ImageView fitHeight="592.0" fitWidth="401.0" layoutX="25.0" layoutY="166.0" pickOnBounds="true"
                            preserveRatio="true">

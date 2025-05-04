@@ -29,7 +29,7 @@ public class PaymentService implements  IPaymentService{
     private VnPayConfig vnPayConfig = new VnPayConfig();
     private static VnPayService vnPayService = new VnPayService();
     private static String paymentURL;
-
+    private static boolean isRunning = false;
     private static PaymentListener listener; // thêm dòng này
 
     public void setListener(PaymentListener l) {
@@ -58,11 +58,16 @@ public class PaymentService implements  IPaymentService{
     public boolean createPayment(JSONObject json) throws IOException {
         // request: total (int), transactionId (String)
         // response: true / false (boolean)
+        if (!isRunning) {
+            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+            server.createContext("/vnpay_return", new VNPayReturnHandler());
+            server.setExecutor(null); // Sử dụng executor mặc định
+            // Nếu server chưa chạy, khởi động lại
+            server.start();
+            isRunning = true;
+            System.out.println("Server đã được khởi động.");
+        }
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-        server.createContext("/vnpay_return", new VNPayReturnHandler());
-        server.setExecutor(null); // Sử dụng executor mặc định
-        server.start();
         // Tạo transaction reference là timestamp hiện tại
         String txnRef = String.valueOf(System.currentTimeMillis());
         // Tạo URL thanh toán

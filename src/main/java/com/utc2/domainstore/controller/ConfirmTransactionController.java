@@ -6,9 +6,9 @@ import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.ITransactionService;
 import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
+import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
-import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -33,6 +33,7 @@ import java.util.ResourceBundle;
 public class ConfirmTransactionController implements Initializable {
     private ResourceBundle bundle;
 
+    // FXML components
     @FXML
     private TableView<BillViewModel> tableView;
     @FXML
@@ -57,11 +58,8 @@ public class ConfirmTransactionController implements Initializable {
                 openBillInfo(selectedBill);
             } else {
                 // show an error message
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle(bundle.getString("warning"));
-                alert.setHeaderText(null);
-                alert.setContentText(bundle.getString("error.noSelect"));
-                alert.showAndWait();
+                SceneManager.getInstance().showDialog(Alert.AlertType.WARNING,
+                        bundle.getString("warning"), null, bundle.getString("error.noSelect"));
             }
         }
     }
@@ -72,16 +70,35 @@ public class ConfirmTransactionController implements Initializable {
         initTable();
     }
 
+    // Method to initialize the table
     private void initTable() {
+        // Set up the table columns
         colID.setCellValueFactory(new PropertyValueFactory<>("id"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
 
+        colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
 
-        tableView.setPlaceholder(new TextField(bundle.getString("placeHolder.tableEmpty")));
+        tableView.setPlaceholder(new Label(bundle.getString("placeHolder.tableEmpty")));
 
+        tableView.setOnMouseClicked(event -> {
+            BillViewModel selectedBill = tableView.getSelectionModel().getSelectedItem();
+            if (selectedBill == null) {
+                return;
+            }
+            // nếu nhấn đúp chuột vào dòng trong bảng
+            if (event.getClickCount() == 2) {
+                openBillInfo(selectedBill);
+            }
+        });
+
+        updateTable();
+    }
+
+    // Method to update the table with data
+    private void updateTable() {
         ObservableList<BillViewModel> billObservableList = FXCollections.observableArrayList(getData());
         FilteredList<BillViewModel> filteredList = new FilteredList<>(billObservableList, b -> true);
 
@@ -98,16 +115,15 @@ public class ConfirmTransactionController implements Initializable {
         tableView.setItems(filteredList);
     }
 
+    // get data from server
     private List<BillViewModel> getData() {
         List<BillViewModel> bills = new ArrayList<>();
-
-        JSONObject request = new JSONObject();
-        request.put("user_id", UserSession.getInstance().getUserId());
 
         ITransactionService transactionService = new TransactionService();
         JSONObject respond = transactionService.getAllTransaction();
         JSONArray list = respond.getJSONArray("transactions");
 
+        // parse the response
         for (Object o : list) {
             JSONObject jsonObject = (JSONObject) o;
             STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
@@ -116,14 +132,16 @@ public class ConfirmTransactionController implements Initializable {
             }
             String id = jsonObject.getString("id");
             LocalDate date = LocalDate.parse(jsonObject.optString("date"));
-            int price = jsonObject.getInt("total_price");
+            Integer price = jsonObject.getInt("total_price");
+            Integer userId = jsonObject.getInt("user_id");
 
-            bills.add(new BillViewModel(id, date, status, price));
+            bills.add(new BillViewModel(id, date, status, price, userId));
         }
 
         return bills;
     }
 
+    // Method to handle opening the bill information
     private void openBillInfo(BillViewModel selectedBill) {
         Stage billInfoStage = new Stage();
         billInfoStage.setTitle(bundle.getString("information"));

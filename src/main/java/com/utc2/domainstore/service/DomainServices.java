@@ -20,6 +20,9 @@ public class DomainServices implements IDomain{
     public JSONObject search(JSONObject jsonInput) {
         String domainName = jsonInput.optString("name", "").trim();
 
+        JSONObject response = new JSONObject();
+
+        // Nếu không nhập tên miền => gợi ý ngẫu nhiên
         if (domainName.isBlank()) {
             JSONArray suggestions = new JSONArray();
             List<DomainModel> domainList = DomainRepository.getInstance().getSuggestedDomains(5);
@@ -27,11 +30,11 @@ public class DomainServices implements IDomain{
             for (DomainModel domain : domainList) {
                 JSONObject items = new JSONObject();
                 TopLevelDomainModel tld = TopLevelDomainRepository.getInstance()
-                    .selectById(new TopLevelDomainModel(domain.getTldId()));
+                        .selectById(new TopLevelDomainModel(domain.getTldId()));
 
                 String fullDomainName = domain.getDomainName();
                 if (tld != null && tld.getTldText() != null) {
-                    fullDomainName += tld.getTldText(); 
+                    fullDomainName += tld.getTldText();
                 }
 
                 items.put("name", fullDomainName);
@@ -40,39 +43,87 @@ public class DomainServices implements IDomain{
                 suggestions.put(items);
             }
 
-            JSONObject response = new JSONObject();
             response.put("domain", suggestions);
             return response;
         }
 
         // Nếu có nhập tên miền
-        String[] parts = domainName.split("\\.");
-        String tld;
-        if (parts.length < 2) {
-            tld = ".com";
-            domainName += tld;
-        } else {
-            tld = "." + parts[parts.length - 1];
+        String domainPattern = "^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]\\.[a-zA-Z]{2,}(\\.[a-zA-Z]{2,})?$";
+        if (!domainName.matches(domainPattern)) {
+            return createErrorResponse("Tên miền không đúng định dạng.");
         }
-        TopLevelDomainModel tldModel = TopLevelDomainRepository.getInstance().getTLDByName(tld);
 
-        if (tldModel == null) {
-            return createErrorResponse("TLD is not supported.");
+        // Tìm TLD phù hợp nhất trong database
+        TopLevelDomainModel tldModel = null;
+        String namePart = null;
+
+        List<TopLevelDomainModel> allTLDs = TopLevelDomainRepository.getInstance().selectAll();
+        allTLDs.sort((a, b) -> Integer.compare(b.getTldText().length(), a.getTldText().length())); // Ưu tiên TLD dài hơn
+
+        for (TopLevelDomainModel tldCandidate : allTLDs) {
+            String tldText = tldCandidate.getTldText().toLowerCase();
+            if (domainName.endsWith(tldText)) {
+                tldModel = tldCandidate;
+                namePart = domainName.substring(0, domainName.length() - tldText.length());
+                break;
+            }
+        }
+
+        if (tldModel == null || namePart == null || namePart.isBlank()) {
+            return createErrorResponse("TLD không được hỗ trợ hoặc tên không hợp lệ.");
         }
 
         String domainStatus = DomainUtils.getDomainInfo(domainName);
-        JSONObject response = new JSONObject();
 
-        if ("Nofound".equals(domainStatus)) {
-            response.put("status", "available");
-            response.put("price", tldModel.getPrice());
-        } else {
-            response.put("status", "sold");
-            response.put("price", 0);
+        DomainModel primaryDomain = DomainRepository.getInstance()
+                .getDomainByNameAndTld(namePart, tldModel.getId());
+
+        if (primaryDomain == null) {
+            primaryDomain = new DomainModel();
+            primaryDomain.setDomainName(namePart);
+            primaryDomain.setTldId(tldModel.getId());
+            primaryDomain.setYears(1);
+            primaryDomain.setStatus("Nofound".equals(domainStatus) ? DomainStatusEnum.available : DomainStatusEnum.sold);
+            DomainRepository.getInstance().insert(primaryDomain);
         }
 
-        response.put("name", domainName); 
-        return response; 
+        JSONObject domainInfo = new JSONObject();
+        domainInfo.put("name", domainName);
+        domainInfo.put("status", primaryDomain.getStatus().toString().toLowerCase());
+        domainInfo.put("price", primaryDomain.getStatus() == DomainStatusEnum.available ? tldModel.getPrice() : 0);
+
+        // Các TLD gợi ý khác
+        String[] popularTLDs = new String[] { ".net", ".org", ".vn", ".info", ".biz" };
+        JSONArray domainArray = new JSONArray();
+
+        for (String suggestTLD : popularTLDs) {
+            if (suggestTLD.equalsIgnoreCase(tldModel.getTldText())) continue;
+
+            TopLevelDomainModel suggestTLDModel = TopLevelDomainRepository.getInstance().getTLDByName(suggestTLD);
+            if (suggestTLDModel == null) continue;
+
+            String suggestedDomainName = namePart + suggestTLD;
+            DomainModel existingDomain = DomainRepository.getInstance()
+                    .getDomainByNameAndTld(namePart, suggestTLDModel.getId());
+
+            if (existingDomain == null) {
+                existingDomain = new DomainModel();
+                existingDomain.setDomainName(namePart);
+                existingDomain.setTldId(suggestTLDModel.getId());
+                existingDomain.setStatus(DomainStatusEnum.available);
+                DomainRepository.getInstance().insert(existingDomain);
+            }
+
+            JSONObject item = new JSONObject();
+            item.put("name", suggestedDomainName);
+            item.put("status", existingDomain.getStatus().toString().toLowerCase());
+            item.put("price", suggestTLDModel.getPrice());
+            domainArray.put(item);
+        }
+
+        domainArray.put(domainInfo);
+        response.put("domain", domainArray);
+        return response;
     }
     private JSONObject createErrorResponse(String message) {
          JSONObject response = new JSONObject();
@@ -80,13 +131,20 @@ public class DomainServices implements IDomain{
          response.put("message", message);
          return response;
     }
+    private String cleanDomainInput(String input) {
+        return input.replaceAll("[^a-zA-Z0-9\\.-]", "").toLowerCase();
+    }
 
+    private boolean isValidDomainFormat(String domain) {
+        String regex = "^[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z]{2,})+$";
+        return domain.matches(regex);
+    }
     //2. Gợi ý tên miền
     @Override
     public JSONObject suggestion(JSONObject jsonInput) {
         String domainName = jsonInput.getString("name");
 
-        List<DomainModel> domainList = domainDAO.searchByName(domainName);
+        List<DomainModel> domainList = DomainRepository.getInstance().searchByName(domainName);
         JSONArray domainArray = new JSONArray();
 
         for (DomainModel domain : domainList) {
@@ -187,26 +245,30 @@ public class DomainServices implements IDomain{
 
         String fullName = jsonInput.getString("name").toLowerCase().trim();
 
-        int dotIndex = fullName.lastIndexOf('.');
-        if (dotIndex == -1 || dotIndex == fullName.length() - 1) {
-            response.put("status", "error");
-            response.put("message", "Invalid domain format.");
-            return response;
+        // Lấy danh sách TLD từ database và sắp xếp theo độ dài giảm dần
+        List<TopLevelDomainModel> tldList = TopLevelDomainRepository.getInstance().selectAll();
+        tldList.sort((a, b) -> Integer.compare(b.getTldText().length(), a.getTldText().length())); // Ưu tiên TLD dài hơn
+
+        TopLevelDomainModel matchedTld = null;
+        String domainName = null;
+
+        for (TopLevelDomainModel tldCandidate : tldList) {
+            String tldText = tldCandidate.getTldText().toLowerCase();
+            if (fullName.endsWith(tldText)) {
+                matchedTld = tldCandidate;
+                domainName = fullName.substring(0, fullName.length() - tldText.length());
+                break;
+            }
         }
 
-        String domainName = fullName.substring(0, dotIndex);
-        String tldText = "." + fullName.substring(dotIndex + 1);
-
-        // Lấy TLD từ database
-        TopLevelDomainModel tld = TopLevelDomainRepository.getInstance().getTLDByName(tldText);
-        if (tld == null) {
+        if (matchedTld == null || domainName == null || domainName.isBlank()) {
             response.put("status", "error");
-            response.put("message", "Top-level domain not supported.");
+            response.put("message", "Invalid domain format or unsupported TLD.");
             return response;
         }
 
         // Kiểm tra domain đã tồn tại chưa
-        DomainModel existing = DomainRepository.getInstance().getDomainByNameAndTld(domainName, tld.getId());
+        DomainModel existing = DomainRepository.getInstance().getDomainByNameAndTld(domainName, matchedTld.getId());
         if (existing != null) {
             response.put("status", "error");
             response.put("message", "Domain name is already taken.");
@@ -216,7 +278,7 @@ public class DomainServices implements IDomain{
         // Thêm domain mới vào database
         DomainModel newDomain = new DomainModel();
         newDomain.setDomainName(domainName);
-        newDomain.setTldId(tld.getId());
+        newDomain.setTldId(matchedTld.getId());
         newDomain.setStatus(DomainStatusEnum.available);
 
         int insertSuccess = DomainRepository.getInstance().insert(newDomain);

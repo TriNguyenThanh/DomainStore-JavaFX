@@ -6,6 +6,7 @@ import com.utc2.domainstore.entity.view.METHOD;
 import com.utc2.domainstore.entity.view.UserModel;
 import com.utc2.domainstore.service.AccountServices;
 import com.utc2.domainstore.service.IAccount;
+import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,7 +29,7 @@ public class UserManagerController implements Initializable {
     private List<UserModel> data;
 
     @FXML
-    private Button btAdd, btRemove, btEdit, btActive;
+    private Button btAdd, btRemove, btEdit, btActive, btPaymentHistory;
     @FXML
     private TableView<UserModel> table;
     @FXML
@@ -66,6 +67,9 @@ public class UserManagerController implements Initializable {
             // Logic to activate selected users
             // After activating, refresh the table
             handleActiveUser();
+        } else if (e.getSource() == btPaymentHistory) {
+            // open payment history dialog
+            handlePaymentHistory();
         }
     }
 
@@ -106,6 +110,7 @@ public class UserManagerController implements Initializable {
         table.setItems(filteredData);
     }
 
+    // Lấy dữ liệu từ server
     private List<UserModel> getData() {
         List<UserModel> newData = new ArrayList<>();
 
@@ -130,6 +135,7 @@ public class UserManagerController implements Initializable {
         return newData;
     }
 
+    // thêm người dùng
     private void handleAddUser() {
         // Logic to add a new user
         // Open dialog to add a new user
@@ -139,6 +145,7 @@ public class UserManagerController implements Initializable {
         createAccountController.setMethod(METHOD.ADD);
     }
 
+    // Khóa người dùng
     private void handleRemoveUser() {
         // Logic to remove selected users
         UserModel selectedItem = table.getSelectionModel().getSelectedItem();
@@ -169,6 +176,7 @@ public class UserManagerController implements Initializable {
         table.refresh();
     }
 
+    // Chỉnh sửa người dùng
     private void handleEditUser() {
         // Logic to edit selected user
         ObservableList<UserModel> selectedUsers = table.getSelectionModel().getSelectedItems();
@@ -189,6 +197,7 @@ public class UserManagerController implements Initializable {
         }
     }
 
+    // Kích hoạt người dùng
     private void handleActiveUser() {
         // Logic to activate selected users
         ObservableList<UserModel> selectedUsers = table.getSelectionModel().getSelectedItems();
@@ -217,6 +226,19 @@ public class UserManagerController implements Initializable {
         table.refresh();
     }
 
+    // Xem lịch sử thanh toán
+    private void handlePaymentHistory() {
+        // Logic to open payment history dialog
+        UserModel selectedItem = table.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) {
+            SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, null, null, bundle.getString("error.noSelect"));
+        } else {
+            // Open payment history dialog
+            PaymentController paymentController = MainController.getInstance().load("/fxml/payment.fxml").getController();
+            paymentController.setUserId(selectedItem.getID());
+        }
+    }
+
     private void updateFilter(FilteredList<UserModel> filteredData) {
         String searchText = tfSearch.getText().toLowerCase();
         String selectedStatus = cbStatus.getSelectionModel().getSelectedItem();
@@ -224,7 +246,7 @@ public class UserManagerController implements Initializable {
 
         filteredData.setPredicate(user -> {
             // 1. Lọc theo từ khóa
-            boolean matchesSearch = (searchText == null || searchText.isEmpty()) ||
+            boolean matchesSearch = (searchText.isBlank()) ||
                     user.getName().toLowerCase().contains(searchText) ||
                     user.getPhone().toLowerCase().contains(searchText);
 

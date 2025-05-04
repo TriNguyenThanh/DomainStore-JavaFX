@@ -5,14 +5,18 @@ import com.utc2.domainstore.repository.CustomerRepository;
 import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.repository.PaymentHistoryRepository;
 import com.utc2.domainstore.repository.TransactionRepository;
+import com.utc2.domainstore.utils.EmailUtil;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,23 +25,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GenerateService implements IGenerateService{
+public class GenerateService implements IGenerateService {
     private final DomainRepository domainRepo = new DomainRepository();
+
     @Override
     public void generateInvoicePDF(String transactionId) {
         TransactionModel tran = TransactionRepository.getInstance().selectById(new TransactionModel(transactionId, null, null));
         CustomerModel cus = CustomerRepository.getInstance().selectById(new CustomerModel(tran.getUserId()));
         PaymentHistoryModel payment = PaymentHistoryRepository.getInstance().selectById(new PaymentHistoryModel(transactionId, null, null, null, null));
-        URL resource = GenerateService.class.getClassLoader().getResource("report/invoice_domain.jrxml");
-        String jasperFilePath = null;
-        if (resource != null) jasperFilePath = resource.getPath();
+        copyFont();
+//        URL resource = GenerateService.class.getClassLoader().getResource("report/invoice_domain.jasper");
+//        String jasperFilePath = null;
+//        if (resource != null) jasperFilePath = resource.getPath();
         try {
-            JasperReport jasperReport = JasperCompileManager.compileReport(jasperFilePath);
+//            JasperReport jasperReport = JasperCompileManager.compileReport(jasperFilePath);
+            InputStream jasperStream = getClass().getResourceAsStream("/report/invoice_domain.jasper");
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
             Map<String, Object> data = new HashMap<>();
-            DateTimeFormatter inputFormat =  DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            DateTimeFormatter outputFormat =  DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-            data.put("fullName",cus.getFullName());
+            data.put("fullName", cus.getFullName());
             data.put("phone", cus.getPhone());
             data.put("email", cus.getEmail());
             String transactionDate = String.valueOf(tran.getTransactionDate());
@@ -47,16 +55,16 @@ public class GenerateService implements IGenerateService{
             parsedDate = LocalDate.parse(String.valueOf(Date.valueOf(LocalDate.now())), inputFormat);
             data.put("invoiceDate", parsedDate.format(outputFormat));
             data.put("transactionId", transactionId);
-            if(payment != null){
+            if (payment != null) {
                 data.put("paymentMethod", String.valueOf(PaymentTypeEnum.getPaymentMethod(payment.getPaymentMethodId())));
-                if(PaymentStatusEnum.COMPLETED.equals(payment.getPaymentStatus())) {
+                if (PaymentStatusEnum.COMPLETED.equals(payment.getPaymentStatus())) {
                     data.put("paymentStatus", "ĐÃ THANH TOÁN");
-                }else data.put("paymentStatus", "CHƯA THANH TOÁN");
+                } else data.put("paymentStatus", "CHƯA THANH TOÁN");
                 data.put("accountName", cus.getFullName());
                 data.put("accountNumber", "9704198526191432198");
                 data.put("bank", "NCB - Ngân hàng Quốc Dân");
                 data.put("content", "Thanh toán hóa đơn " + transactionId);
-            }else{
+            } else {
                 data.put("paymentMethod", "Không");
                 data.put("paymentStatus", "CHƯA THANH TOÁN");
                 data.put("accountName", "Không");
@@ -64,11 +72,12 @@ public class GenerateService implements IGenerateService{
                 data.put("bank", "Không");
                 data.put("content", "Không");
             }
-            List<Map<String, Object>> list = new ArrayList<>(); list.add(data);
+            List<Map<String, Object>> list = new ArrayList<>();
+            list.add(data);
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
 
             List<Map<String, Object>> dataDomain = new ArrayList<>();
-            for(TransactionInfoModel t : tran.getTransactionInfos()){
+            for (TransactionInfoModel t : tran.getTransactionInfos()) {
                 DomainModel domain = domainRepo.selectById(new DomainModel(t.getDomainId(), null, 0, null, null, 0));
                 Map<String, Object> mp = new HashMap<>();
                 TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
@@ -97,12 +106,48 @@ public class GenerateService implements IGenerateService{
             String pdfPath = invoiceDir.getAbsolutePath() + File.separator + transactionId + "_" + safeName + dateTime + ".pdf";
             JasperExportManager.exportReportToPdfFile(jasperPrint, pdfPath);
 
+            EmailUtil.sendEmailFile(cus.getEmail(), "Hoá đơn dịch vụ UTC2 Domain Store",
+                    "Cảm ơn Quý khách đã sử dụng dịch vụ UTC2 Domain Store" , pdfPath);
             String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Đường dẫn đến file chrome.exe
-            new ProcessBuilder(chromePath, pdfPath).start();
+            String command = "cmd /c start \"\" \"" + pdfPath + "\"";
+            Runtime.getRuntime().exec(command);
+//            new ProcessBuilder(chromePath, pdfPath).start();
         } catch (JRException | IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
+    private void copyFont() {
+        String sourceDir = "C:\\Windows\\Fonts";
+        String destinationDir = "C:\\Fonts_Arial";
+
+        try {
+            Path sourcePath = Paths.get(sourceDir);
+            Path destinationPath = Paths.get(destinationDir);
+
+            if (!Files.exists(sourcePath)) {
+                throw new IOException("Thư mục nguồn không tồn tại: " + sourceDir);
+            }
+
+            Files.createDirectories(destinationPath);
+
+            try (var stream = Files.walk(sourcePath)) {
+                stream.forEach(source -> {
+                    try {
+                        Path destination = destinationPath.resolve(sourcePath.relativize(source));
+                        if (Files.isDirectory(source)) {
+                            Files.createDirectories(destination);
+                        } else if (!Files.exists(destination)) { // Chỉ copy nếu file đích chưa tồn tại
+                            Files.copy(source, destination);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        } catch (IOException e) {
+            System.err.println("Lỗi khi copy project: " + e.getMessage());
+        }
+    }
 }

@@ -27,6 +27,7 @@ public class CartServices implements ICart {
     public JSONObject getShoppingCart(JSONObject jsonInput) {
         JSONObject response = new JSONObject();
         JSONArray domainArray = new JSONArray();
+
         // Lấy cus_id từ request
         int cus_id = jsonInput.getInt("cus_id");
 
@@ -37,15 +38,15 @@ public class CartServices implements ICart {
             TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
             JSONObject domainJson = new JSONObject();
 
-            // Lấy phần mở rộng tên miền (TLD)
+            // Lấy tên miền đầy đủ
             String fullDomainName = domain.getDomainName();
             if (tld != null && tld.getTldText() != null) {
                 fullDomainName += tld.getTldText();
             }
 
             domainJson.put("name", fullDomainName);
-            domainJson.put("status", domain.getStatus().toString());
-            domainJson.put("price", DomainRepository.getInstance().getTLDPriceByDomainId(domain.getTldId()));
+            domainJson.put("status", domain.getStatus().toString().toLowerCase());
+            domainJson.put("price", (tld != null) ? tld.getPrice() : 0);
             domainJson.put("year", domain.getYears());
 
             domainArray.put(domainJson);
@@ -64,55 +65,49 @@ public class CartServices implements ICart {
         boolean domainNotFound = false;
         JSONObject response = new JSONObject();
 
+        // Lấy danh sách TLD và sắp xếp theo độ dài giảm dần
+        List<TopLevelDomainModel> tldList = TopLevelDomainRepository.getInstance().selectAll();
+        tldList.sort((a, b) -> b.getTldText().length() - a.getTldText().length()); // Ưu tiên TLD dài nhất
+
         for (int i = 0; i < domainArray.length(); i++) {
             JSONObject domainJson = domainArray.getJSONObject(i);
-            String domainName = domainJson.getString("name");
+            String fullDomainName = domainJson.getString("name").toLowerCase().trim();
             String status = domainJson.getString("status");
             int years = domainJson.getInt("years");
-            int inputPrice = domainJson.getInt("price");
 
-            // Tách phần mở rộng (TLD) từ tên miền
-            String[] parts = domainName.split("\\.");
-            if (parts.length < 2) {
+            if (!"available".equalsIgnoreCase(status)) continue;
+
+            // Dò TLD từ đuôi tên miền, ưu tiên TLD dài nhất
+            TopLevelDomainModel matchedTLD = null;
+            String namePart = null;
+            for (TopLevelDomainModel tld : tldList) {
+                if (fullDomainName.endsWith(tld.getTldText())) {
+                    matchedTLD = tld;
+                    namePart = fullDomainName.substring(0, fullDomainName.length() - tld.getTldText().length());
+                    break;
+                }
+            }
+
+            if (matchedTLD == null || namePart == null || namePart.isBlank()) {
                 domainNotFound = true;
                 continue;
             }
 
-            String tld = "." + parts[parts.length - 1];
-            TopLevelDomainModel domainId = TopLevelDomainRepository.getInstance().getTLDByName(tld);
-            if (domainId == null || !"available".equalsIgnoreCase(status)) {
-                continue;
+            DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(namePart, matchedTLD.getId());
+            if (domainModel == null) {
+                // Insert mới nếu chưa tồn tại
+                domainModel = new DomainModel(namePart, matchedTLD.getId(), DomainStatusEnum.available, years);
+                DomainRepository.getInstance().insert(domainModel);
+                domainModel = DomainRepository.getInstance().getDomainByNameAndTld(namePart, matchedTLD.getId());
+            } else {
+                // Cập nhật số năm nếu đã có
+                domainModel.setYears(years);
+                DomainRepository.getInstance().update(domainModel);
             }
 
-            String name = parts[0];
-
-            if (!DomainRepository.getInstance().isDomainExists(domainName, domainId.getId())) {
-                // Nếu domain chưa tồn tại trong DB insert mới
-                DomainModel newDomain = new DomainModel(name, domainId.getId(), DomainStatusEnum.available, years);
-                DomainRepository.getInstance().insert(newDomain);
-
-                // Lấy lại domain sau khi insert
-                DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, domainId.getId());
-
-                // Kiểm tra đã có trong cart chưa
-                if (!cartRepository.isDomainInCart2(cus_id, domainModel.getId())) {
-                    boolean isAdded = cartRepository.updateCart(cus_id, domainModel.getId(), years);
-                    if (isAdded) successCount++;
-                }
-            } else {
-                // Domain đã tồn tại trong DB
-                DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, domainId.getId());
-                DomainModel updateDomain = new DomainModel(
-                        domainModel.getId(),
-                        domainModel.getDomainName(),
-                        domainModel.getTldId(),
-                        domainModel.getStatus(),
-                        domainModel.getActiveDate(),
-                        years);
-                DomainRepository.getInstance().update(updateDomain);
-                // Kiểm tra đã có trong cart chưa
-                if (!cartRepository.isDomainInCart(cus_id, domainModel.getId(), years)) {
-                    cartRepository.updateCart(cus_id, domainModel.getId(), years);
+            // Thêm vào giỏ nếu chưa có
+            if (!cartRepository.isDomainInCart(cus_id, domainModel.getId(), years)) {
+                if (cartRepository.updateCart(cus_id, domainModel.getId(), years)) {
                     successCount++;
                 }
             }
@@ -120,7 +115,7 @@ public class CartServices implements ICart {
 
         if (domainNotFound) {
             response.put("status", "failed");
-            response.put("message", "domain_id not found");
+            response.put("message", "One or more domains have invalid format or unsupported TLD.");
         } else if (successCount > 0) {
             response.put("status", "success");
             response.put("message", successCount + " domain(s) added to cart");
@@ -128,7 +123,6 @@ public class CartServices implements ICart {
             response.put("status", "failed");
             response.put("message", "No domains added (maybe already in cart)");
         }
-
         return response;
     }
 
@@ -140,30 +134,31 @@ public class CartServices implements ICart {
         int successCount = 0;
         JSONObject response = new JSONObject();
 
+        List<TopLevelDomainModel> allTlds = TopLevelDomainRepository.getInstance().selectAll();
+
         for (int i = 0; i < domainArray.length(); i++) {
             JSONObject domainJson = domainArray.getJSONObject(i);
-            String domainName = domainJson.getString("name");
+            String fullDomainName = domainJson.getString("name").toLowerCase().trim();
 
-            String[] parts = domainName.split("\\.");
-            if (parts.length < 2) {
-                continue;
-            }
+            TopLevelDomainModel matchedTld = null;
+            String domainNamePart = null;
 
-            String tld = "." + parts[parts.length - 1];
-            TopLevelDomainModel tldModel = TopLevelDomainRepository.getInstance().getTLDByName(tld);
-
-            if (tldModel == null) {
-                continue;
-            }
-
-            String name = parts[0];
-
-            DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(name, tldModel.getId());
-            if (domainModel != null) {
-                if (cartRepository.isDomainInCart2(cus_id, domainModel.getId())) {
-                    boolean isRemoved = cartRepository.removeFromCart(cus_id, domainModel.getId());
-                    if (isRemoved) successCount++;
+            for (TopLevelDomainModel tld : allTlds) {
+                if (fullDomainName.endsWith(tld.getTldText())) {
+                    matchedTld = tld;
+                    domainNamePart = fullDomainName.substring(0, fullDomainName.length() - tld.getTldText().length());
+                    break;
                 }
+            }
+
+            if (matchedTld == null || domainNamePart == null || domainNamePart.isBlank()) {
+                continue;
+            }
+
+            DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(domainNamePart, matchedTld.getId());
+            if (domainModel != null && cartRepository.isDomainInCart2(cus_id, domainModel.getId())) {
+                boolean isRemoved = cartRepository.removeFromCart(cus_id, domainModel.getId());
+                if (isRemoved) successCount++;
             }
         }
 
@@ -173,6 +168,80 @@ public class CartServices implements ICart {
         } else {
             response.put("status", "failed");
             response.put("message", "No domains removed (maybe not found in cart)");
+        }
+        return response;
+    }
+
+    @Override
+    public JSONObject updateCart(JSONObject jsonInput) {
+        int cus_id = jsonInput.getInt("cus_id");
+        JSONArray domainArray = jsonInput.getJSONArray("domain");
+
+        int updateCount = 0;
+        boolean domainNotFound = false;
+        JSONObject response = new JSONObject();
+
+        List<TopLevelDomainModel> allTlds = TopLevelDomainRepository.getInstance().selectAll();
+
+        for (int i = 0; i < domainArray.length(); i++) {
+            JSONObject domainJson = domainArray.getJSONObject(i);
+            String fullDomainName = domainJson.getString("name").toLowerCase().trim();
+            String status = domainJson.getString("status");
+            int years = domainJson.getInt("years");
+
+            TopLevelDomainModel matchedTld = null;
+            String domainNamePart = null;
+
+            for (TopLevelDomainModel tld : allTlds) {
+                if (fullDomainName.endsWith(tld.getTldText())) {
+                    matchedTld = tld;
+                    domainNamePart = fullDomainName.substring(0, fullDomainName.length() - tld.getTldText().length());
+                    break;
+                }
+            }
+
+            if (matchedTld == null || domainNamePart == null || domainNamePart.isBlank()) {
+                domainNotFound = true;
+                continue;
+            }
+
+            if (!"available".equalsIgnoreCase(status)) {
+                continue;
+            }
+
+            DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(domainNamePart, matchedTld.getId());
+
+            if (domainModel == null) {
+                // Domain chưa tồn tại → insert
+                DomainModel newDomain = new DomainModel(domainNamePart, matchedTld.getId(), DomainStatusEnum.available, years);
+                DomainRepository.getInstance().insert(newDomain);
+                domainModel = DomainRepository.getInstance().getDomainByNameAndTld(domainNamePart, matchedTld.getId());
+            } else {
+                // Domain đã tồn tại → cập nhật số năm
+                DomainModel updatedDomain = new DomainModel(
+                        domainModel.getId(),
+                        domainModel.getDomainName(),
+                        domainModel.getTldId(),
+                        domainModel.getStatus(),
+                        domainModel.getActiveDate(),
+                        years);
+                DomainRepository.getInstance().update(updatedDomain);
+            }
+
+            // Cập nhật hoặc thêm vào giỏ hàng
+            boolean updated = cartRepository.updateCart(cus_id, domainModel.getId(), years);
+            if (updated) updateCount++;
+        }
+
+        if (domainNotFound) {
+            response.put("status", "failed");
+            response.put("message", "Invalid domain name(s)");
+        } else if (updateCount > 0) {
+            response.put("status", "success");
+            response.put("message", updateCount + " domain(s) updated in cart");
+        } else {
+            response.put("status", "failed");
+            response.put("message", "No domains updated");
         }
 
         return response;

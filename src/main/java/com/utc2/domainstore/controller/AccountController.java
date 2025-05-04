@@ -32,18 +32,15 @@ public class AccountController implements Initializable {
     private AccountModel rootData;
     private AccountModel newData;
 
+    // FXML
     @FXML
     private AnchorPane rootPane;
-
     @FXML
     private TextField tfUsername, tfPhone, tfEmail, tfPsID;
-
     @FXML
     private Label lbFullNameErr, lbPhoneErr, lbEmailErr, lbPsIDErr;
-
     @FXML
     private PasswordField tfPass;
-
     @FXML
     private Button btEdit, btSave, btCancel, btLogout, btChangePass;
 
@@ -78,13 +75,17 @@ public class AccountController implements Initializable {
         });
     }
 
+    // get data from server
     private AccountModel getRootData() {
+
+        // create a request to get user information
         JSONObject request = new JSONObject();
         request.put("user_id", UserSession.getInstance().getUserId());
 
         IAccount accountServices = new AccountServices();
         JSONObject respond = accountServices.getUserInformation(request);
 
+        // parse the response
         String fullname = respond.getString("username");
         String phone = respond.getString("phone");
         String email = respond.getString("email");
@@ -94,6 +95,7 @@ public class AccountController implements Initializable {
         return new AccountModel(fullname, phone, email, psID, pass);
     }
 
+    // display data on the screen
     private void displayData() {
         tfUsername.setText(rootData.getFullName());
         tfPhone.setText(rootData.getPhone());
@@ -102,18 +104,17 @@ public class AccountController implements Initializable {
         tfPass.setText("11111111");
     }
 
+    // check if the data is changed
     private void onRemovedFromScene() {
         //check the difference
         save();
     }
 
+    // logout
     private void logout() {
         edit(false);
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(bundle.getString("logout"));
-        alert.setHeaderText(bundle.getString("notice.logout"));
-        alert.setContentText("");
-        Optional<ButtonType> buttonType = alert.showAndWait();
+        Optional<ButtonType> buttonType = SceneManager.getInstance().showDialog(Alert.AlertType.CONFIRMATION,
+                bundle.getString("logout"), bundle.getString("notice.logout"), null);
         if (buttonType.isPresent() && buttonType.get() == ButtonType.OK) {
             // Reset the fields to the original data
             save();
@@ -122,21 +123,27 @@ public class AccountController implements Initializable {
         }
     }
 
+    // change password
     private void changePass() {
         try {
+            // load the fxml and resource bundle
             ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/change_password.fxml"), rb);
             Parent root = fxmlLoader.load();
 
+            // get the controller
             ChangePasswordController controller = fxmlLoader.getController();
             controller.setData(rootData.getHash_password());
 
+            // create a new stage
             Stage stage = new Stage();
             stage.setTitle(bundle.getString("changePass"));
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/icon/password.png"))));
 
+            // set the stage to be modal
+            stage.initOwner(SceneManager.getInstance().getStage());
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
             rootData = newData = getRootData();
@@ -146,14 +153,11 @@ public class AccountController implements Initializable {
         }
     }
 
+    // cancel the edit
     private void cancel() {
         edit(false);
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(bundle.getString("cancel"));
-        alert.setHeaderText(bundle.getString("notice.cancel"));
-        alert.setContentText("");
-        Optional<ButtonType> buttonType = alert.showAndWait();
+        // show a confirmation dialog
+        Optional<ButtonType> buttonType = SceneManager.getInstance().showDialog(Alert.AlertType.CONFIRMATION, bundle.getString("cancel"), bundle.getString("notice.cancel"), null);
 
         if (buttonType.isPresent() && buttonType.get() == ButtonType.OK) {
             // Reset the fields to the original data
@@ -162,27 +166,26 @@ public class AccountController implements Initializable {
             lbEmailErr.setText("");
             lbPsIDErr.setText("");
             lbFullNameErr.setText("");
-
         }
     }
 
+    // save the data
     private void save() {
         edit(false);
+        // check if the data is changed
         newData = new AccountModel(tfUsername.getText(), tfPhone.getText(), tfEmail.getText(), tfPsID.getText(), rootData.getHash_password());
         if (rootData.isSame(newData)) {
             return;
         }
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(bundle.getString("save"));
-        alert.setHeaderText(bundle.getString("notice.save"));
-        alert.setContentText("");
-
-        Optional<ButtonType> button = alert.showAndWait();
+        // show a confirmation dialog
+        Optional<ButtonType> button = SceneManager.getInstance().showDialog(Alert.AlertType.CONFIRMATION,
+                bundle.getString("save"), bundle.getString("notice.save"), null);
         if (button.isPresent() && button.get() == ButtonType.OK) {
 
             if (!checkingData()) return;
 
+            // create a request to update user information
             JSONObject request = new JSONObject();
             request.put("user_id", UserSession.getInstance().getUserId());
             request.put("username", newData.getFullName());
@@ -193,27 +196,21 @@ public class AccountController implements Initializable {
             IAccount accountServices = new AccountServices();
             JSONObject respond = accountServices.updateUser(request);
             try {
+                // parse the response
                 String status, message;
                 status = respond.getString("status");
                 message = respond.getString("message");
 
                 if (status.equals("failed")) {
-                    Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
-                    alert1.setTitle(bundle.getString("save"));
-                    alert1.setHeaderText(bundle.getString("save"));
-                    alert1.setContentText(bundle.getString("notice.savingFailed"));
-                    alert1.showAndWait();
+                    SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("save"), bundle.getString("error"), bundle.getString("notice.savingFailed"));
                 }
             } catch (JSONException e) {
-                Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
-                alert1.setTitle(bundle.getString("save"));
-                alert1.setHeaderText(bundle.getString("save"));
-                alert1.setContentText(bundle.getString("notice.savingFailed"));
-                alert1.showAndWait();
+                SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("save"), bundle.getString("error"), bundle.getString("notice.savingFailed"));
             }
         }
     }
 
+    // check if the data is valid
     private boolean checkingData() {
         boolean flag = true;
 
@@ -261,6 +258,7 @@ public class AccountController implements Initializable {
         return flag;
     }
 
+    // set editable
     private void edit(boolean isEdited) {
         tfUsername.setEditable(isEdited);
         tfPhone.setEditable(isEdited);

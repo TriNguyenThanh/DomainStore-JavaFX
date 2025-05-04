@@ -1,0 +1,40 @@
+{
+  "languages": [
+    {
+      "name": "English",
+      "code": "en",
+      "locale": "US",
+      "rate": 25641
+    },
+    {
+      "name": "Chinese",
+      "code": "zh",
+      "locale": "CN",
+      "rate": 3558
+    },
+    {
+      "name": "Japanese",
+      "code": "ja",
+      "locale": "JP",
+      "rate": 179
+    },
+    {
+      "name": "Russian",
+      "code": "ru",
+      "locale": "RU",
+      "rate": 314
+    },
+    {
+      "name": "Korean",
+      "code": "ko",
+      "locale": "KR",
+      "rate": 19
+    },
+    {
+      "name": "Tiếng Việt",
+      "code": "vi",
+      "locale": "VN",
+      "rate": 1
+    }
+  ]
+}
