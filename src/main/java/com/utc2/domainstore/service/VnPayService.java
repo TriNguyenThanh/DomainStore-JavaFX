@@ -122,9 +122,9 @@ public class VnPayService implements IPaymentGateway{
                     result.put("payDate", formattedDate );
                     result.put("transactionNo", fields.get("vnp_TransactionNo"));
 
-                    // Cập nhật database
-                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.COMPLETED);
-                    PaymentHistoryModel paymentHistoryModel = new PaymentHistoryModel(transactionId, fields.get("vnp_TransactionNo"), PaymentTypeEnum.VNPAY.getCode(), PaymentStatusEnum.COMPLETED, LocalDate.now());
+                    // Tạo thanh toán, chuyển tới trang thanh toán
+                    PaymentHistoryModel paymentHistoryModel = new PaymentHistoryModel(transactionId, fields.get("vnp_TransactionNo"),
+                            PaymentTypeEnum.VNPAY.getCode(), PaymentStatusEnum.COMPLETED, LocalDate.now());
                     PaymentHistoryRepository.getInstance().insert(paymentHistoryModel);
                 } else {
                     // Payment failed
@@ -132,7 +132,6 @@ public class VnPayService implements IPaymentGateway{
                     result.put("message", "Thanh toán thất bại. Mã lỗi: " + vnp_ResponseCode);
                     result.put("txnRef", fields.get("vnp_TxnRef"));
                     transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.PENDINGPAYMENT);
-//                    TransactionInfoRepository.getInstance().delete(new TransactionInfoModel(transactionId,null,null));
                 }
             } else {
                 // Invalid signature
