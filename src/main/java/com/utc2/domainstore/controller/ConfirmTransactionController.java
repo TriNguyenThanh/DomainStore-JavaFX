@@ -9,7 +9,6 @@ import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
-import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -120,10 +119,6 @@ public class ConfirmTransactionController implements Initializable {
     // get data from server
     private List<BillViewModel> getData() {
         List<BillViewModel> bills = new ArrayList<>();
-
-        // Create a request to get all transactions
-        JSONObject request = new JSONObject();
-        request.put("user_id", UserSession.getInstance().getUserId());
 
         ITransactionService transactionService = new TransactionService();
         JSONObject respond = transactionService.getAllTransaction();

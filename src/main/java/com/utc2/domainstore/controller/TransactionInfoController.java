@@ -34,7 +34,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
     private List<DomainViewModel> domainList;
     private PaymentViewModel paymentViewModel;
     private METHOD method;
-    private ITransactionService transactionService = new TransactionService();
+    private TransactionService transactionService = new TransactionService();
 
     @FXML
     private Label lbUsername, lbPhone, lbEmail, lbBillID, lbDate, lbTotal;
