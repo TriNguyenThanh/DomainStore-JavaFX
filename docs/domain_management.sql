@@ -79,7 +79,7 @@ CREATE TABLE Transactions_info (
     domain_id INT NOT NULL,
     price INT UNSIGNED NOT NULL, 
     
-    FOREIGN KEY (transactions_id) REFERENCES Transactions(id),
+    FOREIGN KEY (transactions_id) REFERENCES Transactions(id) ON DELETE CASCADE,
     FOREIGN KEY (Domain_id) REFERENCES domains(id),
     PRIMARY KEY(Domain_id, transactions_id)
 );
@@ -114,7 +114,7 @@ INSERT INTO users (full_name, email, phone, cccd, password_hash, role)
 VALUES 
 ('Nguyễn Thành Trí', 'tringuyenntt1505@gmail.com', '0987654321', '027205011960', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0987654321 password: pass123456@
-('Lê Nguyễn Anh Dự', 'dule@gmail.com', '0912345678', '027205011961', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+('Lê Nguyễn Anh Dự', 'dule1028a@gmail.com', '0912345678', '027205011961', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0912345678 password: pass123456@
 ('Âu Dương Tấn', 'auduongtan321@gmail.com', '0923456789', '027205011962', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0923456789 password: pass123456@
