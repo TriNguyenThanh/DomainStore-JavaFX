@@ -90,7 +90,6 @@ public class ConfirmTransactionController implements Initializable {
             }
             // nếu nhấn đúp chuột vào dòng trong bảng
             if (event.getClickCount() == 2) {
-
                 openBillInfo(selectedBill);
             }
         });
@@ -133,9 +132,10 @@ public class ConfirmTransactionController implements Initializable {
             }
             String id = jsonObject.getString("id");
             LocalDate date = LocalDate.parse(jsonObject.optString("date"));
-            int price = jsonObject.getInt("total_price");
+            Integer price = jsonObject.getInt("total_price");
+            Integer userId = jsonObject.getInt("user_id");
 
-            bills.add(new BillViewModel(id, date, status, price));
+            bills.add(new BillViewModel(id, date, status, price, userId));
         }
 
         return bills;

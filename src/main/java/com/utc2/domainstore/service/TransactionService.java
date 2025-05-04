@@ -17,6 +17,7 @@ public class TransactionService implements ITransactionService {
     private final ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll_V3();
     private final TransactionRepository transactionRepository = new TransactionRepository();
     private final TransactionInfoRepository transactionInfoRepository = new TransactionInfoRepository();
+
     @Override
     public JSONObject getAllTransaction() {
         JSONArray jsonArray = new JSONArray();
@@ -63,7 +64,7 @@ public class TransactionService implements ITransactionService {
             DomainModel d = new DomainModel();
             d.setId(ti.getDomainId());
             DomainModel domain = DomainRepository.getInstance().selectById(d);
-            jsonObject.put("name", domain.getDomainName());
+            jsonObject.put("name", domain.getDomainName() + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
             jsonObject.put("status", domain.getStatus());
             jsonObject.put("price", domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
             jsonObject.put("years", domain.getYears());
@@ -74,13 +75,14 @@ public class TransactionService implements ITransactionService {
         result.put("domains", jsonArray);
         return result;
     }
+
     @Override
     public JSONObject createTransaction(JSONObject json) throws IOException {
         // request: domains (JSONObject)
         // response: transactionId (String), total(int), status (success / failed)
 
         //Nếu request rỗng
-        if(json.isEmpty()) {
+        if (json.isEmpty()) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("status", "failed");
             return jsonObject;
@@ -100,10 +102,11 @@ public class TransactionService implements ITransactionService {
         response.put("transactionId", transactionId);
         response.put("total", total);
         response.put("status", "success");
-        return  response;
+        return response;
     }
+
     @Override
-    public void updateTransactionStatus(String transactionId, TransactionStatusEnum status){
+    public void updateTransactionStatus(String transactionId, TransactionStatusEnum status) {
         // Lưu tên tên miền để thông báo về email
         List<String> domains = new ArrayList<>();
 
@@ -111,7 +114,7 @@ public class TransactionService implements ITransactionService {
         CustomerModel cus = CustomerRepository.getInstance().selectById(new CustomerModel(tran.getUserId()));
         ArrayList<TransactionInfoModel> listTranInfo = TransactionInfoRepository.getInstance().selectByCondition("transactions_id = '" + transactionId + "'");
 
-        if(TransactionStatusEnum.COMPLETED.equals(status)){ // Trạng thái thành công
+        if (TransactionStatusEnum.COMPLETED.equals(status)) { // Trạng thái thành công
             for (TransactionInfoModel transactionInfoModel : listTranInfo) { // duyệt qua từng chi tiết hoá đơn
                 int domainId = transactionInfoModel.getDomainId(); // tìm id tên miền
                 DomainModel d = new DomainModel();
@@ -130,23 +133,26 @@ public class TransactionService implements ITransactionService {
             }
             // gửi thông báo email
             SoldDomainNotifierServices notifier = new SoldDomainNotifierServices();
-            notifier.notifySoldDomains(cus.getEmail(),domains);
-        }else if(TransactionStatusEnum.CANCELLED.equals(status)){
+            notifier.notifySoldDomains(cus.getEmail(), domains);
+        } else if (TransactionStatusEnum.CANCELLED.equals(status)) {
             TransactionRepository.getInstance().delete(new TransactionModel(transactionId, null, null));
         }
         // Cập nhật trạng thái hoá đơn
         tran.setTransactionStatus(status);
         transactionRepository.update(tran);
     }
+
     //Tạo transactionId
-    private String generateTransactionId(){
-        if(transactions.isEmpty()) return "HD001";
+    private String generateTransactionId() {
+        if (transactions.isEmpty()) return "HD001";
         String lastId = transactions.getLast().getTransactionId();
-        int number = Integer.parseInt(lastId.substring(2)); ++number;
+        int number = Integer.parseInt(lastId.substring(2));
+        ++number;
         return String.format("HD%03d", number);
     }
+
     // Lấy domain_id
-    private int getDomainByName(String name){
+    private int getDomainByName(String name) {
         int index = name.indexOf('.');
         String domainName = name.substring(0, index);
         String tldText = name.substring(index);
@@ -158,6 +164,8 @@ public class TransactionService implements ITransactionService {
             throw new NoSuchElementException("Domain not found!");
         }
     }
+
+    // Listener để cập nhật trạng thái hoá đơn
     private int processTransactionDetails(String transactionId, JSONArray jsonArray) {
         int total = 0;
         for (int i = 0; i < jsonArray.length(); i++) {
