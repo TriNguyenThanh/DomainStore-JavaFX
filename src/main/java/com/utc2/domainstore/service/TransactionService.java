@@ -66,7 +66,7 @@ public class TransactionService implements ITransactionService {
             DomainModel domain = DomainRepository.getInstance().selectById(d);
             jsonObject.put("name", domain.getDomainName() + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
             jsonObject.put("status", domain.getStatus());
-            jsonObject.put("price", domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
+            jsonObject.put("price", domain.getPrice());
             jsonObject.put("years", domain.getYears());
             jsonArray.put(jsonObject);
         }
@@ -87,15 +87,29 @@ public class TransactionService implements ITransactionService {
             jsonObject.put("status", "failed");
             return jsonObject;
         }
+        String transactionId = generateTransactionId(); // tạo id hoá đơn
+        int userId = json.getInt("user_id"); // lấy id người dùng
+
+        // Nếu tên miền đã nằm trong hoá đơn trước đó
+        JSONArray domains = json.getJSONArray("domains");
+        for (int i = 0; i < domains.length(); i++){
+            JSONObject jsonObject = domains.getJSONObject(i);
+            int domainId = getDomainByName(jsonObject.getString("name"));
+            if(!transactionRepository.selectByCondition
+                    ("user_id = " + userId + " AND " + "domain_id = " + domainId).isEmpty()){
+                JSONObject response = new JSONObject();
+                response.put("status", "failed");
+                return response;
+            }
+        }
 
         TransactionModel tran = new TransactionModel();
-        String transactionId = generateTransactionId(); // lưu biến static transactionId
         tran.setTransactionId(transactionId);
-        tran.setUserId(json.getInt("user_id")); // request
+        tran.setUserId(userId); // request
         tran.setTransactionDate(LocalDate.now());
         transactionRepository.insert(tran); // thêm hoá đơn mới
 
-        int total = processTransactionDetails(transactionId, json.getJSONArray("domains")); // tính tổng của 1 hoá đơn
+        int total = processTransactionDetails(transactionId, domains); // tính tổng của 1 hoá đơn
 
         // trả response cho frontend
         JSONObject response = new JSONObject();
@@ -128,6 +142,7 @@ public class TransactionService implements ITransactionService {
                 domain.setStatus(DomainStatusEnum.sold);
                 domain.setActiveDate(Date.valueOf(LocalDate.now()));
                 domain.setOwnerId(cus.getId());
+                domain.setPrice(domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
 
                 DomainRepository.getInstance().update(domain);
             }

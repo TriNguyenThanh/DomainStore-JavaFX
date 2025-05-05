@@ -5,9 +5,9 @@ USE DOMAINMANAGEMENT;
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL, 
-    email VARCHAR(255) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    cccd VARCHAR(20) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    phone VARCHAR(20) NOT NULL UNIQUE,
+    cccd VARCHAR(20) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('user', 'admin') DEFAULT 'user',
     is_deleted BOOLEAN DEFAULT FALSE,
@@ -34,6 +34,7 @@ CREATE TABLE domains (
     status ENUM('available', 'sold') DEFAULT 'available',
     active_date DATE null,
     years int null,
+    price int default 0,
     owner_id INT NULL,
     FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -77,8 +78,8 @@ CREATE INDEX idx_transactions_date ON Transactions(transaction_date);
 CREATE TABLE Transactions_info (
     transactions_id CHAR(10) NOT NULL,
     domain_id INT NOT NULL,
-    price INT UNSIGNED NOT NULL, 
-    
+    price INT UNSIGNED default 0,
+
     FOREIGN KEY (transactions_id) REFERENCES Transactions(id) ON DELETE CASCADE,
     FOREIGN KEY (Domain_id) REFERENCES domains(id),
     PRIMARY KEY(Domain_id, transactions_id)
@@ -98,9 +99,9 @@ CREATE TABLE PaymentHistory (
     transaction_id CHAR(10) NOT NULL,
     payment_id CHAR(10) NOT NULL DEFAULT '',
     payment_method INT,
-    payment_status ENUM('completed', 'failed'),  
+    payment_status ENUM('completed', 'failed'),
     payment_date DATE,
-    
+
     FOREIGN KEY (transaction_id) REFERENCES Transactions(id),
     FOREIGN KEY (payment_method) REFERENCES PaymentMethod(id)
 );
@@ -111,7 +112,7 @@ CREATE INDEX idx_payment_history_date ON PaymentHistory(payment_date);
 
 
 INSERT INTO users (full_name, email, phone, cccd, password_hash, role)
-VALUES 
+VALUES
 ('Nguyễn Thành Trí', 'tringuyenntt1505@gmail.com', '0987654321', '027205011960', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0987654321 password: pass123456@
 ('Lê Nguyễn Anh Dự', 'dule1028a@gmail.com', '0912345678', '027205011961', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
@@ -135,41 +136,35 @@ VALUES
 ('Đỗ Quang Phúc', 'phuc.do@gmail.com', '0901234567', '027205011970', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user');
 -- user:0901234567 password: pass123456@
 
-INSERT INTO TopLevelDomain (TLD_text, price) 
-VALUES 
-('.com', 299000),	-- 1
-('.net', 39000),	-- 2
-('.org', 299000),	-- 3
-('.info', 179000),	-- 4
-('.biz', 99000),	-- 5
-('.co', 499000),	-- 6
-('.io', 890000),	-- 7
-('.ai', 1499000),	-- 8
-('.me', 299000),	-- 9
-('.tv', 399000),	-- 10
-('.xyz', 49000),	-- 11
-('.love', 59000),	-- 12
-('.vn', 449000),	-- 13
-('.dev', 690000),	-- 14
-('.site', 39000),	-- 15
-('.online', 39000),	-- 16
-('.cloud', 59000),	-- 17
-('.click', 59000),	-- 18
-('.group', 99000),  -- Thêm .group  19
-('.mom', 129000),   -- Thêm .mom	20
-('.asia', 69000),   -- Thêm .asia	21
-('.icu', 49000),    -- Thêm .icu	22
-('.art', 59000),    -- Thêm .art	23
-('.blog', 59000),   -- Thêm .blog	24
-('.com.vn', 550000),   -- 25
-('.net.vn', 450000),   -- 26
-('.org.vn', 350000),   -- 27
-('.edu.vn', 100000),        -- 28 
-('.gov.vn', 100000),        -- 29 
-('.com.my', 500000),     -- 30: Malaysia
-('.edu.au', 300000),     -- 31: Úc (giáo dục)
-('.co.uk', 450000),      -- 32: UK doanh nghiệp
-('.gov.ph', 200000);     -- 33: Chính phủ Philippines
+INSERT INTO TopLevelDomain (TLD_text, price) VALUES
+('.com', 299000),
+('.net', 390000),
+('.org', 299000),
+('.info', 179000),
+('.biz', 99000),
+('.co', 499000),
+('.io', 890000),
+('.ai', 1499000),
+('.me', 299000),
+('.tv', 399000),
+('.xyz', 199000),
+('.love', 259000),
+('.vn', 449000),
+('.dev', 690000),
+('.site', 239000),
+('.online', 339000),
+('.cloud', 159000),
+('.click', 159000),
+('.group', 299000),
+('.mom', 129000),
+('.asia', 99000),
+('.icu', 99000),
+('.art', 99000),
+('.blog', 599000),
+('.com.vn', 550000),
+('.net.vn', 450000),
+('.org.vn', 350000),
+('.edu.vn', 100000);
 
 INSERT INTO domains (domain_name, tld_id, status, active_date, years, owner_id)
 VALUES
@@ -210,16 +205,11 @@ VALUES
 ('globalbusiness', 22, 'sold', '2025-03-15 11:20:00', 1, 9),
 ('creativeart12', 23, 'available', null, 1 ,null),
 ('topblog21', 24, 'available', null, 1 ,null),
-('topblog21', 1, 'available', null, 1 ,null),
-('tanvipprono1', 25, 'available', null, 1 ,null),
-('vietnamnetworksiucap', 26, 'available', null, 1, null),
-('secondnewgreenworld', 27, 'available', null, 1, null),
-('hocviencnttgtvt', 28, 'available', null, 1, null),
-('chinhphuvn', 29, 'available', null, 1, null),
-('techmalaysianah', 30, 'available', null, 1, null),
-('monashlocaluniversity', 31, 'available', null, 1, null),
-('ukenterprisesseller', 32, 'available', null, 1, null),
-('healthdeptseek', 33, 'available', null, 1, null);
+('topblog21', 1, 'available', null, 1 ,null);
+
+UPDATE domains
+JOIN TopLevelDomain tld ON domains.tld_id = tld.id
+SET domains.price = tld.price;
 
 INSERT INTO carts (cus_id, domain_id, years) VALUES
 (1, 1, 1),
@@ -238,7 +228,6 @@ INSERT INTO carts (cus_id, domain_id, years) VALUES
 (10, 28, 1),
 (10, 32, 1);
 
-
 INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VALUES
 ('HD001', 1, '2024-01-21', 'completed'),
 ('HD002', 2, '2024-01-22', 'cancelled'),
@@ -252,61 +241,64 @@ INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VAL
 ('HD010', 9, '2025-03-15', 'completed'),
 ('HD011', 5, '2025-03-25', 'pendingConfirm');
 
-
-INSERT INTO Transactions_info (transactions_id, domain_id, price) VALUES
+INSERT INTO Transactions_info (transactions_id, domain_id) VALUES
 -- HD001
-('HD001', 15, 78000),
+('HD001', 15),
 
 -- HD002 (cancelled)
-('HD002', 11, 299000),
-('HD002', 13, 299000),
+('HD002', 11),
+('HD002', 13),
 
 -- HD003
-('HD003', 5, 39000),
-('HD003', 12, 299000),
-('HD003', 6, 179000),
+('HD003', 5),
+('HD003', 12),
+('HD003', 6),
 
 -- HD004
-('HD004', 2, 299000),
-('HD004', 3, 499000),
-('HD004', 4, 299000),
+('HD004', 2),
+('HD004', 3),
+('HD004', 4),
 
 -- HD005 (cancelled)
-('HD005', 7, 890000),
-('HD005', 8, 179000),
-('HD005', 9, 1499000),
-('HD005', 10, 299000),
+('HD005', 7),
+('HD005', 8),
+('HD005', 9),
+('HD005', 10),
 
 -- HD006
-('HD006', 14, 299000),
-('HD006', 16, 299000),
-('HD006', 19, 99000),
+('HD006', 14),
+('HD006', 16),
+('HD006', 19),
 
 -- HD007
-('HD007', 22, 299000),
-('HD007', 23, 399000),
-('HD007', 24, 49000),
+('HD007', 22),
+('HD007', 23),
+('HD007', 24),
 
 -- HD008 (cancelled)
-('HD008', 17, 179000),
-('HD008', 18, 299000),
-('HD008', 28, 59000),
-('HD008', 32, 129000),
+('HD008', 17),
+('HD008', 18),
+('HD008', 28),
+('HD008', 32),
 
 -- HD009
-('HD009', 25, 449000),
-('HD009', 30, 59000),
+('HD009', 25),
+('HD009', 30),
 
 -- HD010
-('HD010', 33, 69000),
-('HD010', 34, 59000),
-('HD010', 35, 59000),
+('HD010', 33),
+('HD010', 34),
+('HD010', 35),
 
 -- HD011
-('HD011', 21, 1499000),
-('HD011', 26, 690000),
-('HD011', 27, 39000);
+('HD011', 21),
+('HD011', 26),
+('HD011', 27);
 
+UPDATE Transactions_info tsi
+JOIN Domains d on d.id = tsi.domain_id
+JOIN TopLevelDomain tld ON d.tld_id = tld.id
+SET tsi.price = d.years * tld.price;
 
 INSERT INTO PaymentMethod (method)
 VALUES

@@ -51,6 +51,7 @@ public class RegisterController implements Initializable {
     public void buttonRegisterOnAction() {
         // kiểm tra và bắt lỗi
         // kiểm tra họ và tên
+        passwordFieldOnClicked();
         boolean flag = true;
 
         if (usernameTextfield.getText().isBlank()) {
@@ -135,6 +136,8 @@ public class RegisterController implements Initializable {
 
                 if (status.equals("success")) {
                     System.out.println("Dang ky tai khoan thanh cong");
+                    SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("register"), null, bundle.getString("notice.registerSuccess"));
+                    SceneManager.getInstance().switchScene("/fxml/login.fxml");
                 } else if (status.equals("failed")) {
                     if (message.toLowerCase().contains("phone number already exists")) {
                         phoneErr.setText(bundle.getString("error.phone3"));
@@ -150,6 +153,7 @@ public class RegisterController implements Initializable {
                 throw new RuntimeException("Can't connect to service");
             }
         }
+
     }
 
     public void buttonLoginOnAction() {

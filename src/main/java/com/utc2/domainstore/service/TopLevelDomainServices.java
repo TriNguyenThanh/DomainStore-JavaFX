@@ -1,6 +1,9 @@
 package com.utc2.domainstore.service;
 
+import com.utc2.domainstore.entity.database.DomainModel;
+import com.utc2.domainstore.entity.database.DomainStatusEnum;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
+import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.repository.TopLevelDomainRepository;
 import java.util.List;
 import org.json.JSONArray;
@@ -24,6 +27,7 @@ public class TopLevelDomainServices implements ITopLevelDomain{
             }
 
             int success = TopLevelDomainRepository.getInstance().update(new TopLevelDomainModel(id,TLD_text,price));
+            DomainRepository.getInstance().updateByStatusAndTldId(price, id);
             if (success > 0){
                 result.put("status", "success");
                 result.put("message", "Updated successfully");

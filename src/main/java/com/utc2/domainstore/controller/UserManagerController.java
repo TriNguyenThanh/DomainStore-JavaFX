@@ -27,6 +27,7 @@ import java.util.ResourceBundle;
 public class UserManagerController implements Initializable {
     private ResourceBundle bundle;
     private List<UserModel> data;
+    private IAccount accountService;
 
     @FXML
     private Button btAdd, btRemove, btEdit, btActive, btPaymentHistory;
@@ -54,21 +55,14 @@ public class UserManagerController implements Initializable {
     @FXML
     private void onHandleButton(ActionEvent e) {
         if (e.getSource() == btAdd) {
-            // Handle add user logic
             handleAddUser();
         } else if (e.getSource() == btRemove) {
-            // Handle remove user logic
             handleRemoveUser();
         } else if (e.getSource() == btEdit) {
-            // Handle edit user logic
             handleEditUser();
         } else if (e.getSource() == btActive) {
-            // Handle active user logic
-            // Logic to activate selected users
-            // After activating, refresh the table
             handleActiveUser();
         } else if (e.getSource() == btPaymentHistory) {
-            // open payment history dialog
             handlePaymentHistory();
         }
     }
@@ -76,6 +70,7 @@ public class UserManagerController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        this.accountService = new AccountServices();
         data = getData();
         initTable();
     }
@@ -143,6 +138,7 @@ public class UserManagerController implements Initializable {
         // After adding, refresh the table
         CreateAccountController createAccountController = MainController.getInstance().load("/fxml/createAccount.fxml").getController();
         createAccountController.setMethod(METHOD.ADD);
+
     }
 
     // Khóa người dùng
@@ -179,15 +175,10 @@ public class UserManagerController implements Initializable {
     // Chỉnh sửa người dùng
     private void handleEditUser() {
         // Logic to edit selected user
-        ObservableList<UserModel> selectedUsers = table.getSelectionModel().getSelectedItems();
-        if (selectedUsers.size() != 1) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Invalid Selection");
-            alert.setHeaderText(null);
-            alert.setContentText("Please select exactly one user to edit.");
-            alert.showAndWait();
+        UserModel selectedUser = table.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("error"), null, bundle.getString("error.noSelect"));
         } else {
-            UserModel selectedUser = selectedUsers.getFirst();
             selectedUser.setPassword("********");
             // Open edit dialog with selected user data
             // Logic to update the user in the list
@@ -200,28 +191,26 @@ public class UserManagerController implements Initializable {
     // Kích hoạt người dùng
     private void handleActiveUser() {
         // Logic to activate selected users
-        ObservableList<UserModel> selectedUsers = table.getSelectionModel().getSelectedItems();
-        if (selectedUsers.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("No Selection");
-            alert.setHeaderText(null);
-            alert.setContentText("Please select at least one user to activate.");
-            alert.showAndWait();
+        UserModel selectedUser = table.getSelectionModel().getSelectedItem();
+        if (selectedUser == null) {
+            SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("error"), null, bundle.getString("error.noSelect"));
         } else {
-            for (UserModel user : selectedUsers) {
-                // Logic to activate the user
-                JSONObject request = new JSONObject();
-                request.put("user_id", user.getID());
-                request.put("full_name", user.getName());
-                request.put("phone", user.getPhone());
-                request.put("email", user.getEmail());
-                request.put("ps_id", user.getPsID());
-                request.put("is_deleted", false);
-                IAccount accountService = new AccountServices();
-                JSONObject response = accountService.updateUser(request);
+            // Logic to activate the user
+            JSONObject request = new JSONObject();
+            request.put("user_id", selectedUser.getID());
+            request.put("full_name", selectedUser.getName());
+            request.put("phone", selectedUser.getPhone());
+            request.put("email", selectedUser.getEmail());
+            request.put("ps_id", selectedUser.getPsID());
+            request.put("is_deleted", false);
 
-                user.setStatus(ACCOUNT_STATUS.ACTIVE);
+            JSONObject response = accountService.updateUser(request);
+            if (response.getString("status").equals("failed")) {
+                SceneManager.getInstance().showDialog(Alert.AlertType.ERROR, bundle.getString("error"), null, bundle.getString("notice.userActiveFailed"));
             }
+
+            selectedUser.setStatus(ACCOUNT_STATUS.ACTIVE);
+
         }
         table.refresh();
     }

@@ -23,14 +23,13 @@ public class AddDomainController implements Initializable {
     private ResourceBundle bundle;
     private String domainName;
     private final IDomain domainService = new DomainServices();
+    private ITopLevelDomain tldService;
     private Runnable listener;
     private static AddDomainController instance;
 
     public AddDomainController() {
         if (instance == null) {
             instance = this;
-        } else {
-            throw new IllegalStateException("Already initialized");
         }
     }
 
@@ -62,6 +61,7 @@ public class AddDomainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        tldService = new TopLevelDomainServices();
 
         cbTLD.getItems().addAll(getTLDs().stream().map(TLDViewModel::getName).toList());
         cbTLD.getSelectionModel().selectFirst();
@@ -123,7 +123,6 @@ public class AddDomainController implements Initializable {
     // Get TLDs from the server
     private List<TLDViewModel> getTLDs() {
         List<TLDViewModel> list = new ArrayList<>();
-        ITopLevelDomain tldService = new TopLevelDomainServices();
         JSONObject response = tldService.getAllTLD();
         if (response != null) {
             for (int i = 0; i < response.getJSONArray("tld").length(); i++) {
