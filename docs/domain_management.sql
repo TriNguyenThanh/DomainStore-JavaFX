@@ -53,7 +53,7 @@ CREATE TABLE carts (
     domain_id INT NOT NULL,
     years INT CHECK (years > 0),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
+    
     FOREIGN KEY (cus_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (domain_id) REFERENCES domains(id) ON DELETE CASCADE
 );
@@ -78,7 +78,7 @@ CREATE INDEX idx_transactions_date ON Transactions(transaction_date);
 CREATE TABLE Transactions_info (
     transactions_id CHAR(10) NOT NULL,
     domain_id INT NOT NULL,
-    price INT UNSIGNED NOT NULL,
+    price INT UNSIGNED default 0,
 
     FOREIGN KEY (transactions_id) REFERENCES Transactions(id) ON DELETE CASCADE,
     FOREIGN KEY (Domain_id) REFERENCES domains(id),
@@ -228,7 +228,6 @@ INSERT INTO carts (cus_id, domain_id, years) VALUES
 (10, 28, 1),
 (10, 32, 1);
 
-
 INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VALUES
 ('HD001', 1, '2024-01-21', 'completed'),
 ('HD002', 2, '2024-01-22', 'cancelled'),
@@ -242,61 +241,64 @@ INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VAL
 ('HD010', 9, '2025-03-15', 'completed'),
 ('HD011', 5, '2025-03-25', 'pendingConfirm');
 
-
-INSERT INTO Transactions_info (transactions_id, domain_id, price) VALUES
+INSERT INTO Transactions_info (transactions_id, domain_id) VALUES
 -- HD001
-('HD001', 15, 780000),
+('HD001', 15),
 
 -- HD002 (cancelled)
-('HD002', 11, 299000),
-('HD002', 13, 299000),
+('HD002', 11),
+('HD002', 13),
 
 -- HD003
-('HD003', 5, 390000),
-('HD003', 12, 299000),
-('HD003', 6, 179000),
+('HD003', 5),
+('HD003', 12),
+('HD003', 6),
 
 -- HD004
-('HD004', 2, 299000),
-('HD004', 3, 499000),
-('HD004', 4, 299000),
+('HD004', 2),
+('HD004', 3),
+('HD004', 4),
 
 -- HD005 (cancelled)
-('HD005', 7, 890000),
-('HD005', 8, 179000),
-('HD005', 9, 1499000),
-('HD005', 10, 299000),
+('HD005', 7),
+('HD005', 8),
+('HD005', 9),
+('HD005', 10),
 
 -- HD006
-('HD006', 14, 299000),
-('HD006', 16, 299000),
-('HD006', 19, 99000),
+('HD006', 14),
+('HD006', 16),
+('HD006', 19),
 
 -- HD007
-('HD007', 22, 299000),
-('HD007', 23, 399000),
-('HD007', 24, 49000),
+('HD007', 22),
+('HD007', 23),
+('HD007', 24),
 
 -- HD008 (cancelled)
-('HD008', 17, 179000),
-('HD008', 18, 299000),
-('HD008', 28, 59000),
-('HD008', 32, 129000),
+('HD008', 17),
+('HD008', 18),
+('HD008', 28),
+('HD008', 32),
 
 -- HD009
-('HD009', 25, 449000),
-('HD009', 30, 59000),
+('HD009', 25),
+('HD009', 30),
 
 -- HD010
-('HD010', 33, 69000),
-('HD010', 34, 59000),
-('HD010', 35, 59000),
+('HD010', 33),
+('HD010', 34),
+('HD010', 35),
 
 -- HD011
-('HD011', 21, 1499000),
-('HD011', 26, 690000),
-('HD011', 27, 39000);
+('HD011', 21),
+('HD011', 26),
+('HD011', 27);
 
+UPDATE Transactions_info tsi
+JOIN Domains d on d.id = tsi.domain_id
+JOIN TopLevelDomain tld ON d.tld_id = tld.id
+SET tsi.price = d.years * tld.price;
 
 INSERT INTO PaymentMethod (method)
 VALUES

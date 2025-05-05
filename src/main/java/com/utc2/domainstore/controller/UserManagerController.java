@@ -143,6 +143,7 @@ public class UserManagerController implements Initializable {
         // After adding, refresh the table
         CreateAccountController createAccountController = MainController.getInstance().load("/fxml/createAccount.fxml").getController();
         createAccountController.setMethod(METHOD.ADD);
+
     }
 
     // Khóa người dùng
