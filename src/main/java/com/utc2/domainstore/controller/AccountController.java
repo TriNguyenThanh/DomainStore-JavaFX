@@ -31,6 +31,7 @@ public class AccountController implements Initializable {
     private ResourceBundle bundle;
     private AccountModel rootData;
     private AccountModel newData;
+    private IAccount accountServices;
 
     // FXML
     @FXML
@@ -65,9 +66,13 @@ public class AccountController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         bundle = resources;
+        accountServices = new AccountServices();
+
         rootData = getRootData();
         newData = null;
         displayData();
+        btCancel.setDisable(true);
+        btSave.setDisable(true);
         rootPane.parentProperty().addListener((obs, oldParent, newParent) -> {
             if (newParent == null) {
                 onRemovedFromScene();
@@ -82,7 +87,6 @@ public class AccountController implements Initializable {
         JSONObject request = new JSONObject();
         request.put("user_id", UserSession.getInstance().getUserId());
 
-        IAccount accountServices = new AccountServices();
         JSONObject respond = accountServices.getUserInformation(request);
 
         // parse the response
@@ -155,12 +159,13 @@ public class AccountController implements Initializable {
 
     // cancel the edit
     private void cancel() {
-        edit(false);
+
         // show a confirmation dialog
         Optional<ButtonType> buttonType = SceneManager.getInstance().showDialog(Alert.AlertType.CONFIRMATION, bundle.getString("cancel"), bundle.getString("notice.cancel"), null);
 
         if (buttonType.isPresent() && buttonType.get() == ButtonType.OK) {
             // Reset the fields to the original data
+            edit(false);
             displayData();
             lbPhoneErr.setText("");
             lbEmailErr.setText("");
@@ -179,11 +184,13 @@ public class AccountController implements Initializable {
         }
 
         // show a confirmation dialog
-        Optional<ButtonType> button = SceneManager.getInstance().showDialog(Alert.AlertType.CONFIRMATION,
-                bundle.getString("save"), bundle.getString("notice.save"), null);
+        Optional<ButtonType> button = SceneManager.getInstance().showDialog(Alert.AlertType.CONFIRMATION, bundle.getString("save"), bundle.getString("notice.save"), null);
         if (button.isPresent() && button.get() == ButtonType.OK) {
 
-            if (!checkingData()) return;
+            if (!checkingData()) {
+                displayData();
+                return;
+            }
 
             // create a request to update user information
             JSONObject request = new JSONObject();
@@ -193,7 +200,6 @@ public class AccountController implements Initializable {
             request.put("email", newData.getEmail());
             request.put("personal_id", newData.getPsID());
 
-            IAccount accountServices = new AccountServices();
             JSONObject respond = accountServices.updateUser(request);
             try {
                 // parse the response
@@ -202,7 +208,17 @@ public class AccountController implements Initializable {
                 message = respond.getString("message");
 
                 if (status.equals("failed")) {
-                    SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("save"), bundle.getString("error"), bundle.getString("notice.savingFailed"));
+                    SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("save"), bundle.getString("error"), message);
+                    displayData();
+                } else {
+                    // update the data
+                    rootData.setFullName(newData.getFullName());
+                    rootData.setPhone(newData.getPhone());
+                    rootData.setEmail(newData.getEmail());
+                    rootData.setPsID(newData.getPsID());
+
+                    // show a success message
+                    SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("save"), null, bundle.getString("notice.userModifySuccess"));
                 }
             } catch (JSONException e) {
                 SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("save"), bundle.getString("error"), bundle.getString("notice.savingFailed"));
@@ -217,7 +233,7 @@ public class AccountController implements Initializable {
         // kiểm tra tên người dùng
         if (newData.getFullName().isBlank()) {
             flag = false;
-            lbFullNameErr.setText(bundle.getString("register.usernameErr"));
+            lbFullNameErr.setText(bundle.getString("error.username"));
         } else {
             lbFullNameErr.setText(" ");
         }
@@ -225,10 +241,10 @@ public class AccountController implements Initializable {
         // kiểm tra số điện thoại
         if (newData.getPhone().isBlank()) {
             flag = false;
-            lbPhoneErr.setText(bundle.getString("register.phoneErr1"));
+            lbPhoneErr.setText(bundle.getString("error.phone1"));
         } else if (!phoneNumberCheck(newData.getPhone())) {
             flag = false;
-            lbPhoneErr.setText(bundle.getString("register.phoneErr2"));
+            lbPhoneErr.setText(bundle.getString("error.phone2"));
         } else {
             lbPhoneErr.setText(" ");
         }
@@ -236,10 +252,10 @@ public class AccountController implements Initializable {
         // kiêm tra email
         if (newData.getEmail().isBlank()) {
             flag = false;
-            lbEmailErr.setText(bundle.getString("register.emailErr1"));
+            lbEmailErr.setText(bundle.getString("error.email1"));
         } else if (!emailCheck(newData.getEmail())) {
             flag = false;
-            lbEmailErr.setText(bundle.getString("register.emailErr2"));
+            lbEmailErr.setText(bundle.getString("error.email2"));
         } else {
             lbEmailErr.setText(" ");
         }
@@ -247,10 +263,10 @@ public class AccountController implements Initializable {
         // kiểm tra số CCCD
         if (newData.getPsID().isBlank()) {
             flag = false;
-            lbPsIDErr.setText(bundle.getString("register.psIDErr1"));
+            lbPsIDErr.setText(bundle.getString("error.psIDErr1"));
         } else if (!personalIDCheck(newData.getPsID())) {
             flag = false;
-            lbPsIDErr.setText(bundle.getString("register.psIDErr2"));
+            lbPsIDErr.setText(bundle.getString("error.psIDErr2"));
         } else {
             lbPsIDErr.setText(" ");
         }
@@ -260,6 +276,10 @@ public class AccountController implements Initializable {
 
     // set editable
     private void edit(boolean isEdited) {
+        btEdit.setDisable(isEdited);
+        btSave.setDisable(!isEdited);
+        btCancel.setDisable(!isEdited);
+
         tfUsername.setEditable(isEdited);
         tfPhone.setEditable(isEdited);
         tfEmail.setEditable(isEdited);

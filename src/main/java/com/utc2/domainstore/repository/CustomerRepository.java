@@ -1,13 +1,10 @@
 package com.utc2.domainstore.repository;
 
 import com.utc2.domainstore.config.JDBC;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import com.utc2.domainstore.entity.database.CustomerModel;
 import com.utc2.domainstore.entity.database.RoleEnum;
 
+import java.sql.*;
 import java.util.ArrayList;
 
 public class CustomerRepository implements IRepository<CustomerModel> {
@@ -34,7 +31,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
 
             try (ResultSet rs = pst.getGeneratedKeys()) {
                 if (rs.next()) {
-                    customer.setId(rs.getInt(1)); 
+                    customer.setId(rs.getInt(1));
                 }
             }
             return result;
@@ -48,7 +45,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
     }
 
     @Override
-    public int update(CustomerModel customer) {
+    public int update(CustomerModel customer) throws SQLException {
         String sql;
         if (customer.getPasswordHash() == null || customer.getPasswordHash().isEmpty()) {
             sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, role=?, is_deleted=? WHERE id=?";
@@ -74,26 +71,25 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                 pst.setBoolean(7, customer.getIsDeleted());
                 pst.setInt(8, customer.getId());
             }
-
-            return pst.executeUpdate();
+            try {
+                return pst.executeUpdate();
+            } catch (SQLIntegrityConstraintViolationException e) {
+                throw new SQLException("Duplicate entry: " + e.getMessage());
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("Error: " + e.getMessage());
         }
-        return 0;
     }
-
-
-
-
+    
     @Override
     public int delete(CustomerModel customer) {
         String sql = "DELETE FROM users WHERE id=?";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
-            
+
             pst.setInt(1, customer.getId());
-            
+
             return pst.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -106,12 +102,12 @@ public class CustomerRepository implements IRepository<CustomerModel> {
     @Override
     public CustomerModel selectById(CustomerModel customer) {
         String sql = "SELECT * FROM users WHERE id=?";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
-            
+
             pst.setInt(1, customer.getId());
-            
+
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     return new CustomerModel(
@@ -136,8 +132,8 @@ public class CustomerRepository implements IRepository<CustomerModel> {
     @Override
     public ArrayList<CustomerModel> selectByCondition(String condition) {
         ArrayList<CustomerModel> customers = new ArrayList<>();
-        String sql = "SELECT * FROM users WHERE " + condition; 
-        
+        String sql = "SELECT * FROM users WHERE " + condition;
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
@@ -166,11 +162,11 @@ public class CustomerRepository implements IRepository<CustomerModel> {
     public ArrayList<CustomerModel> selectAll() {
         ArrayList<CustomerModel> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
-        
+
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
-            
+
             while (rs.next()) {
                 users.add(new CustomerModel(
                         rs.getInt("id"),
@@ -216,7 +212,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
         }
         return null;
     }
-    
+
     //lấy email
     public CustomerModel selectByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
@@ -243,7 +239,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
         }
         return null;
     }
-    
+
     //lấy cccd
     public CustomerModel selectByCccd(String cccd) {
         String sql = "SELECT * FROM users WHERE cccd = ?";
