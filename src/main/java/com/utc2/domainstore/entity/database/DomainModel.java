@@ -11,11 +11,36 @@ public class DomainModel {
     private DomainStatusEnum status;
     private Date activeDate;
     private int years;
+    private int price;
     private Integer ownerId;
     private Date createdAt; 
     
     public DomainModel() {
     }
+
+    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Date activeDate, int years, int price, Integer ownerId, Date createdAt) {
+        this.id = id;
+        this.domainName = domainName;
+        this.tldId = tldId;
+        this.status = status;
+        this.activeDate = activeDate;
+        this.years = years;
+        this.price = price;
+        this.ownerId = ownerId;
+        this.createdAt = createdAt;
+    }
+
+    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Date activeDate, int years, int price, Integer ownerId) {
+        this.id = id;
+        this.domainName = domainName;
+        this.tldId = tldId;
+        this.status = status;
+        this.activeDate = activeDate;
+        this.years = years;
+        this.price = price;
+        this.ownerId = ownerId;
+    }
+    
     public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Date activeDate, int years, Integer ownerId) {
         this.id = id;
         this.domainName = domainName;
@@ -112,6 +137,14 @@ public class DomainModel {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
     public TopLevelDomainModel getTopLevelDomainbyId(int id){
         for(TopLevelDomainModel tld : TopLevelDomainRepository.getInstance().selectAll()){

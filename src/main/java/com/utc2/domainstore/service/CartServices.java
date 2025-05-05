@@ -13,16 +13,6 @@ import java.util.List;
 
 public class CartServices implements ICart {
 
-    private CartRepository cartRepository;
-
-    public CartServices() {
-        this.cartRepository = new CartRepository();
-    }
-
-    public CartServices(CartRepository cartRepository) {
-        this.cartRepository = cartRepository;
-    }
-
     @Override
     public JSONObject getShoppingCart(JSONObject jsonInput) {
         JSONObject response = new JSONObject();
@@ -32,7 +22,7 @@ public class CartServices implements ICart {
         int cus_id = jsonInput.getInt("cus_id");
 
         // Truy vấn danh sách tên miền trong giỏ hàng của user
-        List<DomainModel> cartItems = cartRepository.getCartByUserId(cus_id);
+        List<DomainModel> cartItems = CartRepository.getInstance().getCartByUserId(cus_id);
 
         for (DomainModel domain : cartItems) {
             TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
@@ -46,7 +36,7 @@ public class CartServices implements ICart {
 
             domainJson.put("name", fullDomainName);
             domainJson.put("status", domain.getStatus().toString().toLowerCase());
-            domainJson.put("price", (tld != null) ? tld.getPrice() : 0);
+            domainJson.put("price", domain.getPrice());
             domainJson.put("year", domain.getYears());
 
             domainArray.put(domainJson);
@@ -74,6 +64,7 @@ public class CartServices implements ICart {
             String fullDomainName = domainJson.getString("name").toLowerCase().trim();
             String status = domainJson.getString("status");
             int years = domainJson.getInt("years");
+            int price = domainJson.getInt("price");
 
             if (!"available".equalsIgnoreCase(status)) continue;
 
@@ -97,17 +88,19 @@ public class CartServices implements ICart {
             if (domainModel == null) {
                 // Insert mới nếu chưa tồn tại
                 domainModel = new DomainModel(namePart, matchedTLD.getId(), DomainStatusEnum.available, years);
+                domainModel.setPrice(price);
                 DomainRepository.getInstance().insert(domainModel);
                 domainModel = DomainRepository.getInstance().getDomainByNameAndTld(namePart, matchedTLD.getId());
             } else {
-                // Cập nhật số năm nếu đã có
+//                 Cập nhật số năm nếu đã có
                 domainModel.setYears(years);
+                domainModel.setPrice(price);
                 DomainRepository.getInstance().update(domainModel);
             }
 
             // Thêm vào giỏ nếu chưa có
-            if (!cartRepository.isDomainInCart(cus_id, domainModel.getId(), years)) {
-                if (cartRepository.updateCart(cus_id, domainModel.getId(), years)) {
+            if (!CartRepository.getInstance().isDomainInCart(cus_id, domainModel.getId(), years)) {
+                if (CartRepository.getInstance().updateCart(cus_id, domainModel.getId(), years)) {
                     successCount++;
                 }
             }
@@ -156,8 +149,8 @@ public class CartServices implements ICart {
             }
 
             DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(domainNamePart, matchedTld.getId());
-            if (domainModel != null && cartRepository.isDomainInCart2(cus_id, domainModel.getId())) {
-                boolean isRemoved = cartRepository.removeFromCart(cus_id, domainModel.getId());
+            if (domainModel != null && CartRepository.getInstance().isDomainInCart2(cus_id, domainModel.getId())) {
+                boolean isRemoved = CartRepository.getInstance().removeFromCart(cus_id, domainModel.getId());
                 if (isRemoved) successCount++;
             }
         }
@@ -225,11 +218,12 @@ public class CartServices implements ICart {
                         domainModel.getStatus(),
                         domainModel.getActiveDate(),
                         years);
+                updatedDomain.setPrice(domainModel.getPrice());
                 DomainRepository.getInstance().update(updatedDomain);
             }
 
             // Cập nhật hoặc thêm vào giỏ hàng
-            boolean updated = cartRepository.updateCart(cus_id, domainModel.getId(), years);
+            boolean updated = CartRepository.getInstance().updateCart(cus_id, domainModel.getId(), years);
             if (updated) updateCount++;
         }
 

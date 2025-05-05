@@ -164,6 +164,8 @@ public class VnPayService implements IPaymentGateway{
         html.append("<body class='bg-gray-100 flex items-center justify-center min-h-screen'>");
         html.append("<div class='container max-w-lg mx-auto p-6 bg-white rounded-xl shadow-lg fade-in'>");
 
+        String amountStr = paymentResult.get("amount");
+        Long amount = Long.parseLong(amountStr);
         String status = paymentResult.get("status");
         if ("success".equals(status)) {
             html.append("<div class='text-center'>");
@@ -177,7 +179,8 @@ public class VnPayService implements IPaymentGateway{
             html.append("</div>");
             html.append("<div class='flex justify-between border-b pb-2'>");
             html.append("<span class='text-gray-600 font-medium'>Số tiền:</span>");
-            html.append("<span class='text-gray-800'>").append(paymentResult.get("amount")).append(" VND</span>");
+            html.append("<span class='text-gray-800'>");
+            html.append(String.format("%,d", amount)).append(" VND</span>");
             html.append("</div>");
             html.append("<div class='flex justify-between border-b pb-2'>");
             html.append("<span class='text-gray-600 font-medium'>Nội dung thanh toán:</span>");

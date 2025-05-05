@@ -154,7 +154,7 @@ public class CartRepository implements IRepository<CartModel>{
     }
     
     public List<DomainModel> getCartByUserId(int userId) {
-        String sql = "SELECT d.id, d.domain_name, d.status, t.price, d.tld_id, c.years " +
+        String sql = "SELECT d.id, d.domain_name, d.status, d.price, d.tld_id, c.years " +
                      "FROM carts c " +
                      "JOIN domains d ON c.domain_id = d.id " +
                      "JOIN TopLevelDomain t ON d.tld_id = t.id " +
@@ -175,7 +175,7 @@ public class CartRepository implements IRepository<CartModel>{
                     domain.setYears(rs.getInt("years"));
                     TopLevelDomainModel tld = new TopLevelDomainModel();
                     tld.setId(rs.getInt("tld_id")); 
-                    tld.setPrice(rs.getInt("price"));
+                    domain.setPrice(rs.getInt("price"));
 
                     domain.setTldId(tld.getId()); 
 

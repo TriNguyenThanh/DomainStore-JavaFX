@@ -171,7 +171,7 @@ public class TLDManagerController implements Initializable {
             tfPrice.setEditable(true);
         } else {
             // show alert if no TLD is selected
-            SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("alert.warning"), null, bundle.getString("alert.selectTLD"));
+            SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("warning"), null, bundle.getString("error.noSelect"));
         }
     }
 
