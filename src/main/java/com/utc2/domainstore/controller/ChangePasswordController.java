@@ -2,6 +2,7 @@ package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.service.AccountServices;
 import com.utc2.domainstore.utils.CheckingUtils;
+import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ import static com.utc2.domainstore.utils.PasswordUtils.checkPassword;
 public class ChangePasswordController implements Initializable {
     private ResourceBundle bundle;
     private String hash_pass;
+    private AccountServices accountServices;
 
     @FXML
     private Label lbOldErr, lbNewErr, lbConfirmErr;
@@ -37,7 +39,7 @@ public class ChangePasswordController implements Initializable {
             ((Stage) btCancel.getScene().getWindow()).close();
         } else if (e.getSource() == btSave) {
             tfOnclick();
-            if (!checkOldPassword()) return;
+            if (checkOldPassword()) return;
             boolean flag = true;
 
             if (tfNew.getText().isBlank()) {
@@ -67,19 +69,12 @@ public class ChangePasswordController implements Initializable {
             request.put("user_id", UserSession.getInstance().getUserId());
             request.put("password", tfNew.getText());
 
-            AccountServices accountServices = new AccountServices();
             JSONObject respond = accountServices.updateUserPassword(request);
 
             if (respond.get("status").equals("failed")) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(bundle.getString("error"));
-                alert.setHeaderText(bundle.getString("notice.updatePassFailed"));
-                alert.showAndWait();
+                SceneManager.getInstance().showDialog(Alert.AlertType.ERROR, bundle.getString("error"), null, bundle.getString("notice.updatePassFailed"));
             } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle(bundle.getString("notice"));
-                alert.setHeaderText(bundle.getString("notice.updatePassSuccess"));
-                alert.showAndWait();
+                SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("notice"), null, bundle.getString("notice.updatePassSuccess"));
             }
             ((Stage) tfOld.getScene().getWindow()).close();
         }
@@ -87,7 +82,7 @@ public class ChangePasswordController implements Initializable {
 
     @FXML
     private void cbOnAction() {
-        if (!checkOldPassword()) return;
+        if (checkOldPassword()) return;
 
         if (cbPass.isSelected()) {
             tfNew.setPromptText(tfNew.getText());
@@ -107,7 +102,7 @@ public class ChangePasswordController implements Initializable {
 
     @FXML
     private void tfOnclick() {
-        if (!checkOldPassword()) return;
+        if (checkOldPassword()) return;
 
         if (cbPass.isSelected()) {
             tfNew.setText(tfNew.getPromptText());
@@ -122,22 +117,24 @@ public class ChangePasswordController implements Initializable {
         }
     }
 
-    private boolean checkOldPassword() {
-        if (tfOld.getText().isBlank()) {
-            lbOldErr.setText(bundle.getString("error.oldPasswordErr1"));
-            return false;
-        } else if (!checkPassword(hash_pass, tfOld.getText())) {
-            lbOldErr.setText(bundle.getString("error.oldPasswordErr2"));
-            return false;
-        }
-        lbOldErr.setText("");
-        return true;
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        accountServices = new AccountServices();
     }
+
+    private boolean checkOldPassword() {
+        if (tfOld.getText().isBlank()) {
+            lbOldErr.setText(bundle.getString("error.oldPasswordErr1"));
+            return true;
+        } else if (!checkPassword(hash_pass, tfOld.getText())) {
+            lbOldErr.setText(bundle.getString("error.oldPasswordErr2"));
+            return true;
+        }
+        lbOldErr.setText("");
+        return false;
+    }
+
 
     public void setData(String hash_pass) {
         this.hash_pass = hash_pass;

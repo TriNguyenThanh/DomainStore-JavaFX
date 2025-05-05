@@ -1,12 +1,12 @@
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.repository.CustomerRepository;
 import com.utc2.domainstore.entity.database.CustomerModel;
+import com.utc2.domainstore.repository.CustomerRepository;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import org.json.JSONObject;
 
-public class LoginServices implements ILogin{
+public class LoginServices implements ILogin {
     @Override
     public JSONObject authentication(JSONObject jsonInput) {
         String username = jsonInput.getString("username");
@@ -17,8 +17,11 @@ public class LoginServices implements ILogin{
 
         JSONObject response = new JSONObject();
         // Kiểm tra tồn tại và trạng thái bị khóa (xóa mềm)
-        if (customer == null || customer.getIsDeleted()) {
-            response.put("error", "User not found or has been locked");
+        if (customer == null) {
+            response.put("error", "User not found");
+            return response;
+        } else if (customer.getIsDeleted()) {
+            response.put("error", "User has been locked");
             return response;
         }
         Argon2 argon2 = Argon2Factory.create();

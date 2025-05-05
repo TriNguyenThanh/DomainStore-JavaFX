@@ -5,6 +5,7 @@ import com.utc2.domainstore.service.LoginServices;
 import com.utc2.domainstore.utils.CheckingUtils;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -15,6 +16,7 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
     private ResourceBundle bundle;
+    private LoginServices loginServices;
 
     // FXML components
     @FXML
@@ -29,10 +31,24 @@ public class LoginController implements Initializable {
     private Label passErrorLabel;
     @FXML
     private ComboBox<String> cbLanguage;
+    @FXML
+    private Button btLogin, btRegister;
+    @FXML
+    private CheckBox cbShowPassword;
+
+    @FXML
+    private void handleButton(ActionEvent event) {
+        if (event.getSource() == btLogin) {
+            login();
+        } else if (event.getSource() == btRegister) {
+            register();
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        this.loginServices = new LoginServices();
 
         SceneManager.getInstance().initLanguageComboBox(cbLanguage);
 
@@ -41,11 +57,27 @@ public class LoginController implements Initializable {
         passwordField.setOnAction(event -> {
             login();
         });
+
+        passwordField.setOnMouseClicked(event -> {
+            if (cbShowPassword.isSelected()) {
+                hidePassword();
+            }
+        });
+
+        cbShowPassword.setOnAction(actionEvent -> {
+            if (cbShowPassword.isSelected()) {
+                showPassword();
+            } else {
+                hidePassword();
+            }
+        });
     }
 
     // handle login
     public void login() {
-        passwordFieldOnInputMethodTextChanged();
+        if (cbShowPassword.isSelected()) {
+            hidePassword();
+        }
         boolean flag = true;
 
         // bắt buộc nhập
@@ -75,9 +107,10 @@ public class LoginController implements Initializable {
             request.put("password", passwordField.getText());
 
             // gửi request và nhận respond
-            LoginServices loginServices = new LoginServices();
-            JSONObject respond = loginServices.authentication(request);
+
+            JSONObject respond = null;
             try {
+                respond = loginServices.authentication(request);
                 int userId = respond.getInt("user_id");
                 RoleEnum role = RoleEnum.valueOf(respond.get("role").toString());
 
@@ -87,8 +120,12 @@ public class LoginController implements Initializable {
 
                 SceneManager.getInstance().switchScene("/fxml/main.fxml");
             } catch (Exception e) {
-                useErrorLabel.setText(bundle.getString("error.login"));
-                passErrorLabel.setText(bundle.getString("error.login"));
+                if (respond.getString("error").contains("not found")) {
+                    useErrorLabel.setText(bundle.getString("error.login"));
+                    passErrorLabel.setText(bundle.getString("error.login"));
+                } else if (respond.getString("error").contains("locked")) {
+                    SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("error"), null, bundle.getString("notice.userIsBlocked"));
+                }
             }
         }
     }
@@ -99,21 +136,15 @@ public class LoginController implements Initializable {
     }
 
     public void showPassword() {
-        if (passwordCheckbox.isSelected()) {
-            passwordField.setPromptText(passwordField.getText());
-            passwordField.setText("");
-        } else {
-            passwordField.setText(passwordField.getPromptText());
-            passwordField.setPromptText("");
-        }
+        cbShowPassword.setSelected(true);
+        passwordField.setPromptText(passwordField.getText());
+        passwordField.setText("");
     }
 
-    public void passwordFieldOnInputMethodTextChanged() {
-        if (passwordCheckbox.isSelected()) {
-            passwordField.setText(passwordField.getPromptText());
-            passwordField.setPromptText("");
-            passwordField.positionCaret(passwordField.getText().length());
-            passwordCheckbox.setSelected(false);
-        }
+    public void hidePassword() {
+        cbShowPassword.setSelected(false);
+        passwordField.setText(passwordField.getPromptText());
+        passwordField.setPromptText("");
+        passwordField.positionCaret(passwordField.getText().length());
     }
 }

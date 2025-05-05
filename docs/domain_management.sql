@@ -5,9 +5,9 @@ USE DOMAINMANAGEMENT;
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL, 
-    email VARCHAR(255) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    cccd VARCHAR(20) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    phone VARCHAR(20) NOT NULL UNIQUE,
+    cccd VARCHAR(20) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('user', 'admin') DEFAULT 'user',
     is_deleted BOOLEAN DEFAULT FALSE,
@@ -78,8 +78,8 @@ CREATE INDEX idx_transactions_date ON Transactions(transaction_date);
 CREATE TABLE Transactions_info (
     transactions_id CHAR(10) NOT NULL,
     domain_id INT NOT NULL,
-    price INT UNSIGNED NOT NULL, 
-    
+    price INT UNSIGNED default 0,
+
     FOREIGN KEY (transactions_id) REFERENCES Transactions(id) ON DELETE CASCADE,
     FOREIGN KEY (Domain_id) REFERENCES domains(id),
     PRIMARY KEY(Domain_id, transactions_id)
@@ -99,9 +99,9 @@ CREATE TABLE PaymentHistory (
     transaction_id CHAR(10) NOT NULL,
     payment_id CHAR(10) NOT NULL DEFAULT '',
     payment_method INT,
-    payment_status ENUM('completed', 'failed'),  
+    payment_status ENUM('completed', 'failed'),
     payment_date DATE,
-    
+
     FOREIGN KEY (transaction_id) REFERENCES Transactions(id),
     FOREIGN KEY (payment_method) REFERENCES PaymentMethod(id)
 );
@@ -112,7 +112,7 @@ CREATE INDEX idx_payment_history_date ON PaymentHistory(payment_date);
 
 
 INSERT INTO users (full_name, email, phone, cccd, password_hash, role)
-VALUES 
+VALUES
 ('Nguyễn Thành Trí', 'tringuyenntt1505@gmail.com', '0987654321', '027205011960', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0987654321 password: pass123456@
 ('Lê Nguyễn Anh Dự', 'dule1028a@gmail.com', '0912345678', '027205011961', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
@@ -241,61 +241,64 @@ INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VAL
 ('HD010', 9, '2025-03-15', 'completed'),
 ('HD011', 5, '2025-03-25', 'pendingConfirm');
 
-
-INSERT INTO Transactions_info (transactions_id, domain_id, price) VALUES
+INSERT INTO Transactions_info (transactions_id, domain_id) VALUES
 -- HD001
-('HD001', 15, 780000),
+('HD001', 15),
 
 -- HD002 (cancelled)
-('HD002', 11, 299000),
-('HD002', 13, 299000),
+('HD002', 11),
+('HD002', 13),
 
 -- HD003
-('HD003', 5, 390000),
-('HD003', 12, 390000),
-('HD003', 6, 299000),
+('HD003', 5),
+('HD003', 12),
+('HD003', 6),
 
 -- HD004
-('HD004', 2, 299000),
-('HD004', 3, 499000),
-('HD004', 4, 299000),
+('HD004', 2),
+('HD004', 3),
+('HD004', 4),
 
 -- HD005 (cancelled)
-('HD005', 7, 179000),
-('HD005', 8, 99000),
-('HD005', 9, 99000),
-('HD005', 10, 99000),
+('HD005', 7),
+('HD005', 8),
+('HD005', 9),
+('HD005', 10),
 
 -- HD006
-('HD006', 14, 299000),
-('HD006', 16, 299000),
-('HD006', 19, 499000),
+('HD006', 14),
+('HD006', 16),
+('HD006', 19),
 
 -- HD007
-('HD007', 22, 299000),
-('HD007', 23, 399000),
-('HD007', 24, 199000),
+('HD007', 22),
+('HD007', 23),
+('HD007', 24),
 
 -- HD008 (cancelled)
-('HD008', 17, 179000),
-('HD008', 18, 99000),
-('HD008', 28, 239000),
-('HD008', 32, 299000),
+('HD008', 17),
+('HD008', 18),
+('HD008', 28),
+('HD008', 32),
 
 -- HD009
-('HD009', 25, 259000),
-('HD009', 30, 159000),
+('HD009', 25),
+('HD009', 30),
 
 -- HD010
-('HD010', 33, 129000),
-('HD010', 34, 99000),
-('HD010', 35, 99000),
+('HD010', 33),
+('HD010', 34),
+('HD010', 35),
 
 -- HD011
-('HD011', 21, 1499000),
-('HD011', 26, 449000),
-('HD011', 27, 690000);
+('HD011', 21),
+('HD011', 26),
+('HD011', 27);
 
+UPDATE Transactions_info tsi
+JOIN Domains d on d.id = tsi.domain_id
+JOIN TopLevelDomain tld ON d.tld_id = tld.id
+SET tsi.price = d.years * tld.price;
 
 INSERT INTO PaymentMethod (method)
 VALUES
