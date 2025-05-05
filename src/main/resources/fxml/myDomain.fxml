@@ -55,7 +55,7 @@
                                             <TableColumn fx:id="colDomain" prefWidth="250" text="%domain"/>
                                             <TableColumn fx:id="colPrice" prefWidth="180" text="%price"/>
                                             <TableColumn fx:id="colDate" prefWidth="250" text="%active_date"/>
-                                            <TableColumn fx:id="colYear" prefWidth="210" text="%year"/>
+                                            <TableColumn fx:id="colYear" prefWidth="210" text="%period"/>
                                         </columns>
                                     </TableView>
                                 </AnchorPane>

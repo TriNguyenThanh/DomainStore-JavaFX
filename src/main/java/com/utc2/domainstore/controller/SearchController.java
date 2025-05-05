@@ -241,9 +241,16 @@ public class SearchController implements Initializable {
     }
 
     private void updateResultUI(String name, String status, String price) {
+        //
+        // format price
+        String lang = ConfigManager.getInstance().getSetting("language", "Tiếng việt");
+        Integer rate = ConfigManager.getInstance().getRate(lang);
+        String formattedPrice = ConfigManager.getInstance().getNumberFormatter().format(Double.parseDouble(price) / rate);
+
+
         lbDomain.setText(name);
         lbStatus.setText(bundle.getString(String.valueOf(status).toLowerCase()));
-        lbPrice.setText(ConfigManager.getInstance().getNumberFormatter().format(Integer.parseInt(price)));
+        lbPrice.setText(formattedPrice);
 
         domainViewModel.setName(name);
         domainViewModel.setStatus(STATUS.valueOf(status.toUpperCase()));

@@ -6,6 +6,7 @@ import com.utc2.domainstore.service.IPaymentService;
 import com.utc2.domainstore.service.PaymentService;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
+import com.utc2.domainstore.utils.StatusCellFactory;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -83,6 +84,7 @@ public class PaymentController implements Initializable {
 
         colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
+        colStatus.setCellFactory(StatusCellFactory.forTableColumn());
 
         // set text when no data
         table.setPlaceholder(new Label(bundle.getString("placeHolder.tableEmpty")));

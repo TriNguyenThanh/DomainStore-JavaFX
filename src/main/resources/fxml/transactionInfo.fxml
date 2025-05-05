@@ -35,7 +35,7 @@
                                                 <TableColumn fx:id="colDomainStatus" prefWidth="173.5999755859375"
                                                              resizable="false" text="%status"/>
                                                 <TableColumn fx:id="colDomainYears" prefWidth="96.0" resizable="false"
-                                                             text="%year"/>
+                                                             text="%period"/>
                                                 <TableColumn fx:id="colDomainPrice" prefWidth="227.19999389648433"
                                                              resizable="false" text="%price"/>
                                             </columns>

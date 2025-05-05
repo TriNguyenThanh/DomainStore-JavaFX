@@ -7,6 +7,7 @@ import com.utc2.domainstore.service.ITransactionService;
 import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
+import com.utc2.domainstore.utils.StatusCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
@@ -62,6 +63,7 @@ public class TransactionController implements Initializable {
 
         colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
+        colStatus.setCellFactory(StatusCellFactory.forTableColumn());
 
         tableView.setOnMouseClicked(event -> {
             BillViewModel selectedBill = tableView.getSelectionModel().getSelectedItem();
@@ -151,7 +153,7 @@ public class TransactionController implements Initializable {
             STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
             Integer price = jsonObject.getInt("total_price");
             Integer userId = jsonObject.getInt("user_id");
-            
+
             bills.add(new BillViewModel(id, date, status, price, userId));
         }
 

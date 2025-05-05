@@ -73,7 +73,7 @@
                                                 <TableColumn fx:id="colEmail" prefWidth="250.0" text="%email"/>
                                                 <TableColumn fx:id="colPsID" prefWidth="150" text="%personal_id"/>
                                                 <TableColumn fx:id="colRole" prefWidth="90" text="%role"/>
-                                                <TableColumn fx:id="colStatus" prefWidth="90" text="%status"/>
+                                                <TableColumn fx:id="colStatus" prefWidth="150" text="%status"/>
                                             </columns>
                                         </TableView>
                                     </children>

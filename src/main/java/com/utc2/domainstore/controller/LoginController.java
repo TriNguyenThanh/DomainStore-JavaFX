@@ -120,7 +120,7 @@ public class LoginController implements Initializable {
 
                 SceneManager.getInstance().switchScene("/fxml/main.fxml");
             } catch (Exception e) {
-                if (respond.getString("error").contains("not found")) {
+                if (e.getMessage().contains("No user")) {
                     useErrorLabel.setText(bundle.getString("error.login"));
                     passErrorLabel.setText(bundle.getString("error.login"));
                 } else if (respond.getString("error").contains("locked")) {
