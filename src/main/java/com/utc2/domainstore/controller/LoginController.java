@@ -16,6 +16,7 @@ import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
     private ResourceBundle bundle;
+    private LoginServices loginServices;
 
     // FXML components
     @FXML
@@ -47,6 +48,7 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        this.loginServices = new LoginServices();
 
         SceneManager.getInstance().initLanguageComboBox(cbLanguage);
 
@@ -73,7 +75,9 @@ public class LoginController implements Initializable {
 
     // handle login
     public void login() {
-        hidePassword();
+        if (cbShowPassword.isSelected()) {
+            hidePassword();
+        }
         boolean flag = true;
 
         // bắt buộc nhập
@@ -103,9 +107,10 @@ public class LoginController implements Initializable {
             request.put("password", passwordField.getText());
 
             // gửi request và nhận respond
-            LoginServices loginServices = new LoginServices();
-            JSONObject respond = loginServices.authentication(request);
+
+            JSONObject respond = null;
             try {
+                respond = loginServices.authentication(request);
                 int userId = respond.getInt("user_id");
                 RoleEnum role = RoleEnum.valueOf(respond.get("role").toString());
 
@@ -115,8 +120,12 @@ public class LoginController implements Initializable {
 
                 SceneManager.getInstance().switchScene("/fxml/main.fxml");
             } catch (Exception e) {
-                useErrorLabel.setText(bundle.getString("error.login"));
-                passErrorLabel.setText(bundle.getString("error.login"));
+                if (respond.getString("error").contains("not found")) {
+                    useErrorLabel.setText(bundle.getString("error.login"));
+                    passErrorLabel.setText(bundle.getString("error.login"));
+                } else if (respond.getString("error").contains("locked")) {
+                    SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("error"), null, bundle.getString("notice.userIsBlocked"));
+                }
             }
         }
     }
@@ -136,5 +145,6 @@ public class LoginController implements Initializable {
         cbShowPassword.setSelected(false);
         passwordField.setText(passwordField.getPromptText());
         passwordField.setPromptText("");
+        passwordField.positionCaret(passwordField.getText().length());
     }
 }

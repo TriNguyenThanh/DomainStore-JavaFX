@@ -7,6 +7,7 @@ import com.utc2.domainstore.utils.PasswordUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -67,10 +68,18 @@ public class AccountServices implements IAccount {
                 existingUser.getId(), name, email, phone, personalId, role, new Timestamp(System.currentTimeMillis())
         );
 
-        int result = customerDAO.update(updatedUser);
+        int result = 0;
+        try {
+            result = customerDAO.update(updatedUser);
+        } catch (SQLException e) {
+            if (e.getMessage().contains("Duplicate entry")) {
+                return createResponse("failed", e.getMessage());
+            } else {
+                return createResponse("failed", "Update failed");
+            }
+        }
 
-        return result > 0 ? createResponse("success", "User updated successfully")
-                : createResponse("failed", "Update failed");
+        return createResponse("success", "User updated successfully");
     }
 
     //update mật khẩu người dùng 
@@ -88,7 +97,12 @@ public class AccountServices implements IAccount {
         // hash mật khẩu mới
         String hashedPassword = PasswordUtils.hashedPassword(password);
         existingCustomer.setPasswordHash(hashedPassword);
-        int result = customerDAO.update(existingCustomer);
+        int result = 0;
+        try {
+            result = customerDAO.update(existingCustomer);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         return result > 0 ? createResponse("success", "Ur password updated successfully")
                 : createResponse("failed", "Ur password update failed");
@@ -140,9 +154,12 @@ public class AccountServices implements IAccount {
         existingUser.setDeleted(true);
 
         // Cập nhật lại người dùng
-        int resultUpdate = CustomerRepository.getInstance().update(existingUser);
+        try {
+            CustomerRepository.getInstance().update(existingUser);
+        } catch (SQLException e) {
+            return createResponse("failed", "Lock failed");
+        }
 
-        return resultUpdate > 0 ? createResponse("success", "User locked successfully")
-                : createResponse("failed", "Lock failed");
+        return createResponse("success", "User locked successfully");
     }
 }

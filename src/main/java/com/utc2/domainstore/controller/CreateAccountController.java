@@ -7,6 +7,7 @@ import com.utc2.domainstore.service.AccountServices;
 import com.utc2.domainstore.service.IAccount;
 import com.utc2.domainstore.service.IRegister;
 import com.utc2.domainstore.service.RegisterServices;
+import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,10 +23,10 @@ import static com.utc2.domainstore.utils.CheckingUtils.*;
 
 public class CreateAccountController implements Initializable {
     private ResourceBundle bundle;
-    private MainController mainController;
     private UserModel data;
-    private UserModel newData = new UserModel();
-    private IAccount accountServices = new AccountServices();
+    private UserModel newData;
+    private final IAccount accountServices = new AccountServices();
+    private final IRegister registerServices = new RegisterServices();
     private METHOD method;
 
     // FXML
@@ -55,6 +56,7 @@ public class CreateAccountController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        this.newData = new UserModel();
         cbRole.getItems().addAll(List.<RoleEnum>of(RoleEnum.user, RoleEnum.admin));
         cbRole.setValue(RoleEnum.user);
     }
@@ -92,11 +94,7 @@ public class CreateAccountController implements Initializable {
         newData.setPassword(tfPass.getText());
 
         if (method == METHOD.UPDATE && newData.getID() == UserSession.getInstance().getUserId()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Invalid Selection");
-            alert.setHeaderText(null);
-            alert.setContentText(bundle.getString("error.modifyYourRole"));
-            alert.showAndWait();
+            SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("error"), null, bundle.getString("notice.userModifyFailed"));
             return;
         }
 
@@ -114,23 +112,20 @@ public class CreateAccountController implements Initializable {
 
             JSONObject response = null;
             if (method == METHOD.ADD) {
-                IRegister registerServices = new RegisterServices();
+
                 response = registerServices.addToDB(request);
             } else if (method == METHOD.UPDATE) {
                 if (!newData.equals(data)) {
                     // cập nhật thông tin người dùng
                     response = accountServices.updateUser(request);
+
                 }
                 if (!tfPass.isDisable()) {
                     // cập nhật mật khẩu
                     response = accountServices.updateUserPassword(request);
 
                     // hiển thị thông báo thành công
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle(bundle.getString("notice"));
-                    alert.setHeaderText(null);
-                    alert.setContentText(bundle.getString("notice.updatePassSuccess"));
-                    alert.showAndWait();
+                    SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("notice"), null, bundle.getString("notice.updatePassSuccess"));
                 }
             }
 
@@ -139,20 +134,25 @@ public class CreateAccountController implements Initializable {
             } else if (response.getString("status").equals("failed")) {
                 // hiển thị thông báo lỗi
                 String message = response.getString("message");
-                if (message.equals("Phone number already exists.")) {
-                    lbPhoneErr.setText(bundle.getString("error.phone3"));
-                } else if (message.equals("Email already exists.")) {
-                    lbEmailErr.setText(bundle.getString("error.email3"));
-                } else if (message.equals("CCCD already exists.")) {
-                    lbPsIDErr.setText(bundle.getString("error.psIDErr3"));
+                if (!message.contains("Duplicate entry")) {
+                    SceneManager.getInstance().showDialog(Alert.AlertType.ERROR, bundle.getString("error"), null, message);
+                } else {
+                    if (message.contains("phone")) {
+                        lbPhoneErr.setText(bundle.getString("error.phone3"));
+                    } else if (message.contains("email")) {
+                        lbEmailErr.setText(bundle.getString("error.email3"));
+                    } else if (message.contains("cccd")) {
+                        lbPsIDErr.setText(bundle.getString("error.psIDErr3"));
+                    }
                 }
+
             } else if (response.getString("status").equals("success")) {
                 // hiển thị thông báo thành công
-                System.out.println(response.getString("message"));
-            }
+                SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("save"), null, bundle.getString("notice.userModifySuccess"));
 
-            // trở về giao diện quản lý người dùng
-            backToMainScene();
+                // trở về giao diện quản lý người dùng
+                backToMainScene();
+            }
         }
     }
 

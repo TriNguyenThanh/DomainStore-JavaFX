@@ -29,7 +29,8 @@ import java.util.ResourceBundle;
 
 public class SearchController implements Initializable {
     private ResourceBundle bundle;
-    private DomainViewModel domainViewModel = new DomainViewModel();
+    private final DomainViewModel domainViewModel = new DomainViewModel();
+    private final IDomain domainSearch = new DomainServices();
     private static boolean isSearch = false;
     private static Task<Void> currentSearchTask;
 
@@ -178,7 +179,6 @@ public class SearchController implements Initializable {
     // Method to search for a domain name
     private void searchWithDomainName(String domainName) {
         // Call the search method from DomainServices
-        IDomain domainSearch = new DomainServices();
 
         JSONObject request = new JSONObject();
         request.put("name", domainName);
