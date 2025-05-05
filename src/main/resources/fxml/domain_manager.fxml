@@ -69,7 +69,7 @@
                                                 <TableColumn fx:id="colPrice" prefWidth="120" text="%price"/>
                                                 <TableColumn fx:id="colDate" prefWidth="250" text="%active_date"/>
                                                 <TableColumn fx:id="colOwner" prefWidth="200" text="%owner"/>
-                                                <TableColumn fx:id="colYear" prefWidth="100" text="%year"/>
+                                                <TableColumn fx:id="colYear" prefWidth="100" text="%period"/>
                                             </columns>
                                         </TableView>
                                     </children>

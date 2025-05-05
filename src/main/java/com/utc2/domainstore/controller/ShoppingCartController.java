@@ -7,6 +7,7 @@ import com.utc2.domainstore.service.ICart;
 import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.utils.SpinnerCellFactory;
+import com.utc2.domainstore.utils.StatusCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
@@ -69,9 +70,10 @@ public class ShoppingCartController implements Initializable {
         colYear.setCellValueFactory(new PropertyValueFactory<>("years"));
 
         colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
+        colStatus.setCellFactory(StatusCellFactory.forTableColumn());
         colYear.setEditable(true);
         colYear.setCellFactory(SpinnerCellFactory.forTableColumn(
-                1, 100, 1,
+                1, 10, 1,
                 DomainViewModel::getYears, // Getter
                 DomainViewModel::setYears,  // Setter
                 this::updateTotal
