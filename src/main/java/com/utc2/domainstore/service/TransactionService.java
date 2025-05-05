@@ -66,7 +66,7 @@ public class TransactionService implements ITransactionService {
             DomainModel domain = DomainRepository.getInstance().selectById(d);
             jsonObject.put("name", domain.getDomainName() + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
             jsonObject.put("status", domain.getStatus());
-            jsonObject.put("price", domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
+            jsonObject.put("price", domain.getPrice());
             jsonObject.put("years", domain.getYears());
             jsonArray.put(jsonObject);
         }
@@ -128,6 +128,7 @@ public class TransactionService implements ITransactionService {
                 domain.setStatus(DomainStatusEnum.sold);
                 domain.setActiveDate(Date.valueOf(LocalDate.now()));
                 domain.setOwnerId(cus.getId());
+                domain.setPrice(domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
 
                 DomainRepository.getInstance().update(domain);
             }

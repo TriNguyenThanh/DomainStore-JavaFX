@@ -48,30 +48,27 @@ public class DomainServices implements IDomain{
         }
 
         // Nếu có nhập tên miền
+        // Kiểm tra định dạng tên miền
         String domainPattern = "^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]\\.[a-zA-Z]{2,}(\\.[a-zA-Z]{2,})?$";
         if (!domainName.matches(domainPattern)) {
             return createErrorResponse("Tên miền không đúng định dạng.");
         }
 
-        // Tìm TLD phù hợp nhất trong database
-        TopLevelDomainModel tldModel = null;
-        String namePart = null;
-
-        List<TopLevelDomainModel> allTLDs = TopLevelDomainRepository.getInstance().selectAll();
-        allTLDs.sort((a, b) -> Integer.compare(b.getTldText().length(), a.getTldText().length())); // Ưu tiên TLD dài hơn
-
-        for (TopLevelDomainModel tldCandidate : allTLDs) {
-            String tldText = tldCandidate.getTldText().toLowerCase();
-            if (domainName.endsWith(tldText)) {
-                tldModel = tldCandidate;
-                namePart = domainName.substring(0, domainName.length() - tldText.length());
-                break;
-            }
+        // Cắt từ dấu chấm đầu tiên đến hết => tldPart
+        int firstDotIndex = domainName.indexOf(".");
+        if (firstDotIndex == -1 || firstDotIndex == domainName.length() - 1) {
+            return createErrorResponse("Tên miền không hợp lệ.");
         }
 
-        if (tldModel == null || namePart == null || namePart.isBlank()) {
-            return createErrorResponse("TLD không được hỗ trợ hoặc tên không hợp lệ.");
+        String namePart = domainName.substring(0, firstDotIndex);
+        String tldPart = domainName.substring(firstDotIndex); // bao gồm dấu chấm
+
+        // Tìm TLD trong database
+        TopLevelDomainModel tldModel = TopLevelDomainRepository.getInstance().getTLDByName(tldPart);
+        if (tldModel == null) {
+            return createErrorResponse("TLD không được hỗ trợ.");
         }
+
 
         String domainStatus = DomainUtils.getDomainInfo(domainName);
 
@@ -83,8 +80,9 @@ public class DomainServices implements IDomain{
             primaryDomain.setDomainName(namePart);
             primaryDomain.setTldId(tldModel.getId());
             primaryDomain.setYears(1);
+            primaryDomain.setPrice(tldModel.getPrice());
             primaryDomain.setStatus("Nofound".equals(domainStatus) ? DomainStatusEnum.available : DomainStatusEnum.sold);
-            DomainRepository.getInstance().insert(primaryDomain);
+//            DomainRepository.getInstance().insert(primaryDomain);
         }
 
         JSONObject domainInfo = new JSONObject();
@@ -111,7 +109,8 @@ public class DomainServices implements IDomain{
                 existingDomain.setDomainName(namePart);
                 existingDomain.setTldId(suggestTLDModel.getId());
                 existingDomain.setStatus(DomainStatusEnum.available);
-                DomainRepository.getInstance().insert(existingDomain);
+                existingDomain.setPrice(suggestTLDModel.getPrice());
+//                DomainRepository.getInstance().insert(existingDomain);
             }
 
             JSONObject item = new JSONObject();
@@ -188,7 +187,7 @@ public class DomainServices implements IDomain{
             domainJson.put("name", fullDomainName);
             domainJson.put("status", domain.getStatus().toString().toLowerCase());
             domainJson.put("year", domain.getYears());
-            domainJson.put("price", (tld != null) ? tld.getPrice() : 0);
+            domainJson.put("price", domain.getPrice());
             domainJson.put("active_date", domain.getActiveDate());
             domainArray.put(domainJson);
         }
@@ -216,7 +215,7 @@ public class DomainServices implements IDomain{
             domainJson.put("name", fullNameDomain);
             domainJson.put("status", domain.getStatus().toString().toLowerCase());
             domainJson.put("year", domain.getYears());
-            domainJson.put("price", (tld != null) ? tld.getPrice() : 0);
+            domainJson.put("price", domain.getPrice());
             domainJson.put("active_date", (domain.getActiveDate() != null) ? domain.getActiveDate() : 0);
             domainJson.put("owner_id", (domain.getOwnerId() != null) ? domain.getOwnerId() : 0);
             // Thêm phần lấy tên người dùng nếu đã bán
