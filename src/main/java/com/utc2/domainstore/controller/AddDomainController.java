@@ -69,11 +69,23 @@ public class AddDomainController implements Initializable {
         tfName.textProperty().addListener((observable, oldValue, newValue) -> {
             String tld = cbTLD.getSelectionModel().getSelectedItem();
             if (tld != null) {
-                // Update the domain label with the new value
-                domainName = newValue + tld;
-                lbDomain.setText(domainName);
+
+                // Check if the new value is valid
+                if (newValue.matches("[a-zA-Z0-9]+")) {
+                    // Update the domain label with the new value
+                    domainName = newValue + tld;
+                    lbDomain.setText(domainName);
+                } else if (newValue.isEmpty()) {
+                    domainName = "";
+                    lbDomain.setText(domainName);
+                } else {
+                    // Show error message if the new value is invalid
+                    lbDomain.setText(bundle.getString("notice.domainNotAvailable"));
+                }
             }
         });
+
+        tfName.setOnAction(actionEvent -> handleSave());
 
         cbTLD.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             String tld = newValue;
@@ -90,6 +102,12 @@ public class AddDomainController implements Initializable {
     }
 
     private void handleSave() {
+        // Validate domain name
+        if (domainName == null || domainName.isEmpty() || !domainName.contains(".")) {
+            SceneManager.getInstance().showDialog(Alert.AlertType.ERROR, bundle.getString("error"), null, bundle.getString("notice.domainNotAvailable"));
+            return;
+        }
+
         JSONObject request = new JSONObject();
         request.put("name", domainName);
 
