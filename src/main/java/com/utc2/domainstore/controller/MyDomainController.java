@@ -6,6 +6,7 @@ import com.utc2.domainstore.service.DomainServices;
 import com.utc2.domainstore.service.IDomain;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
+import com.utc2.domainstore.utils.YearCellFactory;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -54,6 +55,7 @@ public class MyDomainController implements Initializable {
 
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
         colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
+        colYear.setCellFactory(YearCellFactory.forTableColumn());
 
         tbDomain.setPlaceholder(new Label(bundle.getString("placeHolder.tableEmpty")));
 

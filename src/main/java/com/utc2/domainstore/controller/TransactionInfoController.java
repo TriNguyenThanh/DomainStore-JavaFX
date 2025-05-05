@@ -4,6 +4,8 @@ import com.utc2.domainstore.entity.database.TransactionStatusEnum;
 import com.utc2.domainstore.entity.view.*;
 import com.utc2.domainstore.service.*;
 import com.utc2.domainstore.utils.MoneyCellFactory;
+import com.utc2.domainstore.utils.StatusCellFactory;
+import com.utc2.domainstore.utils.YearCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
@@ -144,7 +146,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
         lbBillID.setText(String.valueOf(billViewModel.getId()));
         lbDate.setText(billViewModel.getDate().format(ConfigManager.getInstance().getDateTimeFormatter()));
         lbTotal.setText(bundle.getString("total") + ": " + ConfigManager.getInstance().getNumberFormatter().format(billViewModel.getPrice()));
-        lbStatus.setText(String.valueOf(billViewModel.getStatus()));
+        lbStatus.setText(String.valueOf(bundle.getString("status." + billViewModel.getStatus().toString().toLowerCase())));
 
         if (paymentViewModel != null) {
             lbPaymentID.setText(String.valueOf(paymentViewModel.getPaymentID()));
@@ -171,6 +173,8 @@ public class TransactionInfoController implements Initializable, PaymentListener
         colDomainYears.setCellValueFactory(new PropertyValueFactory<>("years"));
 
         colDomainPrice.setCellFactory(MoneyCellFactory.forTableColumn());
+        colDomainYears.setCellFactory(YearCellFactory.forTableColumn());
+        colDomainStatus.setCellFactory(StatusCellFactory.forTableColumn());
 
         updateTable();
     }

@@ -6,6 +6,8 @@ import com.utc2.domainstore.service.DomainServices;
 import com.utc2.domainstore.service.IDomain;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
+import com.utc2.domainstore.utils.StatusCellFactory;
+import com.utc2.domainstore.utils.YearCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import javafx.collections.FXCollections;
@@ -73,7 +75,7 @@ public class DomainManagerController implements Initializable {
         data = getData();
 
         btRemove.setVisible(false);
-        cbStatus.getItems().addAll(List.of("", STATUS.AVAILABLE.toString(), STATUS.SOLD.toString()));
+        cbStatus.getItems().addAll(List.of("", bundle.getString("status.available"), bundle.getString("status.sold")));
         initTable();
     }
 
@@ -88,6 +90,8 @@ public class DomainManagerController implements Initializable {
 
         colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
+        colYear.setCellFactory(YearCellFactory.forTableColumn());
+        colStatus.setCellFactory(StatusCellFactory.forTableColumn());
 
         tbDomain.setOnMouseClicked(event -> {
             DomainViewModel selectedDomain = tbDomain.getSelectionModel().getSelectedItem();
@@ -204,7 +208,7 @@ public class DomainManagerController implements Initializable {
             boolean matchesSearch = domain.getName().toLowerCase().contains(searchText);
 
             // 2. Check if the domain status matches the selected status
-            boolean matchesStatus = selectedStatus == null || selectedStatus.isEmpty() || domain.getStatus().toString().equalsIgnoreCase(selectedStatus);
+            boolean matchesStatus = selectedStatus == null || selectedStatus.isEmpty() || bundle.getString("status." + domain.getStatus().toString().toLowerCase()).equalsIgnoreCase(selectedStatus);
 
             // 3. Return true if both conditions are met
             return matchesSearch && matchesStatus;

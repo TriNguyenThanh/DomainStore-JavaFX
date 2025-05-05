@@ -7,6 +7,7 @@ import com.utc2.domainstore.service.ITransactionService;
 import com.utc2.domainstore.service.TransactionService;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
+import com.utc2.domainstore.utils.StatusCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import javafx.collections.FXCollections;
@@ -80,6 +81,7 @@ public class ConfirmTransactionController implements Initializable {
 
         colPrice.setCellFactory(MoneyCellFactory.forTableColumn());
         colDate.setCellFactory(LocalDateCellFactory.forTableColumn());
+        colStatus.setCellFactory(StatusCellFactory.forTableColumn());
 
         tableView.setPlaceholder(new Label(bundle.getString("placeHolder.tableEmpty")));
 

@@ -6,6 +6,7 @@ import com.utc2.domainstore.entity.view.METHOD;
 import com.utc2.domainstore.entity.view.UserModel;
 import com.utc2.domainstore.service.AccountServices;
 import com.utc2.domainstore.service.IAccount;
+import com.utc2.domainstore.utils.AccountStatusCellFactory;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
@@ -77,7 +78,7 @@ public class UserManagerController implements Initializable {
 
     private void initTable() {
         // Khởi tạo giá trị cho comboBox
-        cbStatus.getItems().addAll("", "ACTIVE", "LOCKED");
+        cbStatus.getItems().addAll("", bundle.getString("status.active"), bundle.getString("status.locked"));
         cbRole.getItems().addAll("", "USER", "ADMIN");
 
         // Khởi tạo các cột của bảng
@@ -88,6 +89,8 @@ public class UserManagerController implements Initializable {
         colPsID.setCellValueFactory(new PropertyValueFactory<>("psID"));
         colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        colStatus.setCellFactory(AccountStatusCellFactory.forTableColumn());
 
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
@@ -241,7 +244,7 @@ public class UserManagerController implements Initializable {
 
             // 2. Lọc theo trạng thái
             boolean matchesStatus = (selectedStatus == null || selectedStatus.isEmpty()) ||
-                    user.getStatus().toString().equalsIgnoreCase(selectedStatus);
+                    bundle.getString("status." + user.getStatus().toString().toLowerCase()).equalsIgnoreCase(selectedStatus);
 
             // 3. Lọc theo vai trò
             boolean matchesRole = (selectedRole == null || selectedRole.isEmpty()) ||
