@@ -1,0 +1,19 @@
+- update báo cáo:
+    + Thiếu từ viết tắt
+    + Thiếu phu lục
+- Fix thanh toán
+    + Sua thanh toán thanh toasn trùng tên miền
+        --> khi tạo hóa đơn thì tên miền chuyên trạng thái
+- Fix giao diẹn
+    + thiếu hiển thị giờ
+- logic system:
+    + thoi gian hóa đơn tồn tại không quá 24h
+    + bỏ cccd
+
+** tính năng mới
+- quên mâật khẩu
+- gia hạn tn mièn
+- push lên host
+- thêm xác thục qua email
+- xuất excel
+- báo cáo, thống kê
