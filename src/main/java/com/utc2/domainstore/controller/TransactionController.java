@@ -52,6 +52,7 @@ public class TransactionController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
         getSelectedButton.setVisible(false);
+        getData();
         initTable();
     }
 

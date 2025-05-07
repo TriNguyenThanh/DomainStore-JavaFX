@@ -2,7 +2,7 @@
     + Thiếu từ viết tắt
     + Thiếu phu lục
 - Fix thanh toán
-    + Sua thanh toán thanh toasn trùng tên miền
+    + Sua thanh toán thanh toan trùng tên miền
         --> khi tạo hóa đơn thì tên miền chuyên trạng thái
 - Fix giao diẹn
     + thiếu hiển thị giờ
