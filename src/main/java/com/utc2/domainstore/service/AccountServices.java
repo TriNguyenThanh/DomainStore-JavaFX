@@ -19,7 +19,7 @@ public class AccountServices implements IAccount {
     public JSONObject getUserInformation(JSONObject jsonInput) {
         int user_id = jsonInput.getInt("user_id");
 
-        CustomerModel customer = new CustomerModel(user_id, "", "", "", "", "", RoleEnum.user, false, null);
+        CustomerModel customer = new CustomerModel(user_id, "", "", "", "", RoleEnum.user, false, null);
         CustomerModel find = customerDAO.selectById(customer);
         if (find == null || find.getIsDeleted() == true) {
             return createResponse("failed", "User not found or is locked (deleted)");
@@ -29,7 +29,6 @@ public class AccountServices implements IAccount {
         response.put("username", find.getFullName());
         response.put("phone", find.getPhone());
         response.put("email", find.getEmail());
-        response.put("personal_id", find.getCccd());
         response.put("password", find.getPasswordHash());
 
         return response;
@@ -42,7 +41,7 @@ public class AccountServices implements IAccount {
         int userId = jsonInput.getInt("user_id");
 
         // Lấy dữ liệu user cũ từ database
-        CustomerModel existingUser = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", "", RoleEnum.user, false, null));
+        CustomerModel existingUser = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", RoleEnum.user, false, null));
         if (existingUser == null) {
             return createResponse("failed", "User not found");
         }
@@ -51,7 +50,6 @@ public class AccountServices implements IAccount {
         String name = jsonInput.has("username") ? jsonInput.getString("username") : existingUser.getFullName();
         String phone = jsonInput.has("phone") ? jsonInput.getString("phone") : existingUser.getPhone();
         String email = jsonInput.has("email") ? jsonInput.getString("email") : existingUser.getEmail();
-        String personalId = jsonInput.has("personal_id") ? jsonInput.getString("personal_id") : existingUser.getCccd();
 
         // Xử lý role (nếu có)
         RoleEnum role = existingUser.getRole();
@@ -65,7 +63,7 @@ public class AccountServices implements IAccount {
 
         // Cập nhật thông tin
         CustomerModel updatedUser = new CustomerModel(
-                existingUser.getId(), name, email, phone, personalId, role, new Timestamp(System.currentTimeMillis())
+                existingUser.getId(), name, email, phone, role, new Timestamp(System.currentTimeMillis())
         );
 
         int result = 0;
@@ -89,7 +87,7 @@ public class AccountServices implements IAccount {
         String password = jsonInput.getString("password");
 
         //kiểm tra người dùng có tồn tại hay không
-        CustomerModel existingCustomer = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", "", RoleEnum.user, false, null));
+        CustomerModel existingCustomer = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", RoleEnum.user, false, null));
         if (existingCustomer == null) {
             return createResponse("failed", "User not found");
         }
@@ -120,7 +118,6 @@ public class AccountServices implements IAccount {
             userJson.put("username", user.getFullName());
             userJson.put("phone", user.getPhone());
             userJson.put("email", user.getEmail());
-            userJson.put("personal_id", user.getCccd());
             userJson.put("role", user.getRole());
             userJson.put("is_deleted", user.getIsDeleted());
             userArray.put(userJson);

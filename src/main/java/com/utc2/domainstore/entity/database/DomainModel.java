@@ -3,22 +3,24 @@ package com.utc2.domainstore.entity.database;
 import com.utc2.domainstore.repository.TopLevelDomainRepository;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 public class DomainModel {
     private int id;
     private String domainName;
     private int tldId;
     private DomainStatusEnum status;
-    private Date activeDate;
+    private Timestamp activeDate;
     private int years;
-    private int price;
+    private Long price;
     private Integer ownerId;
     private Date createdAt; 
     
     public DomainModel() {
     }
 
-    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Date activeDate, int years, int price, Integer ownerId, Date createdAt) {
+    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Timestamp activeDate, int years, Long price, Integer ownerId, Date createdAt) {
         this.id = id;
         this.domainName = domainName;
         this.tldId = tldId;
@@ -30,7 +32,7 @@ public class DomainModel {
         this.createdAt = createdAt;
     }
 
-    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Date activeDate, int years, int price, Integer ownerId) {
+    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Timestamp activeDate, int years, Long price, Integer ownerId) {
         this.id = id;
         this.domainName = domainName;
         this.tldId = tldId;
@@ -41,7 +43,7 @@ public class DomainModel {
         this.ownerId = ownerId;
     }
     
-    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Date activeDate, int years, Integer ownerId) {
+    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Timestamp activeDate, int years, Integer ownerId) {
         this.id = id;
         this.domainName = domainName;
         this.tldId = tldId;
@@ -50,7 +52,7 @@ public class DomainModel {
         this.years = years;
         this.ownerId = ownerId;
     }
-    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Date activeDate, int years, Integer ownerId, Date createdAt) {
+    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Timestamp activeDate, int years, Integer ownerId, Date createdAt) {
         this.id = id;
         this.domainName = domainName;
         this.tldId = tldId;
@@ -60,7 +62,7 @@ public class DomainModel {
         this.ownerId = ownerId;
         this.createdAt = createdAt;
     }
-    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Date activeDate, int years) {
+    public DomainModel(int id, String domainName, int tldId, DomainStatusEnum status, Timestamp activeDate, int years) {
         this.id = id;
         this.domainName = domainName;
         this.tldId = tldId;
@@ -107,11 +109,11 @@ public class DomainModel {
         this.status = status;
     }
 
-    public Date getActiveDate() {
+    public Timestamp getActiveDate() {
         return activeDate;
     }
 
-    public void setActiveDate(Date activeDate) {
+    public void setActiveDate(Timestamp activeDate) {
         this.activeDate = activeDate;
     }
 
@@ -139,18 +141,15 @@ public class DomainModel {
         this.createdAt = createdAt;
     }
 
-    public int getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
     public TopLevelDomainModel getTopLevelDomainbyId(int id){
-        for(TopLevelDomainModel tld : TopLevelDomainRepository.getInstance().selectAll()){
-            if(tld.getId() == id) return tld;
-        }
-        return null;
+        return TopLevelDomainRepository.getInstance().selectById(new TopLevelDomainModel(id));
     }
     @Override
     public String toString() {

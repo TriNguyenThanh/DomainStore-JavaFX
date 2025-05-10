@@ -15,7 +15,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
 
     @Override
     public int insert(CustomerModel customer) {
-        String sql = "INSERT INTO users (full_name, email, phone, cccd, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (full_name, email, phone, password_hash, role) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -23,9 +23,8 @@ public class CustomerRepository implements IRepository<CustomerModel> {
             pst.setString(1, customer.getFullName());
             pst.setString(2, customer.getEmail());
             pst.setString(3, customer.getPhone());
-            pst.setString(4, customer.getCccd());
-            pst.setString(5, customer.getPasswordHash());
-            pst.setString(6, customer.getRole().name());
+            pst.setString(4, customer.getPasswordHash());
+            pst.setString(5, customer.getRole().name());
 
             int result = pst.executeUpdate();
 
@@ -48,9 +47,9 @@ public class CustomerRepository implements IRepository<CustomerModel> {
     public int update(CustomerModel customer) throws SQLException {
         String sql;
         if (customer.getPasswordHash() == null || customer.getPasswordHash().isEmpty()) {
-            sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, role=?, is_deleted=? WHERE id=?";
+            sql = "UPDATE users SET full_name=?, email=?, phone=?, role=?, is_deleted=? WHERE id=?";
         } else {
-            sql = "UPDATE users SET full_name=?, email=?, phone=?, cccd=?, password_hash=?, role=?, is_deleted=? WHERE id=?";
+            sql = "UPDATE users SET full_name=?, email=?, phone=?, password_hash=?, role=?, is_deleted=? WHERE id=?";
         }
 
         try (Connection con = JDBC.getConnection();
@@ -59,17 +58,16 @@ public class CustomerRepository implements IRepository<CustomerModel> {
             pst.setString(1, customer.getFullName());
             pst.setString(2, customer.getEmail());
             pst.setString(3, customer.getPhone());
-            pst.setString(4, customer.getCccd());
 
             if (customer.getPasswordHash() == null || customer.getPasswordHash().isEmpty()) {
+                pst.setString(4, customer.getRole().name());
+                pst.setBoolean(5, customer.getIsDeleted());
+                pst.setInt(6, customer.getId());
+            } else {
+                pst.setString(4, customer.getPasswordHash());
                 pst.setString(5, customer.getRole().name());
                 pst.setBoolean(6, customer.getIsDeleted());
                 pst.setInt(7, customer.getId());
-            } else {
-                pst.setString(5, customer.getPasswordHash());
-                pst.setString(6, customer.getRole().name());
-                pst.setBoolean(7, customer.getIsDeleted());
-                pst.setInt(8, customer.getId());
             }
             try {
                 return pst.executeUpdate();
@@ -115,7 +113,6 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                             rs.getString("full_name"),
                             rs.getString("email"),
                             rs.getString("phone"),
-                            rs.getString("cccd"),
                             rs.getString("password_hash"),
                             RoleEnum.valueOf(rs.getString("role")),
                             rs.getBoolean("is_deleted"),
@@ -144,7 +141,6 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                         rs.getString("full_name"),
                         rs.getString("email"),
                         rs.getString("phone"),
-                        rs.getString("cccd"),
                         rs.getString("password_hash"),
                         RoleEnum.valueOf(rs.getString("role")),
                         rs.getBoolean("is_deleted"),
@@ -173,7 +169,6 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                         rs.getString("full_name"),
                         rs.getString("email"),
                         rs.getString("phone"),
-                        rs.getString("cccd"),
                         rs.getString("password_hash"),
                         RoleEnum.valueOf(rs.getString("role")),
                         rs.getBoolean("is_deleted"),
@@ -199,7 +194,6 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                             rs.getString("full_name"),
                             rs.getString("email"),
                             rs.getString("phone"),
-                            rs.getString("cccd"),
                             rs.getString("password_hash"),
                             RoleEnum.valueOf(rs.getString("role")),
                             rs.getBoolean("is_deleted"),
@@ -226,7 +220,6 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                             rs.getString("full_name"),
                             rs.getString("email"),
                             rs.getString("phone"),
-                            rs.getString("cccd"),
                             rs.getString("password_hash"),
                             RoleEnum.valueOf(rs.getString("role")),
                             rs.getBoolean("is_deleted"),
@@ -241,29 +234,29 @@ public class CustomerRepository implements IRepository<CustomerModel> {
     }
 
     //lấy cccd
-    public CustomerModel selectByCccd(String cccd) {
-        String sql = "SELECT * FROM users WHERE cccd = ?";
-        try (Connection con = JDBC.getConnection();
-             PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, cccd);
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    return new CustomerModel(
-                            rs.getInt("id"),
-                            rs.getString("full_name"),
-                            rs.getString("email"),
-                            rs.getString("phone"),
-                            rs.getString("cccd"),
-                            rs.getString("password_hash"),
-                            RoleEnum.valueOf(rs.getString("role")),
-                            rs.getBoolean("is_deleted"),
-                            rs.getTimestamp("created_at")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    public CustomerModel selectByCccd(String cccd) {
+//        String sql = "SELECT * FROM users WHERE cccd = ?";
+//        try (Connection con = JDBC.getConnection();
+//             PreparedStatement pst = con.prepareStatement(sql)) {
+//            pst.setString(1, cccd);
+//            try (ResultSet rs = pst.executeQuery()) {
+//                if (rs.next()) {
+//                    return new CustomerModel(
+//                            rs.getInt("id"),
+//                            rs.getString("full_name"),
+//                            rs.getString("email"),
+//                            rs.getString("phone"),
+//                            rs.getString("cccd"),
+//                            rs.getString("password_hash"),
+//                            RoleEnum.valueOf(rs.getString("role")),
+//                            rs.getBoolean("is_deleted"),
+//                            rs.getTimestamp("created_at")
+//                    );
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 }

@@ -18,7 +18,7 @@ public class TopLevelDomainServices implements ITopLevelDomain{
         try{
             int id = jsonInput.getInt("id");
             String TLD_text = jsonInput.getString("TLD_text");
-            int price = jsonInput.getInt("price");
+            Long price = jsonInput.getLong("price");
 
             if (!TLD_text.matches("^\\.[a-z]{2,}$")) {
                 result.put("status", "fail");
