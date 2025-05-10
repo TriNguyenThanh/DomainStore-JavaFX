@@ -1,36 +1,36 @@
 
 package com.utc2.domainstore.entity.database;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class TransactionModel {
     private String transactionId; 
     private Integer userId; // 
-    private LocalDate transactionDate; // chuyển LocalDate thành Date trước khi lưu vào database
+    private Timestamp transactionDate;
     private TransactionStatusEnum transactionStatus;
     private PaymentStatusEnum paymentStatus;
     
-    private Integer totalCost;
+    private Long totalCost;
     private final ArrayList<TransactionInfoModel> transactionInfos = new ArrayList<>();
 
     public TransactionModel() {
     }
 
-    public TransactionModel(String transactionId, Integer userId, LocalDate transactionDate) {
+    public TransactionModel(String transactionId, Integer userId, Timestamp transactionDate) {
         this.transactionId = transactionId;
         this.userId = userId;
         this.transactionDate = transactionDate;
     }
 
-    public TransactionModel(String transactionId, Integer userId, LocalDate transactionDate, PaymentStatusEnum paymentStatus) {
+    public TransactionModel(String transactionId, Integer userId, Timestamp transactionDate, PaymentStatusEnum paymentStatus) {
         this.transactionId = transactionId;
         this.userId = userId;
         this.transactionDate = transactionDate;
         this.paymentStatus = paymentStatus;
     }
 
-    public TransactionModel(String transactionId, Integer userId, LocalDate transactionDate, PaymentStatusEnum paymentStatus, Integer totalCost) {
+    public TransactionModel(String transactionId, Integer userId, Timestamp transactionDate, PaymentStatusEnum paymentStatus, Long totalCost) {
         this.transactionId = transactionId;
         this.userId = userId;
         this.transactionDate = transactionDate;
@@ -54,11 +54,11 @@ public class TransactionModel {
         this.userId = userId;
     }
 
-    public LocalDate getTransactionDate() {
+    public Timestamp getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(LocalDate transactionDate) {
+    public void setTransactionDate(Timestamp transactionDate) {
         this.transactionDate = transactionDate;
     }
 
@@ -78,11 +78,11 @@ public class TransactionModel {
         this.paymentStatus = paymentStatus;
     }
 
-    public Integer getTotalCost() {
+    public Long getTotalCost() {
         return totalCost;
     }
 
-    public void setTotalCost(Integer totalCost) {
+    public void setTotalCost(Long totalCost) {
         this.totalCost = totalCost;
     }
 
@@ -92,7 +92,14 @@ public class TransactionModel {
 
     @Override
     public String toString() {
-        return "TransactionModel{" + "transactionId=" + transactionId + ", userId=" + userId + ", transactionDate=" + transactionDate + ", paymentStatus=" + paymentStatus + ", totalCost=" + totalCost + ", transactionInfos=" + transactionInfos + '}';
+        return "TransactionModel{" +
+                "transactionId='" + transactionId + '\'' +
+                ", userId=" + userId +
+                ", transactionDate=" + transactionDate +
+                ", transactionStatus=" + transactionStatus +
+                ", paymentStatus=" + paymentStatus +
+                ", totalCost=" + totalCost +
+                ", transactionInfos=" + transactionInfos +
+                '}';
     }
-    
 }

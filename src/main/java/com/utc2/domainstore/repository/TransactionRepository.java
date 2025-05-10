@@ -29,7 +29,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
             // Bước 3: Gán giá trị cho các tham số 
             pst.setString(1, transaction.getTransactionId());
             pst.setInt(2, transaction.getUserId());
-            pst.setDate(3, Date.valueOf(transaction.getTransactionDate()));
+            pst.setTimestamp(3, transaction.getTransactionDate());
 
             // Bước 4: Thực thi câu lệnh INSERT và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
@@ -62,7 +62,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
 
             // Bước 3: Gán giá trị cho các tham số 
             pst.setInt(1, transaction.getUserId());
-            pst.setDate(2, Date.valueOf(transaction.getTransactionDate()));
+            pst.setTimestamp(2, transaction.getTransactionDate());
             pst.setString(3, String.valueOf(transaction.getTransactionStatus()));
             pst.setString(4, transaction.getTransactionId());
             // Bước 4: Thực thi câu lệnh UPDATE và lấy số dòng bị ảnh hưởng
@@ -106,7 +106,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
 
     @Override
     public TransactionModel selectById(TransactionModel transaction) {
-        TransactionModel t = new TransactionModel();
+        TransactionModel t = null;
         try {
             // Bước 1: Mở kết nối đến database
             Connection con = JDBC.getConnection();
@@ -129,12 +129,12 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                 if (t.getTransactionInfos().isEmpty()) {
                     t.setTransactionId(rs.getString("transactions_id"));
                     t.setUserId(rs.getInt("user_id"));
-                    t.setTransactionDate(rs.getDate("transaction_date").toLocalDate());
+                    t.setTransactionDate(rs.getTimestamp("transaction_date"));
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
-                    t.setTotalCost(0);
+                    t.setTotalCost(0L);
                 }
                 TransactionInfoModel tsi = new TransactionInfoModel(rs.getString("transactions_id"),
-                        rs.getInt("domain_id"), rs.getInt("price"));
+                        rs.getInt("domain_id"), rs.getLong("price"));
                 t.setTotalCost(t.getTotalCost() + tsi.getPrice());
                 t.getTransactionInfos().add(tsi);
             }
@@ -170,7 +170,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
             while (rs.next()) {
                 String transactionId = rs.getString("transactions_id");
                 int userId = rs.getInt("user_id");
-                int price = rs.getInt("price");
+                Long price = rs.getLong("price");
                 TransactionInfoModel tsi = new TransactionInfoModel(transactionId, userId, price);
 
                 // Tìm xem transaction này đã có trong danh sách chưa
@@ -190,7 +190,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     TransactionModel t = new TransactionModel();
                     t.setTransactionId(transactionId);
                     t.setUserId(userId);
-                    t.setTransactionDate(rs.getDate("transaction_date").toLocalDate());
+                    t.setTransactionDate(rs.getTimestamp("transaction_date"));
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
                     t.setTotalCost(price);
                     t.getTransactionInfos().add(tsi);
@@ -229,7 +229,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
             while (rs.next()) {
                 String transactionId = rs.getString("transactions_id");
                 int userId = rs.getInt("user_id");
-                int price = rs.getInt("price");
+                Long price = rs.getLong("price");
                 TransactionInfoModel tsi = new TransactionInfoModel(transactionId, userId, price);
 
                 // Tìm xem transaction này đã có trong danh sách chưa
@@ -249,7 +249,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     TransactionModel t = new TransactionModel();
                     t.setTransactionId(transactionId);
                     t.setUserId(userId);
-                    t.setTransactionDate(rs.getDate("transaction_date").toLocalDate());
+                    t.setTransactionDate(rs.getTimestamp("transaction_date"));
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
                     t.setTotalCost(price);
                     t.getTransactionInfos().add(tsi);
@@ -277,7 +277,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
             while (rs.next()) {
                 t.setTransactionId(rs.getString("id"));
                 t.setUserId(rs.getInt("user_id"));
-                t.setTransactionDate(rs.getDate("transaction_date").toLocalDate());
+                t.setTransactionDate(rs.getTimestamp("transaction_date"));
                 t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
                 listTransaction.add(t);
             }
@@ -307,7 +307,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
             if (rs.next()) {
                 t.setTransactionId(rs.getString("id"));
                 t.setUserId(rs.getInt("user_id"));
-                t.setTransactionDate(rs.getDate("transaction_date").toLocalDate());
+                t.setTransactionDate(rs.getTimestamp("transaction_date"));
                 t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
             }
 

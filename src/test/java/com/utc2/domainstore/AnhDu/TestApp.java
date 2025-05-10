@@ -1,8 +1,8 @@
 package com.utc2.domainstore.AnhDu;
 
 import com.sun.net.httpserver.HttpServer;
-import com.utc2.domainstore.entity.database.TransactionInfoModel;
-import com.utc2.domainstore.entity.database.TransactionModel;
+import com.utc2.domainstore.entity.database.*;
+import com.utc2.domainstore.repository.PaymentHistoryRepository;
 import com.utc2.domainstore.repository.TransactionInfoRepository;
 import com.utc2.domainstore.repository.TransactionRepository;
 import com.utc2.domainstore.service.GenerateService;
@@ -16,6 +16,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -45,13 +47,13 @@ public class TestApp {
 //            System.out.println(p);
         // SelectById
 //        PaymentHistoryModel p =new PaymentHistoryModel();
-//        p.setPaymentId(1);
+//        p.setTransactionId("HD001");
 //        System.out.println(PaymentHistoryRepository.getInstance().selectById(p));
         // Insert
-//        PaymentHistoryModel p =new PaymentHistoryModel("HD001", "74389326", 1, PaymentStatusEnum.FAILED, LocalDate.parse("2024-03-11"));
+//        PaymentHistoryModel p =new PaymentHistoryModel("HD001", "74389326", 1, PaymentStatusEnum.FAILED, Timestamp.valueOf(LocalDateTime.now()));
 //        PaymentHistoryRepository.getInstance().insert(p);
         //Update
-//        PaymentHistoryModel p = new PaymentHistoryModel(2, "HD001", "74389326", 1, PaymentStatusEnum.COMPLETED, LocalDate.parse("2024-03-11"));
+//        PaymentHistoryModel p = new PaymentHistoryModel(2, "HD001", "74389326", 1, PaymentStatusEnum.COMPLETED, Timestamp.valueOf(LocalDateTime.now()));
 //        PaymentHistoryRepository.getInstance().update(p);
         // Delete
 //        PaymentHistoryModel p =new PaymentHistoryModel();
@@ -60,25 +62,25 @@ public class TestApp {
         // ------------ Transaction -----------
         // Select All
 //        ArrayList<TransactionModel> transactions = TransactionRepository.getInstance().selectAll();
-//        for(TransactionModel tran : transactions){
+//        for(TransactionModel tran : transactions)
 //            System.out.println(tran);
-//        }
         // SelectById
 //        TransactionModel t =new TransactionModel();
 //        t.setTransactionId("HD001");
 //        System.out.println(TransactionRepository.getInstance().selectById(t));
         // Insert
-//        TransactionModel t = new TransactionModel("HD002", 1, LocalDate.parse("2024-03-14"));
-//        TransactionInfoModel ti1 = new TransactionInfoModel("HD002", 1, 123546);
-//        TransactionInfoModel ti2 = new TransactionInfoModel("HD002", 2, 654321);
+//        TransactionModel t = new TransactionModel("HD013", 1, Timestamp.valueOf(LocalDateTime.now()));
+//        TransactionInfoModel ti1 = new TransactionInfoModel("HD013", 1, 123546L);
+//        TransactionInfoModel ti2 = new TransactionInfoModel("HD013", 2, 654321L);
 //        t.getTransactionInfos().add(ti1);
 //        t.getTransactionInfos().add(ti2);
 //        TransactionRepository.getInstance().insert(t);
         //Update
-//        TransactionModel t = new TransactionModel("HD002", 1, LocalDate.parse("2024-05-03"));
+//        TransactionModel t = new TransactionModel("HD013", 1, Timestamp.valueOf(LocalDateTime.now()));
+//        t.setTransactionStatus(TransactionStatusEnum.COMPLETED);
 //        TransactionRepository.getInstance().update(t);
         // Delete
-//        TransactionModel t = new TransactionModel(); t.setTransactionId("HD002");
+//        TransactionModel t = new TransactionModel(); t.setTransactionId("HD013");
 //        TransactionRepository.getInstance().delete(t);
         // ------------ Transaction Info -----------
         // Select All
@@ -93,15 +95,15 @@ public class TestApp {
 //        TransactionInfoModel t = new TransactionInfoModel("HD001", 2, 66666);
 //        TransactionInfoRepository.getInstance().insert(t);
         //Update
-//        TransactionInfoModel t = new TransactionInfoModel("HD001", 2, 78000);
+//        TransactionInfoModel t = new TransactionInfoModel("HD001", 15, 0L);
 //        TransactionInfoRepository.getInstance().update(t);
         // Delete
-//        TransactionInfoModel t = new TransactionInfoModel("HD001", 2, 78000);
+//        TransactionInfoModel t = new TransactionInfoModel("HD001", 2, 0L);
 //        TransactionInfoRepository.getInstance().delete(t);
 
         JSONArray domainArray = new JSONArray();
         JSONObject domain1 = new JSONObject();
-        domain1.put("name", "diamonielts.com");
+        domain1.put("name", "example.org");
         domain1.put("status", "available");
         domain1.put("price", 299000);
         domain1.put("years", 2);
@@ -114,7 +116,7 @@ public class TestApp {
         domainArray.put(domain2);
 
         JSONObject domains = new JSONObject();
-        domains.put("user_id", 6);
+        domains.put("user_id", 2);
         domains.put("domains", domainArray);
 
         /* tạo hoá đơn
@@ -125,13 +127,16 @@ public class TestApp {
                   status ("success" / "failed")
                   }  */
         TransactionService transactionService = new TransactionService();
-        JSONObject jsonObject = transactionService.createTransaction(domains);
+//        JSONObject jsonObject = transactionService.createTransaction(domains);
         /* thanh toán
         request: JSONObject {
                     total (int),
                     transactionId (String)
                  }
         response: true / false (boolean) */
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("transactionId", "HD012");
+        jsonObject.put("total", 895000);
         PaymentService paymentService = new PaymentService();
         paymentService.createPayment(jsonObject);
 //          Tạo hoá đơn pdf
