@@ -4,12 +4,12 @@ package com.utc2.domainstore.entity.database;
 public class TransactionInfoModel {
     private String transactionId;
     private Integer domainId;
-    private Integer price;
+    private Long price;
 
     public TransactionInfoModel() {
     }
 
-    public TransactionInfoModel(String transactionId, Integer domainId, Integer price) {
+    public TransactionInfoModel(String transactionId, Integer domainId, Long price) {
         this.transactionId = transactionId;
         this.domainId = domainId;
         this.price = price;
@@ -31,11 +31,11 @@ public class TransactionInfoModel {
         this.domainId = domainId;
     }
 
-    public Integer getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 

@@ -5,11 +5,11 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.utc2.domainstore.config.VnPayConfig;
-import com.utc2.domainstore.entity.database.TransactionInfoModel;
+import com.utc2.domainstore.entity.database.*;
+import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.repository.PaymentHistoryRepository;
-import com.utc2.domainstore.entity.database.PaymentHistoryModel;
-import com.utc2.domainstore.entity.database.PaymentTypeEnum;
 import com.utc2.domainstore.repository.TransactionInfoRepository;
+import com.utc2.domainstore.repository.TransactionRepository;
 import com.utc2.domainstore.utils.VnPayUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -58,6 +58,23 @@ public class PaymentService implements  IPaymentService{
     public boolean createPayment(JSONObject json) throws IOException {
         // request: total (int), transactionId (String)
         // response: true / false (boolean)
+        String transactionId = json.getString("transactionId");
+        TransactionModel check = TransactionRepository.getInstance().selectById(new TransactionModel(transactionId, null, null));
+        if (check == null || TransactionStatusEnum.COMPLETED.equals(check.getTransactionStatus())){
+            System.out.println("Hoá đơn không tồn tại hoặc đã được thanh toán !!");
+            return false;
+        }
+        TransactionModel tran = TransactionRepository.getInstance()
+                .selectById(new TransactionModel(transactionId, null, null));
+        for(TransactionInfoModel t : tran.getTransactionInfos()){
+            DomainModel domain = DomainRepository.getInstance()
+                    .selectById(new DomainModel(t.getDomainId(), null, 0, null, null, 0));
+            if(DomainStatusEnum.sold.equals(domain.getStatus())) {
+                System.out.println("Tên miền đã được bán");
+                return false;
+            }
+        }
+
         if (!isRunning) {
             HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
             server.createContext("/vnpay_return", new VNPayReturnHandler());
@@ -71,7 +88,7 @@ public class PaymentService implements  IPaymentService{
         // Tạo transaction reference là timestamp hiện tại
         String txnRef = String.valueOf(System.currentTimeMillis());
         // Tạo URL thanh toán
-        paymentURL = vnPayService.createPaymentUrl(json.getInt("total"), json.getString("transactionId"), txnRef);
+        paymentURL = vnPayService.createPaymentUrl(json.getLong("total"), transactionId, txnRef);
         try {
             // Kiểm tra xem Desktop có được hỗ trợ không
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
@@ -85,6 +102,7 @@ public class PaymentService implements  IPaymentService{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("Có lỗi khi tạo thanh toán");
         return false;
     }
     private JSONArray result(String condition){

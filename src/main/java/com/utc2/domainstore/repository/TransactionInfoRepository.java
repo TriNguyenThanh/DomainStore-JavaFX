@@ -31,7 +31,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
             // Bước 3: Gán giá trị cho các tham số 
             pst.setString(1, transactionInfo.getTransactionId());
             pst.setInt(2, transactionInfo.getDomainId());
-            pst.setInt(3, transactionInfo.getPrice());
+            pst.setLong(3, transactionInfo.getPrice());
             
             // Bước 4: Thực thi câu lệnh INSERT và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
@@ -60,7 +60,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
             PreparedStatement pst = con.prepareStatement(sql);
             
              // Bước 3: Gán giá trị id
-            pst.setInt(1, transactionInfo.getPrice()); 
+            pst.setLong(1, transactionInfo.getPrice());
             pst.setString(2, transactionInfo.getTransactionId());
             pst.setInt(3, transactionInfo.getDomainId());
             // Bước 4: Thực thi câu lệnh UPDATE và lấy số dòng bị ảnh hưởng
@@ -119,7 +119,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
                 // Lấy dữ liệu từ ResultSet
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));
-                t.setPrice(rs.getInt("price"));
+                t.setPrice(rs.getLong("price"));
                 return t;
             }
             // Bước 5: Đóng kết nối 
@@ -151,7 +151,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
                 // Lấy dữ liệu từ ResultSet
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));
-                t.setPrice(rs.getInt("price"));
+                t.setPrice(rs.getLong("price"));
                 
                 listTransactionInfo.add(t);
             }
@@ -183,7 +183,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
                 // Lấy dữ liệu từ ResultSet
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));
-                t.setPrice(rs.getInt("price"));
+                t.setPrice(rs.getLong("price"));
                 
                 listTransactionInfo.add(t);
             }

@@ -7,7 +7,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -85,6 +88,7 @@ public class TransactionService implements ITransactionService {
         if (json.isEmpty()) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("status", "failed");
+            System.out.println("Tạo hoá đơn thất bại");
             return jsonObject;
         }
         String transactionId = generateTransactionId(); // tạo id hoá đơn
@@ -99,6 +103,7 @@ public class TransactionService implements ITransactionService {
                     ("user_id = " + userId + " AND " + "domain_id = " + domainId).isEmpty()){
                 JSONObject response = new JSONObject();
                 response.put("status", "failed");
+                System.out.println("Tạo hoá đơn thất bại: tên miền đã nằm trong hoá đơn trước đó");
                 return response;
             }
         }
@@ -106,16 +111,17 @@ public class TransactionService implements ITransactionService {
         TransactionModel tran = new TransactionModel();
         tran.setTransactionId(transactionId);
         tran.setUserId(userId); // request
-        tran.setTransactionDate(LocalDate.now());
+        tran.setTransactionDate(Timestamp.valueOf(LocalDateTime.now()));
         transactionRepository.insert(tran); // thêm hoá đơn mới
 
-        int total = processTransactionDetails(transactionId, domains); // tính tổng của 1 hoá đơn
+        Long total = processTransactionDetails(transactionId, domains); // tính tổng của 1 hoá đơn
 
         // trả response cho frontend
         JSONObject response = new JSONObject();
         response.put("transactionId", transactionId);
         response.put("total", total);
         response.put("status", "success");
+        System.out.println("Tạo hoá đơn thành công");
         return response;
     }
 
@@ -155,6 +161,7 @@ public class TransactionService implements ITransactionService {
         // Cập nhật trạng thái hoá đơn
         tran.setTransactionStatus(status);
         transactionRepository.update(tran);
+        System.out.println("Cập nhật trạng thái hoá đơn thành công: " + status);
     }
 
     //Tạo transactionId
@@ -163,6 +170,7 @@ public class TransactionService implements ITransactionService {
         String lastId = transactions.getLast().getTransactionId();
         int number = Integer.parseInt(lastId.substring(2));
         ++number;
+        System.out.println("Tạo mã hoá đơn thành công: " + number);
         return String.format("HD%03d", number);
     }
 
@@ -174,20 +182,22 @@ public class TransactionService implements ITransactionService {
         TopLevelDomainModel tld = TopLevelDomainRepository.getInstance().getTLDByName(tldText);
         DomainModel d = DomainRepository.getInstance().getDomainByNameAndTld(name, tld.getId());
         if (d != null) {
+            System.out.println("Lấy thành công domain: " + d.getDomainName() + " - " + d.getId());
             return d.getId();
         } else {
+            System.out.println("Lấy domain thất bại");
             throw new NoSuchElementException("Domain not found!");
         }
     }
 
     // Listener để cập nhật trạng thái hoá đơn
-    private int processTransactionDetails(String transactionId, JSONArray jsonArray) {
-        int total = 0;
+    private Long processTransactionDetails(String transactionId, JSONArray jsonArray) {
+        long total = 0L;
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             int domainId = getDomainByName(jsonObject.getString("name"));
             int year = jsonObject.getInt("years");
-            int price = jsonObject.getInt("price") * year;
+            long price = jsonObject.getLong("price") * year;
             DomainModel d = DomainRepository.getInstance().selectById(new DomainModel(domainId, null, 0, null, null, 0));
             d.setYears(year);
             DomainRepository.getInstance().update(d);
