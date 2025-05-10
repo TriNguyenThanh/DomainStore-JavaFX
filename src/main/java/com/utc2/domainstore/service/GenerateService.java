@@ -42,17 +42,17 @@ public class GenerateService implements IGenerateService {
             InputStream jasperStream = getClass().getResourceAsStream("/report/invoice_domain.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
             Map<String, Object> data = new HashMap<>();
-            DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter inputFormat = DateTimeFormatter.ISO_LOCAL_DATE_TIME;;
+            DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss");
 
             data.put("fullName", cus.getFullName());
             data.put("phone", cus.getPhone());
             data.put("email", cus.getEmail());
             String transactionDate = String.valueOf(tran.getTransactionDate());
-            LocalDate parsedDate = LocalDate.parse(transactionDate, inputFormat);
+            LocalDateTime parsedDate = LocalDateTime.parse(transactionDate, inputFormat);
             data.put("transactionDate", parsedDate.format(outputFormat));
 
-            parsedDate = LocalDate.parse(String.valueOf(Date.valueOf(LocalDate.now())), inputFormat);
+            parsedDate = LocalDateTime.parse(String.valueOf(LocalDateTime.now()), inputFormat);
             data.put("invoiceDate", parsedDate.format(outputFormat));
             data.put("transactionId", transactionId);
             if (payment != null) {

@@ -7,7 +7,6 @@ import com.utc2.domainstore.entity.database.PaymentStatusEnum;
 import com.utc2.domainstore.config.JDBC;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel>{
@@ -33,7 +32,7 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
             pst.setString(2, paymentHistory.getPaymentCode());
             pst.setInt(3, paymentHistory.getPaymentMethodId());
             pst.setString(4, paymentHistory.getPaymentStatus().name());
-            pst.setDate(5, Date.valueOf(paymentHistory.getPaymentDate()));
+            pst.setTimestamp(5, paymentHistory.getPaymentDate());
             
             // Bước 4: Thực thi câu lệnh INSERT và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
@@ -67,7 +66,7 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
             pst.setString(2, paymentHistory.getPaymentCode());
             pst.setInt(3, paymentHistory.getPaymentMethodId());
             pst.setString(4, paymentHistory.getPaymentStatus().name());
-            pst.setDate(5, Date.valueOf(paymentHistory.getPaymentDate()));
+            pst.setTimestamp(5, paymentHistory.getPaymentDate());
             pst.setInt(6, paymentHistory.getPaymentId());
             
             // Bước 4: Thực thi câu lệnh UPDATE và lấy số dòng bị ảnh hưởng
@@ -131,7 +130,7 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
                 int paymentMethodId = rs.getInt("payment_method");
                 String status = rs.getString("payment_status");
                 PaymentStatusEnum paymentStatus = PaymentStatusEnum.valueOf(status.toUpperCase());
-                LocalDate paymentDate = rs.getDate("payment_date").toLocalDate();
+                Timestamp paymentDate = rs.getTimestamp("payment_date");
                 
                 p = new PaymentHistoryModel(paymentHistory.getPaymentId(), transactionId, paymentCode, 
                         paymentMethodId, paymentStatus, paymentDate);
@@ -168,7 +167,7 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
                 int paymentMethodId = rs.getInt("payment_method");
                 String status = rs.getString("payment_status");
                 PaymentStatusEnum paymentStatus = PaymentStatusEnum.valueOf(status.toUpperCase());
-                LocalDate paymentDate = rs.getDate("payment_date").toLocalDate();
+                Timestamp paymentDate = rs.getTimestamp("payment_date");
                 
                 PaymentHistoryModel p = new PaymentHistoryModel(paymentId,transactionId, paymentCode, paymentMethodId, 
                         paymentStatus, paymentDate);
@@ -211,7 +210,7 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
                 int paymentMethodId = rs.getInt("payment_method");
                 String status = rs.getString("payment_status").toUpperCase();
                 PaymentStatusEnum paymentStatus = PaymentStatusEnum.valueOf(status);
-                LocalDate paymentDate = rs.getDate("payment_date").toLocalDate();
+                Timestamp paymentDate = rs.getTimestamp("payment_date");
                 
                 PaymentHistoryModel p = new PaymentHistoryModel(paymentId, transactionId, paymentCode, paymentMethodId, 
                         paymentStatus, paymentDate);

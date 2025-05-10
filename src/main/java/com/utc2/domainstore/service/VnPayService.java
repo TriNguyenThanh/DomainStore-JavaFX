@@ -3,7 +3,6 @@ package com.utc2.domainstore.service;
 import com.utc2.domainstore.config.VnPayConfig;
 import com.utc2.domainstore.entity.database.*;
 import com.utc2.domainstore.repository.PaymentHistoryRepository;
-import com.utc2.domainstore.repository.TransactionInfoRepository;
 import com.utc2.domainstore.utils.VnPayUtils;
 
 import java.io.BufferedReader;
@@ -12,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +22,7 @@ public class VnPayService implements IPaymentGateway{
     private VnPayConfig vnPayConfig = new VnPayConfig();
     private VnPayUtils vnPayUtils = new VnPayUtils();
     @Override
-    public String createPaymentUrl(int amount, String orderId, String tnxId) {
+    public String createPaymentUrl(Long amount, String orderId, String tnxId) {
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", vnPayConfig.VNP_VERSION);
         vnp_Params.put("vnp_Command", vnPayConfig.VNP_COMMAND);
@@ -124,7 +124,7 @@ public class VnPayService implements IPaymentGateway{
 
                     // Tạo thanh toán, chuyển tới trang thanh toán
                     PaymentHistoryModel paymentHistoryModel = new PaymentHistoryModel(transactionId, fields.get("vnp_TransactionNo"),
-                            PaymentTypeEnum.VNPAY.getCode(), PaymentStatusEnum.COMPLETED, LocalDate.now());
+                            PaymentTypeEnum.VNPAY.getCode(), PaymentStatusEnum.COMPLETED, Timestamp.valueOf(LocalDateTime.now()));
                     PaymentHistoryRepository.getInstance().insert(paymentHistoryModel);
                 } else {
                     // Payment failed
@@ -164,8 +164,6 @@ public class VnPayService implements IPaymentGateway{
         html.append("<body class='bg-gray-100 flex items-center justify-center min-h-screen'>");
         html.append("<div class='container max-w-lg mx-auto p-6 bg-white rounded-xl shadow-lg fade-in'>");
 
-        String amountStr = paymentResult.get("amount");
-        Long amount = Long.parseLong(amountStr);
         String status = paymentResult.get("status");
         if ("success".equals(status)) {
             html.append("<div class='text-center'>");
@@ -180,6 +178,8 @@ public class VnPayService implements IPaymentGateway{
             html.append("<div class='flex justify-between border-b pb-2'>");
             html.append("<span class='text-gray-600 font-medium'>Số tiền:</span>");
             html.append("<span class='text-gray-800'>");
+            String amountStr = paymentResult.get("amount");
+            Long amount = Long.parseLong(amountStr);
             html.append(String.format("%,d", amount)).append(" VND</span>");
             html.append("</div>");
             html.append("<div class='flex justify-between border-b pb-2'>");

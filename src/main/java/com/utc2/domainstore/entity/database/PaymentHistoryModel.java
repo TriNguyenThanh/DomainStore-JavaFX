@@ -1,20 +1,24 @@
 
 package com.utc2.domainstore.entity.database;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 public class PaymentHistoryModel {
-    private Integer paymentId; 
+    private Integer paymentId;
     private String transactionId;
     private String paymentCode; // mã giao dịch bên thứ 3
     private Integer paymentMethodId; 
     private PaymentStatusEnum paymentStatus;
-    private LocalDate paymentDate;
+    private Timestamp paymentDate;
 
     public PaymentHistoryModel() {
     }
 
-    public PaymentHistoryModel(Integer paymentId, String transactionId, String paymentCode, Integer paymentMethodId, PaymentStatusEnum paymentStatus, LocalDate paymentDate) {
+    public PaymentHistoryModel(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public PaymentHistoryModel(Integer paymentId, String transactionId, String paymentCode, Integer paymentMethodId, PaymentStatusEnum paymentStatus, Timestamp paymentDate) {
         this.paymentId = paymentId;
         this.transactionId = transactionId;
         this.paymentCode = paymentCode;
@@ -23,7 +27,7 @@ public class PaymentHistoryModel {
         this.paymentDate = paymentDate;
     }
 
-    public PaymentHistoryModel(String transactionId, String paymentCode, Integer paymentMethodId, PaymentStatusEnum paymentStatus, LocalDate paymentDate) {
+    public PaymentHistoryModel(String transactionId, String paymentCode, Integer paymentMethodId, PaymentStatusEnum paymentStatus, Timestamp paymentDate) {
         this.transactionId = transactionId;
         this.paymentCode = paymentCode;
         this.paymentMethodId = paymentMethodId;
@@ -71,11 +75,11 @@ public class PaymentHistoryModel {
         this.paymentStatus = paymentStatus;
     }
 
-    public LocalDate getPaymentDate() {
+    public Timestamp getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(LocalDate paymentDate) {
+    public void setPaymentDate(Timestamp paymentDate) {
         this.paymentDate = paymentDate;
     }
 
