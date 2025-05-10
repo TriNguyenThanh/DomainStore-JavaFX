@@ -43,8 +43,6 @@ public class UserManagerController implements Initializable {
     @FXML
     private TableColumn<UserModel, String> colEmail;
     @FXML
-    private TableColumn<UserModel, String> colPsID;
-    @FXML
     private TableColumn<UserModel, String> colRole;
     @FXML
     private TableColumn<UserModel, ACCOUNT_STATUS> colStatus;
@@ -86,7 +84,6 @@ public class UserManagerController implements Initializable {
         colUsername.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        colPsID.setCellValueFactory(new PropertyValueFactory<>("psID"));
         colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
@@ -204,7 +201,6 @@ public class UserManagerController implements Initializable {
             request.put("full_name", selectedUser.getName());
             request.put("phone", selectedUser.getPhone());
             request.put("email", selectedUser.getEmail());
-            request.put("ps_id", selectedUser.getPsID());
             request.put("is_deleted", false);
 
             JSONObject response = accountService.updateUser(request);

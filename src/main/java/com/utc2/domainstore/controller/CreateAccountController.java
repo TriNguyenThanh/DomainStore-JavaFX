@@ -35,9 +35,9 @@ public class CreateAccountController implements Initializable {
     @FXML
     private ComboBox<RoleEnum> cbRole;
     @FXML
-    private TextField tfUsername, tfPhone, tfEmail, tfPsID, tfPass;
+    private TextField tfUsername, tfPhone, tfEmail, tfPass;
     @FXML
-    private Label lbFullNameErr, lbPhoneErr, lbEmailErr, lbPsIDErr, lbPassErr;
+    private Label lbFullNameErr, lbPhoneErr, lbEmailErr, lbPassErr;
 
     @FXML
     private void handleButtonOnAction(ActionEvent e) {
@@ -89,7 +89,6 @@ public class CreateAccountController implements Initializable {
         newData.setName(tfUsername.getText());
         newData.setPhone(tfPhone.getText());
         newData.setEmail(tfEmail.getText());
-        newData.setPsID(tfPsID.getText());
         newData.setRole(cbRole.getValue());
         newData.setPassword(tfPass.getText());
 
@@ -107,7 +106,6 @@ public class CreateAccountController implements Initializable {
             request.put("phone", tfPhone.getText());
             request.put("email", tfEmail.getText());
             request.put("password", tfPass.getText());
-            request.put("personal_id", tfPsID.getText());
             request.put("role", cbRole.getValue().toString());
 
             JSONObject response = null;
@@ -141,8 +139,6 @@ public class CreateAccountController implements Initializable {
                         lbPhoneErr.setText(bundle.getString("error.phone3"));
                     } else if (message.contains("email")) {
                         lbEmailErr.setText(bundle.getString("error.email3"));
-                    } else if (message.contains("cccd")) {
-                        lbPsIDErr.setText(bundle.getString("error.psIDErr3"));
                     }
                 }
 
@@ -164,13 +160,11 @@ public class CreateAccountController implements Initializable {
         tfUsername.setText(newData.getName());
         tfPhone.setText(newData.getPhone());
         tfEmail.setText(newData.getEmail());
-        tfPsID.setText(newData.getPsID());
         tfPass.setText(newData.getPassword());
         cbRole.setValue(newData.getRole());
         lbFullNameErr.setText(" ");
         lbPhoneErr.setText(" ");
         lbEmailErr.setText(" ");
-        lbPsIDErr.setText(" ");
         lbPassErr.setText(" ");
 
         // đặt lại trạng thái của trường mật khẩu
@@ -212,17 +206,6 @@ public class CreateAccountController implements Initializable {
             lbEmailErr.setText(bundle.getString("error.email2"));
         } else {
             lbEmailErr.setText(" ");
-        }
-
-        // kiểm tra số CCCD
-        if (newData.getPsID().isBlank()) {
-            flag = false;
-            lbPsIDErr.setText(bundle.getString("error.psIDErr1"));
-        } else if (!personalIDCheck(newData.getPsID())) {
-            flag = false;
-            lbPsIDErr.setText(bundle.getString("error.psIDErr2"));
-        } else {
-            lbPsIDErr.setText(" ");
         }
 
         // kiểm tra mật khẩu

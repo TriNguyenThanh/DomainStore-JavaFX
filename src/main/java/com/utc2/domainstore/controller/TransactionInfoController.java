@@ -195,10 +195,9 @@ public class TransactionInfoController implements Initializable, PaymentListener
         String fullname = respond.getString("username");
         String phone = respond.getString("phone");
         String email = respond.getString("email");
-        String psID = respond.getString("personal_id");
         String pass = respond.getString("password");
 
-        return new AccountModel(fullname, phone, email, psID, pass);
+        return new AccountModel(fullname, phone, email, pass);
     }
 
     private List<DomainViewModel> getDomainList() {
