@@ -1,7 +1,9 @@
 package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.entity.database.CustomerModel;
+import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.DomainStatusEnum;
+import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import com.utc2.domainstore.repository.CustomerRepository;
 import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.entity.database.DomainModel;
@@ -11,9 +13,10 @@ import com.utc2.domainstore.repository.TopLevelDomainRepository;
 import com.utc2.domainstore.utils.DomainUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.List;
 
-public class DomainServices implements IDomain{
+public class DomainServices implements IDomain {
     private DomainRepository domainDAO;
 
     // 1. tìm theo tên
@@ -92,7 +95,7 @@ public class DomainServices implements IDomain{
         domainInfo.put("price", primaryDomain.getStatus() == DomainStatusEnum.available ? tldModel.getPrice() : 0);
 
         // Các TLD gợi ý khác
-        String[] popularTLDs = new String[] { ".net", ".org", ".vn", ".info", ".biz" };
+        String[] popularTLDs = new String[]{".net", ".org", ".vn", ".info", ".biz"};
         JSONArray domainArray = new JSONArray();
 
         for (String suggestTLD : popularTLDs) {
@@ -125,12 +128,14 @@ public class DomainServices implements IDomain{
         response.put("domain", domainArray);
         return response;
     }
+
     private JSONObject createErrorResponse(String message) {
         JSONObject response = new JSONObject();
         response.put("status", "failed");
         response.put("message", message);
         return response;
     }
+
     private String cleanDomainInput(String input) {
         return input.replaceAll("[^a-zA-Z0-9\\.-]", "").toLowerCase();
     }
@@ -139,6 +144,7 @@ public class DomainServices implements IDomain{
         String regex = "^[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z]{2,})+$";
         return domain.matches(regex);
     }
+
     //2. Gợi ý tên miền
     @Override
     public JSONObject suggestion(JSONObject jsonInput) {
@@ -209,7 +215,7 @@ public class DomainServices implements IDomain{
             JSONObject domainJson = new JSONObject();
 
             String fullNameDomain = domain.getDomainName();
-            if (tld != null && tld.getTldText() != null){
+            if (tld != null && tld.getTldText() != null) {
                 fullNameDomain += tld.getTldText();
             }
 
