@@ -66,7 +66,7 @@ CREATE INDEX idx_carts_domain_id ON carts(domain_id);
 CREATE TABLE Transactions (
     id CHAR(10) PRIMARY KEY NOT NULL,
     user_id INT NOT NULL,
-    transaction_date DATE NOT NULL,
+    transaction_date TIMESTAMP NOT NULL,
     transaction_status ENUM('pendingConfirm', 'pendingPayment', 'completed', 'cancelled') DEFAULT 'pendingConfirm',
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
@@ -100,7 +100,7 @@ CREATE TABLE PaymentHistory (
     payment_id CHAR(10) NOT NULL DEFAULT '',
     payment_method INT,
     payment_status ENUM('completed', 'failed'),
-    payment_date DATE,
+    payment_date TIMESTAMP,
 
     FOREIGN KEY (transaction_id) REFERENCES Transactions(id),
     FOREIGN KEY (payment_method) REFERENCES PaymentMethod(id)
@@ -229,17 +229,17 @@ INSERT INTO carts (cus_id, domain_id, years) VALUES
 (10, 32, 1);
 
 INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VALUES
-('HD001', 1, '2024-01-21', 'completed'),
-('HD002', 2, '2024-01-22', 'cancelled'),
-('HD003', 2, '2024-02-10', 'pendingConfirm'),
-('HD004', 3, '2024-03-15', 'completed'),
-('HD005', 7, '2024-03-20', 'cancelled'),
-('HD006', 4, '2024-04-20', 'completed'),
-('HD007', 8, '2024-08-10', 'pendingConfirm'),
-('HD008', 10, '2024-08-20', 'cancelled'),
-('HD009', 11, '2024-11-25', 'completed'),
-('HD010', 9, '2025-03-15', 'completed'),
-('HD011', 5, '2025-03-25', 'pendingConfirm');
+('HD001', 1, '2024-01-21 10:10:00', 'completed'),
+('HD002', 2, '2024-01-22 11:20:55', 'cancelled'),
+('HD003', 2, '2024-02-10 12:30:45', 'pendingConfirm'),
+('HD004', 3, '2024-03-15 13:40:35', 'completed'),
+('HD005', 7, '2024-03-20 14:50:25', 'cancelled'),
+('HD006', 4, '2024-04-20 15:15:15', 'completed'),
+('HD007', 8, '2024-08-10 16:25:50', 'pendingConfirm'),
+('HD008', 10, '2024-08-20 17:35:40', 'cancelled'),
+('HD009', 11, '2024-11-25 18:45:30', 'completed'),
+('HD010', 9, '2025-03-15 19:55:20', 'completed'),
+('HD011', 5, '2025-03-25 20:00:10', 'pendingConfirm');
 
 INSERT INTO Transactions_info (transactions_id, domain_id) VALUES
 -- HD001
@@ -308,14 +308,14 @@ VALUES
 ('ZaloPay');
 
 INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
-('HD001', '14931583', 1, 'completed', '2025-01-21'),
+('HD001', '14931583', 1, 'completed', '2025-01-21 08:10:50'),
 -- HD002: cancelled
-('HD004', '14936383', 1, 'completed', '2025-05-07'),
+('HD004', '14936383', 1, 'completed', '2025-05-07 09:20:40'),
 -- HD005: cancelled
-('HD006', '14938357', 1, 'completed', '2025-04-20'),
+('HD006', '14938357', 1, 'completed', '2025-04-20 10:30:30'),
 -- HD008: cancelled
-('HD009', '14933277', 1, 'completed', '2024-11-25'),
-('HD010', '14939457', 1, 'completed', '2025-03-15');
+('HD009', '14933277', 1, 'completed', '2024-11-25 11:40:20'),
+('HD010', '14939457', 1, 'completed', '2025-03-15 12:50:10');
 
 -- tạo sự kiện tự động cập nhật lại domain khi hết hạn kích hoạt
 SET GLOBAL event_scheduler = ON;
