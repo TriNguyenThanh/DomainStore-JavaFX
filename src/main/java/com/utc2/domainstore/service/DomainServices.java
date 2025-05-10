@@ -5,6 +5,7 @@ import com.utc2.domainstore.entity.database.DomainStatusEnum;
 import com.utc2.domainstore.repository.CustomerRepository;
 import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.entity.database.DomainModel;
+import com.utc2.domainstore.entity.database.DomainWithTldModel;
 import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import com.utc2.domainstore.repository.TopLevelDomainRepository;
 import com.utc2.domainstore.utils.DomainUtils;
@@ -199,11 +200,12 @@ public class DomainServices implements IDomain{
 
     @Override
     public JSONObject getAllDomains() {
-        List<DomainModel> domainList = DomainRepository.getInstance().selectAll();
+        List<DomainWithTldModel> domainList = DomainRepository.getInstance().selectAllDomainWithTld();
         JSONArray domainArray = new JSONArray();
 
-        for (DomainModel domain : domainList){
-            TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
+        for (DomainWithTldModel dwt : domainList){
+            DomainModel domain = dwt.getDomain();
+            TopLevelDomainModel tld = dwt.getTld();
             JSONObject domainJson = new JSONObject();
 
             String fullNameDomain = domain.getDomainName();

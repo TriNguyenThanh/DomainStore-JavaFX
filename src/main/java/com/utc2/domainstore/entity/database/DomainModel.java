@@ -147,10 +147,7 @@ public class DomainModel {
         this.price = price;
     }
     public TopLevelDomainModel getTopLevelDomainbyId(int id){
-        for(TopLevelDomainModel tld : TopLevelDomainRepository.getInstance().selectAll()){
-            if(tld.getId() == id) return tld;
-        }
-        return null;
+        return TopLevelDomainRepository.getInstance().selectById(new TopLevelDomainModel(id));
     }
     @Override
     public String toString() {

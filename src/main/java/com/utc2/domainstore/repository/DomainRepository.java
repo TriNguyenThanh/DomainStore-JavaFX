@@ -3,6 +3,8 @@ package com.utc2.domainstore.repository;
 import com.utc2.domainstore.entity.database.DomainModel;
 import com.utc2.domainstore.entity.database.DomainStatusEnum;
 import com.utc2.domainstore.config.JDBC;
+import com.utc2.domainstore.entity.database.DomainWithTldModel;
+import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -414,5 +416,38 @@ public class DomainRepository implements IRepository<DomainModel> {
             e.printStackTrace();
         }
         return 0;
+    }
+    public List<DomainWithTldModel> selectAllDomainWithTld(){
+        List<DomainWithTldModel> result = new ArrayList<>();
+        String sql = "SELECT d.id, d.domain_name, d.tld_id, d.status, d.years, " +
+                "d.price AS domain_price, d.active_date, d.owner_id, " +
+                "t.id AS tld_id, t.TLD_text, t.price AS tld_price " +
+                "FROM domains d " +
+                "JOIN TopLevelDomain t ON d.tld_id = t.id";
+        try(Connection con = JDBC.getConnection();
+                PreparedStatement pst = con.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery()){
+            while(rs.next()){
+                DomainModel domain = new DomainModel();
+                domain.setId(rs.getInt("id"));
+                domain.setDomainName(rs.getString("domain_name"));
+                domain.setTldId(rs.getInt("tld_id"));
+                domain.setStatus(DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()));
+                domain.setYears(rs.getInt("years"));
+                domain.setPrice(rs.getInt("domain_price"));
+                domain.setActiveDate(rs.getDate("active_date") != null ? rs.getDate("active_date") : null);
+                domain.setOwnerId(rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null);
+
+                TopLevelDomainModel tld = new TopLevelDomainModel();
+                tld.setId(rs.getInt("tld_id"));
+                tld.setTldText(rs.getString("TLD_text"));
+                tld.setPrice(rs.getInt("tld_price"));
+
+                result.add(new DomainWithTldModel(domain,tld));
+            }
+        }   catch (SQLException e){
+            e.printStackTrace();
+        }
+        return result;
     }
 }
