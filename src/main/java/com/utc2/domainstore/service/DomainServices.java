@@ -14,7 +14,9 @@ import com.utc2.domainstore.utils.DomainUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.logging.SimpleFormatter;
 
 public class DomainServices implements IDomain {
     private DomainRepository domainDAO;
@@ -180,7 +182,7 @@ public class DomainServices implements IDomain {
 
         List<DomainModel> domainList = DomainRepository.getInstance().getSoldDomains(cus_id);
         JSONArray domainArray = new JSONArray();
-
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (DomainModel domain : domainList) {
             TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
             JSONObject domainJson = new JSONObject();
@@ -190,12 +192,12 @@ public class DomainServices implements IDomain {
             if (tld != null && tld.getTldText() != null) {
                 fullDomainName += tld.getTldText();
             }
-
+            String cleanTime = formatter.format(domain.getActiveDate());
             domainJson.put("name", fullDomainName);
             domainJson.put("status", domain.getStatus().toString().toLowerCase());
             domainJson.put("year", domain.getYears());
             domainJson.put("price", domain.getPrice());
-            domainJson.put("active_date", domain.getActiveDate());
+            domainJson.put("active_date", cleanTime);
             domainArray.put(domainJson);
         }
 
@@ -208,7 +210,7 @@ public class DomainServices implements IDomain {
     public JSONObject getAllDomains() {
         List<DomainWithTldModel> domainList = DomainRepository.getInstance().selectAllDomainWithTld();
         JSONArray domainArray = new JSONArray();
-
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (DomainWithTldModel dwt : domainList){
             DomainModel domain = dwt.getDomain();
             TopLevelDomainModel tld = dwt.getTld();
@@ -218,13 +220,12 @@ public class DomainServices implements IDomain {
             if (tld != null && tld.getTldText() != null) {
                 fullNameDomain += tld.getTldText();
             }
-
             domainJson.put("id", domain.getId());
             domainJson.put("name", fullNameDomain);
             domainJson.put("status", domain.getStatus().toString().toLowerCase());
             domainJson.put("year", domain.getYears());
             domainJson.put("price", domain.getPrice());
-            domainJson.put("active_date", (domain.getActiveDate() != null) ? domain.getActiveDate() : 0);
+            domainJson.put("active_date", (domain.getActiveDate() != null) ? formatter.format(domain.getActiveDate()) : 0);
             domainJson.put("owner_id", (domain.getOwnerId() != null) ? domain.getOwnerId() : 0);
             // Thêm phần lấy tên người dùng nếu đã bán
             if ("sold".equalsIgnoreCase(domain.getStatus().toString()) && domain.getOwnerId() != null) {

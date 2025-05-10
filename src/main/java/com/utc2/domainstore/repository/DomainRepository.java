@@ -26,9 +26,9 @@ public class DomainRepository implements IRepository<DomainModel> {
             pst.setString(1, domain.getDomainName());
             pst.setInt(2, domain.getTldId());
             pst.setString(3, domain.getStatus().name().toLowerCase());
-            pst.setDate(4, domain.getActiveDate());
+            pst.setTimestamp(4, domain.getActiveDate());
             pst.setInt(5, domain.getYears());
-            pst.setInt(6, domain.getPrice());
+            pst.setLong(6, domain.getPrice());
             if (domain.getOwnerId() != null) {
                 pst.setInt(7, domain.getOwnerId());
             } else {
@@ -60,9 +60,9 @@ public class DomainRepository implements IRepository<DomainModel> {
             pst.setString(1, domain.getDomainName());
             pst.setInt(2, domain.getTldId());
             pst.setString(3, domain.getStatus().name().toLowerCase());
-            pst.setDate(4, domain.getActiveDate());
+            pst.setTimestamp(4, domain.getActiveDate());
             pst.setInt(5, domain.getYears());
-            pst.setInt(6, domain.getPrice());
+            pst.setLong(6, domain.getPrice());
             if (domain.getOwnerId() != null) {
                 pst.setInt(7, domain.getOwnerId());
             } else {
@@ -108,9 +108,9 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
                             DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
-                            rs.getDate("active_date"),
+                            rs.getTimestamp("active_date"),
                             rs.getInt("years"),
-                            rs.getInt("price"),
+                            rs.getLong("price"),
                             rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
                             rs.getDate("created_at")
                     );
@@ -137,9 +137,9 @@ public class DomainRepository implements IRepository<DomainModel> {
                         rs.getString("domain_name"),
                         rs.getInt("tld_id"),
                         DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
-                        rs.getDate("active_date"),
+                        rs.getTimestamp("active_date"),
                         rs.getInt("years"),
-                        rs.getInt("price"),
+                        rs.getLong("price"),
                         rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
                         rs.getDate("created_at")
                 ));
@@ -165,9 +165,9 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
                             DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
-                            rs.getDate("active_date"),
+                            rs.getTimestamp("active_date"),
                             rs.getInt("years"),
-                            rs.getInt("price"),
+                            rs.getLong("price"),
                             rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
                             rs.getDate("created_at")
                     ));
@@ -197,9 +197,9 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
                             DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
-                            rs.getDate("active_date"),
+                            rs.getTimestamp("active_date"),
                             rs.getInt("years"),
-                            rs.getInt("price"),
+                            rs.getLong("price"),
                             rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
                             rs.getDate("created_at")
                     ));
@@ -249,9 +249,9 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
                             DomainStatusEnum.valueOf(rs.getString("status")),
-                            rs.getDate("active_date"),
+                            rs.getTimestamp("active_date"),
                             rs.getInt("years"),
-                            rs.getInt("price"),
+                            rs.getLong("price"),
                             rs.getInt("owner_id"),
                             rs.getDate("created_at")
                     );
@@ -282,9 +282,9 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
                             DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
-                            rs.getDate("active_date"),
+                            rs.getTimestamp("active_date"),
                             rs.getInt("years"),
-                            rs.getInt("price"),
+                            rs.getLong("price"),
                             rs.getInt("owner_id")
                     ));
                 }
@@ -362,9 +362,9 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
                             DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
-                            rs.getDate("active_date"),
+                            rs.getTimestamp("active_date"),
                             rs.getInt("years"),
-                            rs.getInt("price"),
+                            rs.getLong("price"),
                             rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
                             rs.getDate("created_at")
                     ));
@@ -389,9 +389,9 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
                             DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
-                            rs.getDate("active_date"),
+                            rs.getTimestamp("active_date"),
                             rs.getInt("years"),
-                            rs.getInt("price"),
+                            rs.getLong("price"),
                             rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null,
                             rs.getDate("created_at")
                     ));
@@ -402,13 +402,13 @@ public class DomainRepository implements IRepository<DomainModel> {
         }
         return domainList;
     }
-    public int updateByStatusAndTldId(int price, int tld_id) {
+    public int updateByStatusAndTldId(Long price, int tld_id) {
         String sql = "UPDATE domains SET price=? WHERE status='available' and tld_id=?";
 
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
 
-            pst.setInt(1, price);
+            pst.setLong(1, price);
             pst.setInt(2, tld_id);
 
             return pst.executeUpdate();
@@ -434,14 +434,14 @@ public class DomainRepository implements IRepository<DomainModel> {
                 domain.setTldId(rs.getInt("tld_id"));
                 domain.setStatus(DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()));
                 domain.setYears(rs.getInt("years"));
-                domain.setPrice(rs.getInt("domain_price"));
-                domain.setActiveDate(rs.getDate("active_date") != null ? rs.getDate("active_date") : null);
+                domain.setPrice(rs.getLong("domain_price"));
+                domain.setActiveDate(rs.getTimestamp("active_date") != null ? rs.getTimestamp("active_date") : null);
                 domain.setOwnerId(rs.getObject("owner_id") != null ? rs.getInt("owner_id") : null);
 
                 TopLevelDomainModel tld = new TopLevelDomainModel();
                 tld.setId(rs.getInt("tld_id"));
                 tld.setTldText(rs.getString("TLD_text"));
-                tld.setPrice(rs.getInt("tld_price"));
+                tld.setPrice(rs.getLong("tld_price"));
 
                 result.add(new DomainWithTldModel(domain,tld));
             }

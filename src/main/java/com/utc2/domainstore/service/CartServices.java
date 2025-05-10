@@ -64,7 +64,7 @@ public class CartServices implements ICart {
             String fullDomainName = domainJson.getString("name").toLowerCase().trim();
             String status = domainJson.getString("status");
             int years = domainJson.getInt("years");
-            int price = domainJson.getInt("price");
+            Long price = domainJson.getLong("price");
 
             if (!"available".equalsIgnoreCase(status)) continue;
 

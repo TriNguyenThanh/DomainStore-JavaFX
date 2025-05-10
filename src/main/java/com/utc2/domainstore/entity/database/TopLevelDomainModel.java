@@ -3,7 +3,7 @@ package com.utc2.domainstore.entity.database;
 public class TopLevelDomainModel {
     private int id;
     private String tldText;
-    private int price;
+    private Long price;
 
     public TopLevelDomainModel() {
     }
@@ -12,7 +12,7 @@ public class TopLevelDomainModel {
         this.id = id;
     }
     
-    public TopLevelDomainModel(int id, String tldText, int price) {
+    public TopLevelDomainModel(int id, String tldText, Long price) {
         this.id = id;
         this.tldText = tldText;
         this.price = price;
@@ -34,11 +34,11 @@ public class TopLevelDomainModel {
         this.tldText = tldText;
     }
 
-    public int getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
     

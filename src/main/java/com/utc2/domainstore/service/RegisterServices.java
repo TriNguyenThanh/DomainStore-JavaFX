@@ -12,7 +12,6 @@ public class RegisterServices implements IRegister{
         String name = jsonInput.getString("username");
         String phone = jsonInput.getString("phone");
         String email = jsonInput.getString("email");
-        String personalId = jsonInput.getString("personal_id");
         String password = jsonInput.getString("password");
         String role = jsonInput.getString("role");
 
@@ -30,12 +29,6 @@ public class RegisterServices implements IRegister{
             return createResponse("failed", "Email already exists.");
         }
 
-        // Kiểm tra CCCD
-        CustomerModel existingCCCD = customerDAO.selectByCccd(personalId);
-        if (existingCCCD != null && !existingCCCD.getIsDeleted()) {
-            return createResponse("failed", "CCCD already exists.");
-        }
-
         String hashedPassword = PasswordUtils.hashedPassword(password);
 
         // Parse role
@@ -46,7 +39,7 @@ public class RegisterServices implements IRegister{
             userRole = RoleEnum.user;
         }
 
-        CustomerModel newCustomer = new CustomerModel(name, email, phone, personalId, hashedPassword, userRole);
+        CustomerModel newCustomer = new CustomerModel(name, email, phone, hashedPassword, userRole);
 
         int result = customerDAO.insert(newCustomer);
         if (result > 0) {
