@@ -1,27 +1,23 @@
 DROP DATABASE DOMAINMANAGEMENT;
-CREATE DATABASE DOMAINMANAGEMENT;
-USE DOMAINMANAGEMENT;
+CREATE DATABASE DOMAINMANAGEMENT; USE DOMAINMANAGEMENT;
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL, 
     email VARCHAR(255) NOT NULL UNIQUE,
     phone VARCHAR(20) NOT NULL UNIQUE,
-    cccd VARCHAR(20) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    role ENUM('user', 'admin') DEFAULT 'user',
+    password_hash VARCHAR(255) NOT NULL, ROLE ENUM('user', 'admin') DEFAULT 'user',
     is_deleted BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_phone ON users(phone);
-CREATE INDEX idx_users_cccd ON users(cccd);
 
 CREATE TABLE TopLevelDomain (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	TLD_text CHAR(10) NOT NULL,
-	price INT UNSIGNED NOT NULL
+	price BIGINT UNSIGNED NOT NULL
 );
 
 CREATE INDEX idx_tld_text ON TopLevelDomain(TLD_text);
@@ -29,32 +25,27 @@ CREATE INDEX idx_tld_text ON TopLevelDomain(TLD_text);
 CREATE TABLE domains (	
     id INT AUTO_INCREMENT PRIMARY KEY,
     domain_name VARCHAR(255) NOT NULL,
-    tld_id int not null,
-    foreign key (tld_id) references TopLevelDomain(id),
-    status ENUM('available', 'sold') DEFAULT 'available',
-    active_date DATE null,
-    years int null,
-    price int default 0,
-    owner_id INT NULL,
-    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL,
+    tld_id INT NOT NULL, FOREIGN KEY (tld_id) REFERENCES TopLevelDomain(id), STATUS ENUM('available', 'sold') DEFAULT 'available',
+    active_date DATETIME NULL,
+    years INT NULL,
+    price BIGINT UNSIGNED DEFAULT 0,
+    owner_id INT NULL, FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_domains_id ON domains(id);
 CREATE INDEX idx_domains_name ON domains(domain_name);
-CREATE INDEX idx_domains_status ON domains(status);
+CREATE INDEX idx_domains_status ON domains(STATUS);
 CREATE INDEX idx_domains_owner_id ON domains(owner_id);
 CREATE INDEX idx_domains_active_date ON domains(active_date);
 CREATE INDEX idx_domains_tld_id ON domains(tld_id);
 
 CREATE TABLE carts (
-	id int auto_increment PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     cus_id INT NOT NULL,
     domain_id INT NOT NULL,
     years INT CHECK (years > 0),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (cus_id) REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (cus_id) REFERENCES users(id) ON DELETE CASCADE, 
     FOREIGN KEY (domain_id) REFERENCES domains(id) ON DELETE CASCADE
 );
 
@@ -62,11 +53,10 @@ CREATE INDEX idx_carts_id ON carts(id);
 CREATE INDEX idx_carts_cus_id ON carts(cus_id);
 CREATE INDEX idx_carts_domain_id ON carts(domain_id);
 
-
 CREATE TABLE Transactions (
     id CHAR(10) PRIMARY KEY NOT NULL,
     user_id INT NOT NULL,
-    transaction_date TIMESTAMP NOT NULL,
+    transaction_date DATETIME NOT NULL,
     transaction_status ENUM('pendingConfirm', 'pendingPayment', 'completed', 'cancelled') DEFAULT 'pendingConfirm',
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
@@ -75,11 +65,10 @@ CREATE INDEX idx_transactions_user_id ON Transactions(user_id);
 CREATE INDEX idx_transactions_status ON Transactions(transaction_status);
 CREATE INDEX idx_transactions_date ON Transactions(transaction_date);
 
-CREATE TABLE Transactions_info (
+CREATE TABLE transactions_info (
     transactions_id CHAR(10) NOT NULL,
     domain_id INT NOT NULL,
-    price INT UNSIGNED default 0,
-
+    price BIGINT UNSIGNED DEFAULT 0,
     FOREIGN KEY (transactions_id) REFERENCES Transactions(id) ON DELETE CASCADE,
     FOREIGN KEY (Domain_id) REFERENCES domains(id),
     PRIMARY KEY(Domain_id, transactions_id)
@@ -87,7 +76,6 @@ CREATE TABLE Transactions_info (
 
 CREATE INDEX idx_transactions_info_transaction_id ON Transactions_info(transactions_id);
 CREATE INDEX idx_transactions_info_domain_id ON Transactions_info(domain_id);
-
 
 CREATE TABLE PaymentMethod (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -100,8 +88,7 @@ CREATE TABLE PaymentHistory (
     payment_id CHAR(10) NOT NULL DEFAULT '',
     payment_method INT,
     payment_status ENUM('completed', 'failed'),
-    payment_date TIMESTAMP,
-
+    payment_date DATETIME,
     FOREIGN KEY (transaction_id) REFERENCES Transactions(id),
     FOREIGN KEY (payment_method) REFERENCES PaymentMethod(id)
 );
@@ -110,32 +97,29 @@ CREATE INDEX idx_payment_history_transaction_id ON PaymentHistory(transaction_id
 CREATE INDEX idx_payment_history_status ON PaymentHistory(payment_status);
 CREATE INDEX idx_payment_history_date ON PaymentHistory(payment_date);
 
-
-INSERT INTO users (full_name, email, phone, cccd, password_hash, role)
-VALUES
-('Nguyễn Thành Trí', 'tringuyenntt1505@gmail.com', '0987654321', '027205011960', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+INSERT INTO users (full_name, email, phone, password_hash, ROLE) VALUES
+('Nguyễn Thành Trí', 'tringuyenntt1505@gmail.com', '0987654321','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0987654321 password: pass123456@
-('Lê Nguyễn Anh Dự', 'dule1028a@gmail.com', '0912345678', '027205011961', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+('Lê Nguyễn Anh Dự', 'dule1028a@gmail.com', '0912345678','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0912345678 password: pass123456@
-('Âu Dương Tấn', 'auduongtan321@gmail.com', '0923456789', '027205011962', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+('Âu Dương Tấn', 'auduongtan321@gmail.com', '0923456789','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
 -- user:0923456789 password: pass123456@
-('Phạm Anh Dũng', 'dung.pham@gmail.com', '0934567890', '027205011963', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Phạm Anh Dũng', 'dung.pham@gmail.com', '0934567890','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0934567890 password: pass123456@
-('Ngô Thanh Hoa', 'hoa.ngo@gmail.com', '0945678901', '027205011964', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Ngô Thanh Hoa', 'hoa.ngo@gmail.com', '0945678901','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0945678901 password: pass123456@
-('Hoàng Tuấn Khang', 'khang.hoang@gmail.com', '0956789012', '027205011965', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Hoàng Tuấn Khang', 'khang.hoang@gmail.com', '0956789012','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0956789012 password: pass123456@
-('Bùi Diễm Lan', 'lan.bui@gmail.com', '0967890123', '027205011966', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Bùi Diễm Lan', 'lan.bui@gmail.com', '0967890123','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0967890123 password: pass123456@
-('Đặng Thành Nam', 'nam.dang@gmail.com', '0978901234', '027205011967', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Đặng Thành Nam', 'nam.dang@gmail.com', '0978901234','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0978901234 password: pass123456@
-('Võ Minh Nhật', 'nhat.vo@gmail.com', '0989012345', '027205011968', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Võ Minh Nhật', 'nhat.vo@gmail.com', '0989012345','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0989012345 password: pass123456@
-('Nguyễn Thị Oanh', 'oanh.nguyen@gmail.com', '0990123456', '027205011969', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Nguyễn Thị Oanh', 'oanh.nguyen@gmail.com', '0990123456','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
 -- user:0990123456 password: pass123456@
-('Đỗ Quang Phúc', 'phuc.do@gmail.com', '0901234567', '027205011970', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user');
+('Đỗ Quang Phúc', 'phuc.do@gmail.com', '0901234567', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user');
 -- user:0901234567 password: pass123456@
-
 INSERT INTO TopLevelDomain (TLD_text, price) VALUES
 ('.com', 299000),
 ('.net', 390000),
@@ -165,52 +149,47 @@ INSERT INTO TopLevelDomain (TLD_text, price) VALUES
 ('.net.vn', 450000),
 ('.org.vn', 350000),
 ('.edu.vn', 100000);
-
-INSERT INTO domains (domain_name, tld_id, status, active_date, years, owner_id)
-VALUES
-('diamonielts', 1, 'available', null, 1 ,null),
+INSERT INTO domains (domain_name, tld_id, STATUS, active_date, years, owner_id) VALUES
+('diamonielts', 1, 'available', NULL, 1, NULL),
 ('example', 3, 'sold', '2024-05-07 17:00:00', 1, 3),
 ('testdomain', 6, 'sold', '2024-05-07 17:00:00', 1, 3),
 ('mywebsite', 1, 'sold', '2024-05-07 17:00:00', 1, 3),
-('yourdomain123', 2, 'available', null , 1, null),
-('newproject3213', 3, 'available', null , 1, null),
-('spicydonut1', 4, 'available', null, 1 ,null),
-('globalban3', 5, 'available', null, 1 ,null),
-('vietnamexpert4', 5, 'available', null, 1 ,null),
-('startupvn5', 5, 'available', null, 1 ,null),
-('hotbrandno2', 1, 'available', null, 1 ,null),
-('bestservicesno12', 2, 'available',null, 1, null),
-('surprisedtech1', 3, 'available', null, 1 ,null),
+('yourdomain123', 2, 'sold', NULL, 1, NULL),
+('newproject3213', 3, 'sold', NULL, 1, NULL),
+('spicydonut1', 4, 'available', NULL, 1, NULL),
+('globalban3', 5, 'available', NULL, 1, NULL),
+('vietnamexpert4', 5, 'available', NULL, 1, NULL),
+('startupvn5', 5, 'available', NULL, 1, NULL),
+('hotbrandno2', 1, 'available', NULL, 1, NULL),
+('bestservicesno12', 2, 'sold', NULL, 1, NULL),
+('surprisedtech1', 3, 'available', NULL, 1, NULL),
 ('supercool', 1, 'sold', '2025-04-20 10:00:00', 1, 4),
 ('fastservice', 2, 'sold', '2025-01-21 19:30:00', 2, 1),
 ('amazingproject', 3, 'sold', '2025-04-20 10:00:00', 1, 4),
-('yourbrandnah5', 4, 'available', null, 1 ,null),
-('nextbigthing2', 5, 'available', null, 1 ,null),
+('yourbrandnah5', 4, 'available', NULL, 1, NULL),
+('nextbigthing2', 5, 'available', NULL, 1, NULL),
 ('enterprisehub', 6, 'sold', '2025-04-20 10:00:00', 1, 4),
-('futurenow52', 24, 'available', null, 1 ,null),
-('techstartupbo', 8, 'available', null, 1, null),
-('eradigitalworld', 9, 'available', null, 1, null),
-('smartcityhcm', 10, 'available', null , 1, null),
-('globalsupermarket23', 11, 'available', null , 1, null),
+('futurenow52', 24, 'available', NULL, 1, NULL),
+('techstartupbo', 8, 'sold', NULL, 1, NULL),
+('eradigitalworld', 9, 'sold', NULL, 1, NULL),
+('smartcityhcm', 10, 'sold', NULL, 1, NULL),
+('globalsupermarket23', 11, 'sold', NULL, 1, NULL),
 ('nextlevel', 12, 'sold', '2024-11-25 9:30:00', 1, 11),
-('connectasia321', 13, 'available', null, 1, null),
-('cloudhub', 14, 'available', null, 1, null),
-('universeclick1', 15, 'available', null, 1 ,null),
-('amazingblog5', 16, 'available', null, 1 ,null),
+('connectasia321', 13, 'sold', NULL, 1, NULL),
+('cloudhub', 14, 'sold', NULL, 1, NULL),
+('universeclick1', 15, 'available', NULL, 1, NULL),
+('amazingblog5', 16, 'available', NULL, 1, NULL),
 ('futurecloud', 17, 'sold', '2024-11-25 9:30:00', 1, 11),
-('bestclickno1', 18, 'available', null, 1 ,null),
-('stronggroup15', 19, 'available', null, 1 ,null),
+('bestclickno1', 18, 'available', NULL, 1, NULL),
+('stronggroup15', 19, 'available', NULL, 1, NULL),
 ('supermom', 20, 'sold', '2025-03-15 11:20:00', 1, 9),
 ('techasia', 21, 'sold', '2025-03-15 11:20:00', 1, 9),
 ('globalbusiness', 22, 'sold', '2025-03-15 11:20:00', 1, 9),
-('creativeart12', 23, 'available', null, 1 ,null),
-('topblog21', 24, 'available', null, 1 ,null),
-('topblog21', 1, 'available', null, 1 ,null);
-
+('creativeart12', 23, 'available', NULL, 1, NULL),
+('topblog21', 24, 'available', NULL, 1, NULL),
+('topblog21', 1, 'available', NULL, 1, NULL);
 UPDATE domains
-JOIN TopLevelDomain tld ON domains.tld_id = tld.id
-SET domains.price = tld.price;
-
+JOIN TopLevelDomain tld ON domains.tld_id = tld.id SET domains.price = tld.price;
 INSERT INTO carts (cus_id, domain_id, years) VALUES
 (1, 1, 1),
 (1, 20, 1),
@@ -227,19 +206,18 @@ INSERT INTO carts (cus_id, domain_id, years) VALUES
 (10, 18, 1),
 (10, 28, 1),
 (10, 32, 1);
-
 INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VALUES
-('HD001', 1, '2024-01-21 10:10:00', 'completed'),
-('HD002', 2, '2024-01-22 11:20:55', 'cancelled'),
-('HD003', 2, '2024-02-10 12:30:45', 'pendingConfirm'),
-('HD004', 3, '2024-03-15 13:40:35', 'completed'),
-('HD005', 7, '2024-03-20 14:50:25', 'cancelled'),
-('HD006', 4, '2024-04-20 15:15:15', 'completed'),
-('HD007', 8, '2024-08-10 16:25:50', 'pendingConfirm'),
-('HD008', 10, '2024-08-20 17:35:40', 'cancelled'),
-('HD009', 11, '2024-11-25 18:45:30', 'completed'),
-('HD010', 9, '2025-03-15 19:55:20', 'completed'),
-('HD011', 5, '2025-03-25 20:00:10', 'pendingConfirm');
+('HD001', 1, '2024-01-21 07:03:00', 'completed'),
+('HD002', 2, '2024-01-22 10:15:50', 'cancelled'),
+('HD003', 2, '2024-02-10 08:05:00', 'pendingConfirm'),
+('HD004', 3, '2024-03-15 02:17:43', 'completed'),
+('HD005', 7, '2024-03-20 13:55:12', 'cancelled'),
+('HD006', 4, '2024-04-20 09:23:38', 'completed'),
+('HD007', 8, '2024-08-10 18:41:07', 'pendingConfirm'),
+('HD008', 10, '2024-08-20 00:59:26', 'cancelled'),
+('HD009', 11, '2024-11-25 21:34:05', 'completed'),
+('HD010', 9, '2025-03-15 06:02:50', 'completed'),
+('HD011', 5, '2025-03-25 14:28:19', 'pendingConfirm');
 
 INSERT INTO Transactions_info (transactions_id, domain_id) VALUES
 -- HD001
@@ -296,46 +274,50 @@ INSERT INTO Transactions_info (transactions_id, domain_id) VALUES
 ('HD011', 27);
 
 UPDATE Transactions_info tsi
-JOIN Domains d on d.id = tsi.domain_id
-JOIN TopLevelDomain tld ON d.tld_id = tld.id
-SET tsi.price = d.years * tld.price;
+JOIN Domains d ON d.id = tsi.domain_id
+JOIN TopLevelDomain tld ON d.tld_id = tld.id SET tsi.price = d.years * tld.price;
 
-INSERT INTO PaymentMethod (method)
-VALUES
+INSERT INTO PaymentMethod (method) VALUES
 ('VNPay'),
 ('MoMo'),
 ('CreditCard'),
 ('ZaloPay');
 
 INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
-('HD001', '14931583', 1, 'completed', '2025-01-21 08:10:50'),
+('HD001', '14931583', 1, 'completed', '2025-01-21 08:15:32'),
 -- HD002: cancelled
-('HD004', '14936383', 1, 'completed', '2025-05-07 09:20:40'),
+('HD004', '14936383', 1, 'completed', '2025-05-07 11:42:07'),
 -- HD005: cancelled
-('HD006', '14938357', 1, 'completed', '2025-04-20 10:30:30'),
+('HD006', '14938357', 1, 'completed', '2025-04-20 14:29:55'),
 -- HD008: cancelled
-('HD009', '14933277', 1, 'completed', '2024-11-25 11:40:20'),
-('HD010', '14939457', 1, 'completed', '2025-03-15 12:50:10');
+('HD009', '14933277', 1, 'completed', '2024-11-25 19:03:46'),
+('HD010', '14939457', 1, 'completed', '2025-03-15 07:58:20');
+
+
+SET GLOBAL event_scheduler = ON;
+DELIMITER 
 
 -- tạo sự kiện tự động cập nhật lại domain khi hết hạn kích hoạt
-SET GLOBAL event_scheduler = ON;
-DELIMITER //
+CREATE EVENT reset_expired_domains ON SCHEDULE EVERY 1 DAY DO BEGIN
+UPDATE domains SET STATUS = 'available',
+ owner_id = NULL,
+ active_date = NULL,
+ years = NULL
+WHERE STATUS = 'sold' AND active_date IS NOT NULL AND DATE_ADD(active_date, INTERVAL years YEAR) < CURDATE(); END;
 
-CREATE EVENT reset_expired_domains
-ON SCHEDULE EVERY 1 DAY
+-- tạo sự kiện tự động hủy hóa đơn nếu quá thời hạn
+CREATE EVENT IF NOT EXISTS delete_expired_pending_transactions
+ON SCHEDULE EVERY 5 MINUTE
 DO
 BEGIN
-    UPDATE domains
-    SET
-        status = 'available',
-        owner_id = NULL,
-        active_date = NULL,
-        years = NULL
-    WHERE
-        status = 'sold'
-        AND active_date IS NOT NULL
-        AND DATE_ADD(active_date, INTERVAL years YEAR) < CURDATE();
-END;
-//
+    -- Xóa hóa đơn 'pendingConfirm' quá 10 phút
+    DELETE FROM Transactions
+    WHERE transaction_status = 'pendingConfirm'
+      AND TIMESTAMPDIFF(MINUTE, transaction_date, NOW()) > 10;
 
+    -- Xóa hóa đơn 'pendingPayment' quá 24 giờ
+    DELETE FROM Transactions
+    WHERE transaction_status = 'pendingPayment'
+      AND TIMESTAMPDIFF(HOUR, transaction_date, NOW()) > 24;
+END;
 DELIMITER ;
