@@ -80,7 +80,9 @@ public class CreateAccountController implements Initializable {
 
     // back to user management scene
     private void backToMainScene() {
-        MainController.getInstance().load("/fxml/user_manager.fxml");
+        String currentFxmlPath = "/fxml/user_manager.fxml";
+        MainController.getInstance().setCurrentFxmlPath(currentFxmlPath);
+        MainController.getInstance().load(currentFxmlPath, true);
     }
 
     // set form to data and update to database

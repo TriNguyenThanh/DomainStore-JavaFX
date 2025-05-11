@@ -31,7 +31,7 @@ public class PaymentService implements  IPaymentService{
     private static String paymentURL;
     private static boolean isRunning = false;
     private static PaymentListener listener; // thêm dòng này
-
+    private static HttpServer server;
     public void setListener(PaymentListener l) {
         listener = l;
     }
@@ -82,7 +82,7 @@ public class PaymentService implements  IPaymentService{
         }
 
         if (!isRunning) {
-            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+            server = HttpServer.create(new InetSocketAddress(8080), 0);
             server.createContext("/vnpay_return", new VNPayReturnHandler());
             server.setExecutor(null); // Sử dụng executor mặc định
             // Nếu server chưa chạy, khởi động lại
@@ -153,7 +153,6 @@ public class PaymentService implements  IPaymentService{
 
             // Tạo response HTML
             String response = vnPayService.createResponseHTML(paymentResult, paymentURL);
-
             // Gửi response về cho client
             byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
@@ -161,6 +160,10 @@ public class PaymentService implements  IPaymentService{
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
             os.close();
+
+            // Đóng server
+            server.stop(0);
+            isRunning = false;
 
             // Gọi listener để thông báo kết quả thanh toán
             if (listener != null) {

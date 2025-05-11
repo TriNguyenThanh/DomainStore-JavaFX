@@ -133,7 +133,7 @@ public class ConfirmTransactionController implements Initializable {
                 continue;
             }
             String id = jsonObject.getString("id");
-            LocalDateTime date = LocalDateTime.parse(jsonObject.optString("date"));
+            LocalDateTime date = LocalDateTime.parse(jsonObject.optString("date"), ConfigManager.getInstance().getParser());
             Integer price = jsonObject.getInt("total_price");
             Integer userId = jsonObject.getInt("user_id");
 

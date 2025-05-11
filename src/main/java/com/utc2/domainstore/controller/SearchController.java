@@ -94,7 +94,9 @@ public class SearchController implements Initializable {
             content = bundle.getString("notice.addToCartSuccess");
             SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, title, null, content);
             // go to shopping cart
-            MainController.getInstance().load("/fxml/shoppingCart.fxml");
+            String currentFxmlPath = "/fxml/shoppingCart.fxml";
+            MainController.getInstance().setCurrentFxmlPath(currentFxmlPath);
+            MainController.getInstance().load(currentFxmlPath, true);
         } else {
             content = bundle.getString("notice.addToCartFailed") + ": " + message;
             SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, title, null, content);

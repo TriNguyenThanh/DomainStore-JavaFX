@@ -104,7 +104,9 @@ public class PaymentController implements Initializable {
 
     private void handleBackButton() {
         // quay lại
-        MainController.getInstance().load("/fxml/user_manager.fxml");
+        String currentFxmlPath = "/fxml/user_manager.fxml";
+        MainController.getInstance().setCurrentFxmlPath(currentFxmlPath);
+        MainController.getInstance().load(currentFxmlPath, true);
     }
 
     private List<PaymentViewModel> getPaymentList() {

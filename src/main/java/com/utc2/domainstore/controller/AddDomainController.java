@@ -12,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class AddDomainController implements Initializable {
+    private static final Log log = LogFactory.getLog(AddDomainController.class);
     private ResourceBundle bundle;
     private String domainName;
     private final IDomain domainService = new DomainServices();
@@ -111,7 +114,9 @@ public class AddDomainController implements Initializable {
         JSONObject request = new JSONObject();
         request.put("name", domainName);
 
+        // search domain
         JSONObject response = domainService.insertNewDomain(request);
+
         if (response != null) {
             String message = response.getString("message");
             if (response.getString("status").equals("success")) {
