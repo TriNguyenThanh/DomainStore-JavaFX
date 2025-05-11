@@ -24,7 +24,7 @@ import java.util.Scanner;
 public class TestApp {
     static VnPayService vnPayService = new VnPayService();
     public static void main(String[] args) throws IOException {
-
+        System.out.println("Chương trình test");
 // ------------ PaymentService -----------
 //        JSONObject json = new JSONObject();
 //        json.put("user_id", 3);
@@ -88,7 +88,7 @@ public class TestApp {
 //        for(TransactionInfoModel t : listTransactionInfo) {
 //            System.out.println(t);
 //        }
-        // SelectById
+//         SelectById
 //        TransactionInfoModel t =new TransactionInfoModel(); t.setTransactionId("HD001");
 //        System.out.println(TransactionInfoRepository.getInstance().selectById(t));
         // Insert
@@ -103,16 +103,16 @@ public class TestApp {
 
         JSONArray domainArray = new JSONArray();
         JSONObject domain1 = new JSONObject();
-        domain1.put("name", "example.org");
+        domain1.put("name", "globalban3.biz"); // 2
         domain1.put("status", "available");
         domain1.put("price", 299000);
-        domain1.put("years", 2);
+        domain1.put("years", 20);
         domainArray.put(domain1);
         JSONObject domain2 = new JSONObject();
-        domain2.put("name", "globalban3.biz");
+        domain2.put("name", "diamonielts.com"); // 1
         domain2.put("status", "available");
         domain2.put("price", 99000);
-        domain2.put("years", 3);
+        domain2.put("years", 30);
         domainArray.put(domain2);
 
         JSONObject domains = new JSONObject();
@@ -126,8 +126,8 @@ public class TestApp {
                   total(int),
                   status ("success" / "failed")
                   }  */
-        TransactionService transactionService = new TransactionService();
-//        JSONObject jsonObject = transactionService.createTransaction(domains);
+//        TransactionService transactionService = new TransactionService();
+//        System.out.println(transactionService.createTransaction(domains));
         /* thanh toán
         request: JSONObject {
                     total (int),
@@ -135,12 +135,12 @@ public class TestApp {
                  }
         response: true / false (boolean) */
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("transactionId", "HD012");
+        jsonObject.put("transactionId", "HD011");
         jsonObject.put("total", 895000);
         PaymentService paymentService = new PaymentService();
-        paymentService.createPayment(jsonObject);
+        System.out.println(paymentService.createPayment(jsonObject));
 //          Tạo hoá đơn pdf
 //        GenerateService generateService = new GenerateService();
-//        generateService.generateInvoicePDF("HD005");
+//        generateService.generateInvoicePDF("HD006");
     }
 }
