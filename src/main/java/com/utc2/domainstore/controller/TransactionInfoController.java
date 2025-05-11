@@ -111,8 +111,14 @@ public class TransactionInfoController implements Initializable, PaymentListener
 
         PaymentService paymentService = new PaymentService();
         paymentService.setListener(this);
-        boolean success = paymentService.createPayment(request);
-        System.out.println("Open payment website: " + success);
+        JSONObject response = paymentService.createPayment(request);
+        if (response.getString("status").equals("failed")) {
+            // Open payment window
+            SceneManager.getInstance().showDialog(Alert.AlertType.ERROR, "error", null, response.getString("message"));
+            transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.CANCELLED);
+            System.out.println("Transaction canceled: " + billViewModel.getId());
+            ((Stage) btCancel.getScene().getWindow()).close();
+        }
     }
 
     private void handleAccept() {

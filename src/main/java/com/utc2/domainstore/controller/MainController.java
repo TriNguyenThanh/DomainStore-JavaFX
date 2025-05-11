@@ -7,6 +7,7 @@ import com.utc2.domainstore.view.UserSession;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,7 +62,7 @@ public class MainController implements Initializable {
         } else if (e.getSource() == btSearch) {
             setCurrentFxmlPath("/fxml/search.fxml");
         } else if (e.getSource() == btBill) {
-            setCurrentFxmlPath("/fxml/bill.fxml");
+            setCurrentFxmlPath("/fxml/transaction.fxml");
         } else if (e.getSource() == btPayment) {
             setCurrentFxmlPath("/fxml/payment.fxml");
         } else if (e.getSource() == btUser) {
@@ -69,7 +70,7 @@ public class MainController implements Initializable {
         } else if (e.getSource() == btDomain) {
             setCurrentFxmlPath("/fxml/domain_manager.fxml");
         } else if (e.getSource() == btCheckBill) {
-            setCurrentFxmlPath("/fxml/checkBill.fxml");
+            setCurrentFxmlPath("/fxml/confirmTransaction.fxml");
         } else if (e.getSource() == btTLD) {
             setCurrentFxmlPath("/fxml/tld_manager.fxml");
         }
@@ -112,7 +113,8 @@ public class MainController implements Initializable {
         FXMLLoader fxmlLoader = null;
         try {
             ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
-            fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath), rb);
+            URL url = MainController.class.getResource(fxmlPath);
+            fxmlLoader = new FXMLLoader(url, rb);
             Node node = fxmlLoader.load();
 
             AnchorPane.setTopAnchor(node, 0.0);
@@ -128,7 +130,7 @@ public class MainController implements Initializable {
             }
             setRefesh();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         focus = null;
         return fxmlLoader;
@@ -162,8 +164,10 @@ public class MainController implements Initializable {
         }
         autoRefreshTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(10), event -> {
-                    System.out.println("Auto refresh " + currentFxmlPath);
-                    load(currentFxmlPath, true);
+                    Platform.runLater(() -> {
+                        System.out.println("Auto refresh " + currentFxmlPath);
+                        load(currentFxmlPath, true);
+                    });
                 })
         );
         autoRefreshTimeline.setCycleCount(Timeline.INDEFINITE); // lặp mãi

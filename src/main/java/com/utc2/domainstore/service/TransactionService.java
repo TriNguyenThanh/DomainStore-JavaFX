@@ -84,6 +84,7 @@ public class TransactionService implements ITransactionService {
         if (json.isEmpty()) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("status", "failed");
+            jsonObject.put("message", "Dữ liệu đầu vào không hợp lệ");
             System.out.println("Tạo hoá đơn thất bại");
             return jsonObject;
         }
@@ -99,6 +100,7 @@ public class TransactionService implements ITransactionService {
                     ("user_id = " + userId + " AND " + "domain_id = " + domainId).isEmpty()){
                 JSONObject response = new JSONObject();
                 response.put("status", "failed");
+                response.put("message", "Tồn tại 1 tên miền trong hoá đơn !!");
                 System.out.println("Tạo hoá đơn thất bại: tên miền đã nằm trong hoá đơn trước đó");
                 return response;
             }
@@ -117,7 +119,8 @@ public class TransactionService implements ITransactionService {
         response.put("transactionId", transactionId);
         response.put("total", total);
         response.put("status", "success");
-        System.out.println("Tạo hoá đơn thành công");
+        response.put("message", "Tạo hoá đơn thành công: " + transactionId);
+        System.out.println("Tạo hoá đơn thành công: " + transactionId);
         return response;
     }
 
@@ -147,12 +150,18 @@ public class TransactionService implements ITransactionService {
                 domain.setPrice(domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
 
                 DomainRepository.getInstance().update(domain);
+                System.out.println("UpdateTransactionStatus: Đã cập nhật thông tin tên miền");
             }
             // gửi thông báo email
             SoldDomainNotifierServices notifier = new SoldDomainNotifierServices();
             notifier.notifySoldDomains(cus.getEmail(), domains);
         } else if (TransactionStatusEnum.CANCELLED.equals(status)) {
-            TransactionRepository.getInstance().delete(new TransactionModel(transactionId, null, null));
+            // Nếu hoá đơn cancel thì chuyển thành trạng thái chờ thanh toán
+            // sẽ tự động xoá sau 12h nếu không thanh toán
+            TransactionModel transactionModel = TransactionRepository.getInstance()
+                    .selectById(new TransactionModel(transactionId, null, null));
+            transactionModel.setTransactionStatus(TransactionStatusEnum.PENDINGPAYMENT);
+            TransactionRepository.getInstance().update(transactionModel);
         }
         // Cập nhật trạng thái hoá đơn
         tran.setTransactionStatus(status);

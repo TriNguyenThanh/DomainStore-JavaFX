@@ -24,9 +24,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class PaymentService implements  IPaymentService{
-    private ArrayList<PaymentHistoryModel> listPaymentHistory = PaymentHistoryRepository.getInstance().selectAll();
     private final PaymentHistoryRepository paymentHistoryDAO = new PaymentHistoryRepository();
-    private VnPayConfig vnPayConfig = new VnPayConfig();
     private static VnPayService vnPayService = new VnPayService();
     private static String paymentURL;
     private static boolean isRunning = false;
@@ -55,30 +53,33 @@ public class PaymentService implements  IPaymentService{
     }
 
     @Override
-    public boolean createPayment(JSONObject json) throws IOException {
+    public JSONObject createPayment(JSONObject json) throws IOException {
         // request: total (int), transactionId (String)
         // response: true / false (boolean)
+        JSONObject jsonObject = new JSONObject();
         String transactionId = json.getString("transactionId");
         TransactionModel tran = TransactionRepository.getInstance()
                 .selectById(new TransactionModel(transactionId, null, null));
         if (tran == null || TransactionStatusEnum.COMPLETED.equals(tran.getTransactionStatus())){
-            System.out.println("Hoá đơn không tồn tại hoặc đã được thanh toán !!");
-            return false;
+            jsonObject.put("status", "failed");
+            jsonObject.put("message", "Hoá đơn đã được thanh toán !!");
+            System.out.println("Hoá đơn đã được thanh toán !!");
+            return jsonObject;
         }
 
+        int check = 0;
         for(TransactionInfoModel t : tran.getTransactionInfos()){
             DomainModel domain = DomainRepository.getInstance()
                     .selectById(new DomainModel(t.getDomainId(), null, 0, null, null, 0));
             // Nếu tên miền đã có chủ sỡ hữu
             if(domain.getOwnerId() != null){
-                System.out.println("Tên miền đã được bán: " + domain.getDomainName()
-                        + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
-                return false;
+                String domainName = domain.getDomainName()
+                        + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText();
+                System.out.println("Tên miền đã được bán: " + domainName);
+                jsonObject.put("status", "failed");
+                jsonObject.put("message", "Tên miền đã được bán " + domainName);
+                return jsonObject;
             }
-//            if(DomainStatusEnum.sold.equals(domain.getStatus())) {
-//                System.out.println("Tên miền đã được bán");
-//                return false;
-//            }
         }
 
         if (!isRunning) {
@@ -106,7 +107,9 @@ public class PaymentService implements  IPaymentService{
                 // Cập nhật hoá đơn
                 TransactionRepository.getInstance().update(tran);
                 System.out.println("Tạo thanh toán thành công");
-                return true;
+                jsonObject.put("status", "success");
+                jsonObject.put("message", "Tạo thanh toán thành công");
+                return jsonObject;
             } else {
                 System.out.println("Desktop không được hỗ trợ trên hệ thống này.");
             }
@@ -114,7 +117,7 @@ public class PaymentService implements  IPaymentService{
             e.printStackTrace();
         }
         System.out.println("Có lỗi khi tạo thanh toán");
-        return false;
+        return null;
     }
     private JSONArray result(String condition){
         JSONArray jsonArray = new JSONArray();
@@ -152,7 +155,7 @@ public class PaymentService implements  IPaymentService{
             Map<String, String> paymentResult = vnPayService.processReturnUrl(parameters);
 
             // Tạo response HTML
-            String response = vnPayService.createResponseHTML(paymentResult, paymentURL);
+            String response = VnPayService.createResponseHTML(paymentResult, paymentURL);
             // Gửi response về cho client
             byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
