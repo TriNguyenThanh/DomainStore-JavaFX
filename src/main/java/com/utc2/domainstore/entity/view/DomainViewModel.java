@@ -1,13 +1,13 @@
 package com.utc2.domainstore.entity.view;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class DomainViewModel {
     private String name;
     private STATUS status;
     private Integer price;
     private Integer years;
-    private LocalDate date;
+    private LocalDateTime date;
     private Integer ownerID;
     private String ownerName;
 
@@ -15,7 +15,7 @@ public class DomainViewModel {
 
     }
 
-    public DomainViewModel(String name, STATUS status, Integer price, Integer years, LocalDate date) {
+    public DomainViewModel(String name, STATUS status, Integer price, Integer years, LocalDateTime date) {
         this.name = name;
         this.status = status;
         this.price = price;
@@ -23,7 +23,7 @@ public class DomainViewModel {
         this.date = date;
     }
 
-    public DomainViewModel(String name, STATUS status, Integer price, Integer years, LocalDate date, Integer ownerID, String ownerName) {
+    public DomainViewModel(String name, STATUS status, Integer price, Integer years, LocalDateTime date, Integer ownerID, String ownerName) {
         this.name = name;
         this.status = status;
         this.price = price;
@@ -65,11 +65,11 @@ public class DomainViewModel {
         this.years = years;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

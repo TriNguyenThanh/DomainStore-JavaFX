@@ -24,7 +24,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -206,7 +206,6 @@ public class TransactionInfoController implements Initializable, PaymentListener
         JSONObject request = new JSONObject();
         request.put("transaction_id", billViewModel.getId());
 
-        ITransactionService transactionService = new TransactionService();
         JSONObject respond = transactionService.getTransactionInfomation(request);
         JSONArray list = respond.getJSONArray("domains");
 
@@ -240,7 +239,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
             String status = payment.get("status").toString();
 
             if (ts_id.equals(billViewModel.getId())) {
-                return new PaymentViewModel(ts_id, id, method, STATUS.valueOf(status), LocalDate.parse(date));
+                return new PaymentViewModel(ts_id, id, method, STATUS.valueOf(status), LocalDateTime.parse(date, ConfigManager.getInstance().getParser()));
             }
         }
         return null;

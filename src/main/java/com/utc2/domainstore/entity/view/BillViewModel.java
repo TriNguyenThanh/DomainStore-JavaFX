@@ -1,15 +1,15 @@
 package com.utc2.domainstore.entity.view;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class BillViewModel {
     private String id;
-    private LocalDate date;
+    private LocalDateTime date;
     private STATUS status;
     private Integer price;
     private Integer userId;
 
-    public BillViewModel(String id, LocalDate date, STATUS status, Integer price, Integer userId) {
+    public BillViewModel(String id, LocalDateTime date, STATUS status, Integer price, Integer userId) {
         this.id = id;
         this.date = date;
         this.status = status;
@@ -28,11 +28,11 @@ public class BillViewModel {
         this.id = id;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

@@ -7,6 +7,7 @@ import com.utc2.domainstore.service.PaymentService;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.utils.StatusCellFactory;
+import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,7 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -41,7 +42,7 @@ public class PaymentController implements Initializable {
     @FXML
     private TableColumn<PaymentViewModel, STATUS> colStatus;
     @FXML
-    private TableColumn<PaymentViewModel, LocalDate> colDate;
+    private TableColumn<PaymentViewModel, LocalDateTime> colDate;
     @FXML
     private TableColumn<PaymentViewModel, String> colMethod;
     @FXML
@@ -127,7 +128,7 @@ public class PaymentController implements Initializable {
             String date = payment.get("date").toString();
             String status = payment.get("status").toString();
 
-            data.add(new PaymentViewModel(ts_id, id, method, STATUS.valueOf(status), LocalDate.parse(date), price));
+            data.add(new PaymentViewModel(ts_id, id, method, STATUS.valueOf(status), LocalDateTime.parse(date, ConfigManager.getInstance().getParser()), price));
         }
 
         return data;

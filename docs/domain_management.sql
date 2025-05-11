@@ -3,7 +3,7 @@ CREATE DATABASE DOMAINMANAGEMENT; USE DOMAINMANAGEMENT;
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    full_name VARCHAR(255) NOT NULL, 
+    full_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     phone VARCHAR(20) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL, ROLE ENUM('user', 'admin') DEFAULT 'user',
@@ -22,11 +22,11 @@ CREATE TABLE TopLevelDomain (
 
 CREATE INDEX idx_tld_text ON TopLevelDomain(TLD_text);
 
-CREATE TABLE domains (	
+CREATE TABLE domains (
     id INT AUTO_INCREMENT PRIMARY KEY,
     domain_name VARCHAR(255) NOT NULL,
     tld_id INT NOT NULL, FOREIGN KEY (tld_id) REFERENCES TopLevelDomain(id), STATUS ENUM('available', 'sold') DEFAULT 'available',
-    active_date DATETIME NULL,
+    active_date TIMESTAMP NULL,
     years INT NULL,
     price BIGINT UNSIGNED DEFAULT 0,
     owner_id INT NULL, FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL,
@@ -45,7 +45,7 @@ CREATE TABLE carts (
     cus_id INT NOT NULL,
     domain_id INT NOT NULL,
     years INT CHECK (years > 0),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (cus_id) REFERENCES users(id) ON DELETE CASCADE, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (cus_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (domain_id) REFERENCES domains(id) ON DELETE CASCADE
 );
 
@@ -56,7 +56,7 @@ CREATE INDEX idx_carts_domain_id ON carts(domain_id);
 CREATE TABLE Transactions (
     id CHAR(10) PRIMARY KEY NOT NULL,
     user_id INT NOT NULL,
-    transaction_date DATETIME NOT NULL,
+    transaction_date TIMESTAMP NOT NULL,
     transaction_status ENUM('pendingConfirm', 'pendingPayment', 'completed', 'cancelled') DEFAULT 'pendingConfirm',
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
@@ -88,7 +88,7 @@ CREATE TABLE PaymentHistory (
     payment_id CHAR(10) NOT NULL DEFAULT '',
     payment_method INT,
     payment_status ENUM('completed', 'failed'),
-    payment_date DATETIME,
+    payment_date TIMESTAMP,
     FOREIGN KEY (transaction_id) REFERENCES Transactions(id),
     FOREIGN KEY (payment_method) REFERENCES PaymentMethod(id)
 );
@@ -295,7 +295,7 @@ INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_
 
 
 SET GLOBAL event_scheduler = ON;
-DELIMITER 
+DELIMITER
 
 -- tạo sự kiện tự động cập nhật lại domain khi hết hạn kích hoạt
 CREATE EVENT reset_expired_domains ON SCHEDULE EVERY 1 DAY DO BEGIN

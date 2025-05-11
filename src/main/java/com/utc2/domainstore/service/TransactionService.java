@@ -6,10 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,11 +93,11 @@ public class TransactionService implements ITransactionService {
 
         // Nếu tên miền đã nằm trong hoá đơn trước đó
         JSONArray domains = json.getJSONArray("domains");
-        for (int i = 0; i < domains.length(); i++){
+        for (int i = 0; i < domains.length(); i++) {
             JSONObject jsonObject = domains.getJSONObject(i);
             int domainId = getDomainByName(jsonObject.getString("name"));
-            if(!transactionRepository.selectByCondition
-                    ("user_id = " + userId + " AND " + "domain_id = " + domainId).isEmpty()){
+            if (!transactionRepository.selectByCondition
+                    ("user_id = " + userId + " AND " + "domain_id = " + domainId).isEmpty()) {
                 JSONObject response = new JSONObject();
                 response.put("status", "failed");
                 System.out.println("Tạo hoá đơn thất bại: tên miền đã nằm trong hoá đơn trước đó");
@@ -146,7 +143,7 @@ public class TransactionService implements ITransactionService {
 
                 // Cập nhật thông tin domain
                 domain.setStatus(DomainStatusEnum.sold);
-                domain.setActiveDate(Date.valueOf(LocalDate.now()));
+                domain.setActiveDate(Timestamp.valueOf(LocalDateTime.now()));
                 domain.setOwnerId(cus.getId());
                 domain.setPrice(domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
 

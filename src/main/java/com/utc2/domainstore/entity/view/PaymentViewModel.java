@@ -1,19 +1,19 @@
 package com.utc2.domainstore.entity.view;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class PaymentViewModel {
     private String billID;
     private String paymentID;
     private STATUS status;
-    private LocalDate paymentDate;
+    private LocalDateTime paymentDate;
     private String method;
     private Integer price;
 
     public PaymentViewModel() {
     }
 
-    public PaymentViewModel(String billID, String paymentID, String method, STATUS status, LocalDate paymentDate) {
+    public PaymentViewModel(String billID, String paymentID, String method, STATUS status, LocalDateTime paymentDate) {
         this.billID = billID;
         this.paymentID = paymentID;
         this.status = status;
@@ -21,7 +21,7 @@ public class PaymentViewModel {
         this.method = method;
     }
 
-    public PaymentViewModel(String billID, String paymentID, String method, STATUS status, LocalDate paymentDate, Integer price) {
+    public PaymentViewModel(String billID, String paymentID, String method, STATUS status, LocalDateTime paymentDate, Integer price) {
         this.billID = billID;
         this.paymentID = paymentID;
         this.status = status;
@@ -62,7 +62,7 @@ public class PaymentViewModel {
         this.status = status;
     }
 
-    public LocalDate getPaymentDate() {
+    public LocalDateTime getPaymentDate() {
         return paymentDate;
     }
 
@@ -70,7 +70,7 @@ public class PaymentViewModel {
         return String.format("%02d/02d/04d", paymentDate.getDayOfMonth(), paymentDate.getMonthValue(), paymentDate.getYear());
     }
 
-    public void setPaymentDate(LocalDate paymentDate) {
+    public void setPaymentDate(LocalDateTime paymentDate) {
         this.paymentDate = paymentDate;
     }
 
