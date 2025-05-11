@@ -59,20 +59,26 @@ public class PaymentService implements  IPaymentService{
         // request: total (int), transactionId (String)
         // response: true / false (boolean)
         String transactionId = json.getString("transactionId");
-        TransactionModel check = TransactionRepository.getInstance().selectById(new TransactionModel(transactionId, null, null));
-        if (check == null || TransactionStatusEnum.COMPLETED.equals(check.getTransactionStatus())){
+        TransactionModel tran = TransactionRepository.getInstance()
+                .selectById(new TransactionModel(transactionId, null, null));
+        if (tran == null || TransactionStatusEnum.COMPLETED.equals(tran.getTransactionStatus())){
             System.out.println("Hoá đơn không tồn tại hoặc đã được thanh toán !!");
             return false;
         }
-        TransactionModel tran = TransactionRepository.getInstance()
-                .selectById(new TransactionModel(transactionId, null, null));
+
         for(TransactionInfoModel t : tran.getTransactionInfos()){
             DomainModel domain = DomainRepository.getInstance()
                     .selectById(new DomainModel(t.getDomainId(), null, 0, null, null, 0));
-            if(DomainStatusEnum.sold.equals(domain.getStatus())) {
-                System.out.println("Tên miền đã được bán");
+            // Nếu tên miền đã có chủ sỡ hữu
+            if(domain.getOwnerId() != null){
+                System.out.println("Tên miền đã được bán: " + domain.getDomainName()
+                        + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
                 return false;
             }
+//            if(DomainStatusEnum.sold.equals(domain.getStatus())) {
+//                System.out.println("Tên miền đã được bán");
+//                return false;
+//            }
         }
 
         if (!isRunning) {
@@ -84,6 +90,8 @@ public class PaymentService implements  IPaymentService{
             isRunning = true;
             System.out.println("Server đã được khởi động.");
         }
+        // Đổi trạng thái hoá đơn
+        tran.setTransactionStatus(TransactionStatusEnum.PENDINGPAYMENT);
 
         // Tạo transaction reference là timestamp hiện tại
         String txnRef = String.valueOf(System.currentTimeMillis());
@@ -95,6 +103,9 @@ public class PaymentService implements  IPaymentService{
                 URI uri = new URI(paymentURL);
                 // Mở URL trong trình duyệt mặc định
                 Desktop.getDesktop().browse(uri);
+                // Cập nhật hoá đơn
+                TransactionRepository.getInstance().update(tran);
+                System.out.println("Tạo thanh toán thành công");
                 return true;
             } else {
                 System.out.println("Desktop không được hỗ trợ trên hệ thống này.");

@@ -5,7 +5,6 @@ import com.utc2.domainstore.repository.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -77,7 +76,7 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public JSONObject createTransaction(JSONObject json) throws IOException {
+    public JSONObject createTransaction(JSONObject json) {
         // request: domains (JSONObject)
         // response: transactionId (String), total(int), status (success / failed)
 
@@ -93,11 +92,11 @@ public class TransactionService implements ITransactionService {
 
         // Nếu tên miền đã nằm trong hoá đơn trước đó
         JSONArray domains = json.getJSONArray("domains");
-        for (int i = 0; i < domains.length(); i++) {
+        for (int i = 0; i < domains.length(); i++){
             JSONObject jsonObject = domains.getJSONObject(i);
             int domainId = getDomainByName(jsonObject.getString("name"));
-            if (!transactionRepository.selectByCondition
-                    ("user_id = " + userId + " AND " + "domain_id = " + domainId).isEmpty()) {
+            if(!transactionRepository.selectByCondition
+                    ("user_id = " + userId + " AND " + "domain_id = " + domainId).isEmpty()){
                 JSONObject response = new JSONObject();
                 response.put("status", "failed");
                 System.out.println("Tạo hoá đơn thất bại: tên miền đã nằm trong hoá đơn trước đó");
@@ -196,7 +195,7 @@ public class TransactionService implements ITransactionService {
             int year = jsonObject.getInt("years");
             long price = jsonObject.getLong("price") * year;
             DomainModel d = DomainRepository.getInstance().selectById(new DomainModel(domainId, null, 0, null, null, 0));
-            d.setYears(year);
+            d.setYears(year); d.setStatus(DomainStatusEnum.sold);
             DomainRepository.getInstance().update(d);
             total += price;
             transactionInfoRepository.insert(new TransactionInfoModel(transactionId, domainId, price));
