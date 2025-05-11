@@ -24,8 +24,6 @@ public class LoginController implements Initializable {
     @FXML
     private PasswordField passwordField;
     @FXML
-    private CheckBox passwordCheckbox;
-    @FXML
     private Label useErrorLabel;
     @FXML
     private Label passErrorLabel;

@@ -60,8 +60,6 @@
                     <TextField fx:id="tfPhone" prefHeight="50.0"/>
                     <Label fx:id="lbEmailErr" styleClass="error"/>
                     <TextField fx:id="tfEmail" prefHeight="50.0"/>
-                    <Label fx:id="lbPsIDErr" styleClass="error"/>
-                    <TextField fx:id="tfPsID" prefHeight="50.0"/>
                     <Label fx:id="lbPassErr" styleClass="error"/>
                     <TextField fx:id="tfPass" prefHeight="50.0"/>
                 </VBox>

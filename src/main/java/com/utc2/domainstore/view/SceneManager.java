@@ -3,14 +3,17 @@ package com.utc2.domainstore.view;
 import com.utc2.domainstore.App;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -45,14 +48,14 @@ public class SceneManager {
         try {
             ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath), rb);
-
             Scene scene = new Scene(fxmlLoader.load());
+
+            setFadeInTransition(scene.getRoot(), Duration.millis(500d));
 
             stage.setResizable(true);
             stage.setMaximized(false);
             stage.setScene(scene);
             stage.centerOnScreen();
-
         } catch (IOException e) {
             throw new RuntimeException("Can't switch scene");
         }
@@ -65,6 +68,13 @@ public class SceneManager {
             }
             stage.setResizable(resizable);
         });
+    }
+
+    public void setSizeToFit() {
+        if (stage == null) {
+            throw new IllegalStateException("Stage has not been initialized");
+        }
+        stage.sizeToScene();
     }
 
     public void setTitle(String title) {
@@ -88,7 +98,6 @@ public class SceneManager {
     public void show() {
         if (stage != null) {
             stage.show();
-//            new Shake(stage.getScene().getRoot());
         }
     }
 
@@ -98,7 +107,7 @@ public class SceneManager {
         });
     }
 
-    public void center() {
+    public void setCenterOnScene() {
         if (stage == null) {
             throw new IllegalStateException("Stage has not been initialized");
         }
@@ -117,7 +126,7 @@ public class SceneManager {
     }
 
     public Image getIcon(String s, Integer width, Integer height) {
-        return new Image(getClass().getResourceAsStream(s), width, height, false, true);
+        return new Image(Objects.requireNonNull(getClass().getResourceAsStream(s)), width, height, false, true);
     }
 
     public void initLanguageComboBox(ComboBox<String> comboBox) {
@@ -159,5 +168,26 @@ public class SceneManager {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void setFadeInTransition(Parent root, Duration duration) {
+        FadeTransition fadeIn = new FadeTransition(duration, root);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+        fadeIn.play();
+    }
+
+    public void setFadeInTransition(Parent root, Duration duration, Double fromValue, Double toValue) {
+        FadeTransition fadeIn = new FadeTransition(duration, root);
+        fadeIn.setFromValue(fromValue);
+        fadeIn.setToValue(toValue);
+        fadeIn.play();
+    }
+
+    public void setFadeOutTransition(Parent root, Duration duration) {
+        FadeTransition fadeOut = new FadeTransition(duration, root);
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+        fadeOut.play();
     }
 }

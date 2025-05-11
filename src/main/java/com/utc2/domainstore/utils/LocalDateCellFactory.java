@@ -5,16 +5,16 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class LocalDateCellFactory {
     private static DateTimeFormatter formatter = ConfigManager.getInstance().getDateTimeFormatter();
 
-    public static <T> Callback<TableColumn<T, LocalDate>, TableCell<T, LocalDate>> forTableColumn() {
+    public static <T> Callback<TableColumn<T, LocalDateTime>, TableCell<T, LocalDateTime>> forTableColumn() {
         return column -> new TableCell<>() {
             @Override
-            protected void updateItem(LocalDate item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);

@@ -28,4 +28,5 @@ module com.utc2.domainstore {
     requires jakarta.mail;
     requires annotations;
     requires org.apache.commons.io;
+    requires org.apache.commons.logging;
 }

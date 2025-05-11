@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -47,7 +47,7 @@ public class DomainManagerController implements Initializable {
     @FXML
     private TableColumn<DomainViewModel, Integer> colYear;
     @FXML
-    private TableColumn<DomainViewModel, LocalDate> colDate;
+    private TableColumn<DomainViewModel, LocalDateTime> colDate;
     @FXML
     private TableColumn<DomainViewModel, String> colOwner;
     @FXML
@@ -182,10 +182,10 @@ public class DomainManagerController implements Initializable {
                 Integer ownerId = null;
                 String ownerName = null;
                 String activeDate = domain.get("active_date").toString();
-                LocalDate date = null;
+                LocalDateTime date = null;
 
                 if (!activeDate.equals("0")) {
-                    date = LocalDate.parse(activeDate);
+                    date = LocalDateTime.parse(activeDate, ConfigManager.getInstance().getParser());
                     years = domain.getInt("year");
                     ownerId = domain.getInt("owner_id");
                     ownerName = domain.getString("user_name");

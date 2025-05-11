@@ -43,8 +43,6 @@ public class UserManagerController implements Initializable {
     @FXML
     private TableColumn<UserModel, String> colEmail;
     @FXML
-    private TableColumn<UserModel, String> colPsID;
-    @FXML
     private TableColumn<UserModel, String> colRole;
     @FXML
     private TableColumn<UserModel, ACCOUNT_STATUS> colStatus;
@@ -86,7 +84,6 @@ public class UserManagerController implements Initializable {
         colUsername.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        colPsID.setCellValueFactory(new PropertyValueFactory<>("psID"));
         colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
@@ -122,11 +119,10 @@ public class UserManagerController implements Initializable {
             String username = jsonObject.getString("username");
             String phone = jsonObject.getString("phone");
             String email = jsonObject.getString("email");
-            String personalId = jsonObject.getString("personal_id");
             RoleEnum role = RoleEnum.valueOf(jsonObject.get("role").toString());
             ACCOUNT_STATUS status = jsonObject.getBoolean("is_deleted") ? ACCOUNT_STATUS.LOCKED : ACCOUNT_STATUS.ACTIVE;
 
-            UserModel userModel = new UserModel(id, username, phone, email, personalId, role, status, "");
+            UserModel userModel = new UserModel(id, username, phone, email, role, status, "");
 
             newData.add(userModel);
         }
@@ -139,7 +135,9 @@ public class UserManagerController implements Initializable {
         // Open dialog to add a new user
         // Logic to add user
         // After adding, refresh the table
-        CreateAccountController createAccountController = MainController.getInstance().load("/fxml/createAccount.fxml").getController();
+        String currentFXMLPath = "/fxml/createAccount.fxml";
+        MainController.getInstance().setCurrentFxmlPath(currentFXMLPath);
+        CreateAccountController createAccountController = MainController.getInstance().load(currentFXMLPath, true).getController();
         createAccountController.setMethod(METHOD.ADD);
 
     }
@@ -185,7 +183,9 @@ public class UserManagerController implements Initializable {
             selectedUser.setPassword("********");
             // Open edit dialog with selected user data
             // Logic to update the user in the list
-            CreateAccountController createAccountController = MainController.getInstance().load("/fxml/createAccount.fxml").getController();
+            String currentFXMLPath = "/fxml/createAccount.fxml";
+            MainController.getInstance().setCurrentFxmlPath(currentFXMLPath);
+            CreateAccountController createAccountController = MainController.getInstance().load(currentFXMLPath, true).getController();
             createAccountController.setMethod(METHOD.UPDATE);
             createAccountController.setUserModel(selectedUser);
         }
@@ -204,7 +204,6 @@ public class UserManagerController implements Initializable {
             request.put("full_name", selectedUser.getName());
             request.put("phone", selectedUser.getPhone());
             request.put("email", selectedUser.getEmail());
-            request.put("ps_id", selectedUser.getPsID());
             request.put("is_deleted", false);
 
             JSONObject response = accountService.updateUser(request);
@@ -226,7 +225,9 @@ public class UserManagerController implements Initializable {
             SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, null, null, bundle.getString("error.noSelect"));
         } else {
             // Open payment history dialog
-            PaymentController paymentController = MainController.getInstance().load("/fxml/payment.fxml").getController();
+            String currentFXMLPath = "/fxml/payment.fxml";
+            MainController.getInstance().setCurrentFxmlPath(currentFXMLPath);
+            PaymentController paymentController = MainController.getInstance().load(currentFXMLPath, true).getController();
             paymentController.setUserId(selectedItem.getID());
         }
     }

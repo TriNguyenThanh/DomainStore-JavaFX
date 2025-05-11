@@ -18,6 +18,7 @@ public class ConfigManager {
     private final Map<String, Integer> rateMap = new HashMap<>();
     private DateTimeFormatter dateTimeFormatter;
     private NumberFormat numberFormatter;
+    private DateTimeFormatter parser = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     private ConfigManager() {
         settings = new Properties();
@@ -26,7 +27,8 @@ public class ConfigManager {
 
             settings.load(reader);
             numberFormatter = NumberFormat.getCurrencyInstance(getLocale());
-            dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(getLocale());
+            dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(getLocale());
+//            dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
             loadLanguage();
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,7 +83,7 @@ public class ConfigManager {
         updateSetting("locale", localeName);
 
         // update dateTimeFormatter and numberFormatter
-        dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(getLocale());
+        dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(getLocale());
         numberFormatter = NumberFormat.getCurrencyInstance(getLocale());
     }
 
@@ -122,5 +124,9 @@ public class ConfigManager {
 
     public Integer getRate(String name) {
         return rateMap.get(name);
+    }
+
+    public DateTimeFormatter getParser() {
+        return parser;
     }
 }

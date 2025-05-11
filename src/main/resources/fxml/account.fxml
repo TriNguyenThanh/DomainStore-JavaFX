@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -42,12 +42,6 @@
                                     </VBox.margin>
                                 </Label>
                                 <Label styleClass="error"/>
-                                <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0" text="%personal_id">
-                                    <VBox.margin>
-                                        <Insets right="10.0"/>
-                                    </VBox.margin>
-                                </Label>
-                                <Label styleClass="error"/>
                                 <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0" text="%password">
                                     <VBox.margin>
                                         <Insets right="10.0"/>
@@ -65,8 +59,6 @@
                                 <TextField fx:id="tfPhone" editable="false" prefHeight="50.0"/>
                                 <Label fx:id="lbEmailErr" styleClass="error"/>
                                 <TextField fx:id="tfEmail" editable="false" prefHeight="50.0"/>
-                                <Label fx:id="lbPsIDErr" styleClass="error"/>
-                                <TextField fx:id="tfPsID" editable="false" prefHeight="50.0"/>
                                 <Label styleClass="error"/>
                                 <PasswordField fx:id="tfPass" editable="false" prefHeight="50.0"/>
                             </children>
