@@ -16,8 +16,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -42,18 +42,19 @@ public class GenerateService implements IGenerateService {
             InputStream jasperStream = getClass().getResourceAsStream("/report/invoice_domain.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
             Map<String, Object> data = new HashMap<>();
-            DateTimeFormatter inputFormat = DateTimeFormatter.ISO_LOCAL_DATE_TIME;;
-            DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss");
-
+//            DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+//            DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss");
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             data.put("fullName", cus.getFullName());
             data.put("phone", cus.getPhone());
             data.put("email", cus.getEmail());
-            String transactionDate = String.valueOf(tran.getTransactionDate());
-            LocalDateTime parsedDate = LocalDateTime.parse(transactionDate, inputFormat);
-            data.put("transactionDate", parsedDate.format(outputFormat));
-
-            parsedDate = LocalDateTime.parse(String.valueOf(LocalDateTime.now()), inputFormat);
-            data.put("invoiceDate", parsedDate.format(outputFormat));
+//            String transactionDate = String.valueOf(tran.getTransactionDate());
+//            LocalDateTime parsedDate = LocalDateTime.parse(transactionDate, inputFormat);
+//            data.put("transactionDate", parsedDate.format(outputFormat));
+//            parsedDate = LocalDateTime.parse(String.valueOf(Timestamp.valueOf(LocalDateTime.now())), inputFormat);
+//            data.put("invoiceDate", parsedDate.format(outputFormat));
+            data.put("transactionDate", outputFormat.format(tran.getTransactionDate()));
+            data.put("invoiceDate", outputFormat.format(Timestamp.valueOf(LocalDateTime.now())));
             data.put("transactionId", transactionId);
             if (payment != null) {
                 data.put("paymentMethod", String.valueOf(PaymentTypeEnum.getPaymentMethod(payment.getPaymentMethodId())));
