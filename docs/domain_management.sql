@@ -56,7 +56,7 @@ CREATE INDEX idx_carts_domain_id ON carts(domain_id);
 CREATE TABLE Transactions (
     id CHAR(10) PRIMARY KEY NOT NULL,
     user_id INT NOT NULL,
-    transaction_date DATETIME NOT NULL,
+    transaction_date TIMESTAMP NOT NULL,
     transaction_status ENUM('pendingConfirm', 'pendingPayment', 'completed', 'cancelled') DEFAULT 'pendingConfirm',
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
@@ -88,7 +88,7 @@ CREATE TABLE PaymentHistory (
     payment_id CHAR(10) NOT NULL DEFAULT '',
     payment_method INT,
     payment_status ENUM('completed', 'failed'),
-    payment_date DATETIME,
+    payment_date TIMESTAMP,
     FOREIGN KEY (transaction_id) REFERENCES Transactions(id),
     FOREIGN KEY (payment_method) REFERENCES PaymentMethod(id)
 );
@@ -295,29 +295,47 @@ INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_
 
 
 SET GLOBAL event_scheduler = ON;
-DELIMITER 
+DELIMITER //
 
--- tạo sự kiện tự động cập nhật lại domain khi hết hạn kích hoạt
-CREATE EVENT reset_expired_domains ON SCHEDULE EVERY 1 DAY DO BEGIN
-UPDATE domains SET STATUS = 'available',
- owner_id = NULL,
- active_date = NULL,
- years = NULL
-WHERE STATUS = 'sold' AND active_date IS NOT NULL AND DATE_ADD(active_date, INTERVAL years YEAR) < CURDATE(); END;
+-- tạo sự kiện tự động cập nhật lại domain khi hết hạn kích hoạt (cập nhật theo ngày)
+CREATE EVENT reset_expired_domains ON SCHEDULE EVERY 1 DAY
+DO
+BEGIN
+	UPDATE domains SET STATUS = 'available',
+		owner_id = NULL,
+		active_date = NULL,
+		years = NULL
+	WHERE STATUS = 'sold' AND active_date IS NOT NULL AND DATE_ADD(active_date, INTERVAL years YEAR) < CURDATE();
+END;
 
--- tạo sự kiện tự động hủy hóa đơn nếu quá thời hạn
+-- tạo sự kiện tự động hủy hóa đơn nếu quá thời hạn (5 phút cập nhật 1 lần)
 CREATE EVENT IF NOT EXISTS delete_expired_pending_transactions
 ON SCHEDULE EVERY 5 MINUTE
 DO
 BEGIN
-    -- Xóa hóa đơn 'pendingConfirm' quá 10 phút
-    DELETE FROM Transactions
-    WHERE transaction_status = 'pendingConfirm'
-      AND TIMESTAMPDIFF(MINUTE, transaction_date, NOW()) > 10;
+	-- Cập nhật lại trạng thái tên miền trước khi xoá
+    UPDATE domains d
+    JOIN transactions_info tsi ON d.id = tsi.domain_id
+    JOIN transactions t ON tsi.transactions_id = t.id
+    SET
+        d.status = 'available',
+        d.years = 0
+    WHERE
+        (
+            (t.transaction_status = 'pendingConfirm' AND TIMESTAMPDIFF(MINUTE, t.transaction_date, NOW()) >= 15)
+            OR
+            (t.transaction_status = 'pendingPayment' AND TIMESTAMPDIFF(HOUR, t.transaction_date, NOW()) >= 24)
+        );
 
-    -- Xóa hóa đơn 'pendingPayment' quá 24 giờ
-    DELETE FROM Transactions
+    -- Xóa hóa đơn 'pendingConfirm' quá 10 phút
+    DELETE FROM transactions
+    WHERE transaction_status = 'pendingConfirm'
+	AND TIMESTAMPDIFF(MINUTE, transaction_date, NOW()) >= 15;
+
+    -- Xóa hóa đơn 'pendingPayment' quá 12 giờ
+    DELETE FROM transactions
     WHERE transaction_status = 'pendingPayment'
-      AND TIMESTAMPDIFF(HOUR, transaction_date, NOW()) > 24;
+      AND TIMESTAMPDIFF(HOUR, transaction_date, NOW()) >= 12;
 END;
+//
 DELIMITER ;
