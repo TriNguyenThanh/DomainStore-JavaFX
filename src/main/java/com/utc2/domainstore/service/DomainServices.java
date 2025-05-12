@@ -80,14 +80,14 @@ public class DomainServices implements IDomain {
             primaryDomain.setTldId(tldModel.getId());
             primaryDomain.setYears(1);
             primaryDomain.setPrice(tldModel.getPrice());
-            primaryDomain.setStatus("Nofound".equals(domainStatus) ? DomainStatusEnum.available : DomainStatusEnum.sold);
+            primaryDomain.setStatus("Nofound".equals(domainStatus) ? DomainStatusEnum.AVAILABLE : DomainStatusEnum.SOLD);
 //            DomainRepository.getInstance().insert(primaryDomain);
         }
 
         JSONObject domainInfo = new JSONObject();
         domainInfo.put("name", domainName);
         domainInfo.put("status", primaryDomain.getStatus().toString().toLowerCase());
-        domainInfo.put("price", primaryDomain.getStatus() == DomainStatusEnum.available ? tldModel.getPrice() : 0);
+        domainInfo.put("price", primaryDomain.getStatus() == DomainStatusEnum.AVAILABLE ? tldModel.getPrice() : 0);
 
         // Các TLD gợi ý khác
         String[] popularTLDs = new String[]{".net", ".org", ".vn", ".info", ".biz"};
@@ -107,7 +107,7 @@ public class DomainServices implements IDomain {
                 existingDomain = new DomainModel();
                 existingDomain.setDomainName(namePart);
                 existingDomain.setTldId(suggestTLDModel.getId());
-                existingDomain.setStatus(DomainStatusEnum.available);
+                existingDomain.setStatus(DomainStatusEnum.AVAILABLE);
                 existingDomain.setPrice(suggestTLDModel.getPrice());
 //                DomainRepository.getInstance().insert(existingDomain);
             }
@@ -175,7 +175,7 @@ public class DomainServices implements IDomain {
 
         List<DomainModel> domainList = DomainRepository.getInstance().getSoldDomains(cus_id);
         JSONArray domainArray = new JSONArray();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+
         for (DomainModel domain : domainList) {
             TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
             JSONObject domainJson = new JSONObject();
@@ -185,12 +185,12 @@ public class DomainServices implements IDomain {
             if (tld != null && tld.getTldText() != null) {
                 fullDomainName += tld.getTldText();
             }
-            String cleanTime = formatter.format(domain.getActiveDate());
+
             domainJson.put("name", fullDomainName);
             domainJson.put("status", domain.getStatus().toString().toLowerCase());
             domainJson.put("year", domain.getYears());
             domainJson.put("price", domain.getPrice());
-            domainJson.put("active_date", cleanTime);
+            domainJson.put("active_date", domain.getActiveDate());
             domainArray.put(domainJson);
         }
 
@@ -203,7 +203,7 @@ public class DomainServices implements IDomain {
     public JSONObject getAllDomains() {
         List<DomainWithTldModel> domainList = DomainRepository.getInstance().selectAllDomainWithTld();
         JSONArray domainArray = new JSONArray();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+
         for (DomainWithTldModel dwt : domainList) {
             DomainModel domain = dwt.getDomain();
             TopLevelDomainModel tld = dwt.getTld();
@@ -218,7 +218,7 @@ public class DomainServices implements IDomain {
             domainJson.put("status", domain.getStatus().toString().toLowerCase());
             domainJson.put("year", domain.getYears());
             domainJson.put("price", domain.getPrice());
-            domainJson.put("active_date", (domain.getActiveDate() != null) ? formatter.format(domain.getActiveDate()) : 0);
+            domainJson.put("active_date", (domain.getActiveDate() != null) ? domain.getActiveDate() : 0);
             domainJson.put("owner_id", (domain.getOwnerId() != null) ? domain.getOwnerId() : 0);
             // Thêm phần lấy tên người dùng nếu đã bán
             if ("sold".equalsIgnoreCase(domain.getStatus().toString()) && domain.getOwnerId() != null) {
@@ -274,7 +274,7 @@ public class DomainServices implements IDomain {
         DomainModel newDomain = new DomainModel();
         newDomain.setDomainName(namePart);
         newDomain.setTldId(matchedTld.getId());
-        newDomain.setStatus(DomainStatusEnum.available);
+        newDomain.setStatus(DomainStatusEnum.AVAILABLE);
         newDomain.setPrice(matchedTld.getPrice());
         newDomain.setYears(1);
 

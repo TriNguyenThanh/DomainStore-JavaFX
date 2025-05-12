@@ -57,8 +57,8 @@ public class CreateAccountController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
         this.newData = new UserModel();
-        cbRole.getItems().addAll(List.<RoleEnum>of(RoleEnum.user, RoleEnum.admin));
-        cbRole.setValue(RoleEnum.user);
+        cbRole.getItems().addAll(List.<RoleEnum>of(RoleEnum.USER, RoleEnum.ADMIN));
+        cbRole.setValue(RoleEnum.USER);
     }
 
     public void setMethod(METHOD method) {

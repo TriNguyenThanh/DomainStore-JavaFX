@@ -144,7 +144,7 @@ public class TransactionService implements ITransactionService {
                         + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
 
                 // Cập nhật thông tin domain
-                domain.setStatus(DomainStatusEnum.sold);
+                domain.setStatus(DomainStatusEnum.SOLD);
                 domain.setActiveDate(Timestamp.valueOf(LocalDateTime.now()));
                 domain.setOwnerId(cus.getId());
                 domain.setPrice(domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
@@ -204,7 +204,7 @@ public class TransactionService implements ITransactionService {
             int year = jsonObject.getInt("years");
             long price = jsonObject.getLong("price") * year;
             DomainModel d = DomainRepository.getInstance().selectById(new DomainModel(domainId, null, 0, null, null, 0));
-            d.setYears(year); d.setStatus(DomainStatusEnum.sold);
+            d.setYears(year); d.setStatus(DomainStatusEnum.SOLD);
             DomainRepository.getInstance().update(d);
             total += price;
             transactionInfoRepository.insert(new TransactionInfoModel(transactionId, domainId, price));

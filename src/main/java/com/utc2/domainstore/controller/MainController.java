@@ -90,7 +90,7 @@ public class MainController implements Initializable {
     }
 
     private void roleControl() {
-        if (UserSession.getInstance().getRole() == RoleEnum.user) {
+        if (UserSession.getInstance().getRole() == RoleEnum.USER) {
             btUser.setDisable(true);
             btUser.setGraphic(null);
             btUser.setText("");
