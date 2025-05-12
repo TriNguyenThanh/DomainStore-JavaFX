@@ -159,7 +159,7 @@ public class TransactionService implements ITransactionService {
             for (TransactionInfoModel transactionInfoModel : listTranInfo) {
                 // lấy thông tin tên miền
                 DomainModel domain = getInfoDomain(transactionInfoModel);
-                domain.setStatus(DomainStatusEnum.available);
+                domain.setStatus(DomainStatusEnum.AVAILABLE);
                 domain.setYears(0);
                 DomainRepository.getInstance().update(domain);
             }
