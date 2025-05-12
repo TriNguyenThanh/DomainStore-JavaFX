@@ -28,14 +28,14 @@ public class TestApp {
 // ------------ PaymentService -----------
 //        JSONObject json = new JSONObject();
 //        json.put("user_id", 3);
-//        json.put("transaction_id", "HD010");
+//        json.put("transaction_id", "HD001");
 //        PaymentService t = new PaymentService();
 //        System.out.println(t.getUserPaymentHistory(json));
 //        System.out.println(t.getTransactionPaymentHistory(json));
 // ------------ TransactionService -----------
 //        JSONObject json = new JSONObject();
-//        json.put("user_id", 6);
-//        json.put("transaction_id", "HD012");
+//        json.put("user_id", 1);
+//        json.put("transaction_id", "HD001");
 //        TransactionService t = new TransactionService();
 //        System.out.println(t.getAllUserTransaction(json));
 //        System.out.println(t.getAllTransaction());
@@ -114,7 +114,7 @@ public class TestApp {
         domain2.put("price", 99000);
         domain2.put("years", 30);
         domainArray.put(domain2);
-
+//
         JSONObject domains = new JSONObject();
         domains.put("user_id", 2);
         domains.put("domains", domainArray);
@@ -134,11 +134,11 @@ public class TestApp {
                     transactionId (String)
                  }
         response: true / false (boolean) */
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("transactionId", "HD011");
-        jsonObject.put("total", 895000);
-        PaymentService paymentService = new PaymentService();
-        System.out.println(paymentService.createPayment(jsonObject));
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("transactionId", "HD002");
+//        jsonObject.put("total", 895000);
+//        PaymentService paymentService = new PaymentService();
+//        System.out.println(paymentService.createPayment(jsonObject));
 //          Tạo hoá đơn pdf
 //        GenerateService generateService = new GenerateService();
 //        generateService.generateInvoicePDF("HD006");

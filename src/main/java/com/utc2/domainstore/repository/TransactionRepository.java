@@ -138,7 +138,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setTransactionId(rs.getString("transactions_id"));
                     t.setUserId(rs.getInt("user_id"));
                     t.setTransactionDate(rs.getTimestamp("transaction_date"));
-                    t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
+                    t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
                     t.setTotalCost(0L);
                 }
                 TransactionInfoModel tsi = new TransactionInfoModel(rs.getString("transactions_id"),
@@ -202,7 +202,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setTransactionId(transactionId);
                     t.setUserId(userId);
                     t.setTransactionDate(rs.getTimestamp("transaction_date"));
-                    t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
+                    t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
                     t.setTotalCost(price);
                     t.getTransactionInfos().add(tsi);
                     listTransaction.add(t);
@@ -263,7 +263,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setTransactionId(transactionId);
                     t.setUserId(userId);
                     t.setTransactionDate(rs.getTimestamp("transaction_date"));
-                    t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
+                    t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
                     t.setTotalCost(price);
                     t.getTransactionInfos().add(tsi);
                     listTransaction.add(t);
@@ -327,7 +327,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                 t.setTransactionId(rs.getString("id"));
                 t.setUserId(rs.getInt("user_id"));
                 t.setTransactionDate(rs.getTimestamp("transaction_date"));
-                t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
+                t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
             }
             pst.close();
             return t;
