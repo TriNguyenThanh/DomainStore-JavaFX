@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -115,11 +116,21 @@ public class AddDomainController implements Initializable {
         request.put("name", domainName);
 
         // search domain
-        JSONObject response = domainService.insertNewDomain(request);
+        JSONObject response1 = domainService.search(request);
+        JSONArray jsonArray = response1.getJSONArray("domain");
+        JSONObject domain = jsonArray.getJSONObject(jsonArray.length() - 1);
 
-        if (response != null) {
-            String message = response.getString("message");
-            if (response.getString("status").equals("success")) {
+        // Check if the domain is available
+        if (domain.getString("status").equals("sold")) {
+            SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("notice"), null, bundle.getString("notice.domainNotAvailable"));
+            return;
+        }
+
+        JSONObject response2 = domainService.insertNewDomain(request);
+
+        if (response2 != null) {
+            String message = response2.getString("message");
+            if (response2.getString("status").equals("success")) {
                 // Handle success response
                 System.out.println("Domain added successfully: " + message);
                 if (listener != null) {
