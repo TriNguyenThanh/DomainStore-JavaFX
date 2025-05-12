@@ -8,8 +8,6 @@ CREATE TABLE users (
     phone VARCHAR(20) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL, ROLE ENUM('USER', 'ADMIN') DEFAULT 'USER',
     is_deleted BOOLEAN DEFAULT FALSE,
-	otp VARCHAR(10),
-    otp_created_at DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -24,7 +22,7 @@ CREATE TABLE TopLevelDomain (
 
 CREATE INDEX idx_tld_text ON TopLevelDomain(TLD_text);
 
-CREATE TABLE domains (	
+CREATE TABLE domains (
     id INT AUTO_INCREMENT PRIMARY KEY,
     domain_name VARCHAR(255) NOT NULL,
     tld_id INT NOT NULL, FOREIGN KEY (tld_id) REFERENCES TopLevelDomain(id), STATUS ENUM('AVAILABLE', 'SOLD') DEFAULT 'AVAILABLE',
@@ -47,7 +45,7 @@ CREATE TABLE carts (
     cus_id INT NOT NULL,
     domain_id INT NOT NULL,
     years INT CHECK (years > 0),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (cus_id) REFERENCES users(id) ON DELETE CASCADE, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (cus_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (domain_id) REFERENCES domains(id) ON DELETE CASCADE
 );
 
@@ -59,7 +57,7 @@ CREATE TABLE Transactions (
     id CHAR(10) PRIMARY KEY NOT NULL,
     user_id INT NOT NULL,
     transaction_date TIMESTAMP NOT NULL,
-    transaction_status ENUM('CONFIRM', 'PAYMENT', 'COMPETED', 'CANCELLED') DEFAULT 'CONFIRM',
+    transaction_status ENUM('CONFIRM', 'PAYMENT', 'COMPLETED', 'CANCELLED') DEFAULT 'CONFIRM',
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -89,7 +87,7 @@ CREATE TABLE PaymentHistory (
     transaction_id CHAR(10) NOT NULL,
     payment_id CHAR(10) NOT NULL DEFAULT '',
     payment_method INT,
-    payment_status ENUM('COMPETED', 'failed'),
+    payment_status ENUM('COMPLETED', 'FAILED'),
     payment_date TIMESTAMP,
     FOREIGN KEY (transaction_id) REFERENCES Transactions(id),
     FOREIGN KEY (payment_method) REFERENCES PaymentMethod(id)
@@ -209,16 +207,16 @@ INSERT INTO carts (cus_id, domain_id, years) VALUES
 (10, 28, 1),
 (10, 32, 1);
 INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VALUES
-('HD001', 1, '2024-01-21 07:03:00', 'COMPETED'),
+('HD001', 1, '2024-01-21 07:03:00', 'COMPLETED'),
 ('HD002', 2, '2024-01-22 10:15:50', 'CANCELLED'),
 ('HD003', 2, '2024-02-10 08:05:00', 'CONFIRM'),
-('HD004', 3, '2024-03-15 02:17:43', 'COMPETED'),
+('HD004', 3, '2024-03-15 02:17:43', 'COMPLETED'),
 ('HD005', 7, '2024-03-20 13:55:12', 'CANCELLED'),
-('HD006', 4, '2024-04-20 09:23:38', 'COMPETED'),
+('HD006', 4, '2024-04-20 09:23:38', 'COMPLETED'),
 ('HD007', 8, '2024-08-10 18:41:07', 'CONFIRM'),
 ('HD008', 10, '2024-08-20 00:59:26', 'CANCELLED'),
-('HD009', 11, '2024-11-25 21:34:05', 'COMPETED'),
-('HD010', 9, '2025-03-15 06:02:50', 'COMPETED'),
+('HD009', 11, '2024-11-25 21:34:05', 'COMPLETED'),
+('HD010', 9, '2025-03-15 06:02:50', 'COMPLETED'),
 ('HD011', 5, '2025-03-25 14:28:19', 'CONFIRM');
 
 INSERT INTO Transactions_info (transactions_id, domain_id) VALUES
@@ -286,14 +284,14 @@ INSERT INTO PaymentMethod (method) VALUES
 ('ZaloPay');
 
 INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
-('HD001', '14931583', 1, 'COMPETED', '2025-01-21 08:15:32'),
+('HD001', '14931583', 1, 'COMPLETED', '2025-01-21 08:15:32'),
 -- HD002: cancelled
-('HD004', '14936383', 1, 'COMPETED', '2025-05-07 11:42:07'),
+('HD004', '14936383', 1, 'COMPLETED', '2025-05-07 11:42:07'),
 -- HD005: cancelled
-('HD006', '14938357', 1, 'COMPETED', '2025-04-20 14:29:55'),
+('HD006', '14938357', 1, 'COMPLETED', '2025-04-20 14:29:55'),
 -- HD008: cancelled
-('HD009', '14933277', 1, 'COMPETED', '2024-11-25 19:03:46'),
-('HD010', '14939457', 1, 'COMPETED', '2025-03-15 07:58:20');
+('HD009', '14933277', 1, 'COMPLETED', '2024-11-25 19:03:46'),
+('HD010', '14939457', 1, 'COMPLETED', '2025-03-15 07:58:20');
 
 
 SET GLOBAL event_scheduler = ON;
