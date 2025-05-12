@@ -14,11 +14,10 @@ public class testService {
 //        RegisterServices registerServices = new RegisterServices();
 //        JSONObject registerInput = new JSONObject();
 //        registerInput.put("username", "Nguyen Van A");
-//        registerInput.put("phone", "0987654321");
+//        registerInput.put("phone", "0968710129");
 //        registerInput.put("email", "nguyenvanabc@example.com");
-//        registerInput.put("personal_id", "027205011960");
 //        registerInput.put("password", "mypassword");
-//        registerInput.put("role", "user"); 
+//        registerInput.put("role", "user");
 //        JSONObject registerResponse = registerServices.addToDB(registerInput);
 //        System.out.println("Register Response: " + registerResponse.toString(2));
 
@@ -61,9 +60,9 @@ public class testService {
         // ====== TEST 7: Cập nhật thông tin người dùng (không đổi mật khẩu) ======
 //        AccountServices accountServices = new AccountServices();
 //        JSONObject updateUserInput = new JSONObject();
-//        updateUserInput.put("user_id", 1);
+//        updateUserInput.put("user_id", 2);
 //        updateUserInput.put("username", "Au Duong Tai");
-//        updateUserInput.put("phone", "0123456789");
+//        updateUserInput.put("phone", "0111592345");
 //        updateUserInput.put("email", "auduongtai27@gmail.com");
 //        updateUserInput.put("personal_id", "027205011960");
 //        JSONObject updateUserResponse = accountServices.updateUser(updateUserInput);
@@ -80,7 +79,7 @@ public class testService {
         // ====== TEST 9: Lấy thông tin người dùng theo ID ======
 //        AccountServices accountServices = new AccountServices();
 //        JSONObject getUserInput = new JSONObject();
-//        getUserInput.put("user_id", 1);
+//        getUserInput.put("user_id", 2);
 //        JSONObject getUserResponse = accountServices.getUserInformation(getUserInput);
 //        System.out.println("Get User Information Response: " + getUserResponse.toString(2));
 
@@ -105,13 +104,13 @@ public class testService {
 //        domain1.put("name", "diamonielts.com");
 //        domain1.put("status", "available");
 //        domain1.put("price", 299000);
-//        domain1.put("years", 3);
+//        domain1.put("years", 2);
 //        domainArray.put(domain1);
 //        JSONObject domain2 = new JSONObject();
 //        domain2.put("name", "tanvjp.com");
 //        domain2.put("status", "available");
 //        domain2.put("price", 299000);
-//        domain2.put("years", 3);
+//        domain2.put("years", 2);
 //        domainArray.put(domain2);
 //        addToCartInput.put("domain", domainArray);
 //        JSONObject addToCartResponse = cartServices.addToCart(addToCartInput);
@@ -165,7 +164,7 @@ public class testService {
         // ====== TEST 19: Xóa domain ======
 //        DomainServices a = new DomainServices();
 //        JSONObject b = new JSONObject();
-//        b.put("name", "example.org");
+//        b.put("name", "diamonielts.net");
 //        JSONObject result = a.deleteAvailableDomain(b);
 //        System.out.println(result.toString(2));
 
@@ -193,8 +192,32 @@ public class testService {
         // ====== TEST 21: Search ten mien ======
 //        DomainServices a = new DomainServices();
 //        JSONObject b = new JSONObject();
-//        b.put("name", "domain.c");
+//        b.put("name", "domain.com.vn");
 //        JSONObject result = a.search(b);
 //        System.out.println(result.toString(2));
+
+        // ====== TEST 22: Gửi otp ======
+//        AccountServices a = new AccountServices();
+//        JSONObject b = new JSONObject();
+//        b.put("phone", "0923456789");
+//        b.put("email", "auduongtan321@gmail.com");
+//        JSONObject result = a.sendOtpToUser(b);
+//        System.out.println("testService.main: " + result.toString(2));
+
+        // ====== TEST 23: Kiểm tra otp ======
+//        AccountServices a = new AccountServices();
+//        JSONObject b = new JSONObject();
+//        b.put("otp", "432227");
+//        b.put("email", "auduongtan321@gmail.com");
+//        JSONObject result = a.checkingOtp(b);
+//        System.out.println("testService.main: " + result.toString(2));
+
+        // ====== TEST 24: Update mật khẩu theo email ======
+//        AccountServices a = new AccountServices();
+//        JSONObject b = new JSONObject();
+//        b.put("password", "@pass123456");
+//        b.put("email", "auduongtan321@gmail.com");
+//        JSONObject result = a.updatingNewPassWord(b);
+//        System.out.println("testService.main: " + result.toString(2));
     }
 }

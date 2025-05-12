@@ -8,6 +8,8 @@ CREATE TABLE users (
     phone VARCHAR(20) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL, ROLE ENUM('USER', 'ADMIN') DEFAULT 'USER',
     is_deleted BOOLEAN DEFAULT FALSE,
+	otp VARCHAR(10),
+    otp_created_at DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -336,6 +338,18 @@ BEGIN
     DELETE FROM transactions
     WHERE transaction_status = 'PAYMENT'
       AND TIMESTAMPDIFF(HOUR, transaction_date, NOW()) >= 12;
+END;
+
+-- Tạo sự kiện xóa OTP sau 5 phút
+CREATE EVENT IF NOT EXISTS clear_expired_otp
+ON SCHEDULE EVERY 5 MINUTE
+DO
+BEGIN
+    UPDATE users
+    SET otp = NULL,
+        otp_created_at = NULL
+    WHERE otp IS NOT NULL
+      AND TIMESTAMPDIFF(MINUTE, otp_created_at, NOW()) >= 5;
 END;
 //
 DELIMITER ;

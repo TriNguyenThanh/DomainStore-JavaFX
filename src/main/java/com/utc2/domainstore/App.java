@@ -14,7 +14,7 @@ public class App extends Application {
 
         try {
             UserSession.getInstance().setUserId(1);
-            UserSession.getInstance().setRole(RoleEnum.admin);
+            UserSession.getInstance().setRole(RoleEnum.ADMIN);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

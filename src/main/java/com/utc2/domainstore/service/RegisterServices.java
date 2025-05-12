@@ -36,7 +36,7 @@ public class RegisterServices implements IRegister{
         try {
             userRole = RoleEnum.valueOf(role.toLowerCase());
         } catch (IllegalArgumentException e) {
-            userRole = RoleEnum.user;
+            userRole = RoleEnum.USER;
         }
 
         CustomerModel newCustomer = new CustomerModel(name, email, phone, hashedPassword, userRole);
