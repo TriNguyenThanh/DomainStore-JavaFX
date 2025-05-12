@@ -8,6 +8,8 @@ CREATE TABLE users (
     phone VARCHAR(20) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL, ROLE ENUM('USER', 'ADMIN') DEFAULT 'USER',
     is_deleted BOOLEAN DEFAULT FALSE,
+	otp VARCHAR(10),
+    otp_created_at DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
