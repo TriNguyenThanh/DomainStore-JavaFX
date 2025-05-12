@@ -6,7 +6,7 @@ CREATE TABLE users (
     full_name VARCHAR(255) NOT NULL, 
     email VARCHAR(255) NOT NULL UNIQUE,
     phone VARCHAR(20) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL, ROLE ENUM('user', 'admin') DEFAULT 'user',
+    password_hash VARCHAR(255) NOT NULL, ROLE ENUM('USER', 'ADMIN') DEFAULT 'USER',
     is_deleted BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -25,7 +25,7 @@ CREATE INDEX idx_tld_text ON TopLevelDomain(TLD_text);
 CREATE TABLE domains (	
     id INT AUTO_INCREMENT PRIMARY KEY,
     domain_name VARCHAR(255) NOT NULL,
-    tld_id INT NOT NULL, FOREIGN KEY (tld_id) REFERENCES TopLevelDomain(id), STATUS ENUM('available', 'sold') DEFAULT 'available',
+    tld_id INT NOT NULL, FOREIGN KEY (tld_id) REFERENCES TopLevelDomain(id), STATUS ENUM('AVAILABLE', 'SOLD') DEFAULT 'AVAILABLE',
     active_date DATETIME NULL,
     years INT NULL,
     price BIGINT UNSIGNED DEFAULT 0,
@@ -57,7 +57,7 @@ CREATE TABLE Transactions (
     id CHAR(10) PRIMARY KEY NOT NULL,
     user_id INT NOT NULL,
     transaction_date TIMESTAMP NOT NULL,
-    transaction_status ENUM('pendingConfirm', 'pendingPayment', 'completed', 'cancelled') DEFAULT 'pendingConfirm',
+    transaction_status ENUM('CONFIRM', 'PAYMENT', 'COMPETED', 'CANCELLED') DEFAULT 'CONFIRM',
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -87,7 +87,7 @@ CREATE TABLE PaymentHistory (
     transaction_id CHAR(10) NOT NULL,
     payment_id CHAR(10) NOT NULL DEFAULT '',
     payment_method INT,
-    payment_status ENUM('completed', 'failed'),
+    payment_status ENUM('COMPETED', 'failed'),
     payment_date TIMESTAMP,
     FOREIGN KEY (transaction_id) REFERENCES Transactions(id),
     FOREIGN KEY (payment_method) REFERENCES PaymentMethod(id)
@@ -98,27 +98,27 @@ CREATE INDEX idx_payment_history_status ON PaymentHistory(payment_status);
 CREATE INDEX idx_payment_history_date ON PaymentHistory(payment_date);
 
 INSERT INTO users (full_name, email, phone, password_hash, ROLE) VALUES
-('Nguyễn Thành Trí', 'tringuyenntt1505@gmail.com', '0987654321','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+('Nguyễn Thành Trí', 'tringuyenntt1505@gmail.com', '0987654321','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'ADMIN'),
 -- user:0987654321 password: pass123456@
-('Lê Nguyễn Anh Dự', 'dule1028a@gmail.com', '0912345678','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+('Lê Nguyễn Anh Dự', 'dule1028a@gmail.com', '0912345678','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'ADMIN'),
 -- user:0912345678 password: pass123456@
-('Âu Dương Tấn', 'auduongtan321@gmail.com', '0923456789','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'admin'),
+('Âu Dương Tấn', 'auduongtan321@gmail.com', '0923456789','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'ADMIN'),
 -- user:0923456789 password: pass123456@
-('Phạm Anh Dũng', 'dung.pham@gmail.com', '0934567890','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Phạm Anh Dũng', 'dung.pham@gmail.com', '0934567890','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'USER'),
 -- user:0934567890 password: pass123456@
-('Ngô Thanh Hoa', 'hoa.ngo@gmail.com', '0945678901','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Ngô Thanh Hoa', 'hoa.ngo@gmail.com', '0945678901','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'USER'),
 -- user:0945678901 password: pass123456@
-('Hoàng Tuấn Khang', 'khang.hoang@gmail.com', '0956789012','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Hoàng Tuấn Khang', 'khang.hoang@gmail.com', '0956789012','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'USER'),
 -- user:0956789012 password: pass123456@
-('Bùi Diễm Lan', 'lan.bui@gmail.com', '0967890123','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Bùi Diễm Lan', 'lan.bui@gmail.com', '0967890123','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'USER'),
 -- user:0967890123 password: pass123456@
-('Đặng Thành Nam', 'nam.dang@gmail.com', '0978901234','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Đặng Thành Nam', 'nam.dang@gmail.com', '0978901234','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'USER'),
 -- user:0978901234 password: pass123456@
-('Võ Minh Nhật', 'nhat.vo@gmail.com', '0989012345','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Võ Minh Nhật', 'nhat.vo@gmail.com', '0989012345','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'USER'),
 -- user:0989012345 password: pass123456@
-('Nguyễn Thị Oanh', 'oanh.nguyen@gmail.com', '0990123456','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user'),
+('Nguyễn Thị Oanh', 'oanh.nguyen@gmail.com', '0990123456','$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'USER'),
 -- user:0990123456 password: pass123456@
-('Đỗ Quang Phúc', 'phuc.do@gmail.com', '0901234567', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'user');
+('Đỗ Quang Phúc', 'phuc.do@gmail.com', '0901234567', '$argon2i$v=19$m=65536,t=3,p=1$IpdMbu22itJFyvwg1Q5hww$Rf7j4imDyXFIMpHjtAuEV9jeFBs90wwR4Oi+OTBSYEU', 'USER');
 -- user:0901234567 password: pass123456@
 INSERT INTO TopLevelDomain (TLD_text, price) VALUES
 ('.com', 299000),
@@ -150,44 +150,44 @@ INSERT INTO TopLevelDomain (TLD_text, price) VALUES
 ('.org.vn', 350000),
 ('.edu.vn', 100000);
 INSERT INTO domains (domain_name, tld_id, STATUS, active_date, years, owner_id) VALUES
-('diamonielts', 1, 'available', NULL, 1, NULL),
-('example', 3, 'sold', '2024-05-07 17:00:00', 1, 3),
-('testdomain', 6, 'sold', '2024-05-07 17:00:00', 1, 3),
-('mywebsite', 1, 'sold', '2024-05-07 17:00:00', 1, 3),
-('yourdomain123', 2, 'sold', NULL, 1, NULL),
-('newproject3213', 3, 'sold', NULL, 1, NULL),
-('spicydonut1', 4, 'available', NULL, 1, NULL),
-('globalban3', 5, 'available', NULL, 1, NULL),
-('vietnamexpert4', 5, 'available', NULL, 1, NULL),
-('startupvn5', 5, 'available', NULL, 1, NULL),
-('hotbrandno2', 1, 'available', NULL, 1, NULL),
-('bestservicesno12', 2, 'sold', NULL, 1, NULL),
-('surprisedtech1', 3, 'available', NULL, 1, NULL),
-('supercool', 1, 'sold', '2025-04-20 10:00:00', 1, 4),
-('fastservice', 2, 'sold', '2025-01-21 19:30:00', 2, 1),
-('amazingproject', 3, 'sold', '2025-04-20 10:00:00', 1, 4),
-('yourbrandnah5', 4, 'available', NULL, 1, NULL),
-('nextbigthing2', 5, 'available', NULL, 1, NULL),
-('enterprisehub', 6, 'sold', '2025-04-20 10:00:00', 1, 4),
-('futurenow52', 24, 'available', NULL, 1, NULL),
-('techstartupbo', 8, 'sold', NULL, 1, NULL),
-('eradigitalworld', 9, 'sold', NULL, 1, NULL),
-('smartcityhcm', 10, 'sold', NULL, 1, NULL),
-('globalsupermarket23', 11, 'sold', NULL, 1, NULL),
-('nextlevel', 12, 'sold', '2024-11-25 9:30:00', 1, 11),
-('connectasia321', 13, 'sold', NULL, 1, NULL),
-('cloudhub', 14, 'sold', NULL, 1, NULL),
-('universeclick1', 15, 'available', NULL, 1, NULL),
-('amazingblog5', 16, 'available', NULL, 1, NULL),
-('futurecloud', 17, 'sold', '2024-11-25 9:30:00', 1, 11),
-('bestclickno1', 18, 'available', NULL, 1, NULL),
-('stronggroup15', 19, 'available', NULL, 1, NULL),
-('supermom', 20, 'sold', '2025-03-15 11:20:00', 1, 9),
-('techasia', 21, 'sold', '2025-03-15 11:20:00', 1, 9),
-('globalbusiness', 22, 'sold', '2025-03-15 11:20:00', 1, 9),
-('creativeart12', 23, 'available', NULL, 1, NULL),
-('topblog21', 24, 'available', NULL, 1, NULL),
-('topblog21', 1, 'available', NULL, 1, NULL);
+('diamonielts', 1, 'AVAILABLE', NULL, 1, NULL),
+('example', 3, 'SOLD', '2024-05-07 17:00:00', 1, 3),
+('testdomain', 6, 'SOLD', '2024-05-07 17:00:00', 1, 3),
+('mywebsite', 1, 'SOLD', '2024-05-07 17:00:00', 1, 3),
+('yourdomain123', 2, 'SOLD', NULL, 1, NULL),
+('newproject3213', 3, 'SOLD', NULL, 1, NULL),
+('spicydonut1', 4, 'AVAILABLE', NULL, 1, NULL),
+('globalban3', 5, 'AVAILABLE', NULL, 1, NULL),
+('vietnamexpert4', 5, 'AVAILABLE', NULL, 1, NULL),
+('startupvn5', 5, 'AVAILABLE', NULL, 1, NULL),
+('hotbrandno2', 1, 'AVAILABLE', NULL, 1, NULL),
+('bestservicesno12', 2, 'SOLD', NULL, 1, NULL),
+('surprisedtech1', 3, 'AVAILABLE', NULL, 1, NULL),
+('supercool', 1, 'SOLD', '2025-04-20 10:00:00', 1, 4),
+('fastservice', 2, 'SOLD', '2025-01-21 19:30:00', 2, 1),
+('amazingproject', 3, 'SOLD', '2025-04-20 10:00:00', 1, 4),
+('yourbrandnah5', 4, 'AVAILABLE', NULL, 1, NULL),
+('nextbigthing2', 5, 'AVAILABLE', NULL, 1, NULL),
+('enterprisehub', 6, 'SOLD', '2025-04-20 10:00:00', 1, 4),
+('futurenow52', 24, 'AVAILABLE', NULL, 1, NULL),
+('techstartupbo', 8, 'SOLD', NULL, 1, NULL),
+('eradigitalworld', 9, 'SOLD', NULL, 1, NULL),
+('smartcityhcm', 10, 'SOLD', NULL, 1, NULL),
+('globalsupermarket23', 11, 'SOLD', NULL, 1, NULL),
+('nextlevel', 12, 'SOLD', '2024-11-25 9:30:00', 1, 11),
+('connectasia321', 13, 'SOLD', NULL, 1, NULL),
+('cloudhub', 14, 'SOLD', NULL, 1, NULL),
+('universeclick1', 15, 'AVAILABLE', NULL, 1, NULL),
+('amazingblog5', 16, 'AVAILABLE', NULL, 1, NULL),
+('futurecloud', 17, 'SOLD', '2024-11-25 9:30:00', 1, 11),
+('bestclickno1', 18, 'AVAILABLE', NULL, 1, NULL),
+('stronggroup15', 19, 'AVAILABLE', NULL, 1, NULL),
+('supermom', 20, 'SOLD', '2025-03-15 11:20:00', 1, 9),
+('techasia', 21, 'SOLD', '2025-03-15 11:20:00', 1, 9),
+('globalbusiness', 22, 'SOLD', '2025-03-15 11:20:00', 1, 9),
+('creativeart12', 23, 'AVAILABLE', NULL, 1, NULL),
+('topblog21', 24, 'AVAILABLE', NULL, 1, NULL),
+('topblog21', 1, 'AVAILABLE', NULL, 1, NULL);
 UPDATE domains
 JOIN TopLevelDomain tld ON domains.tld_id = tld.id SET domains.price = tld.price;
 INSERT INTO carts (cus_id, domain_id, years) VALUES
@@ -207,17 +207,17 @@ INSERT INTO carts (cus_id, domain_id, years) VALUES
 (10, 28, 1),
 (10, 32, 1);
 INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VALUES
-('HD001', 1, '2024-01-21 07:03:00', 'completed'),
-('HD002', 2, '2024-01-22 10:15:50', 'cancelled'),
-('HD003', 2, '2024-02-10 08:05:00', 'pendingConfirm'),
-('HD004', 3, '2024-03-15 02:17:43', 'completed'),
-('HD005', 7, '2024-03-20 13:55:12', 'cancelled'),
-('HD006', 4, '2024-04-20 09:23:38', 'completed'),
-('HD007', 8, '2024-08-10 18:41:07', 'pendingConfirm'),
-('HD008', 10, '2024-08-20 00:59:26', 'cancelled'),
-('HD009', 11, '2024-11-25 21:34:05', 'completed'),
-('HD010', 9, '2025-03-15 06:02:50', 'completed'),
-('HD011', 5, '2025-03-25 14:28:19', 'pendingConfirm');
+('HD001', 1, '2024-01-21 07:03:00', 'COMPETED'),
+('HD002', 2, '2024-01-22 10:15:50', 'CANCELLED'),
+('HD003', 2, '2024-02-10 08:05:00', 'CONFIRM'),
+('HD004', 3, '2024-03-15 02:17:43', 'COMPETED'),
+('HD005', 7, '2024-03-20 13:55:12', 'CANCELLED'),
+('HD006', 4, '2024-04-20 09:23:38', 'COMPETED'),
+('HD007', 8, '2024-08-10 18:41:07', 'CONFIRM'),
+('HD008', 10, '2024-08-20 00:59:26', 'CANCELLED'),
+('HD009', 11, '2024-11-25 21:34:05', 'COMPETED'),
+('HD010', 9, '2025-03-15 06:02:50', 'COMPETED'),
+('HD011', 5, '2025-03-25 14:28:19', 'CONFIRM');
 
 INSERT INTO Transactions_info (transactions_id, domain_id) VALUES
 -- HD001
@@ -284,14 +284,14 @@ INSERT INTO PaymentMethod (method) VALUES
 ('ZaloPay');
 
 INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
-('HD001', '14931583', 1, 'completed', '2025-01-21 08:15:32'),
+('HD001', '14931583', 1, 'COMPETED', '2025-01-21 08:15:32'),
 -- HD002: cancelled
-('HD004', '14936383', 1, 'completed', '2025-05-07 11:42:07'),
+('HD004', '14936383', 1, 'COMPETED', '2025-05-07 11:42:07'),
 -- HD005: cancelled
-('HD006', '14938357', 1, 'completed', '2025-04-20 14:29:55'),
+('HD006', '14938357', 1, 'COMPETED', '2025-04-20 14:29:55'),
 -- HD008: cancelled
-('HD009', '14933277', 1, 'completed', '2024-11-25 19:03:46'),
-('HD010', '14939457', 1, 'completed', '2025-03-15 07:58:20');
+('HD009', '14933277', 1, 'COMPETED', '2024-11-25 19:03:46'),
+('HD010', '14939457', 1, 'COMPETED', '2025-03-15 07:58:20');
 
 
 SET GLOBAL event_scheduler = ON;
@@ -301,11 +301,11 @@ DELIMITER //
 CREATE EVENT reset_expired_domains ON SCHEDULE EVERY 1 DAY
 DO
 BEGIN
-	UPDATE domains SET STATUS = 'available',
+	UPDATE domains SET STATUS = 'AVAILABLE',
 		owner_id = NULL,
 		active_date = NULL,
 		years = NULL
-	WHERE STATUS = 'sold' AND active_date IS NOT NULL AND DATE_ADD(active_date, INTERVAL years YEAR) < CURDATE();
+	WHERE STATUS = 'SOLD' AND active_date IS NOT NULL AND DATE_ADD(active_date, INTERVAL years YEAR) < CURDATE();
 END;
 
 -- tạo sự kiện tự động hủy hóa đơn nếu quá thời hạn (5 phút cập nhật 1 lần)
@@ -318,23 +318,23 @@ BEGIN
     JOIN transactions_info tsi ON d.id = tsi.domain_id
     JOIN transactions t ON tsi.transactions_id = t.id
     SET
-        d.status = 'available',
+        d.status = 'AVAILABLE',
         d.years = 0
     WHERE
         (
-            (t.transaction_status = 'pendingConfirm' AND TIMESTAMPDIFF(MINUTE, t.transaction_date, NOW()) >= 15)
+            (t.transaction_status = 'CONFIRM' AND TIMESTAMPDIFF(MINUTE, t.transaction_date, NOW()) >= 15)
             OR
-            (t.transaction_status = 'pendingPayment' AND TIMESTAMPDIFF(HOUR, t.transaction_date, NOW()) >= 24)
+            (t.transaction_status = 'PAYMENT' AND TIMESTAMPDIFF(HOUR, t.transaction_date, NOW()) >= 24)
         );
 
-    -- Xóa hóa đơn 'pendingConfirm' quá 10 phút
+    -- Xóa hóa đơn 'CONFIRM' quá 10 phút
     DELETE FROM transactions
-    WHERE transaction_status = 'pendingConfirm'
+    WHERE transaction_status = 'CONFIRM'
 	AND TIMESTAMPDIFF(MINUTE, transaction_date, NOW()) >= 15;
 
-    -- Xóa hóa đơn 'pendingPayment' quá 12 giờ
+    -- Xóa hóa đơn 'PAYMENT' quá 12 giờ
     DELETE FROM transactions
-    WHERE transaction_status = 'pendingPayment'
+    WHERE transaction_status = 'PAYMENT'
       AND TIMESTAMPDIFF(HOUR, transaction_date, NOW()) >= 12;
 END;
 //

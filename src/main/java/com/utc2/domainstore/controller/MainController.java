@@ -133,6 +133,7 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
         focus = null;
+        System.gc();
         return fxmlLoader;
     }
 
@@ -163,7 +164,7 @@ public class MainController implements Initializable {
             return;
         }
         autoRefreshTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(10), event -> {
+                new KeyFrame(Duration.seconds(2), event -> {
                     Platform.runLater(() -> {
                         System.out.println("Auto refresh " + currentFxmlPath);
                         load(currentFxmlPath, true);
@@ -190,7 +191,7 @@ public class MainController implements Initializable {
                 currentFxmlPath.equals("/fxml/account.fxml")) {
             setAutoRefresh(false);
         } else {
-            setAutoRefresh(true);
+//            setAutoRefresh(true);
         }
         this.currentFxmlPath = currentFxmlPath;
     }
