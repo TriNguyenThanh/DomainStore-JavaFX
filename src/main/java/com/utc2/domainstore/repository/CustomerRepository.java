@@ -24,7 +24,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
             pst.setString(2, customer.getEmail());
             pst.setString(3, customer.getPhone());
             pst.setString(4, customer.getPasswordHash());
-            pst.setString(5, customer.getRole().name());
+            pst.setString(5, customer.getRole().name().toUpperCase());
 
             int result = pst.executeUpdate();
 
@@ -60,12 +60,12 @@ public class CustomerRepository implements IRepository<CustomerModel> {
             pst.setString(3, customer.getPhone());
 
             if (customer.getPasswordHash() == null || customer.getPasswordHash().isEmpty()) {
-                pst.setString(4, customer.getRole().name());
+                pst.setString(4, customer.getRole().name().toUpperCase());
                 pst.setBoolean(5, customer.getIsDeleted());
                 pst.setInt(6, customer.getId());
             } else {
                 pst.setString(4, customer.getPasswordHash());
-                pst.setString(5, customer.getRole().name());
+                pst.setString(5, customer.getRole().name().toUpperCase());
                 pst.setBoolean(6, customer.getIsDeleted());
                 pst.setInt(7, customer.getId());
             }
@@ -114,7 +114,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                             rs.getString("email"),
                             rs.getString("phone"),
                             rs.getString("password_hash"),
-                            RoleEnum.valueOf(rs.getString("role")),
+                            RoleEnum.valueOf(rs.getString("role").toUpperCase()),
                             rs.getBoolean("is_deleted"),
                             rs.getTimestamp("created_at")
                     );
@@ -142,7 +142,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                         rs.getString("email"),
                         rs.getString("phone"),
                         rs.getString("password_hash"),
-                        RoleEnum.valueOf(rs.getString("role")),
+                        RoleEnum.valueOf(rs.getString("role").toUpperCase()),
                         rs.getBoolean("is_deleted"),
                         rs.getTimestamp("created_at")
                 ));
@@ -170,7 +170,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                         rs.getString("email"),
                         rs.getString("phone"),
                         rs.getString("password_hash"),
-                        RoleEnum.valueOf(rs.getString("role")),
+                        RoleEnum.valueOf(rs.getString("role").toUpperCase()),
                         rs.getBoolean("is_deleted"),
                         rs.getTimestamp("created_at")
                 ));
@@ -195,7 +195,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                             rs.getString("email"),
                             rs.getString("phone"),
                             rs.getString("password_hash"),
-                            RoleEnum.valueOf(rs.getString("role")),
+                            RoleEnum.valueOf(rs.getString("role").toUpperCase()),
                             rs.getBoolean("is_deleted"),
                             rs.getTimestamp("created_at")
                     );
@@ -221,8 +221,10 @@ public class CustomerRepository implements IRepository<CustomerModel> {
                             rs.getString("email"),
                             rs.getString("phone"),
                             rs.getString("password_hash"),
-                            RoleEnum.valueOf(rs.getString("role")),
+                            RoleEnum.valueOf(rs.getString("role").toUpperCase()),
                             rs.getBoolean("is_deleted"),
+                            rs.getString("otp"),
+                            rs.getTimestamp("otp_created_at"),
                             rs.getTimestamp("created_at")
                     );
                 }
@@ -259,4 +261,33 @@ public class CustomerRepository implements IRepository<CustomerModel> {
 //        }
 //        return null;
 //    }
+
+    //update otp by email
+    public int updateOtp(String email, String otp, String phone){
+        String sql = "UPDATE users SET otp = ?, otp_created_at = NOW() WHERE email = ? AND is_deleted = false AND phone = ?";
+        try(Connection con = JDBC.getConnection();
+            PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, otp);
+            pst.setString(2, email);
+            pst.setString(3, phone);
+            return pst.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    //update password by email
+    public int updatePasswordByEmail(String email, String password){
+        String sql = "UPDATE users SET password_hash = ? WHERE email = ?";
+        try(Connection con = JDBC.getConnection();
+            PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setString(1, password);
+            pst.setString(2, email);
+            return pst.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

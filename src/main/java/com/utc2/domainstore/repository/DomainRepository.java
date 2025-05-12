@@ -107,7 +107,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
                             rs.getTimestamp("active_date"),
                             rs.getInt("years"),
                             rs.getLong("price"),
@@ -136,7 +136,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                         rs.getInt("id"),
                         rs.getString("domain_name"),
                         rs.getInt("tld_id"),
-                        DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
+                        DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
                         rs.getTimestamp("active_date"),
                         rs.getInt("years"),
                         rs.getLong("price"),
@@ -164,7 +164,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
                             rs.getTimestamp("active_date"),
                             rs.getInt("years"),
                             rs.getLong("price"),
@@ -196,7 +196,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
                             rs.getTimestamp("active_date"),
                             rs.getInt("years"),
                             rs.getLong("price"),
@@ -248,7 +248,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status")),
+                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
                             rs.getTimestamp("active_date"),
                             rs.getInt("years"),
                             rs.getLong("price"),
@@ -281,7 +281,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
                             rs.getTimestamp("active_date"),
                             rs.getInt("years"),
                             rs.getLong("price"),
@@ -361,7 +361,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
                             rs.getTimestamp("active_date"),
                             rs.getInt("years"),
                             rs.getLong("price"),
@@ -388,7 +388,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                             rs.getInt("id"),
                             rs.getString("domain_name"),
                             rs.getInt("tld_id"),
-                            DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()),
+                            DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()),
                             rs.getTimestamp("active_date"),
                             rs.getInt("years"),
                             rs.getLong("price"),
@@ -432,7 +432,7 @@ public class DomainRepository implements IRepository<DomainModel> {
                 domain.setId(rs.getInt("id"));
                 domain.setDomainName(rs.getString("domain_name"));
                 domain.setTldId(rs.getInt("tld_id"));
-                domain.setStatus(DomainStatusEnum.valueOf(rs.getString("status").toLowerCase()));
+                domain.setStatus(DomainStatusEnum.valueOf(rs.getString("status").toUpperCase()));
                 domain.setYears(rs.getInt("years"));
                 domain.setPrice(rs.getLong("domain_price"));
                 domain.setActiveDate(rs.getTimestamp("active_date") != null ? rs.getTimestamp("active_date") : null);
