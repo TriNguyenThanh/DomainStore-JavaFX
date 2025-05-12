@@ -13,7 +13,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -131,7 +130,7 @@ public class VnPayService implements IPaymentGateway{
                     result.put("status", "failed");
                     result.put("message", "Thanh toán thất bại. Mã lỗi: " + vnp_ResponseCode);
                     result.put("txnRef", fields.get("vnp_TxnRef"));
-                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.PENDINGPAYMENT);
+                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.PAYMENT);
                 }
             } else {
                 // Invalid signature

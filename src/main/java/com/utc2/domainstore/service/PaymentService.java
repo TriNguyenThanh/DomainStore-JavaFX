@@ -4,7 +4,6 @@ package com.utc2.domainstore.service;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import com.utc2.domainstore.config.VnPayConfig;
 import com.utc2.domainstore.entity.database.*;
 import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.repository.PaymentHistoryRepository;
@@ -92,7 +91,7 @@ public class PaymentService implements  IPaymentService{
             System.out.println("Server đã được khởi động.");
         }
         // Đổi trạng thái hoá đơn
-        tran.setTransactionStatus(TransactionStatusEnum.PENDINGPAYMENT);
+        tran.setTransactionStatus(TransactionStatusEnum.PAYMENT);
 
         // Tạo transaction reference là timestamp hiện tại
         String txnRef = String.valueOf(System.currentTimeMillis());
