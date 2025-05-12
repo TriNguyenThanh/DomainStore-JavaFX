@@ -133,12 +133,13 @@ public class TransactionService implements ITransactionService {
         CustomerModel cus = CustomerRepository.getInstance().selectById(new CustomerModel(tran.getUserId()));
         ArrayList<TransactionInfoModel> listTranInfo = TransactionInfoRepository.getInstance().selectByCondition("transactions_id = '" + transactionId + "'");
 
-        if (TransactionStatusEnum.COMPLETED.equals(status)) { // Trạng thái thành công
-            for (TransactionInfoModel transactionInfoModel : listTranInfo) { // duyệt qua từng chi tiết hoá đơn
-                int domainId = transactionInfoModel.getDomainId(); // tìm id tên miền
-                DomainModel d = new DomainModel();
-                d.setId(domainId);
-                DomainModel domain = DomainRepository.getInstance().selectById(d); // Lấy dữ liệu tên miền
+        if (TransactionStatusEnum.COMPLETED.equals(status)) {
+            // Trạng thái thành công
+            for (TransactionInfoModel transactionInfoModel : listTranInfo) {
+                // duyệt qua từng chi tiết hoá đơn
+
+                // lấy thông tin tên miền
+                DomainModel domain = getInfoDomain(transactionInfoModel);
                 // Thêm tên miền vào List<String>
                 domains.add(domain.getDomainName()
                         + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
@@ -150,19 +151,20 @@ public class TransactionService implements ITransactionService {
                 domain.setPrice(domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
 
                 DomainRepository.getInstance().update(domain);
-                System.out.println("UpdateTransactionStatus: Đã cập nhật thông tin tên miền");
             }
             // gửi thông báo email
             SoldDomainNotifierServices notifier = new SoldDomainNotifierServices();
             notifier.notifySoldDomains(cus.getEmail(), domains);
         } else if (TransactionStatusEnum.CANCELLED.equals(status)) {
-            // Nếu hoá đơn cancel thì chuyển thành trạng thái chờ thanh toán
-            // sẽ tự động xoá sau 12h nếu không thanh toán
-            TransactionModel transactionModel = TransactionRepository.getInstance()
-                    .selectById(new TransactionModel(transactionId, null, null));
-            transactionModel.setTransactionStatus(TransactionStatusEnum.PENDINGPAYMENT);
-            TransactionRepository.getInstance().update(transactionModel);
+            for (TransactionInfoModel transactionInfoModel : listTranInfo) {
+                // lấy thông tin tên miền
+                DomainModel domain = getInfoDomain(transactionInfoModel);
+                domain.setStatus(DomainStatusEnum.available);
+                domain.setYears(0);
+                DomainRepository.getInstance().update(domain);
+            }
         }
+        System.out.println("UpdateTransactionStatus: Đã cập nhật thông tin tên miền ");
         // Cập nhật trạng thái hoá đơn
         tran.setTransactionStatus(status);
         transactionRepository.update(tran);
@@ -210,5 +212,12 @@ public class TransactionService implements ITransactionService {
             transactionInfoRepository.insert(new TransactionInfoModel(transactionId, domainId, price));
         }
         return total;
+    }
+    private DomainModel getInfoDomain(TransactionInfoModel transactionInfoModel){
+        int domainId = transactionInfoModel.getDomainId(); // tìm id tên miền
+        DomainModel d = new DomainModel();
+        d.setId(domainId);
+        // Lấy dữ liệu tên miền
+        return DomainRepository.getInstance().selectById(d);
     }
 }
