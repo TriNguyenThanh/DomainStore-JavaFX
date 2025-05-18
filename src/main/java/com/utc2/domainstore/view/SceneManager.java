@@ -37,6 +37,7 @@ public class SceneManager {
             stage.setOnCloseRequest(event -> {
                 event.consume();
                 Platform.exit();
+                System.exit(0);
             });
         }
     }

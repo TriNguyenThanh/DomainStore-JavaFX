@@ -7,16 +7,15 @@ import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,7 +59,7 @@ public class AccountController implements Initializable {
             //
             logout();
         } else if (e.getSource() == btChangePass) {
-            changePass();
+            showChangePassword();
         }
     }
 
@@ -127,33 +126,31 @@ public class AccountController implements Initializable {
     }
 
     // change password
-    private void changePass() {
+    private void showChangePassword() {
+        Stage secondStage = new Stage();
+        secondStage.setTitle("Change password");
+        secondStage.getIcons().setAll(SceneManager.getInstance().getIcon("/icon/password.png", 32, 32));
+
+        secondStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                System.gc();
+            }
+        });
+        ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/change_password.fxml"), rb);
+        Scene scene = null;
         try {
-            // load the fxml and resource bundle
-            ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/change_password.fxml"), rb);
-            Parent root = fxmlLoader.load();
-
-            // get the controller
-            ChangePasswordController controller = fxmlLoader.getController();
-            controller.setData(rootData.getHash_password());
-
-            // create a new stage
-            Stage stage = new Stage();
-            stage.setTitle(bundle.getString("changePass"));
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/icon/password.png"))));
-
-            // set the stage to be modal
-            stage.initOwner(SceneManager.getInstance().getStage());
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-            rootData = newData = getRootData();
-
+            scene = new Scene(fxmlLoader.load());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        secondStage.setScene(scene);
+        secondStage.setResizable(false);
+        secondStage.centerOnScreen();
+
+        secondStage.showAndWait();
     }
 
     // cancel the edit

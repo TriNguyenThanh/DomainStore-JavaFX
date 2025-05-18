@@ -3,44 +3,21 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
-            prefWidth="1000.0" stylesheets="@../style/register.css" xmlns="http://javafx.com/javafx/21"
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0"
+            prefWidth="1200.0" stylesheets="@../style/login.css" xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.RegisterController">
-    <BorderPane prefWidth="1000.0">
-        <right>
-            <AnchorPane prefHeight="802.0" prefWidth="450.0" styleClass="pane" stylesheets="@../style/register.css"
-                        BorderPane.alignment="CENTER">
-                <HBox layoutX="-1.0" prefWidth="450.0">
-                    <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                        <HBox.margin>
-                            <Insets left="50.0" top="10.0"/>
-                        </HBox.margin>
-                        <Image url="@../icon/domain.png"/>
-                    </ImageView>
-                    <Label alignment="BASELINE_CENTER" prefHeight="58.0" prefWidth="313.0" styleClass="header"
-                           stylesheets="@../style/register.css" text="UTC2 DOMAIN STORE">
-                        <HBox.margin>
-                            <Insets left="10.0" top="10.0"/>
-                        </HBox.margin>
-                    </Label>
-                </HBox>
-                <ComboBox fx:id="cbLanguages" layoutX="14.0" layoutY="762.0" prefWidth="150.0" styleClass="combobox"
-                          stylesheets="@../style/register.css"/>
-                <ImageView fitHeight="592.0" fitWidth="401.0" layoutX="25.0" layoutY="166.0" pickOnBounds="true"
-                           preserveRatio="true">
-                    <image>
-                        <Image url="@../image/registerBg.png"/>
-                    </image>
-                </ImageView>
-            </AnchorPane>
-        </right>
-        <center>
-            <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-                <Label alignment="CENTER" prefHeight="92.0" prefWidth="510.0" styleClass="title"
-                       stylesheets="@../style/register.css" text="%register"/>
+    <ImageView fitHeight="700.0" fitWidth="1200.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+            <Image url="@../image/register.png"/>
+        </image>
+    </ImageView>
+    <AnchorPane prefHeight="700.0" styleClass="pane" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0"
+                AnchorPane.topAnchor="10.0">
+        <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.leftAnchor="0.0">
+                <Label alignment="CENTER" prefHeight="92.0" prefWidth="510.0" styleClass="title" text="%register"/>
                 <AnchorPane prefHeight="85.0" prefWidth="510.0">
                     <TextField fx:id="usernameTextfield" layoutX="208.0" layoutY="31.0" prefHeight="50.0"
                                prefWidth="310.0"/>
@@ -75,18 +52,6 @@
                            styleClass="error" text=" "/>
                 </AnchorPane>
                 <AnchorPane prefHeight="85.0" prefWidth="510.0">
-                    <TextField fx:id="psIDTextfield" layoutX="208.0" layoutY="31.0" prefHeight="50.0"
-                               prefWidth="310.0"/>
-                    <Label alignment="CENTER_RIGHT" layoutX="1.0" layoutY="41.0" prefHeight="30.0" prefWidth="207.0"
-                           text="%personal_id">
-                        <padding>
-                            <Insets right="10.0"/>
-                        </padding>
-                    </Label>
-                    <Label fx:id="psIDErr" layoutX="208.0" layoutY="14.0" prefHeight="18.0" prefWidth="310.0"
-                           styleClass="error" text=" "/>
-                </AnchorPane>
-                <AnchorPane prefHeight="85.0" prefWidth="510.0">
                     <Label alignment="CENTER_RIGHT" layoutX="2.0" layoutY="41.0" prefHeight="30.0" prefWidth="206.0"
                            text="%password">
                         <padding>
@@ -113,29 +78,44 @@
                 <AnchorPane prefHeight="200.0" prefWidth="200.0">
                     <CheckBox fx:id="passwordCheckBox" layoutX="375.0" layoutY="4.0" mnemonicParsing="false"
                               onAction="#showPasswordOnAction" prefHeight="20.0" styleClass="checkbox"
-                              stylesheets="@../style/register.css" text="%showPass"/>
-                    <Label layoutY="169.0" prefHeight="30.0" prefWidth="546.0" styleClass="description"
-                           stylesheets="@../style/register.css" text="%description.register">
+                              text="%showPass"/>
+                    <Label layoutY="169.0" prefHeight="30.0" prefWidth="546.0" styleClass="recover"
+                           text="%description.register">
                         <padding>
                             <Insets left="10.0"/>
                         </padding>
                     </Label>
                     <Button layoutX="111.0" layoutY="53.0" mnemonicParsing="false" onAction="#buttonRegisterOnAction"
-                            prefHeight="26.0" prefWidth="328.0" styleClass="register"
-                            stylesheets="@../style/register.css" text="%register">
+                            prefHeight="26.0" prefWidth="328.0" styleClass="login" text="%register">
                         <cursor>
                             <Cursor fx:constant="HAND"/>
                         </cursor>
                     </Button>
                     <Button layoutX="110.0" layoutY="107.0" mnemonicParsing="false" onAction="#buttonLoginOnAction"
-                            prefHeight="26.0" prefWidth="329.0" styleClass="login" stylesheets="@../style/register.css"
-                            text="%login">
+                            prefHeight="26.0" prefWidth="329.0" text="%login">
                         <cursor>
                             <Cursor fx:constant="HAND"/>
                         </cursor>
                     </Button>
                 </AnchorPane>
             </VBox>
-        </center>
-    </BorderPane>
+        </children>
+    </AnchorPane>
+    <Label alignment="CENTER" layoutX="75.0" layoutY="106.0" prefWidth="450.0" styleClass="header" text="DOMAIN STORE"
+           AnchorPane.topAnchor="100.0">
+        <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0" nodeOrientation="INHERIT" pickOnBounds="true"
+                       preserveRatio="true">
+                <Image url="@../icon/domain.png"/>
+            </ImageView>
+        </graphic>
+    </Label>
+    <ComboBox fx:id="cbLanguages" layoutX="487.0" layoutY="664.0" prefWidth="150.0" styleClass="combobox"
+              AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="487.0"/>
+    <ImageView blendMode="LIGHTEN" fitHeight="449.0" fitWidth="504.0" layoutX="85.0" layoutY="174.0" pickOnBounds="true"
+               preserveRatio="true">
+        <image>
+            <Image url="@../icon/hosting-icon-27_dark.jpg"/>
+        </image>
+    </ImageView>
 </AnchorPane>

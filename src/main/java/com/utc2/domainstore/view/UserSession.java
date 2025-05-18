@@ -7,7 +7,7 @@ import com.utc2.domainstore.entity.database.RoleEnum;
 public class UserSession {
 
     private static UserSession instance;
-    private int userId = -1;
+    private int userId = 0;
     private RoleEnum role;
 
 

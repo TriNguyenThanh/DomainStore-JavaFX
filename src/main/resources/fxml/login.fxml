@@ -1,100 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
-            prefWidth="1000.0" styleClass="root" stylesheets="@../style/login.css" xmlns="http://javafx.com/javafx/21"
+<AnchorPane prefHeight="560.0" prefWidth="1000.0" stylesheets="@../style/login.css" xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.utc2.domainstore.controller.LoginController">
-    <center>
-        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <top>
-                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="139.0" prefWidth="510.0"
-                       styleClass="title" stylesheets="@../style/login.css" text="%login" BorderPane.alignment="CENTER">
-                    <font>
-                        <Font name="Tahoma Bold" size="48.0"/>
-                    </font>
-                </Label>
-            </top>
-            <center>
-                <AnchorPane prefHeight="270.0" prefWidth="510.0" BorderPane.alignment="CENTER">
-                    <TextField fx:id="usernameField" layoutX="207.0" layoutY="63.0" prefHeight="26.0"
-                               prefWidth="266.0"/>
-                    <PasswordField fx:id="passwordField" layoutX="206.0" layoutY="152.0"
-                                   prefHeight="26.0"
-                                   prefWidth="268.0"/>
-                    <Label alignment="CENTER_RIGHT" layoutX="28.0" layoutY="71.0" prefHeight="30.0" text="%username"/>
-                    <Label alignment="CENTER_RIGHT" layoutX="30.0" layoutY="160.0" prefHeight="30.0" text="%password"/>
-                    <CheckBox fx:id="cbShowPassword" layoutX="316.0" layoutY="205.0" mnemonicParsing="false"
-                              prefHeight="30.0" styleClass="checkbox"
-                              stylesheets="@../style/login.css" text="%showPass">
-                        <cursor>
-                            <Cursor fx:constant="HAND"/>
-                        </cursor>
-                    </CheckBox>
-                    <Label fx:id="useErrorLabel" layoutX="207.0" layoutY="32.0" prefHeight="30.0" prefWidth="265.0"
-                           styleClass="error" stylesheets="@../style/login.css"/>
-                    <Label fx:id="passErrorLabel" layoutX="207.0" layoutY="121.0" prefHeight="30.0" prefWidth="265.0"
-                           styleClass="error" stylesheets="@../style/login.css"/>
-                </AnchorPane>
-            </center>
-            <bottom>
-                <AnchorPane prefHeight="165.0" prefWidth="520.0" stylesheets="@../style/login.css"
-                            BorderPane.alignment="CENTER">
-                    <Button fx:id="btLogin" layoutX="115.0" layoutY="-9.0" mnemonicParsing="false" onAction="#login"
-                            prefHeight="26.0" prefWidth="328.0" styleClass="login" stylesheets="@../style/login.css"
-                            text="%login">
-                        <cursor>
-                            <Cursor fx:constant="HAND"/>
-                        </cursor>
-                    </Button>
-                    <Button fx:id="btRegister" layoutX="114.0" layoutY="59.0" mnemonicParsing="false"
-                            onAction="#register"
-                            prefHeight="26.0" prefWidth="329.0" styleClass="register" stylesheets="@../style/login.css"
-                            text="%register">
-                        <cursor>
-                            <Cursor fx:constant="HAND"/>
-                        </cursor>
-                    </Button>
-                </AnchorPane>
-            </bottom>
-        </BorderPane>
-    </center>
-    <left>
-        <AnchorPane prefHeight="600.0" prefWidth="441.0" styleClass="pane" stylesheets="@../style/login.css"
-                    BorderPane.alignment="CENTER">
-            <children>
-                <HBox prefHeight="600.0" prefWidth="489.0">
-                    <children>
-                        <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../icon/domain.png"/>
-                            </image>
-                            <HBox.margin>
-                                <Insets left="50.0" top="10.0"/>
-                            </HBox.margin>
-                        </ImageView>
-                        <Label alignment="BASELINE_CENTER" prefHeight="58.0" prefWidth="313.0" styleClass="header"
-                               stylesheets="@../style/login.css" text="UTC2 DOMAIN STORE">
-                            <HBox.margin>
-                                <Insets left="10.0" top="10.0"/>
-                            </HBox.margin>
-                        </Label>
-                    </children>
-                </HBox>
-                <ComboBox fx:id="cbLanguage" layoutX="277.0" layoutY="560.0"
-                          prefWidth="150.0" styleClass="combobox" stylesheets="@../style/login.css"/>
-                <ImageView fitHeight="448.0" fitWidth="462.0" pickOnBounds="true" preserveRatio="true"
-                           AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="100.0">
+    <children>
+        <ImageView fitHeight="580.0" fitWidth="1000.0" layoutX="6.0" layoutY="4.0" pickOnBounds="true"
+                   preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <image>
+                <Image url="@../image/domain.png"/>
+            </image>
+        </ImageView>
+        <ComboBox fx:id="cbLanguage" layoutX="503.0" layoutY="521.0" prefWidth="150.0" styleClass="combobox"
+                  stylesheets="@../style/login.css" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="350.0"/>
+        <Label alignment="CENTER" layoutX="528.0" layoutY="32.0" prefHeight="58.0" prefWidth="434.0" styleClass="header"
+               stylesheets="@../style/login.css" text="DOMAIN STORE" AnchorPane.rightAnchor="30.0"
+               AnchorPane.topAnchor="30.0">
+            <graphic>
+                <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../image/loginBG.png"/>
+                        <Image url="@../icon/domain.png"/>
                     </image>
                 </ImageView>
+            </graphic>
+        </Label>
+        <AnchorPane prefHeight="561.0" prefWidth="484.0" styleClass="pane" stylesheets="@../style/login.css"
+                    AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <children>
+                <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0">
+                    <top>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="139.0" prefWidth="510.0"
+                               styleClass="title" stylesheets="@../style/login.css" text="%login"
+                               BorderPane.alignment="CENTER">
+                            <font>
+                                <Font name="Tahoma Bold" size="48.0"/>
+                            </font>
+                        </Label>
+                    </top>
+                    <center>
+                        <AnchorPane prefHeight="270.0" prefWidth="510.0" BorderPane.alignment="CENTER">
+                            <TextField fx:id="usernameField" layoutX="207.0" layoutY="63.0" prefHeight="26.0"
+                                       prefWidth="266.0" AnchorPane.rightAnchor="10.0"/>
+                            <PasswordField fx:id="passwordField" layoutX="206.0" layoutY="152.0" prefHeight="26.0"
+                                           prefWidth="268.0" AnchorPane.rightAnchor="10.0"/>
+                            <Label alignment="CENTER_RIGHT" layoutX="28.0" layoutY="71.0" prefHeight="30.0"
+                                   text="%username"/>
+                            <Label alignment="CENTER_RIGHT" layoutX="30.0" layoutY="160.0" prefHeight="30.0"
+                                   text="%password"/>
+                            <CheckBox fx:id="cbShowPassword" layoutX="350.0" layoutY="198.0" mnemonicParsing="false"
+                                      prefHeight="30.0" styleClass="checkbox" stylesheets="@../style/login.css"
+                                      text="%showPass" AnchorPane.rightAnchor="10.0">
+                                <cursor>
+                                    <Cursor fx:constant="HAND"/>
+                                </cursor>
+                            </CheckBox>
+                            <Label fx:id="useErrorLabel" layoutX="207.0" layoutY="32.0" prefHeight="30.0"
+                                   prefWidth="265.0" styleClass="error" stylesheets="@../style/login.css"/>
+                            <Label fx:id="passErrorLabel" layoutX="207.0" layoutY="121.0" prefHeight="30.0"
+                                   prefWidth="265.0" styleClass="error" stylesheets="@../style/login.css"/>
+                        </AnchorPane>
+                    </center>
+                    <bottom>
+                        <AnchorPane prefHeight="165.0" prefWidth="520.0" stylesheets="@../style/login.css"
+                                    BorderPane.alignment="CENTER">
+                            <Button fx:id="btLogin" layoutX="115.0" layoutY="-9.0" mnemonicParsing="false"
+                                    onAction="#login" prefHeight="26.0" prefWidth="328.0" styleClass="login"
+                                    stylesheets="@../style/login.css" text="%login" AnchorPane.topAnchor="10.0">
+                                <cursor>
+                                    <Cursor fx:constant="HAND"/>
+                                </cursor>
+                            </Button>
+                            <Button fx:id="btRegister" layoutX="114.0" layoutY="59.0" mnemonicParsing="false"
+                                    onAction="#register" prefHeight="26.0" prefWidth="329.0" styleClass="register"
+                                    stylesheets="@../style/login.css" text="%register" AnchorPane.topAnchor="70.0">
+                                <cursor>
+                                    <Cursor fx:constant="HAND"/>
+                                </cursor>
+                            </Button>
+                            <Label fx:id="lbRecovery" alignment="BASELINE_LEFT" layoutX="279.0" layoutY="121.0"
+                                   prefHeight="30.0" styleClass="recover" stylesheets="@../style/login.css"
+                                   text="%recovery_password" AnchorPane.bottomAnchor="10.0"
+                                   AnchorPane.leftAnchor="10.0"/>
+                        </AnchorPane>
+                    </bottom>
+                </BorderPane>
             </children>
         </AnchorPane>
-    </left>
-</BorderPane>
+        <ImageView blendMode="LIGHTEN" fitHeight="326.0" fitWidth="382.0" layoutX="579.0" layoutY="117.0"
+                   pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="74.19149780273438"
+                   AnchorPane.topAnchor="117.0">
+            <image>
+                <Image url="@../icon/hosting-icon-27_dark.jpg"/>
+            </image>
+        </ImageView>
+    </children>
+</AnchorPane>

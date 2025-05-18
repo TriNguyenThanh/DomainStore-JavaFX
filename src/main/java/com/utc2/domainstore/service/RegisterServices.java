@@ -1,14 +1,17 @@
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.repository.CustomerRepository;
 import com.utc2.domainstore.entity.database.CustomerModel;
 import com.utc2.domainstore.entity.database.RoleEnum;
+import com.utc2.domainstore.repository.CustomerRepository;
 import com.utc2.domainstore.utils.PasswordUtils;
 import org.json.JSONObject;
-public class RegisterServices implements IRegister{
-    
+
+import java.sql.SQLException;
+
+public class RegisterServices implements IRegister {
+
     @Override
-    public JSONObject addToDB(JSONObject jsonInput) {
+    public JSONObject addToDB(JSONObject jsonInput) throws SQLException {
         String name = jsonInput.getString("username");
         String phone = jsonInput.getString("phone");
         String email = jsonInput.getString("email");
@@ -19,6 +22,7 @@ public class RegisterServices implements IRegister{
 
         // Kiểm tra số điện thoại
         CustomerModel existingPhone = customerDAO.selectByPhone(phone);
+
         if (existingPhone != null && !existingPhone.getIsDeleted()) {
             return createResponse("failed", "Phone number already exists.");
         }
@@ -48,7 +52,6 @@ public class RegisterServices implements IRegister{
             return createResponse("failed", "Failed to register user.");
         }
     }
-
 
 
     private JSONObject createResponse(String status, String message) {
