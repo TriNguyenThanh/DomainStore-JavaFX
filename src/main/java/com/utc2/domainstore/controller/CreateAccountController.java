@@ -16,6 +16,7 @@ import javafx.scene.control.*;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -112,13 +113,19 @@ public class CreateAccountController implements Initializable {
 
             JSONObject response = null;
             if (method == METHOD.ADD) {
-
-                response = registerServices.addToDB(request);
+                try {
+                    response = registerServices.addToDB(request);
+                } catch (SQLException e) {
+                    if (e.getMessage().contains("phone")) {
+                        lbPhoneErr.setText(bundle.getString("error.phone3"));
+                    } else if (e.getMessage().contains("email")) {
+                        lbEmailErr.setText(bundle.getString("error.email3"));
+                    }
+                }
             } else if (method == METHOD.UPDATE) {
                 if (!newData.equals(data)) {
                     // cập nhật thông tin người dùng
                     response = accountServices.updateUser(request);
-
                 }
                 if (!tfPass.isDisable()) {
                     // cập nhật mật khẩu

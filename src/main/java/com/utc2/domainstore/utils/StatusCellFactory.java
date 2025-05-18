@@ -16,7 +16,7 @@ public class StatusCellFactory {
                     setText(null);
                 } else {
                     // format the item as currency
-                    setText(ConfigManager.getInstance().getLanguageBundle().getString("status." + String.valueOf(item).toLowerCase()));
+                    setText(ConfigManager.getInstance().getLanguageBundle().getString("status." + item.toString().toLowerCase()));
                 }
             }
         };

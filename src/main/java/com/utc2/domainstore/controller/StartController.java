@@ -2,6 +2,7 @@ package com.utc2.domainstore.controller;
 
 import com.utc2.domainstore.config.JDBC;
 import com.utc2.domainstore.view.SceneManager;
+import com.utc2.domainstore.view.UserSession;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -85,7 +86,11 @@ public class StartController implements Initializable {
             }
             if (success) {
                 Platform.runLater(() -> {
-                    SceneManager.getInstance().switchScene("/fxml/login.fxml");
+                    if (UserSession.getInstance().getUserId() != 0) {
+                        SceneManager.getInstance().switchScene("/fxml/main.fxml");
+                    } else {
+                        SceneManager.getInstance().switchScene("/fxml/login.fxml");
+                    }
                 });
             }
             return null;

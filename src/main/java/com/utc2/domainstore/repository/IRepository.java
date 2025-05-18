@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface IRepository<T> {
-    public int insert(T t);
+    public int insert(T t) throws SQLException;
 
     public int update(T t) throws SQLException;
 

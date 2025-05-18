@@ -129,7 +129,7 @@ public class ConfirmTransactionController implements Initializable {
         for (Object o : list) {
             JSONObject jsonObject = (JSONObject) o;
             STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
-            if (status != STATUS.PENDINGCONFIRM) {
+            if (status != STATUS.CONFIRM) {
                 continue;
             }
             String id = jsonObject.getString("id");

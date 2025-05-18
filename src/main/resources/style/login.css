@@ -5,18 +5,17 @@
 .label {
     -fx-font-size: 20;
     -fx-font-weight: bold;
-}
-
-.label.header {
-    -fx-font-size: 30;
-    -fx-font-weight: bold;
     -fx-text-fill: #FFFFFF;
 }
 
-.label.title {
+.label.header {
     -fx-font-size: 50;
     -fx-font-weight: bold;
-    -fx-text-fill: #000000;
+}
+
+.label.title {
+    -fx-font-size: 40;
+    -fx-font-weight: bold;
 }
 
 .label.error {
@@ -25,17 +24,28 @@
     -fx-text-fill: #FF0000;
 }
 
+.label.recover {
+    -fx-font-size: 14;
+    -fx-font-style: italic;
+}
+
+.label.recover:hover {
+    -fx-text-fill: #3F40FF;
+}
+
 .text-field {
     -fx-font-size: 20;
-    -fx-text-fill: #000000;
-    -fx-background-radius: 10;
-    -fx-border-color: #3F40FF;
-    -fx-border-radius: 10;
+    -fx-background-radius: 30;
+    -fx-border-radius: 30;
+    -fx-background-color: rgba(255, 255, 255, 0);
     -fx-prompt-text-fill: #3F40FF;
+    -fx-border-width: 1;
+    -fx-border-color: #000000;
 }
 
 .checkbox {
     -fx-font-size: 14;
+    -fx-text-fill: #FFFFFF;
 }
 
 .combobox {
@@ -49,9 +59,8 @@
 .button {
     -fx-font-size: 20;
     -fx-font-weight: bold;
-    -fx-border-color: #3F40FF;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
+    -fx-background-radius: 30;
+    -fx-border-radius: 30;
     -fx-background-color: #FFFFFF;
     -fx-text-fill: #3F40FF;
 }
@@ -66,6 +75,6 @@
 }
 
 .pane {
-    -fx-background-color: #3F40FF;
-    -fx-background-radius: 0 10 10 0;
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-background-radius: 15;
 }

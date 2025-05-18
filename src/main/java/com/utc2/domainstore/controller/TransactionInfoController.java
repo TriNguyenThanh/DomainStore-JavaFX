@@ -123,7 +123,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
 
     private void handleAccept() {
         // Handle the accept action
-        transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.PENDINGPAYMENT);
+        transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.PAYMENT);
         System.out.println("Transaction accepted: " + billViewModel.getId());
         // close the window
         ((Stage) btAccept.getScene().getWindow()).close();

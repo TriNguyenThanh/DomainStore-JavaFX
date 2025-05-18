@@ -14,7 +14,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
     }
 
     @Override
-    public int insert(CustomerModel customer) {
+    public int insert(CustomerModel customer) throws SQLException {
         String sql = "INSERT INTO users (full_name, email, phone, password_hash, role) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = JDBC.getConnection();
@@ -27,7 +27,6 @@ public class CustomerRepository implements IRepository<CustomerModel> {
             pst.setString(5, customer.getRole().name().toUpperCase());
 
             int result = pst.executeUpdate();
-
             try (ResultSet rs = pst.getGeneratedKeys()) {
                 if (rs.next()) {
                     customer.setId(rs.getInt(1));
@@ -35,8 +34,6 @@ public class CustomerRepository implements IRepository<CustomerModel> {
             }
             return result;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -78,7 +75,7 @@ public class CustomerRepository implements IRepository<CustomerModel> {
             throw new SQLException("Error: " + e.getMessage());
         }
     }
-    
+
     @Override
     public int delete(CustomerModel customer) {
         String sql = "DELETE FROM users WHERE id=?";
@@ -263,10 +260,10 @@ public class CustomerRepository implements IRepository<CustomerModel> {
 //    }
 
     //update otp by email
-    public int updateOtp(String email, String otp, String phone){
+    public int updateOtp(String email, String otp, String phone) {
         String sql = "UPDATE users SET otp = ?, otp_created_at = NOW() WHERE email = ? AND is_deleted = false AND phone = ?";
-        try(Connection con = JDBC.getConnection();
-            PreparedStatement pst = con.prepareStatement(sql)) {
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
             pst.setString(1, otp);
             pst.setString(2, email);
             pst.setString(3, phone);
@@ -278,10 +275,10 @@ public class CustomerRepository implements IRepository<CustomerModel> {
     }
 
     //update password by email
-    public int updatePasswordByEmail(String email, String password){
+    public int updatePasswordByEmail(String email, String password) {
         String sql = "UPDATE users SET password_hash = ? WHERE email = ?";
-        try(Connection con = JDBC.getConnection();
-            PreparedStatement pst = con.prepareStatement(sql)) {
+        try (Connection con = JDBC.getConnection();
+             PreparedStatement pst = con.prepareStatement(sql)) {
             pst.setString(1, password);
             pst.setString(2, email);
             return pst.executeUpdate();

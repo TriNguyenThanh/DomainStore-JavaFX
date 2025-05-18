@@ -76,9 +76,9 @@ public class TransactionController implements Initializable {
             // thay đổi text của nút theo trạng thái của hóa đơn
             if (selectedBill.getStatus() == STATUS.COMPLETED || selectedBill.getStatus() == STATUS.CANCELLED) {
                 getSelectedButton.setText(bundle.getString("review"));
-            } else if (selectedBill.getStatus() == STATUS.PENDINGCONFIRM) {
+            } else if (selectedBill.getStatus() == STATUS.CONFIRM) {
                 getSelectedButton.setText(bundle.getString("confirm"));
-            } else if (selectedBill.getStatus() == STATUS.PENDINGPAYMENT) {
+            } else if (selectedBill.getStatus() == STATUS.PAYMENT) {
                 getSelectedButton.setText(bundle.getString("pay"));
             }
 
@@ -122,7 +122,7 @@ public class TransactionController implements Initializable {
         transactionInfoController.setBillViewModel(selectedBill);
         if (selectedBill.getStatus() == STATUS.COMPLETED || selectedBill.getStatus() == STATUS.CANCELLED) {
             transactionInfoController.setMethod(METHOD.REVIEW);
-        } else if (selectedBill.getStatus() == STATUS.PENDINGPAYMENT || selectedBill.getStatus() == STATUS.PENDINGCONFIRM) {
+        } else if (selectedBill.getStatus() == STATUS.PAYMENT || selectedBill.getStatus() == STATUS.CONFIRM) {
             transactionInfoController.setMethod(METHOD.PAY);
         }
 
