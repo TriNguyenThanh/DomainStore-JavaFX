@@ -88,7 +88,6 @@ public class TransactionService implements ITransactionService {
             System.out.println("Tạo hoá đơn thất bại");
             return jsonObject;
         }
-        String transactionId = generateTransactionId(); // tạo id hoá đơn
         int userId = json.getInt("user_id"); // lấy id người dùng
 
         // Nếu tên miền đã nằm trong hoá đơn trước đó
@@ -96,15 +95,31 @@ public class TransactionService implements ITransactionService {
         for (int i = 0; i < domains.length(); i++){
             JSONObject jsonObject = domains.getJSONObject(i);
             int domainId = getDomainByName(jsonObject.getString("name"));
+            String domainName = jsonObject.getString("name");
             if(!transactionRepository.selectByCondition
                     ("user_id = " + userId + " AND " + "domain_id = " + domainId).isEmpty()){
                 JSONObject response = new JSONObject();
                 response.put("status", "failed");
-                response.put("message", "Tồn tại 1 tên miền trong hoá đơn !!");
-                System.out.println("Tạo hoá đơn thất bại: tên miền đã nằm trong hoá đơn trước đó");
+                response.put("message", "Tên miền " + domainName + " đã có trong hoá đơn !!");
+                System.out.println("Tên miền " + domainName + " đã có trong hoá đơn !!");
                 return response;
             }
         }
+        // Nếu tên miền ở trạng thái sold
+        for (int i = 0; i < domains.length(); i++){
+            JSONObject jsonObject = domains.getJSONObject(i);
+            String domainName = jsonObject.getString("name");
+            int domainId = getDomainByName(domainName);
+            DomainModel d = DomainRepository.getInstance().selectById(new DomainModel(domainId, null, 0, null, null, 0));
+            if(d.getStatus().equals(DomainStatusEnum.SOLD)){
+                JSONObject response = new JSONObject();
+                response.put("status", "failed");
+                response.put("message", "Tên miền " + domainName + " đã được bán !!");
+                System.out.println("Tên miền " + domainName + " đã được bán !!");
+                return response;
+            }
+        }
+        String transactionId = generateTransactionId(); // tạo id hoá đơn
 
         TransactionModel tran = new TransactionModel();
         tran.setTransactionId(transactionId);
