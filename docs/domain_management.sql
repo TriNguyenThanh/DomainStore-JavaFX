@@ -8,8 +8,6 @@ CREATE TABLE users (
     phone VARCHAR(20) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL, ROLE ENUM('USER', 'ADMIN') DEFAULT 'USER',
     is_deleted BOOLEAN DEFAULT FALSE,
-	otp VARCHAR(10),
-    otp_created_at DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -59,6 +57,7 @@ CREATE TABLE Transactions (
     id CHAR(10) PRIMARY KEY NOT NULL,
     user_id INT NOT NULL,
     transaction_date TIMESTAMP NOT NULL,
+    is_renewal BOOLEAN DEFAULT 0,
     transaction_status ENUM('CONFIRM', 'PAYMENT', 'COMPLETED', 'CANCELLED') DEFAULT 'CONFIRM',
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
@@ -71,6 +70,7 @@ CREATE TABLE transactions_info (
     transactions_id CHAR(10) NOT NULL,
     domain_id INT NOT NULL,
     price BIGINT UNSIGNED DEFAULT 0,
+    years INT DEFAULT 0,
     FOREIGN KEY (transactions_id) REFERENCES Transactions(id) ON DELETE CASCADE,
     FOREIGN KEY (Domain_id) REFERENCES domains(id),
     PRIMARY KEY(Domain_id, transactions_id)
@@ -323,6 +323,7 @@ BEGIN
         d.status = 'AVAILABLE',
         d.years = 0
     WHERE
+		t.is_renewal = 0 AND
         (
             (t.transaction_status = 'CONFIRM' AND TIMESTAMPDIFF(MINUTE, t.transaction_date, NOW()) >= 15)
             OR
