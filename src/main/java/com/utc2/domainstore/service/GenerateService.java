@@ -42,6 +42,7 @@ public class GenerateService implements IGenerateService {
         PaymentHistoryModel payment = PaymentHistoryRepository.getInstance().selectById(new PaymentHistoryModel(transactionId, null, null, null, null));
         copyFont();
         try {
+            System.out.println("Đang tiến hành xuất PDF ......");
             JasperReport jasperReport = input("/report/invoice_domain.jasper");
             Map<String, Object> data = new HashMap<>();
             SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -82,6 +83,7 @@ public class GenerateService implements IGenerateService {
                 mp.put("price", tld.getPrice());
                 dataDomain.add(mp);
             }
+            System.out.println("Lấy dữ liệu thành công ...");
             JRBeanCollectionDataSource tableDataSource = new JRBeanCollectionDataSource(dataDomain);
 
             Map<String, Object> parameters = new HashMap<>();
@@ -89,11 +91,11 @@ public class GenerateService implements IGenerateService {
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
-            System.out.println("Đang tiến hành xuất PDF ......");
             File invoiceDir = new File("invoices");
             if (!invoiceDir.exists()) {
                 System.out.println(invoiceDir.mkdirs());
             }
+            System.out.println("Đang lưu file ...");
             // Xử lý tên file an toàn
             String safeName = cus.getFullName().replaceAll("\\s+", "");
             // Tạo đường dẫn file
@@ -102,16 +104,16 @@ public class GenerateService implements IGenerateService {
             String pdfPath = invoiceDir.getAbsolutePath() + File.separator + transactionId + "_" + safeName + dateTime + ".pdf";
             JasperExportManager.exportReportToPdfFile(jasperPrint, pdfPath);
 
+            System.out.println("Đang gửi về mail ...");
             EmailUtil.sendEmailFile(cus.getEmail(), "Hoá đơn dịch vụ UTC2 Domain Store",
                     "Cảm ơn Quý khách đã sử dụng dịch vụ UTC2 Domain Store" , pdfPath);
-            String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Đường dẫn đến file chrome.exe
-//            String command = "cmd /c start \"\" \"" + pdfPath + "\"";
-//            Runtime.getRuntime().exec(command);
-            Desktop.getDesktop().browse(new URI(pdfPath));
+
+            String command = "cmd /c start \"\" \"" + pdfPath + "\"";
+            Runtime.getRuntime().exec(command);
+
+            System.out.println("Xuất PDF thành công !!");
         } catch (JRException | IOException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
