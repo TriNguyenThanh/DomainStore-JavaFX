@@ -5,7 +5,9 @@ import com.utc2.domainstore.entity.view.ACCOUNT_STATUS;
 import com.utc2.domainstore.entity.view.METHOD;
 import com.utc2.domainstore.entity.view.UserModel;
 import com.utc2.domainstore.service.AccountServices;
+import com.utc2.domainstore.service.GenerateService;
 import com.utc2.domainstore.service.IAccount;
+import com.utc2.domainstore.service.IGenerateService;
 import com.utc2.domainstore.utils.AccountStatusCellFactory;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
@@ -31,7 +33,7 @@ public class UserManagerController implements Initializable {
     private IAccount accountService;
 
     @FXML
-    private Button btAdd, btRemove, btEdit, btActive, btPaymentHistory;
+    private Button btAdd, btRemove, btEdit, btActive, btPaymentHistory, btExport;
     @FXML
     private TableView<UserModel> table;
     @FXML
@@ -63,6 +65,8 @@ public class UserManagerController implements Initializable {
             handleActiveUser();
         } else if (e.getSource() == btPaymentHistory) {
             handlePaymentHistory();
+        } else if (e.getSource() == btExport) {
+            handleExport();
         }
     }
 
@@ -232,6 +236,17 @@ public class UserManagerController implements Initializable {
         }
     }
 
+    // xuất file
+    private void handleExport() {
+        IGenerateService generate = new GenerateService();
+        try {
+            generate.exportExcel("user");
+            SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, "Export", null, "Export success");
+        } catch (Exception e) {
+            SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, "Export", null, "Failed to export");
+        }
+    }
+
     private void updateFilter(FilteredList<UserModel> filteredData) {
         String searchText = tfSearch.getText().toLowerCase();
         String selectedStatus = cbStatus.getSelectionModel().getSelectedItem();
@@ -255,4 +270,6 @@ public class UserManagerController implements Initializable {
             return matchesSearch && matchesStatus && matchesRole;
         });
     }
+
+
 }

@@ -48,6 +48,8 @@
                                                 prefHeight="50.0" prefWidth="140.0" text="%add"/>
                                         <Button fx:id="btRemove" mnemonicParsing="false" onAction="#onHandleButton"
                                                 prefHeight="50.0" prefWidth="140.0" text="%remove"/>
+                                        <Button fx:id="btExport" mnemonicParsing="false" onAction="#onHandleButton"
+                                                prefHeight="50.0" prefWidth="140.0" text="%export"/>
                                     </children>
                                     <BorderPane.margin>
                                         <Insets left="10.0"/>

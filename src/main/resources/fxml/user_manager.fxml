@@ -54,6 +54,9 @@
                                         <Button fx:id="btPaymentHistory" mnemonicParsing="false"
                                                 onAction="#onHandleButton"
                                                 prefHeight="50.0" prefWidth="140.0" text="%paymentHistory"/>
+                                        <Button fx:id="btExport" mnemonicParsing="false"
+                                                onAction="#onHandleButton"
+                                                prefHeight="50.0" prefWidth="140.0" text="%export"/>
                                     </children>
                                     <BorderPane.margin>
                                         <Insets left="10.0"/>
