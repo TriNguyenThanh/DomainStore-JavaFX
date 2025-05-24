@@ -3,7 +3,9 @@ package com.utc2.domainstore.controller;
 import com.utc2.domainstore.entity.view.DomainViewModel;
 import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.service.DomainServices;
+import com.utc2.domainstore.service.GenerateService;
 import com.utc2.domainstore.service.IDomain;
+import com.utc2.domainstore.service.IGenerateService;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.utils.StatusCellFactory;
@@ -51,7 +53,7 @@ public class DomainManagerController implements Initializable {
     @FXML
     private TableColumn<DomainViewModel, String> colOwner;
     @FXML
-    private Button btAdd, btRemove;
+    private Button btAdd, btRemove, btExport;
     @FXML
     private TextField tfSearch;
     @FXML
@@ -66,6 +68,8 @@ public class DomainManagerController implements Initializable {
         } else if (event.getSource() == btRemove) {
             // Perform action based on the button clicked
             handleRemoveButton();
+        } else if (event.getSource() == btExport) {
+            handleExport();
         }
     }
 
@@ -165,6 +169,17 @@ public class DomainManagerController implements Initializable {
             stage.showAndWait();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    // Handle export file
+    private void handleExport() {
+        IGenerateService generate = new GenerateService();
+        try {
+            generate.exportExcel("domain");
+            SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, "Export", null, "Export success");
+        } catch (Exception e) {
+            SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, "Export", null, "Failed to export");
         }
     }
 
