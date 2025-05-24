@@ -3,6 +3,7 @@ package com.utc2.domainstore.service;
 import com.utc2.domainstore.entity.database.CustomerModel;
 import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.repository.CustomerRepository;
+import com.utc2.domainstore.utils.EmailUtil;
 import com.utc2.domainstore.utils.PasswordUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Random;
 
 public class AccountServices implements IAccount {
     private final CustomerRepository customerDAO = new CustomerRepository();
@@ -19,7 +21,7 @@ public class AccountServices implements IAccount {
     public JSONObject getUserInformation(JSONObject jsonInput) {
         int user_id = jsonInput.getInt("user_id");
 
-        CustomerModel customer = new CustomerModel(user_id, "", "", "", "", "", RoleEnum.user, false, null);
+        CustomerModel customer = new CustomerModel(user_id, "", "", "", "", RoleEnum.USER, false, null);
         CustomerModel find = customerDAO.selectById(customer);
         if (find == null || find.getIsDeleted() == true) {
             return createResponse("failed", "User not found or is locked (deleted)");
@@ -29,7 +31,6 @@ public class AccountServices implements IAccount {
         response.put("username", find.getFullName());
         response.put("phone", find.getPhone());
         response.put("email", find.getEmail());
-        response.put("personal_id", find.getCccd());
         response.put("password", find.getPasswordHash());
 
         return response;
@@ -42,7 +43,7 @@ public class AccountServices implements IAccount {
         int userId = jsonInput.getInt("user_id");
 
         // Lấy dữ liệu user cũ từ database
-        CustomerModel existingUser = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", "", RoleEnum.user, false, null));
+        CustomerModel existingUser = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", RoleEnum.USER, false, null));
         if (existingUser == null) {
             return createResponse("failed", "User not found");
         }
@@ -51,7 +52,6 @@ public class AccountServices implements IAccount {
         String name = jsonInput.has("username") ? jsonInput.getString("username") : existingUser.getFullName();
         String phone = jsonInput.has("phone") ? jsonInput.getString("phone") : existingUser.getPhone();
         String email = jsonInput.has("email") ? jsonInput.getString("email") : existingUser.getEmail();
-        String personalId = jsonInput.has("personal_id") ? jsonInput.getString("personal_id") : existingUser.getCccd();
 
         // Xử lý role (nếu có)
         RoleEnum role = existingUser.getRole();
@@ -65,7 +65,7 @@ public class AccountServices implements IAccount {
 
         // Cập nhật thông tin
         CustomerModel updatedUser = new CustomerModel(
-                existingUser.getId(), name, email, phone, personalId, role, new Timestamp(System.currentTimeMillis())
+                existingUser.getId(), name, email, phone, role, new Timestamp(System.currentTimeMillis())
         );
 
         int result = 0;
@@ -89,7 +89,7 @@ public class AccountServices implements IAccount {
         String password = jsonInput.getString("password");
 
         //kiểm tra người dùng có tồn tại hay không
-        CustomerModel existingCustomer = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", "", RoleEnum.user, false, null));
+        CustomerModel existingCustomer = customerDAO.selectById(new CustomerModel(userId, "", "", "", "", RoleEnum.USER, false, null));
         if (existingCustomer == null) {
             return createResponse("failed", "User not found");
         }
@@ -120,7 +120,6 @@ public class AccountServices implements IAccount {
             userJson.put("username", user.getFullName());
             userJson.put("phone", user.getPhone());
             userJson.put("email", user.getEmail());
-            userJson.put("personal_id", user.getCccd());
             userJson.put("role", user.getRole());
             userJson.put("is_deleted", user.getIsDeleted());
             userArray.put(userJson);
@@ -161,5 +160,94 @@ public class AccountServices implements IAccount {
         }
 
         return createResponse("success", "User locked successfully");
+    }
+
+    @Override
+    public JSONObject sendOtpToUser(JSONObject t) {
+        String userPhone = t.getString("phone");
+        String userEmail = t.getString("email");
+        String otp = generateOtp();
+        String subject = "Mã OTP đặt lại mật khẩu";
+        String content = "Mã OTP của bạn là: " + otp + "\nMã này có hiệu lực trong 5 phút.";
+
+        //gọi emailUtil
+        EmailUtil.sendEmail(userEmail,subject,content);
+
+        //update Otp trong db
+        int result = CustomerRepository.getInstance().updateOtp(userEmail, otp, userPhone);
+
+        // Trả về kết quả JSON
+        JSONObject response = new JSONObject();
+        if (result > 0) {
+            response.put("status", "success");
+            response.put("message", "OTP sent to email.");
+        } else {
+            response.put("status", "failed");
+            response.put("message", "Invalid email or phone number.");
+        }
+
+        return response;
+    }
+
+    @Override
+    public JSONObject checkingOtp(JSONObject t) {
+        String otp = t.getString("otp");
+        String userEmail = t.getString("email");
+
+        JSONObject response = new JSONObject();
+
+        CustomerModel user = CustomerRepository.getInstance().selectByEmail(userEmail);
+
+        if (user != null && otp.equals(user.getOtp())) {
+            Timestamp otpCreatedAt = user.getOtpCreatedAt();
+
+            if (otpCreatedAt != null) {
+                long currentTime = System.currentTimeMillis();
+                long otpTime = otpCreatedAt.getTime();
+
+                // Kiểm tra hiệu lực OTP trong 5 phút
+                if (currentTime - otpTime <= 5 * 60 * 1000) {
+                    response.put("status", "success");
+                    response.put("message", "Valid OTP.");
+                } else {
+                    response.put("status", "fail");
+                    response.put("message", "OTP has expired.");
+                }
+            } else {
+                response.put("status", "fail");
+                response.put("message", "OTP generation time not found.");
+            }
+        } else {
+            response.put("status", "fail");
+            response.put("message", "OTP is incorrect or email does not exist.");
+        }
+
+        return response;
+    }
+
+    @Override
+    public JSONObject updatingNewPassWord(JSONObject t) {
+        String userEmail = t.getString("email");
+        String newPassword = t.getString("password");
+        String hashedPassword = PasswordUtils.hashedPassword(newPassword);
+
+        int result = CustomerRepository.getInstance().updatePasswordByEmail(userEmail, hashedPassword);
+
+        // Trả về kết quả JSON
+        JSONObject response = new JSONObject();
+        if (result > 0) {
+            response.put("status", "success");
+            response.put("message", "Change password successfully.");
+        } else {
+            response.put("status", "fail");
+            response.put("message", "Changing password failed.");
+        }
+        return response;
+    }
+
+    public String generateOtp(){
+        Random rand = new Random();
+        int otp = 100000 + rand.nextInt(900000);
+        return String.valueOf(otp);
     }
 }

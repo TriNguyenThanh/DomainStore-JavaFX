@@ -1,18 +1,17 @@
 package com.utc2.domainstore.service;
 
-import com.utc2.domainstore.entity.database.CustomerModel;
-import com.utc2.domainstore.entity.database.DomainStatusEnum;
+import com.utc2.domainstore.entity.database.*;
 import com.utc2.domainstore.repository.CustomerRepository;
 import com.utc2.domainstore.repository.DomainRepository;
-import com.utc2.domainstore.entity.database.DomainModel;
-import com.utc2.domainstore.entity.database.TopLevelDomainModel;
 import com.utc2.domainstore.repository.TopLevelDomainRepository;
 import com.utc2.domainstore.utils.DomainUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class DomainServices implements IDomain{
+public class DomainServices implements IDomain {
     private DomainRepository domainDAO;
 
     // 1. tìm theo tên
@@ -81,17 +80,17 @@ public class DomainServices implements IDomain{
             primaryDomain.setTldId(tldModel.getId());
             primaryDomain.setYears(1);
             primaryDomain.setPrice(tldModel.getPrice());
-            primaryDomain.setStatus("Nofound".equals(domainStatus) ? DomainStatusEnum.available : DomainStatusEnum.sold);
+            primaryDomain.setStatus("Nofound".equals(domainStatus) ? DomainStatusEnum.AVAILABLE : DomainStatusEnum.SOLD);
 //            DomainRepository.getInstance().insert(primaryDomain);
         }
 
         JSONObject domainInfo = new JSONObject();
         domainInfo.put("name", domainName);
         domainInfo.put("status", primaryDomain.getStatus().toString().toLowerCase());
-        domainInfo.put("price", primaryDomain.getStatus() == DomainStatusEnum.available ? tldModel.getPrice() : 0);
+        domainInfo.put("price", primaryDomain.getStatus() == DomainStatusEnum.AVAILABLE ? tldModel.getPrice() : 0);
 
         // Các TLD gợi ý khác
-        String[] popularTLDs = new String[] { ".net", ".org", ".vn", ".info", ".biz" };
+        String[] popularTLDs = new String[]{".net", ".org", ".vn", ".info", ".biz"};
         JSONArray domainArray = new JSONArray();
 
         for (String suggestTLD : popularTLDs) {
@@ -108,7 +107,7 @@ public class DomainServices implements IDomain{
                 existingDomain = new DomainModel();
                 existingDomain.setDomainName(namePart);
                 existingDomain.setTldId(suggestTLDModel.getId());
-                existingDomain.setStatus(DomainStatusEnum.available);
+                existingDomain.setStatus(DomainStatusEnum.AVAILABLE);
                 existingDomain.setPrice(suggestTLDModel.getPrice());
 //                DomainRepository.getInstance().insert(existingDomain);
             }
@@ -124,12 +123,14 @@ public class DomainServices implements IDomain{
         response.put("domain", domainArray);
         return response;
     }
+
     private JSONObject createErrorResponse(String message) {
         JSONObject response = new JSONObject();
         response.put("status", "failed");
         response.put("message", message);
         return response;
     }
+
     private String cleanDomainInput(String input) {
         return input.replaceAll("[^a-zA-Z0-9\\.-]", "").toLowerCase();
     }
@@ -138,6 +139,7 @@ public class DomainServices implements IDomain{
         String regex = "^[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z]{2,})+$";
         return domain.matches(regex);
     }
+
     //2. Gợi ý tên miền
     @Override
     public JSONObject suggestion(JSONObject jsonInput) {
@@ -199,18 +201,18 @@ public class DomainServices implements IDomain{
 
     @Override
     public JSONObject getAllDomains() {
-        List<DomainModel> domainList = DomainRepository.getInstance().selectAll();
+        List<DomainWithTldModel> domainList = DomainRepository.getInstance().selectAllDomainWithTld();
         JSONArray domainArray = new JSONArray();
 
-        for (DomainModel domain : domainList){
-            TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
+        for (DomainWithTldModel dwt : domainList) {
+            DomainModel domain = dwt.getDomain();
+            TopLevelDomainModel tld = dwt.getTld();
             JSONObject domainJson = new JSONObject();
 
             String fullNameDomain = domain.getDomainName();
-            if (tld != null && tld.getTldText() != null){
+            if (tld != null && tld.getTldText() != null) {
                 fullNameDomain += tld.getTldText();
             }
-
             domainJson.put("id", domain.getId());
             domainJson.put("name", fullNameDomain);
             domainJson.put("status", domain.getStatus().toString().toLowerCase());
@@ -272,7 +274,7 @@ public class DomainServices implements IDomain{
         DomainModel newDomain = new DomainModel();
         newDomain.setDomainName(namePart);
         newDomain.setTldId(matchedTld.getId());
-        newDomain.setStatus(DomainStatusEnum.available);
+        newDomain.setStatus(DomainStatusEnum.AVAILABLE);
         newDomain.setPrice(matchedTld.getPrice());
         newDomain.setYears(1);
 

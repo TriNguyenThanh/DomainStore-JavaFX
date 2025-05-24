@@ -7,6 +7,7 @@ import com.utc2.domainstore.service.IDomain;
 import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.utils.YearCellFactory;
+import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -18,7 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -33,7 +34,7 @@ public class MyDomainController implements Initializable {
     @FXML
     private TableColumn<DomainViewModel, Integer> colPrice, colYear;
     @FXML
-    private TableColumn<DomainViewModel, LocalDate> colDate;
+    private TableColumn<DomainViewModel, LocalDateTime> colDate;
     @FXML
     private Button btUpdate;
     @FXML
@@ -94,7 +95,7 @@ public class MyDomainController implements Initializable {
                 String status = domainObject.optString("status", "");
                 Integer price = domainObject.optInt("price");
                 Integer years = domainObject.optInt("year");
-                LocalDate date = LocalDate.parse(domainObject.opt("active_date").toString());
+                LocalDateTime date = LocalDateTime.parse(domainObject.opt("active_date").toString(), ConfigManager.getInstance().getParser());
 
                 DomainViewModel domainViewModel = new DomainViewModel(name, STATUS.valueOf(status.toUpperCase()), price, years, date);
                 list.add(domainViewModel);

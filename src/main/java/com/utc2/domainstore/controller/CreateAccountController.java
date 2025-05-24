@@ -16,6 +16,7 @@ import javafx.scene.control.*;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -35,9 +36,9 @@ public class CreateAccountController implements Initializable {
     @FXML
     private ComboBox<RoleEnum> cbRole;
     @FXML
-    private TextField tfUsername, tfPhone, tfEmail, tfPsID, tfPass;
+    private TextField tfUsername, tfPhone, tfEmail, tfPass;
     @FXML
-    private Label lbFullNameErr, lbPhoneErr, lbEmailErr, lbPsIDErr, lbPassErr;
+    private Label lbFullNameErr, lbPhoneErr, lbEmailErr, lbPassErr;
 
     @FXML
     private void handleButtonOnAction(ActionEvent e) {
@@ -57,8 +58,8 @@ public class CreateAccountController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
         this.newData = new UserModel();
-        cbRole.getItems().addAll(List.<RoleEnum>of(RoleEnum.user, RoleEnum.admin));
-        cbRole.setValue(RoleEnum.user);
+        cbRole.getItems().addAll(List.<RoleEnum>of(RoleEnum.USER, RoleEnum.ADMIN));
+        cbRole.setValue(RoleEnum.USER);
     }
 
     public void setMethod(METHOD method) {
@@ -80,7 +81,9 @@ public class CreateAccountController implements Initializable {
 
     // back to user management scene
     private void backToMainScene() {
-        MainController.getInstance().load("/fxml/user_manager.fxml");
+        String currentFxmlPath = "/fxml/user_manager.fxml";
+        MainController.getInstance().setCurrentFxmlPath(currentFxmlPath);
+        MainController.getInstance().load(currentFxmlPath, true);
     }
 
     // set form to data and update to database
@@ -89,7 +92,6 @@ public class CreateAccountController implements Initializable {
         newData.setName(tfUsername.getText());
         newData.setPhone(tfPhone.getText());
         newData.setEmail(tfEmail.getText());
-        newData.setPsID(tfPsID.getText());
         newData.setRole(cbRole.getValue());
         newData.setPassword(tfPass.getText());
 
@@ -107,18 +109,23 @@ public class CreateAccountController implements Initializable {
             request.put("phone", tfPhone.getText());
             request.put("email", tfEmail.getText());
             request.put("password", tfPass.getText());
-            request.put("personal_id", tfPsID.getText());
             request.put("role", cbRole.getValue().toString());
 
             JSONObject response = null;
             if (method == METHOD.ADD) {
-
-                response = registerServices.addToDB(request);
+                try {
+                    response = registerServices.addToDB(request);
+                } catch (SQLException e) {
+                    if (e.getMessage().contains("phone")) {
+                        lbPhoneErr.setText(bundle.getString("error.phone3"));
+                    } else if (e.getMessage().contains("email")) {
+                        lbEmailErr.setText(bundle.getString("error.email3"));
+                    }
+                }
             } else if (method == METHOD.UPDATE) {
                 if (!newData.equals(data)) {
                     // cập nhật thông tin người dùng
                     response = accountServices.updateUser(request);
-
                 }
                 if (!tfPass.isDisable()) {
                     // cập nhật mật khẩu
@@ -141,8 +148,6 @@ public class CreateAccountController implements Initializable {
                         lbPhoneErr.setText(bundle.getString("error.phone3"));
                     } else if (message.contains("email")) {
                         lbEmailErr.setText(bundle.getString("error.email3"));
-                    } else if (message.contains("cccd")) {
-                        lbPsIDErr.setText(bundle.getString("error.psIDErr3"));
                     }
                 }
 
@@ -164,13 +169,11 @@ public class CreateAccountController implements Initializable {
         tfUsername.setText(newData.getName());
         tfPhone.setText(newData.getPhone());
         tfEmail.setText(newData.getEmail());
-        tfPsID.setText(newData.getPsID());
         tfPass.setText(newData.getPassword());
         cbRole.setValue(newData.getRole());
         lbFullNameErr.setText(" ");
         lbPhoneErr.setText(" ");
         lbEmailErr.setText(" ");
-        lbPsIDErr.setText(" ");
         lbPassErr.setText(" ");
 
         // đặt lại trạng thái của trường mật khẩu
@@ -212,17 +215,6 @@ public class CreateAccountController implements Initializable {
             lbEmailErr.setText(bundle.getString("error.email2"));
         } else {
             lbEmailErr.setText(" ");
-        }
-
-        // kiểm tra số CCCD
-        if (newData.getPsID().isBlank()) {
-            flag = false;
-            lbPsIDErr.setText(bundle.getString("error.psIDErr1"));
-        } else if (!personalIDCheck(newData.getPsID())) {
-            flag = false;
-            lbPsIDErr.setText(bundle.getString("error.psIDErr2"));
-        } else {
-            lbPsIDErr.setText(" ");
         }
 
         // kiểm tra mật khẩu

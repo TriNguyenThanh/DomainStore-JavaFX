@@ -12,6 +12,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class AddDomainController implements Initializable {
+    private static final Log log = LogFactory.getLog(AddDomainController.class);
     private ResourceBundle bundle;
     private String domainName;
     private final IDomain domainService = new DomainServices();
@@ -111,10 +115,22 @@ public class AddDomainController implements Initializable {
         JSONObject request = new JSONObject();
         request.put("name", domainName);
 
-        JSONObject response = domainService.insertNewDomain(request);
-        if (response != null) {
-            String message = response.getString("message");
-            if (response.getString("status").equals("success")) {
+        // search domain
+        JSONObject response1 = domainService.search(request);
+        JSONArray jsonArray = response1.getJSONArray("domain");
+        JSONObject domain = jsonArray.getJSONObject(jsonArray.length() - 1);
+
+        // Check if the domain is available
+        if (domain.getString("status").equals("sold")) {
+            SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("notice"), null, bundle.getString("notice.domainNotAvailable"));
+            return;
+        }
+
+        JSONObject response2 = domainService.insertNewDomain(request);
+
+        if (response2 != null) {
+            String message = response2.getString("message");
+            if (response2.getString("status").equals("success")) {
                 // Handle success response
                 System.out.println("Domain added successfully: " + message);
                 if (listener != null) {

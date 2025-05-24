@@ -7,7 +7,6 @@ import com.utc2.domainstore.entity.database.PaymentStatusEnum;
 import com.utc2.domainstore.config.JDBC;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel>{
@@ -19,10 +18,10 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
     @Override
     public int insert(PaymentHistoryModel paymentHistory) {
         int rowsAffected = 0;
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
+
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection();
-            
             // Bước 2: Chuẩn bị câu lệnh để chèn dữ liệu
             String sql = "INSERT INTO paymenthistory(transaction_id, payment_id, payment_method, payment_status, payment_date) "
                     + "VALUES(?, ?, ?, ?, ?)";
@@ -33,17 +32,19 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
             pst.setString(2, paymentHistory.getPaymentCode());
             pst.setInt(3, paymentHistory.getPaymentMethodId());
             pst.setString(4, paymentHistory.getPaymentStatus().name());
-            pst.setDate(5, Date.valueOf(paymentHistory.getPaymentDate()));
+            pst.setTimestamp(5, paymentHistory.getPaymentDate());
             
             // Bước 4: Thực thi câu lệnh INSERT và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             
             // Bước 5: Đóng kết nối
             System.out.println("Thêm dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
-            JDBC.closeConnection(con);
             pst.close();
         } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
+        } finally {
+            JDBC.closeConnection(con);
+            System.out.println("Payment - Insert: Đã đóng kết nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -51,10 +52,9 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
     @Override
     public int update(PaymentHistoryModel paymentHistory) {
         int rowsAffected = 0;
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection();
-            
             // Bước 2: Chuẩn bị câu lệnh để cập nhật dữ liệu
             String sql = "UPDATE paymenthistory"
                     + " SET transaction_id = ?, payment_id = ?, payment_method = ?, "
@@ -67,17 +67,19 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
             pst.setString(2, paymentHistory.getPaymentCode());
             pst.setInt(3, paymentHistory.getPaymentMethodId());
             pst.setString(4, paymentHistory.getPaymentStatus().name());
-            pst.setDate(5, Date.valueOf(paymentHistory.getPaymentDate()));
+            pst.setTimestamp(5, paymentHistory.getPaymentDate());
             pst.setInt(6, paymentHistory.getPaymentId());
             
             // Bước 4: Thực thi câu lệnh UPDATE và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             System.out.println("Cập nhật dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
-            // Bước 5: Đóng kết nối 
-            JDBC.closeConnection(con);
             pst.close();
         } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
+        } finally {
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            System.out.println("Payment - Update: Đã đóng kết nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -85,10 +87,9 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
     @Override
     public int delete(PaymentHistoryModel paymentHistory) {
         int rowsAffected = 0;
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection(); 
-            
             // Bước 2: Chuẩn bị câu lệnh để xoá dữ liệu
             String sql = "DELETE FROM paymenthistory"
                     + " WHERE id = ?";
@@ -100,21 +101,22 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
             // Bước 4: Thực thi câu lệnh UPDATE và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             System.out.println("Xoá dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
-            // Bước 5: Đóng kết nối 
-            JDBC.closeConnection(con);
-            pst.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        } finally {
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            System.out.println("Payment - Delete: Đã đóng kết nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
 
     @Override
     public PaymentHistoryModel selectById(PaymentHistoryModel paymentHistory) {
-        PaymentHistoryModel p = null;
+        PaymentHistoryModel p = new PaymentHistoryModel();
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection(); 
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
             String sql = "SELECT * FROM paymenthistory WHERE transaction_id = ?";
             PreparedStatement pst = con.prepareStatement(sql);
@@ -126,32 +128,36 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
             // Bước 4: Duyệt qua kết quả và xử lý dữ liệu
             while(rs.next()){
                 // Lấy dữ liệu từ ResultSet
+                int paymentId = rs.getInt("id");
                 String transactionId = rs.getString("transaction_id");
                 String paymentCode = rs.getString("payment_id");
                 int paymentMethodId = rs.getInt("payment_method");
                 String status = rs.getString("payment_status");
                 PaymentStatusEnum paymentStatus = PaymentStatusEnum.valueOf(status.toUpperCase());
-                LocalDate paymentDate = rs.getDate("payment_date").toLocalDate();
+                Timestamp paymentDate = rs.getTimestamp("payment_date");
                 
-                p = new PaymentHistoryModel(paymentHistory.getPaymentId(), transactionId, paymentCode, 
+                p = new PaymentHistoryModel(paymentId, transactionId, paymentCode,
                         paymentMethodId, paymentStatus, paymentDate);
             }
-            // Bước 5: Đóng kết nối 
-            JDBC.closeConnection(con);
             pst.close();
+            if(p.getPaymentCode() != null) return p;
         } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
+        } finally {
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            System.out.println("Payment - SelectById: Đã đóng kết nối cơ sở dữ liệu");
         }
-        return p;
+        return null;
     }
 
     @Override
     public ArrayList<PaymentHistoryModel> selectAll() {
         ArrayList<PaymentHistoryModel> listPaymentHistory = new ArrayList<>();
+
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection(); 
-            
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
             String sql = "SELECT * FROM domainmanagement.paymenthistory";
             PreparedStatement pst = con.prepareStatement(sql);
@@ -168,17 +174,19 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
                 int paymentMethodId = rs.getInt("payment_method");
                 String status = rs.getString("payment_status");
                 PaymentStatusEnum paymentStatus = PaymentStatusEnum.valueOf(status.toUpperCase());
-                LocalDate paymentDate = rs.getDate("payment_date").toLocalDate();
+                Timestamp paymentDate = rs.getTimestamp("payment_date");
                 
                 PaymentHistoryModel p = new PaymentHistoryModel(paymentId,transactionId, paymentCode, paymentMethodId, 
                         paymentStatus, paymentDate);
                 listPaymentHistory.add(p);
             }
-            // Bước 5: Đóng kết nối 
-            JDBC.closeConnection(con);
             pst.close();
         } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
+        } finally {
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            System.out.println("Payment - SelectAll: Đã đóng kết nối cơ sở dữ liệu");
         }
         return listPaymentHistory;
     }
@@ -186,10 +194,11 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
     @Override
     public ArrayList<PaymentHistoryModel> selectByCondition(String condition) {
         ArrayList<PaymentHistoryModel> listPaymentHistory = new ArrayList<>();
+
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
+
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection(); 
-            
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
             String sql = "SELECT p.id, p.transaction_id, ts.user_id, c.full_name, p.payment_id, " +
                     "p.payment_method, p.payment_status, p.payment_date, ts.transaction_date " +
@@ -211,17 +220,19 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
                 int paymentMethodId = rs.getInt("payment_method");
                 String status = rs.getString("payment_status").toUpperCase();
                 PaymentStatusEnum paymentStatus = PaymentStatusEnum.valueOf(status);
-                LocalDate paymentDate = rs.getDate("payment_date").toLocalDate();
+                Timestamp paymentDate = rs.getTimestamp("payment_date");
                 
                 PaymentHistoryModel p = new PaymentHistoryModel(paymentId, transactionId, paymentCode, paymentMethodId, 
                         paymentStatus, paymentDate);
                 listPaymentHistory.add(p);
             }
-            // Bước 5: Đóng kết nối 
-            JDBC.closeConnection(con);
             pst.close();
         } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
+        } finally {
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            System.out.println("Payment - SelectByCondition: Đã đóng kết nối cơ sở dữ liệu");
         }
         return listPaymentHistory;
     }

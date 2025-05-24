@@ -90,7 +90,6 @@ public class ShoppingCartController implements Initializable {
         JSONObject request = new JSONObject();
         request.put("cus_id", UserSession.getInstance().getUserId());
 
-        ICart cartService = new CartServices();
         JSONObject response = cartService.getShoppingCart(request);
 
         JSONArray domainArray = response.getJSONArray("domain");
@@ -165,7 +164,10 @@ public class ShoppingCartController implements Initializable {
         if (respond.getString("status").equals("success")) {
             // open transaction info page
             SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("notice"), bundle.getString("notice.createTransactionSuccess"), bundle.getString("notice.createTransactionSuccess") + ": " + respond.getString("transactionId"));
-            MainController.getInstance().load("/fxml/transaction.fxml");
+
+            String currentFXMLPath = "/fxml/transaction.fxml";
+            MainController.getInstance().setCurrentFxmlPath(currentFXMLPath);
+            MainController.getInstance().load(currentFXMLPath, true);
         } else {
             // show error message
             SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("error"), bundle.getString("notice"), bundle.getString("notice.createTransactionFailed"));

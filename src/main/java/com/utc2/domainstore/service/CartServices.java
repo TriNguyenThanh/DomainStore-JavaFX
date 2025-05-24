@@ -64,9 +64,9 @@ public class CartServices implements ICart {
             String fullDomainName = domainJson.getString("name").toLowerCase().trim();
             String status = domainJson.getString("status");
             int years = domainJson.getInt("years");
-            int price = domainJson.getInt("price");
+            Long price = domainJson.getLong("price");
 
-            if (!"available".equalsIgnoreCase(status)) continue;
+            if (!"Available".equalsIgnoreCase(status)) continue;
 
             // Dò TLD từ đuôi tên miền, ưu tiên TLD dài nhất
             TopLevelDomainModel matchedTLD = null;
@@ -87,7 +87,7 @@ public class CartServices implements ICart {
             DomainModel domainModel = DomainRepository.getInstance().getDomainByNameAndTld(namePart, matchedTLD.getId());
             if (domainModel == null) {
                 // Insert mới nếu chưa tồn tại
-                domainModel = new DomainModel(namePart, matchedTLD.getId(), DomainStatusEnum.available, years);
+                domainModel = new DomainModel(namePart, matchedTLD.getId(), DomainStatusEnum.AVAILABLE, years);
                 domainModel.setPrice(price);
                 DomainRepository.getInstance().insert(domainModel);
                 domainModel = DomainRepository.getInstance().getDomainByNameAndTld(namePart, matchedTLD.getId());
@@ -206,7 +206,7 @@ public class CartServices implements ICart {
 
             if (domainModel == null) {
                 // Domain chưa tồn tại → insert
-                DomainModel newDomain = new DomainModel(domainNamePart, matchedTld.getId(), DomainStatusEnum.available, years);
+                DomainModel newDomain = new DomainModel(domainNamePart, matchedTld.getId(), DomainStatusEnum.AVAILABLE, years);
                 DomainRepository.getInstance().insert(newDomain);
                 domainModel = DomainRepository.getInstance().getDomainByNameAndTld(domainNamePart, matchedTld.getId());
             } else {

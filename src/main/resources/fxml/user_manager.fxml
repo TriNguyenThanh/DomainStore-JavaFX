@@ -71,7 +71,6 @@
                                                 <TableColumn fx:id="colUsername" prefWidth="150" text="%username"/>
                                                 <TableColumn fx:id="colPhone" prefWidth="150" text="%phone"/>
                                                 <TableColumn fx:id="colEmail" prefWidth="250.0" text="%email"/>
-                                                <TableColumn fx:id="colPsID" prefWidth="150" text="%personal_id"/>
                                                 <TableColumn fx:id="colRole" prefWidth="90" text="%role"/>
                                                 <TableColumn fx:id="colStatus" prefWidth="150" text="%status"/>
                                             </columns>

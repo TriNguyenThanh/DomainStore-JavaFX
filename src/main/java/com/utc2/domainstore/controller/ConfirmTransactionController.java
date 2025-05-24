@@ -26,7 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -40,7 +40,7 @@ public class ConfirmTransactionController implements Initializable {
     @FXML
     private TableColumn<BillViewModel, String> colID;
     @FXML
-    private TableColumn<BillViewModel, LocalDate> colDate;
+    private TableColumn<BillViewModel, LocalDateTime> colDate;
     @FXML
     private TableColumn<BillViewModel, STATUS> colStatus;
     @FXML
@@ -129,11 +129,11 @@ public class ConfirmTransactionController implements Initializable {
         for (Object o : list) {
             JSONObject jsonObject = (JSONObject) o;
             STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
-            if (status != STATUS.PENDINGCONFIRM) {
+            if (status != STATUS.CONFIRM) {
                 continue;
             }
             String id = jsonObject.getString("id");
-            LocalDate date = LocalDate.parse(jsonObject.optString("date"));
+            LocalDateTime date = LocalDateTime.parse(jsonObject.optString("date"), ConfigManager.getInstance().getParser());
             Integer price = jsonObject.getInt("total_price");
             Integer userId = jsonObject.getInt("user_id");
 

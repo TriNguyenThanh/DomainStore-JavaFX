@@ -7,10 +7,11 @@ public class CustomerModel {
     private String fullName;
     private String email;
     private String phone;
-    private String cccd;
     private String passwordHash;
     private RoleEnum role;
     private boolean isDeleted; // Thêm thuộc tính isDeleted
+    private String otp;
+    private Timestamp otpCreatedAt;
     private Timestamp createdAt;
 
     public CustomerModel() {
@@ -20,11 +21,10 @@ public class CustomerModel {
         this.id = id;
     }
 
-    public CustomerModel(String fullName, String email, String phone, String cccd, String passwordHash, RoleEnum role) {
+    public CustomerModel(String fullName, String email, String phone, String passwordHash, RoleEnum role) {
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
-        this.cccd = cccd;
         this.passwordHash = passwordHash;
         this.role = role;
     }
@@ -35,25 +35,36 @@ public class CustomerModel {
     }
 
     // Không password
-    public CustomerModel(int id, String fullName, String email, String phone, String cccd, RoleEnum role, Timestamp createdAt) {
+    public CustomerModel(int id, String fullName, String email, String phone, RoleEnum role, Timestamp createdAt) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
-        this.cccd = cccd;
         this.role = role;
         this.createdAt = createdAt;
     }
 
-    public CustomerModel(int id, String fullName, String email, String phone, String cccd, String passwordHash, RoleEnum role, boolean isDeleted, Timestamp createdAt) {
+    public CustomerModel(int id, String fullName, String email, String phone, String passwordHash, RoleEnum role, boolean isDeleted, Timestamp createdAt) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
-        this.cccd = cccd;
         this.passwordHash = passwordHash;
         this.role = role;
         this.isDeleted = isDeleted;
+        this.createdAt = createdAt;
+    }
+
+    public CustomerModel(int id, String fullName, String email, String phone, String passwordHash, RoleEnum role, boolean isDeleted, String otp, Timestamp otpCreatedAt, Timestamp createdAt) {
+        this.id = id;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.passwordHash = passwordHash;
+        this.role = role;
+        this.isDeleted = isDeleted;
+        this.otp = otp;
+        this.otpCreatedAt = otpCreatedAt;
         this.createdAt = createdAt;
     }
 
@@ -89,14 +100,6 @@ public class CustomerModel {
         this.phone = phone;
     }
 
-    public String getCccd() {
-        return cccd;
-    }
-
-    public void setCccd(String cccd) {
-        this.cccd = cccd;
-    }
-
     public String getPasswordHash() {
         return passwordHash;
     }
@@ -121,6 +124,23 @@ public class CustomerModel {
         this.isDeleted = isDeleted;
     }
 
+
+    public Timestamp getOtpCreatedAt() {
+        return otpCreatedAt;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtpCreatedAt(Timestamp otpCreatedAt) {
+        this.otpCreatedAt = otpCreatedAt;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -136,7 +156,6 @@ public class CustomerModel {
                 ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", cccd='" + cccd + '\'' +
                 ", role=" + role +
                 ", isDeleted=" + isDeleted +
                 ", createdAt=" + createdAt +

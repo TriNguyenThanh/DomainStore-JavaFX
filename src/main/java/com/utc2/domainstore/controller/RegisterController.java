@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import static com.utc2.domainstore.utils.CheckingUtils.*;
@@ -23,20 +24,15 @@ public class RegisterController implements Initializable {
     @FXML
     private TextField emailTextfield;
     @FXML
-    private TextField psIDTextfield;
-    @FXML
     private PasswordField passwordField;
     @FXML
     private PasswordField confirmPasswordField;
-
     @FXML
     private Label usernameErr;
     @FXML
     private Label phoneErr;
     @FXML
     private Label emailErr;
-    @FXML
-    private Label psIDErr;
     @FXML
     private Label passwordErr;
     @FXML
@@ -75,23 +71,12 @@ public class RegisterController implements Initializable {
         // kiêm tra email
         if (emailTextfield.getText().isBlank()) {
             flag = false;
-            emailErr.setText(bundle.getString("error.emailErr1"));
+            emailErr.setText(bundle.getString("error.email1"));
         } else if (!emailCheck(emailTextfield.getText())) {
             flag = false;
-            emailErr.setText(bundle.getString("error.emailErr2"));
+            emailErr.setText(bundle.getString("error.email2"));
         } else {
             emailErr.setText(" ");
-        }
-
-        // kiểm tra số CCCD
-        if (psIDTextfield.getText().isBlank()) {
-            flag = false;
-            psIDErr.setText(bundle.getString("error.psIDErr1"));
-        } else if (!personalIDCheck(psIDTextfield.getText())) {
-            flag = false;
-            psIDErr.setText(bundle.getString("error.psIDErr2"));
-        } else {
-            psIDErr.setText(" ");
         }
 
         // Kiểm tra mật khẩu
@@ -123,7 +108,6 @@ public class RegisterController implements Initializable {
             requestJSON.put("username", usernameTextfield.getText());
             requestJSON.put("phone", phoneTextfield.getText());
             requestJSON.put("email", emailTextfield.getText());
-            requestJSON.put("personal_id", psIDTextfield.getText());
             requestJSON.put("password", passwordField.getText());
             requestJSON.put("role", "user");
 
@@ -145,15 +129,18 @@ public class RegisterController implements Initializable {
                     if (message.toLowerCase().contains("email already exists")) {
                         emailErr.setText(bundle.getString("error.email3"));
                     }
-                    if (message.toLowerCase().contains("personal id already exists")) {
-                        psIDErr.setText(bundle.getString("error.psIDErr3"));
-                    }
                 }
             } catch (JSONException e) {
                 throw new RuntimeException("Can't connect to service");
+            } catch (SQLException e) {
+                if (e.getMessage().toLowerCase().contains("phone number")) {
+                    phoneErr.setText(bundle.getString("error.phone4"));
+                }
+                if (e.getMessage().toLowerCase().contains("email")) {
+                    emailErr.setText(bundle.getString("error.email4"));
+                }
             }
         }
-
     }
 
     public void buttonLoginOnAction() {

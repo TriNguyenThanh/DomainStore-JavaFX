@@ -7,7 +7,6 @@ public class UserModel {
     private String name;
     private String phone;
     private String email;
-    private String psID;
     private RoleEnum role;
     private ACCOUNT_STATUS status;
     private String password;
@@ -16,12 +15,11 @@ public class UserModel {
 
     }
 
-    public UserModel(Integer ID, String name, String phone, String email, String psID, RoleEnum role, ACCOUNT_STATUS status, String password) {
+    public UserModel(Integer ID, String name, String phone, String email, RoleEnum role, ACCOUNT_STATUS status, String password) {
         this.ID = ID;
         this.name = name;
         this.phone = phone;
         this.email = email;
-        this.psID = psID;
         this.role = role;
         this.status = status;
         this.password = password;
@@ -67,14 +65,6 @@ public class UserModel {
         this.email = email;
     }
 
-    public String getPsID() {
-        return psID;
-    }
-
-    public void setPsID(String psID) {
-        this.psID = psID;
-    }
-
     public RoleEnum getRole() {
         return role;
     }
@@ -96,7 +86,6 @@ public class UserModel {
         this.name = userModel.getName();
         this.phone = userModel.getPhone();
         this.email = userModel.getEmail();
-        this.psID = userModel.getPsID();
         this.role = userModel.getRole();
         this.status = userModel.getStatus();
         this.password = userModel.getPassword();
@@ -113,7 +102,6 @@ public class UserModel {
         if (!name.equals(userModel.name)) return false;
         if (!phone.equals(userModel.phone)) return false;
         if (!email.equals(userModel.email)) return false;
-        if (!psID.equals(userModel.psID)) return false;
         if (role != userModel.role) return false;
         if (status != userModel.status) return false;
 

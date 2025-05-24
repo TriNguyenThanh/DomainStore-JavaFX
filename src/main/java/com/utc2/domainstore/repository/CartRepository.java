@@ -175,7 +175,7 @@ public class CartRepository implements IRepository<CartModel>{
                     domain.setYears(rs.getInt("years"));
                     TopLevelDomainModel tld = new TopLevelDomainModel();
                     tld.setId(rs.getInt("tld_id")); 
-                    domain.setPrice(rs.getInt("price"));
+                    domain.setPrice(rs.getLong("price"));
 
                     domain.setTldId(tld.getId()); 
 

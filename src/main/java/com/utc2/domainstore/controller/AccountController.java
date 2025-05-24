@@ -7,16 +7,15 @@ import com.utc2.domainstore.view.ConfigManager;
 import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +24,8 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static com.utc2.domainstore.utils.CheckingUtils.*;
+import static com.utc2.domainstore.utils.CheckingUtils.emailCheck;
+import static com.utc2.domainstore.utils.CheckingUtils.phoneNumberCheck;
 
 public class AccountController implements Initializable {
     private ResourceBundle bundle;
@@ -37,9 +37,9 @@ public class AccountController implements Initializable {
     @FXML
     private AnchorPane rootPane;
     @FXML
-    private TextField tfUsername, tfPhone, tfEmail, tfPsID;
+    private TextField tfUsername, tfPhone, tfEmail;
     @FXML
-    private Label lbFullNameErr, lbPhoneErr, lbEmailErr, lbPsIDErr;
+    private Label lbFullNameErr, lbPhoneErr, lbEmailErr;
     @FXML
     private PasswordField tfPass;
     @FXML
@@ -59,7 +59,7 @@ public class AccountController implements Initializable {
             //
             logout();
         } else if (e.getSource() == btChangePass) {
-            changePass();
+            showChangePassword();
         }
     }
 
@@ -93,10 +93,9 @@ public class AccountController implements Initializable {
         String fullname = respond.getString("username");
         String phone = respond.getString("phone");
         String email = respond.getString("email");
-        String psID = respond.getString("personal_id");
         String pass = respond.getString("password");
 
-        return new AccountModel(fullname, phone, email, psID, pass);
+        return new AccountModel(fullname, phone, email, pass);
     }
 
     // display data on the screen
@@ -104,7 +103,6 @@ public class AccountController implements Initializable {
         tfUsername.setText(rootData.getFullName());
         tfPhone.setText(rootData.getPhone());
         tfEmail.setText(rootData.getEmail());
-        tfPsID.setText(rootData.getPsID());
         tfPass.setText("11111111");
     }
 
@@ -128,33 +126,31 @@ public class AccountController implements Initializable {
     }
 
     // change password
-    private void changePass() {
+    private void showChangePassword() {
+        Stage secondStage = new Stage();
+        secondStage.setTitle("Change password");
+        secondStage.getIcons().setAll(SceneManager.getInstance().getIcon("/icon/password.png", 32, 32));
+
+        secondStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                System.gc();
+            }
+        });
+        ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/change_password.fxml"), rb);
+        Scene scene = null;
         try {
-            // load the fxml and resource bundle
-            ResourceBundle rb = ConfigManager.getInstance().getLanguageBundle();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/change_password.fxml"), rb);
-            Parent root = fxmlLoader.load();
-
-            // get the controller
-            ChangePasswordController controller = fxmlLoader.getController();
-            controller.setData(rootData.getHash_password());
-
-            // create a new stage
-            Stage stage = new Stage();
-            stage.setTitle(bundle.getString("changePass"));
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.getIcons().add(new Image(String.valueOf(getClass().getResource("/icon/password.png"))));
-
-            // set the stage to be modal
-            stage.initOwner(SceneManager.getInstance().getStage());
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-            rootData = newData = getRootData();
-
+            scene = new Scene(fxmlLoader.load());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        secondStage.setScene(scene);
+        secondStage.setResizable(false);
+        secondStage.centerOnScreen();
+
+        secondStage.showAndWait();
     }
 
     // cancel the edit
@@ -169,7 +165,6 @@ public class AccountController implements Initializable {
             displayData();
             lbPhoneErr.setText("");
             lbEmailErr.setText("");
-            lbPsIDErr.setText("");
             lbFullNameErr.setText("");
         }
     }
@@ -178,7 +173,7 @@ public class AccountController implements Initializable {
     private void save() {
         edit(false);
         // check if the data is changed
-        newData = new AccountModel(tfUsername.getText(), tfPhone.getText(), tfEmail.getText(), tfPsID.getText(), rootData.getHash_password());
+        newData = new AccountModel(tfUsername.getText(), tfPhone.getText(), tfEmail.getText(), rootData.getHash_password());
         if (rootData.isSame(newData)) {
             return;
         }
@@ -198,7 +193,6 @@ public class AccountController implements Initializable {
             request.put("username", newData.getFullName());
             request.put("phone", newData.getPhone());
             request.put("email", newData.getEmail());
-            request.put("personal_id", newData.getPsID());
 
             JSONObject respond = accountServices.updateUser(request);
             try {
@@ -215,7 +209,6 @@ public class AccountController implements Initializable {
                     rootData.setFullName(newData.getFullName());
                     rootData.setPhone(newData.getPhone());
                     rootData.setEmail(newData.getEmail());
-                    rootData.setPsID(newData.getPsID());
 
                     // show a success message
                     SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("save"), null, bundle.getString("notice.userModifySuccess"));
@@ -260,17 +253,6 @@ public class AccountController implements Initializable {
             lbEmailErr.setText(" ");
         }
 
-        // kiểm tra số CCCD
-        if (newData.getPsID().isBlank()) {
-            flag = false;
-            lbPsIDErr.setText(bundle.getString("error.psIDErr1"));
-        } else if (!personalIDCheck(newData.getPsID())) {
-            flag = false;
-            lbPsIDErr.setText(bundle.getString("error.psIDErr2"));
-        } else {
-            lbPsIDErr.setText(" ");
-        }
-
         return flag;
     }
 
@@ -283,17 +265,14 @@ public class AccountController implements Initializable {
         tfUsername.setEditable(isEdited);
         tfPhone.setEditable(isEdited);
         tfEmail.setEditable(isEdited);
-        tfPsID.setEditable(isEdited);
         if (isEdited) {
             tfUsername.setStyle("-fx-border-color: #0000C6");
             tfPhone.setStyle("-fx-border-color: #0000C6");
             tfEmail.setStyle("-fx-border-color: #0000C6");
-            tfPsID.setStyle("-fx-border-color: #0000C6");
         } else {
             tfUsername.setStyle("-fx-border-color: #FFFFFF");
             tfPhone.setStyle("-fx-border-color: #FFFFFF");
             tfEmail.setStyle("-fx-border-color: #FFFFFF");
-            tfPsID.setStyle("-fx-border-color: #FFFFFF");
         }
     }
 }

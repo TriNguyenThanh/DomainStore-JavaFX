@@ -19,7 +19,7 @@ public class TopLevelDomainRepository implements IRepository<TopLevelDomainModel
              PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, t.getTldText());
-            stmt.setInt(2, t.getPrice());
+            stmt.setLong(2, t.getPrice());
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
@@ -43,7 +43,7 @@ public class TopLevelDomainRepository implements IRepository<TopLevelDomainModel
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, t.getTldText());
-            stmt.setInt(2, t.getPrice());
+            stmt.setLong(2, t.getPrice());
             stmt.setInt(3, t.getId());
 
             return stmt.executeUpdate();
@@ -81,7 +81,7 @@ public class TopLevelDomainRepository implements IRepository<TopLevelDomainModel
                 list.add(new TopLevelDomainModel(
                         rs.getInt("id"),
                         rs.getString("TLD_text"),
-                        rs.getInt("price")
+                        rs.getLong("price")
                 ));
             }
         } catch (SQLException e) {
@@ -102,7 +102,7 @@ public class TopLevelDomainRepository implements IRepository<TopLevelDomainModel
                     return new TopLevelDomainModel(
                             rs.getInt("id"),
                             rs.getString("TLD_text"),
-                            rs.getInt("price")
+                            rs.getLong("price")
                     );
                 }
             }
@@ -125,7 +125,7 @@ public class TopLevelDomainRepository implements IRepository<TopLevelDomainModel
                 list.add(new TopLevelDomainModel(
                         rs.getInt("id"),
                         rs.getString("TLD_text"),
-                        rs.getInt("price")
+                        rs.getLong("price")
                 ));
             }
         } catch (SQLException e) {
@@ -145,7 +145,7 @@ public class TopLevelDomainRepository implements IRepository<TopLevelDomainModel
                  return new TopLevelDomainModel(
                          rs.getInt("id"),
                          rs.getString("TLD_text"),
-                         rs.getInt("price")
+                         rs.getLong("price")
                  );
              }
          }

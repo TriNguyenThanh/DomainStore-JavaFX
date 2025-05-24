@@ -1,8 +1,6 @@
 package com.utc2.domainstore;
 
-import com.utc2.domainstore.entity.database.RoleEnum;
 import com.utc2.domainstore.view.SceneManager;
-import com.utc2.domainstore.view.UserSession;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -13,8 +11,8 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
 
         try {
-            UserSession.getInstance().setUserId(1);
-            UserSession.getInstance().setRole(RoleEnum.admin);
+//            UserSession.getInstance().setUserId(1);
+//            UserSession.getInstance().setRole(RoleEnum.ADMIN);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -27,6 +25,5 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch(args);
-        
     }
 }

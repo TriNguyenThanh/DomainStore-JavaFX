@@ -7,7 +7,6 @@ public class AccountModel {
     private String fullName;
     private String phone;
     private String email;
-    private String psID;
     private String hash_password;
     private RoleEnum role;
 
@@ -15,19 +14,17 @@ public class AccountModel {
 
     }
 
-    public AccountModel(String fullName, String phone, String email, String psID, String hash_password) {
+    public AccountModel(String fullName, String phone, String email, String hash_password) {
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
-        this.psID = psID;
         this.hash_password = hash_password;
     }
 
-    public AccountModel(String fullName, String phone, String email, String psID, String hash_password, RoleEnum role) {
+    public AccountModel(String fullName, String phone, String email, String hash_password, RoleEnum role) {
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
-        this.psID = psID;
         this.hash_password = hash_password;
         this.role = role;
     }
@@ -37,7 +34,6 @@ public class AccountModel {
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
-        this.psID = psID;
         this.hash_password = hash_password;
         this.role = role;
     }
@@ -74,14 +70,6 @@ public class AccountModel {
         this.email = email;
     }
 
-    public String getPsID() {
-        return psID;
-    }
-
-    public void setPsID(String psID) {
-        this.psID = psID;
-    }
-
     public String getHash_password() {
         return hash_password;
     }
@@ -90,11 +78,10 @@ public class AccountModel {
         this.hash_password = hash_password;
     }
 
-    public void copy(String fullName, String phone, String email, String psID, String hash_password) {
+    public void copy(String fullName, String phone, String email, String hash_password) {
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
-        this.psID = psID;
         this.hash_password = hash_password;
     }
 
@@ -102,7 +89,6 @@ public class AccountModel {
         if (!accountModel.fullName.equals(this.fullName)) return false;
         else if (!accountModel.phone.equals(this.phone)) return false;
         else if (!accountModel.email.equals(this.email)) return false;
-        else if (!accountModel.psID.equals(this.psID)) return false;
         return true;
     }
 

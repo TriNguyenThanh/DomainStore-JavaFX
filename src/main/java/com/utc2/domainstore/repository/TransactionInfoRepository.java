@@ -19,10 +19,10 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
     @Override
     public int insert(TransactionInfoModel transactionInfo) {
         int rowsAffected = 0;
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
+
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection();
-            
             // Bước 2: Chuẩn bị câu lệnh để chèn dữ liệu
             String sql = "INSERT INTO transactions_info(transactions_id, domain_id, price)"
                     + " VALUES(?, ?, ?)";
@@ -31,17 +31,19 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
             // Bước 3: Gán giá trị cho các tham số 
             pst.setString(1, transactionInfo.getTransactionId());
             pst.setInt(2, transactionInfo.getDomainId());
-            pst.setInt(3, transactionInfo.getPrice());
+            pst.setLong(3, transactionInfo.getPrice());
             
             // Bước 4: Thực thi câu lệnh INSERT và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             System.out.println("Thêm dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
             // Bước 5: Đóng kết nối
 //            System.out.println("Thêm dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
-            JDBC.closeConnection(con);
             pst.close();
         } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
+        } finally {
+            JDBC.closeConnection(con);
+            System.out.println("TransactionInfo - Insert: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -49,10 +51,10 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
     @Override
     public int update(TransactionInfoModel transactionInfo) {
         int rowsAffected = 0;
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
+
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection(); 
-            
             // Bước 2: Chuẩn bị câu lệnh để xoá dữ liệu
             String sql = "UPDATE transactions_info "
                     + "SET price = ?"
@@ -60,17 +62,20 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
             PreparedStatement pst = con.prepareStatement(sql);
             
              // Bước 3: Gán giá trị id
-            pst.setInt(1, transactionInfo.getPrice()); 
+            pst.setLong(1, transactionInfo.getPrice());
             pst.setString(2, transactionInfo.getTransactionId());
             pst.setInt(3, transactionInfo.getDomainId());
             // Bước 4: Thực thi câu lệnh UPDATE và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             System.out.println("Cập nhật dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
-            // Bước 5: Đóng kết nối 
-            JDBC.closeConnection(con);
+
             pst.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        } finally {
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            System.out.println("TransactionInfo - Update: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -78,10 +83,10 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
     @Override
     public int delete(TransactionInfoModel transactionInfo) {
         int rowsAffected = 0;
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
+
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection(); 
-            
             // Bước 2: Chuẩn bị câu lệnh để xoá dữ liệu
             String sql = "DELETE FROM transactions_info"
                     + " WHERE transactions_id = ?;";
@@ -92,19 +97,23 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
             // Bước 4: Thực thi câu lệnh UPDATE và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             System.out.println("Xoá dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
-            // Bước 5: Đóng kết nối 
-            JDBC.closeConnection(con);
+            pst.close();
         } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
+        } finally {
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            System.out.println("TransactionInfo - Delete: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
 
     @Override
     public TransactionInfoModel selectById(TransactionInfoModel transactionInfo) {
+
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection(); 
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
             String sql = "SELECT * FROM transactions_info WHERE transactions_id = ?";
             PreparedStatement pst = con.prepareStatement(sql);
@@ -119,14 +128,16 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
                 // Lấy dữ liệu từ ResultSet
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));
-                t.setPrice(rs.getInt("price"));
+                t.setPrice(rs.getLong("price"));
                 return t;
             }
-            // Bước 5: Đóng kết nối 
-            JDBC.closeConnection(con);
             pst.close();
         } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
+        } finally {
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            System.out.println("TransactionInfo - SelectById: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return null;
     }
@@ -134,10 +145,10 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
     @Override
     public ArrayList<TransactionInfoModel> selectAll() {
         ArrayList<TransactionInfoModel> listTransactionInfo = new ArrayList<>();
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
+
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection(); 
-            
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
             String sql = "SELECT * FROM transactions_info";
             PreparedStatement pst = con.prepareStatement(sql);
@@ -151,15 +162,17 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
                 // Lấy dữ liệu từ ResultSet
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));
-                t.setPrice(rs.getInt("price"));
+                t.setPrice(rs.getLong("price"));
                 
                 listTransactionInfo.add(t);
             }
-            // Bước 5: Đóng kết nối 
-            JDBC.closeConnection(con);
             pst.close();
         } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
+        } finally {
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            System.out.println("TransactionInfo - SelectAll: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return listTransactionInfo;
     }
@@ -167,10 +180,11 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
     @Override
     public ArrayList<TransactionInfoModel> selectByCondition(String condition) {
         ArrayList<TransactionInfoModel> listTransactionInfo = new ArrayList<>();
+
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
+
         try {
-            // Bước 1: Mở kết nối đến database
-            Connection con = JDBC.getConnection(); 
-            
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
             String sql = "SELECT * FROM transactions_info where " + condition + ";";
             PreparedStatement pst = con.prepareStatement(sql);
@@ -183,15 +197,17 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
                 // Lấy dữ liệu từ ResultSet
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));
-                t.setPrice(rs.getInt("price"));
+                t.setPrice(rs.getLong("price"));
                 
                 listTransactionInfo.add(t);
             }
-            // Bước 5: Đóng kết nối 
-            JDBC.closeConnection(con);
             pst.close();
         } catch (SQLException | NullPointerException e) {
             System.out.println(e.getMessage());
+        } finally {
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+            System.out.println("TransactionInfo - SelectByCondition: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return listTransactionInfo;
     }
