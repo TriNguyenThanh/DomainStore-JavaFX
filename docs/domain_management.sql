@@ -8,6 +8,8 @@ CREATE TABLE users (
     phone VARCHAR(20) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL, ROLE ENUM('USER', 'ADMIN') DEFAULT 'USER',
     is_deleted BOOLEAN DEFAULT FALSE,
+    otp VARCHAR(10),
+    otp_created_at DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -54,7 +56,7 @@ CREATE INDEX idx_carts_cus_id ON carts(cus_id);
 CREATE INDEX idx_carts_domain_id ON carts(domain_id);
 
 CREATE TABLE Transactions (
-    id CHAR(10) PRIMARY KEY NOT NULL,
+    id VARCHAR(10) PRIMARY KEY NOT NULL,
     user_id INT NOT NULL,
     transaction_date TIMESTAMP NOT NULL,
     is_renewal BOOLEAN DEFAULT 0,
@@ -67,7 +69,7 @@ CREATE INDEX idx_transactions_status ON Transactions(transaction_status);
 CREATE INDEX idx_transactions_date ON Transactions(transaction_date);
 
 CREATE TABLE transactions_info (
-    transactions_id CHAR(10) NOT NULL,
+    transactions_id VARCHAR(10) NOT NULL,
     domain_id INT NOT NULL,
     price BIGINT UNSIGNED DEFAULT 0,
     years INT DEFAULT 0,
@@ -86,8 +88,8 @@ CREATE TABLE PaymentMethod (
 
 CREATE TABLE PaymentHistory (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    transaction_id CHAR(10) NOT NULL,
-    payment_id CHAR(10) NOT NULL DEFAULT '',
+    transaction_id VARCHAR(10) NOT NULL,
+    payment_id VARCHAR(15) NOT NULL DEFAULT '',
     payment_method INT,
     payment_status ENUM('COMPLETED', 'FAILED'),
     payment_date TIMESTAMP,
