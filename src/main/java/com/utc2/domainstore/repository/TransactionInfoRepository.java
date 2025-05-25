@@ -24,15 +24,16 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
 
         try {
             // Bước 2: Chuẩn bị câu lệnh để chèn dữ liệu
-            String sql = "INSERT INTO transactions_info(transactions_id, domain_id, price)"
-                    + " VALUES(?, ?, ?)";
+            String sql = "INSERT INTO transactions_info(transactions_id, domain_id, price, years)"
+                    + " VALUES(?, ?, ?, ?)";
             PreparedStatement pst = con.prepareStatement(sql);
             
             // Bước 3: Gán giá trị cho các tham số 
             pst.setString(1, transactionInfo.getTransactionId());
             pst.setInt(2, transactionInfo.getDomainId());
             pst.setLong(3, transactionInfo.getPrice());
-            
+            pst.setInt(4, transactionInfo.getYears());
+
             // Bước 4: Thực thi câu lệnh INSERT và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             System.out.println("Thêm dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
@@ -43,7 +44,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
             System.out.println(e.getMessage());
         } finally {
             JDBC.closeConnection(con);
-            System.out.println("TransactionInfo - Insert: Đã đóng kêt nối cơ sở dữ liệu");
+//            System.out.println("TransactionInfo - Insert: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -75,7 +76,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("TransactionInfo - Update: Đã đóng kêt nối cơ sở dữ liệu");
+//            System.out.println("TransactionInfo - Update: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -103,7 +104,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("TransactionInfo - Delete: Đã đóng kêt nối cơ sở dữ liệu");
+//            System.out.println("TransactionInfo - Delete: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -129,6 +130,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));
                 t.setPrice(rs.getLong("price"));
+                t.setYears(rs.getInt("years"));
                 return t;
             }
             pst.close();
@@ -137,7 +139,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("TransactionInfo - SelectById: Đã đóng kêt nối cơ sở dữ liệu");
+//            System.out.println("TransactionInfo - SelectById: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return null;
     }
@@ -163,7 +165,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));
                 t.setPrice(rs.getLong("price"));
-                
+                t.setYears(rs.getInt("years"));
                 listTransactionInfo.add(t);
             }
             pst.close();
@@ -172,7 +174,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("TransactionInfo - SelectAll: Đã đóng kêt nối cơ sở dữ liệu");
+//            System.out.println("TransactionInfo - SelectAll: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return listTransactionInfo;
     }
@@ -198,7 +200,8 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
                 t.setTransactionId(rs.getString("transactions_id"));
                 t.setDomainId(rs.getInt("domain_id"));
                 t.setPrice(rs.getLong("price"));
-                
+                t.setYears(rs.getInt("years"));
+
                 listTransactionInfo.add(t);
             }
             pst.close();
@@ -207,7 +210,7 @@ public class TransactionInfoRepository implements IRepository<TransactionInfoMod
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("TransactionInfo - SelectByCondition: Đã đóng kêt nối cơ sở dữ liệu");
+//            System.out.println("TransactionInfo - SelectByCondition: Đã đóng kêt nối cơ sở dữ liệu");
         }
         return listTransactionInfo;
     }

@@ -57,33 +57,35 @@ public class PaymentService implements  IPaymentService{
         // response: true / false (boolean)
         JSONObject jsonObject = new JSONObject();
         String transactionId = json.getString("transactionId");
+        PaymentHistoryModel pay = PaymentHistoryRepository.getInstance().selectById(new PaymentHistoryModel(transactionId));
         TransactionModel tran = TransactionRepository.getInstance()
                 .selectById(new TransactionModel(transactionId, null, null));
-        if (tran == null || TransactionStatusEnum.COMPLETED.equals(tran.getTransactionStatus())){
+        if (tran == null || TransactionStatusEnum.COMPLETED.equals(tran.getTransactionStatus()) || PaymentStatusEnum.COMPLETED.equals(pay.getPaymentStatus())){
             jsonObject.put("status", "failed");
             jsonObject.put("message", "Hoá đơn đã được thanh toán !!");
             System.out.println("Hoá đơn đã được thanh toán !!");
             return jsonObject;
         }
 
-        int check = 0;
-        for(TransactionInfoModel t : tran.getTransactionInfos()){
-            DomainModel domain = DomainRepository.getInstance()
-                    .selectById(new DomainModel(t.getDomainId(), null, 0, null, null, 0));
-            // Nếu tên miền đã có chủ sỡ hữu
-            if(domain.getOwnerId() != null){
-                String domainName = domain.getDomainName()
-                        + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText();
-                System.out.println("Tên miền đã được bán: " + domainName);
-                jsonObject.put("status", "failed");
-                jsonObject.put("message", "Tên miền đã được bán " + domainName);
-                return jsonObject;
+        if(!tran.getRenewal()){
+            for(TransactionInfoModel t : tran.getTransactionInfos()){
+                DomainModel domain = DomainRepository.getInstance()
+                        .selectById(new DomainModel(t.getDomainId(), null, 0, null, null, 0));
+                // Nếu tên miền đã có chủ sỡ hữu
+                if(domain.getOwnerId() != null){
+                    String domainName = domain.getDomainName()
+                            + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText();
+                    System.out.println("Tên miền đã được bán: " + domainName);
+                    jsonObject.put("status", "failed");
+                    jsonObject.put("message", "Tên miền đã được bán " + domainName);
+                    return jsonObject;
+                }
             }
         }
 
         if (!isRunning) {
             server = HttpServer.create(new InetSocketAddress(8080), 0);
-            server.createContext("/vnpay_return", new VNPayReturnHandler());
+            server.createContext("/return", new VNPayReturnHandler());
             server.setExecutor(null); // Sử dụng executor mặc định
             // Nếu server chưa chạy, khởi động lại
             server.start();
@@ -163,10 +165,6 @@ public class PaymentService implements  IPaymentService{
             os.write(response.getBytes());
             os.close();
 
-            // Đóng server
-            server.stop(0);
-            isRunning = false;
-
             // Gọi listener để thông báo kết quả thanh toán
             if (listener != null) {
                 listener.onPaymentProcessed(paymentResult);
@@ -177,6 +175,10 @@ public class PaymentService implements  IPaymentService{
             for (Map.Entry<String, String> entry : paymentResult.entrySet()) {
                 System.out.println(entry.getKey() + ": " + entry.getValue());
             }
+
+            // Đóng server
+            server.stop(0);
+            isRunning = false;
         }
     }
 }

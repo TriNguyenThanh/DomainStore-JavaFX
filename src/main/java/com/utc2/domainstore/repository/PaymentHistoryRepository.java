@@ -5,6 +5,7 @@ package com.utc2.domainstore.repository;
 import com.utc2.domainstore.entity.database.PaymentHistoryModel;
 import com.utc2.domainstore.entity.database.PaymentStatusEnum;
 import com.utc2.domainstore.config.JDBC;
+import com.utc2.domainstore.entity.database.TransactionModel;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
             System.out.println(e.getMessage());
         } finally {
             JDBC.closeConnection(con);
-            System.out.println("Payment - Insert: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Payment - Insert: Đã đóng kết nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -79,7 +80,7 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Payment - Update: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Payment - Update: Đã đóng kết nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -106,7 +107,7 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Payment - Delete: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Payment - Delete: Đã đóng kết nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -146,7 +147,7 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Payment - SelectById: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Payment - SelectById: Đã đóng kết nối cơ sở dữ liệu");
         }
         return null;
     }
@@ -186,7 +187,7 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Payment - SelectAll: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Payment - SelectAll: Đã đóng kết nối cơ sở dữ liệu");
         }
         return listPaymentHistory;
     }
@@ -232,7 +233,7 @@ public class PaymentHistoryRepository implements IRepository<PaymentHistoryModel
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Payment - SelectByCondition: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Payment - SelectByCondition: Đã đóng kết nối cơ sở dữ liệu");
         }
         return listPaymentHistory;
     }

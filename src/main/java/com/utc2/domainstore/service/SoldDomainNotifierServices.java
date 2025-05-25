@@ -4,7 +4,7 @@ import com.utc2.domainstore.utils.EmailUtil;
 import java.util.List;
 
 public class SoldDomainNotifierServices {
-    public void notifySoldDomains(String email, List<String> domains) {
+    public void notifySoldDomains(String email, List<String> domains, boolean is_renewal) {
         if (!email.contains("@")) {
             email += "@gmail.com"; // Tạm xử lý nếu thiếu đuôi
         }
@@ -13,7 +13,10 @@ public class SoldDomainNotifierServices {
 
         StringBuilder contentBuilder = new StringBuilder();
         contentBuilder.append("Chào bạn,\n\n");
-        contentBuilder.append("Các tên miền sau đây đã được ghi nhận là đã bán thành công:\n");
+        if(!is_renewal)
+            contentBuilder.append("Các tên miền sau đây đã được ghi nhận là đã bán thành công:\n");
+        else
+            contentBuilder.append("Các tên miền sau đây đã được ghi nhận là gia hạn thành công:\n");
 
         for (String domain : domains) {
             contentBuilder.append("- ").append(domain).append("\n");

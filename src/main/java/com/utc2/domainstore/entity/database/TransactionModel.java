@@ -8,6 +8,7 @@ public class TransactionModel {
     private String transactionId; 
     private Integer userId; // 
     private Timestamp transactionDate;
+    private Boolean isRenewal;
     private TransactionStatusEnum transactionStatus;
     private PaymentStatusEnum paymentStatus;
     
@@ -62,6 +63,14 @@ public class TransactionModel {
         this.transactionDate = transactionDate;
     }
 
+    public Boolean getRenewal() {
+        return isRenewal;
+    }
+
+    public void setRenewal(Boolean renewal) {
+        isRenewal = renewal;
+    }
+
     public TransactionStatusEnum getTransactionStatus() {
         return transactionStatus;
     }
@@ -96,6 +105,7 @@ public class TransactionModel {
                 "transactionId='" + transactionId + '\'' +
                 ", userId=" + userId +
                 ", transactionDate=" + transactionDate +
+                ", isRenewal=" + isRenewal +
                 ", transactionStatus=" + transactionStatus +
                 ", paymentStatus=" + paymentStatus +
                 ", totalCost=" + totalCost +
