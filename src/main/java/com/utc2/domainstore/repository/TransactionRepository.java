@@ -22,14 +22,15 @@ public class TransactionRepository implements IRepository<TransactionModel> {
 
         try {
             // Bước 2: Chuẩn bị câu lệnh để chèn dữ liệu
-            String sql = "INSERT INTO transactions(id, user_id, transaction_date)"
-                    + " VALUES(?, ?, ?)";
+            String sql = "INSERT INTO transactions(id, user_id, transaction_date, is_renewal)"
+                    + " VALUES(?, ?, ?, ?)";
             PreparedStatement pst = con.prepareStatement(sql);
 
             // Bước 3: Gán giá trị cho các tham số 
             pst.setString(1, transaction.getTransactionId());
             pst.setInt(2, transaction.getUserId());
             pst.setTimestamp(3, transaction.getTransactionDate());
+            pst.setBoolean(4, transaction.getRenewal());
 
             // Bước 4: Thực thi câu lệnh INSERT và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
@@ -44,7 +45,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
             System.out.println(e.getMessage());
         } finally {
             JDBC.closeConnection(con);
-            System.out.println("Transaction - Insert: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Transaction - Insert: Đã đóng kết nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -77,7 +78,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Transaction - Update: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Transaction - Update: Đã đóng kết nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -107,7 +108,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Transaction - Delete: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Transaction - Delete: Đã đóng kết nối cơ sở dữ liệu");
         }
         return rowsAffected;
     }
@@ -119,12 +120,12 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         Connection con = JDBC.getConnection();
         try {
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
-            String sql = "SELECT ts.id transactions_id, ts.user_id, ts.transaction_date,"
-                    + "tsi.domain_id, tsi.price, d.years, ts.transaction_status"
+            String sql = "SELECT ts.*,"
+                    + "tsi.domain_id, tsi.price, d.years"
                     + " FROM transactions ts "
-                    + "join transactions_info tsi on ts.id = tsi.transactions_id "
-                    + "join domains d on tsi.domain_id = d.id "
-                    + "WHERE transactions_id = ?;";
+                    + "JOIN transactions_info tsi on ts.id = tsi.transactions_id "
+                    + "JOIN domains d on tsi.domain_id = d.id "
+                    + "WHERE ts.id = ?;";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, transaction.getTransactionId());
 
@@ -135,13 +136,14 @@ public class TransactionRepository implements IRepository<TransactionModel> {
             while (rs.next()) {
                 // Lấy dữ liệu từ ResultSet
                 if (t.getTransactionInfos().isEmpty()) {
-                    t.setTransactionId(rs.getString("transactions_id"));
+                    t.setTransactionId(rs.getString("ts.id"));
                     t.setUserId(rs.getInt("user_id"));
                     t.setTransactionDate(rs.getTimestamp("transaction_date"));
+                    t.setRenewal(rs.getBoolean("is_renewal"));
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
                     t.setTotalCost(0L);
                 }
-                TransactionInfoModel tsi = new TransactionInfoModel(rs.getString("transactions_id"),
+                TransactionInfoModel tsi = new TransactionInfoModel(rs.getString("ts.id"),
                         rs.getInt("domain_id"), rs.getLong("price"));
                 t.setTotalCost(t.getTotalCost() + tsi.getPrice());
                 t.getTransactionInfos().add(tsi);
@@ -153,7 +155,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Transaction - SelectById: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Transaction - SelectById: Đã đóng kết nối cơ sở dữ liệu");
         }
         return null;
     }
@@ -166,11 +168,11 @@ public class TransactionRepository implements IRepository<TransactionModel> {
 
         try {
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
-            String sql = "SELECT ts.id transactions_id, ts.user_id, ts.transaction_date,"
-                    + "tsi.domain_id, tsi.price, d.years, ts.transaction_status"
+            String sql = "SELECT ts.*,"
+                    + "tsi.domain_id, tsi.price, d.years"
                     + " FROM transactions ts "
-                    + "join transactions_info tsi on ts.id = tsi.transactions_id "
-                    + "join domains d on tsi.domain_id = d.id "
+                    + "JOIN transactions_info tsi on ts.id = tsi.transactions_id "
+                    + "JOIN domains d on tsi.domain_id = d.id "
                     + "ORDER BY ts.id;";
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -179,7 +181,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
 
             // Bước 4: Duyệt qua kết quả và xử lý dữ liệu
             while (rs.next()) {
-                String transactionId = rs.getString("transactions_id");
+                String transactionId = rs.getString("ts.id");
                 int userId = rs.getInt("user_id");
                 Long price = rs.getLong("price");
                 TransactionInfoModel tsi = new TransactionInfoModel(transactionId, userId, price);
@@ -203,6 +205,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setUserId(userId);
                     t.setTransactionDate(rs.getTimestamp("transaction_date"));
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
+                    t.setRenewal(rs.getBoolean("is_renewal"));
                     t.setTotalCost(price);
                     t.getTransactionInfos().add(tsi);
                     listTransaction.add(t);
@@ -214,7 +217,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Transaction - SelectAll: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Transaction - SelectAll: Đã đóng kết nối cơ sở dữ liệu");
         }
         return listTransaction;
     }
@@ -227,11 +230,11 @@ public class TransactionRepository implements IRepository<TransactionModel> {
 
         try {
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
-            String sql = "SELECT ts.id transactions_id, ts.user_id, ts.transaction_date,"
-                    + "tsi.domain_id, tsi.price, d.years, ts.transaction_status"
+            String sql = "SELECT ts.*,"
+                    + "tsi.domain_id, tsi.price, d.years"
                     + " FROM transactions ts "
-                    + "join transactions_info tsi on ts.id = tsi.transactions_id "
-                    + "join domains d on tsi.domain_id = d.id "
+                    + "JOIN transactions_info tsi on ts.id = tsi.transactions_id "
+                    + "JOIN domains d on tsi.domain_id = d.id "
                     + "WHERE " + condition + ";";
             PreparedStatement pst = con.prepareStatement(sql);
 
@@ -240,7 +243,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
 
             // Bước 4: Duyệt qua kết quả và xử lý dữ liệu
             while (rs.next()) {
-                String transactionId = rs.getString("transactions_id");
+                String transactionId = rs.getString("id");
                 int userId = rs.getInt("user_id");
                 Long price = rs.getLong("price");
                 TransactionInfoModel tsi = new TransactionInfoModel(transactionId, userId, price);
@@ -264,6 +267,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setUserId(userId);
                     t.setTransactionDate(rs.getTimestamp("transaction_date"));
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
+                    t.setRenewal(rs.getBoolean("is_renewal"));
                     t.setTotalCost(price);
                     t.getTransactionInfos().add(tsi);
                     listTransaction.add(t);
@@ -275,7 +279,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Transaction - SelectByCondition: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Transaction - SelectByCondition: Đã đóng kết nối cơ sở dữ liệu");
         }
         return listTransaction;
     }
@@ -294,6 +298,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                 t.setTransactionId(rs.getString("id"));
                 t.setUserId(rs.getInt("user_id"));
                 t.setTransactionDate(rs.getTimestamp("transaction_date"));
+                t.setRenewal(rs.getBoolean("is_renewal"));
                 t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
                 listTransaction.add(t);
             }
@@ -303,7 +308,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Transaction - SelectAll_V3: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Transaction - SelectAll_V3: Đã đóng kết nối cơ sở dữ liệu");
         }
         return listTransaction;
     }
@@ -327,6 +332,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                 t.setTransactionId(rs.getString("id"));
                 t.setUserId(rs.getInt("user_id"));
                 t.setTransactionDate(rs.getTimestamp("transaction_date"));
+                t.setRenewal(rs.getBoolean("is_renewal"));
                 t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
             }
             pst.close();
@@ -336,7 +342,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         } finally {
             // Bước 5: Đóng kết nối
             JDBC.closeConnection(con);
-            System.out.println("Transaction - SelectById_V2: Đã đóng kết nối cơ sở dữ liệu");
+//            System.out.println("Transaction - SelectById_V2: Đã đóng kết nối cơ sở dữ liệu");
         }
         return null;
     }

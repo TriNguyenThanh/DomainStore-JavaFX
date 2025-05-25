@@ -5,6 +5,7 @@ public class TransactionInfoModel {
     private String transactionId;
     private Integer domainId;
     private Long price;
+    private Integer years;
 
     public TransactionInfoModel() {
     }
@@ -15,6 +16,12 @@ public class TransactionInfoModel {
         this.price = price;
     }
 
+    public TransactionInfoModel(String transactionId, Integer domainId, Long price, Integer years) {
+        this.transactionId = transactionId;
+        this.domainId = domainId;
+        this.price = price;
+        this.years = years;
+    }
     public String getTransactionId() {
         return transactionId;
     }
@@ -39,9 +46,21 @@ public class TransactionInfoModel {
         this.price = price;
     }
 
-    @Override
-    public String toString() {
-        return "TransactionInfoModel{" + "transactionId=" + transactionId + ", domainId=" + domainId + ", price=" + price + '}';
+    public Integer getYears() {
+        return years;
     }
 
+    public void setYears(Integer years) {
+        this.years = years;
+    }
+
+    @Override
+    public String toString() {
+        return "TransactionInfoModel{" +
+                "transactionId='" + transactionId + '\'' +
+                ", domainId=" + domainId +
+                ", price=" + price +
+                ", years=" + years +
+                '}';
+    }
 }
