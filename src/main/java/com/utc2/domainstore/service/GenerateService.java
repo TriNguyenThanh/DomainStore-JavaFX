@@ -14,12 +14,9 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -106,7 +103,7 @@ public class GenerateService implements IGenerateService {
 
             System.out.println("Đang gửi về mail ...");
             EmailUtil.sendEmailFile(cus.getEmail(), "Hoá đơn dịch vụ UTC2 Domain Store",
-                    "Cảm ơn Quý khách đã sử dụng dịch vụ UTC2 Domain Store" , pdfPath);
+                    "Cảm ơn Quý khách đã sử dụng dịch vụ UTC2 Domain Store", pdfPath);
 
             String command = "cmd /c start \"\" \"" + pdfPath + "\"";
             Runtime.getRuntime().exec(command);
@@ -123,33 +120,33 @@ public class GenerateService implements IGenerateService {
         copyFont();
         try {
             JasperReport jasperReport;
-            if(type.equals("domain"))
+            if (type.equals("domain"))
                 jasperReport = input("/report/export_domain.jasper");
             else if (type.equals("user"))
                 jasperReport = input("/report/export_user.jasper");
-            else{
+            else {
                 System.out.println("Dữ liệu đầu vào không hợp lệ !!");
                 return;
             }
 
             List<Map<String, Object>> TABLE_DATASET = new ArrayList<>();
-            if(type.equals("domain")){
+            if (type.equals("domain")) {
                 for (DomainModel d : DomainRepository.getInstance().selectAll()) {
                     Map<String, Object> mp = new HashMap<>();
                     mp.put("id", d.getId());
                     mp.put("domain_name", d.getDomainName());
                     mp.put("tld_id", d.getTldId());
                     mp.put("status", String.valueOf(d.getStatus()));
-                    if(d.getActiveDate() != null) mp.put("active_date", String.valueOf(d.getActiveDate()));
+                    if (d.getActiveDate() != null) mp.put("active_date", String.valueOf(d.getActiveDate()));
                     else mp.put("active_date", "");
                     mp.put("years", d.getYears());
                     mp.put("price", d.getPrice());
-                    if(d.getOwnerId() != null) mp.put("owner_id", d.getOwnerId());
+                    if (d.getOwnerId() != null) mp.put("owner_id", d.getOwnerId());
                     else mp.put("owner_id", 0);
                     mp.put("created_at", String.valueOf(d.getCreatedAt()));
                     TABLE_DATASET.add(mp);
                 }
-            }else {
+            } else {
                 for (CustomerModel c : CustomerRepository.getInstance().selectAll()) {
                     Map<String, Object> mp = new HashMap<>();
                     mp.put("id", c.getId());
@@ -158,7 +155,7 @@ public class GenerateService implements IGenerateService {
                     mp.put("phone", c.getPhone());
                     mp.put("role", String.valueOf(c.getRole()));
                     mp.put("password", c.getPasswordHash());
-                    if(c.getIsDeleted()) mp.put("is_deleted", "Khoá");
+                    if (c.getIsDeleted()) mp.put("is_deleted", "Khoá");
                     else mp.put("is_deleted", "Hoạt động");
                     mp.put("created_at", String.valueOf(c.getCreatedAt()));
                     TABLE_DATASET.add(mp);
@@ -193,7 +190,7 @@ public class GenerateService implements IGenerateService {
             exporter.setConfiguration(config);
             exporter.exportReport();
 
-            String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Đường dẫn đến file chrome.exe
+            //String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Đường dẫn đến file chrome.exe
             String command = "cmd /c start \"\" \"" + Path + "\"";
             Runtime.getRuntime().exec(command);
         } catch (JRException | IOException e) {
@@ -234,6 +231,7 @@ public class GenerateService implements IGenerateService {
             System.err.println("Lỗi khi copy project: " + e.getMessage());
         }
     }
+
     private JasperReport input(String file) throws JRException {
         InputStream jasperStream = getClass().getResourceAsStream(file);
         return (JasperReport) JRLoader.loadObject(jasperStream);
