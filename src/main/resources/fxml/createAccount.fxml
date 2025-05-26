@@ -37,12 +37,6 @@
                         </VBox.margin>
                     </Label>
                     <Label styleClass="error"/>
-                    <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0" text="%personal_id">
-                        <VBox.margin>
-                            <Insets right="10.0"/>
-                        </VBox.margin>
-                    </Label>
-                    <Label styleClass="error"/>
                     <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0" text="%password">
                         <VBox.margin>
                             <Insets right="10.0"/>
