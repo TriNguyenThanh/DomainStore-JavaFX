@@ -8,13 +8,21 @@ import com.utc2.domainstore.utils.LocalDateCellFactory;
 import com.utc2.domainstore.utils.MoneyCellFactory;
 import com.utc2.domainstore.utils.YearCellFactory;
 import com.utc2.domainstore.view.ConfigManager;
+import com.utc2.domainstore.view.SceneManager;
 import com.utc2.domainstore.view.UserSession;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -23,10 +31,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MyDomainController implements Initializable {
     private ResourceBundle bundle;
-
+    private AtomicInteger renew = new AtomicInteger(0);
+    private Integer previousValue = 0;
     @FXML
     private TableView<DomainViewModel> tbDomain;
     @FXML
@@ -36,15 +46,73 @@ public class MyDomainController implements Initializable {
     @FXML
     private TableColumn<DomainViewModel, LocalDateTime> colDate;
     @FXML
-    private Button btUpdate;
+    private Button btUpdate, btComfirm;
     @FXML
     private TextField tfSearch;
+    private Spinner<Integer> tfYears;
+
+    @FXML
+    private void handleButton(ActionEvent e) {
+        if (e.getSource() == btUpdate) {
+            handleUpdate();
+        }
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
-        btUpdate.setVisible(false);
         initTable();
+    }
+
+    private void handleUpdate() {
+        DomainViewModel domainViewModel = null;
+        domainViewModel = tbDomain.getSelectionModel().getSelectedItem();
+        if (domainViewModel == null) {
+            SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("warning"), null, bundle.getString("error.noSelect"));
+        } else {
+            renew.set(0);
+            tfYears = new Spinner<>(0, 10, 1);
+            tfYears.setEditable(true);
+            tfYears.getEditor().setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    validateInput(tfYears);
+                }
+            });
+            // Khi mất focus, kiểm tra giá trị nhập
+            tfYears.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+                if (!isNowFocused) {
+                    validateInput(tfYears);
+                }
+            });
+
+            // Khi thay đổi bằng nút mũi tên
+            tfYears.valueProperty().addListener((obs, oldVal, newVal) -> {
+                previousValue = newVal; // Lưu lại giá trị hợp lệ gần nhất
+            });
+
+            btComfirm = new Button(bundle.getString("confirm"));
+            btComfirm.setOnAction(actionEvent -> {
+
+//                ((Stage) btComfirm.getScene().getWindow()).close();
+            });
+
+            HBox content = new HBox(20);
+            content.setPadding(new Insets(20));
+            content.getChildren().add(tfYears);
+            content.getChildren().add(btComfirm);
+
+            Scene scene = new Scene(content);
+            scene.getStylesheets().add(getClass().getResource("/style/subwindow.css").toExternalForm());
+
+            Stage secondStage = new Stage();
+            secondStage.setScene(scene);
+            secondStage.setResizable(false);
+            secondStage.setTitle(bundle.getString("year"));
+
+            secondStage.initModality(Modality.APPLICATION_MODAL);
+            secondStage.initOwner(SceneManager.getInstance().getStage());
+            secondStage.showAndWait();
+        }
     }
 
     private void initTable() {
@@ -102,5 +170,22 @@ public class MyDomainController implements Initializable {
             }
         }
         return list;
+    }
+
+    private void validateInput(Spinner<Integer> spinner) {
+        String text = spinner.getEditor().getText();
+        try {
+            int value = Integer.parseInt(text);
+            spinner.getValueFactory().setValue(value);
+            previousValue = value; // Cập nhật giá trị trước
+        } catch (NumberFormatException e) {
+            // Không phải số nguyên => khôi phục giá trị cũ
+            System.out.println("Loi khong phai la so nguyen");
+            spinner.getEditor().setText(String.valueOf(previousValue));
+        }
+    }
+
+    private void createTransactions(Integer years) {
+
     }
 }
