@@ -1,4 +1,3 @@
-
 package com.utc2.domainstore.service;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -22,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class PaymentService implements  IPaymentService{
+public class PaymentService implements IPaymentService {
     private final PaymentHistoryRepository paymentHistoryDAO = new PaymentHistoryRepository();
     private static VnPayService vnPayService = new VnPayService();
     public static ZaloPayService zaloPayService = new ZaloPayService();
@@ -30,12 +29,13 @@ public class PaymentService implements  IPaymentService{
     private static boolean isRunning = false;
     private static PaymentListener listener; // thêm dòng này
     private static HttpServer server;
+
     public void setListener(PaymentListener l) {
         listener = l;
     }
 
     @Override
-    public JSONObject getUserPaymentHistory(JSONObject json){
+    public JSONObject getUserPaymentHistory(JSONObject json) {
         int userId = json.getInt("user_id");
         JSONArray jsonArray = result("user_id = " + userId);
         JSONObject result = new JSONObject();
@@ -62,25 +62,26 @@ public class PaymentService implements  IPaymentService{
         PaymentHistoryModel pay = PaymentHistoryRepository.getInstance().selectById(new PaymentHistoryModel(transactionId));
         TransactionModel tran = TransactionRepository.getInstance()
                 .selectById(new TransactionModel(transactionId, null, null));
-        if (tran == null || TransactionStatusEnum.COMPLETED.equals(tran.getTransactionStatus())){
+
+        if (tran == null || TransactionStatusEnum.COMPLETED.equals(tran.getTransactionStatus())) {
             jsonObject.put("status", "failed");
             jsonObject.put("message", "Hoá đơn đã được thanh toán !!");
             System.out.println("Hoá đơn đã được thanh toán !!");
             return jsonObject;
         }
 
-        if(pay != null && PaymentStatusEnum.COMPLETED.equals(pay.getPaymentStatus())){
+        if (pay != null && PaymentStatusEnum.COMPLETED.equals(pay.getPaymentStatus())) {
             jsonObject.put("status", "failed");
             jsonObject.put("message", "Hoá đơn đã được thanh toán !!");
             System.out.println("Hoá đơn đã được thanh toán !!");
             return jsonObject;
         }
-        if(!tran.getRenewal()){
-            for(TransactionInfoModel t : tran.getTransactionInfos()){
+        if (!tran.getRenewal()) {
+            for (TransactionInfoModel t : tran.getTransactionInfos()) {
                 DomainModel domain = DomainRepository.getInstance()
                         .selectById(new DomainModel(t.getDomainId(), null, 0, null, null, 0));
                 // Nếu tên miền đã có chủ sỡ hữu
-                if(domain.getOwnerId() != null){
+                if (domain.getOwnerId() != null) {
                     String domainName = domain.getDomainName()
                             + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText();
                     System.out.println("Tên miền đã được bán: " + domainName);
@@ -92,15 +93,15 @@ public class PaymentService implements  IPaymentService{
         }
 
         String payment = json.getString("paymentMethod");
-        if(isRunning){
+        if (isRunning) {
             // Đóng server
             server.stop(0);
             isRunning = false;
         }
         server = HttpServer.create(new InetSocketAddress(8080), 0);
-        if(payment.equals("VNPAY")) server.createContext("/return", new VNPayReturnHandler());
+        if (payment.equals("VNPAY")) server.createContext("/return", new VNPayReturnHandler());
         else if (payment.equals("ZALOPAY")) server.createContext("/return", new ZaloPayReturnHandler());
-        else{
+        else {
             jsonObject.put("status", "failed");
             jsonObject.put("message", "Không hỗ trợ phương thức thanh toán này!!");
             return jsonObject;
@@ -116,11 +117,11 @@ public class PaymentService implements  IPaymentService{
         // Tạo transaction reference là timestamp hiện tại
         String txnRef = String.valueOf(System.currentTimeMillis());
         // Tạo URL thanh toán
-        if(payment.equals("VNPAY"))
+        if (payment.equals("VNPAY"))
             paymentURL = vnPayService.createPaymentUrl(json.getLong("total"), transactionId, txnRef);
-        else if(payment.equals("ZALOPAY"))
+        else if (payment.equals("ZALOPAY"))
             paymentURL = zaloPayService.createPaymentUrl(json.getLong("total"), transactionId, txnRef);
-        else{
+        else {
             System.out.println("Đang cập nhật ...");
         }
         try {
@@ -145,7 +146,8 @@ public class PaymentService implements  IPaymentService{
         System.out.println("Có lỗi khi tạo thanh toán");
         return null;
     }
-    private JSONArray result(String condition){
+
+    private JSONArray result(String condition) {
         JSONArray jsonArray = new JSONArray();
         for (PaymentHistoryModel p : paymentHistoryDAO.selectByCondition(condition)) {
             JSONObject jsonObject = new JSONObject();
@@ -154,7 +156,7 @@ public class PaymentService implements  IPaymentService{
             jsonObject.put("transaction_id", transactionId);
             ArrayList<TransactionInfoModel> list = TransactionInfoRepository.getInstance().selectByCondition("transactions_id = '" + transactionId + "'");
             int total = 0;
-            for(TransactionInfoModel tran : list){
+            for (TransactionInfoModel tran : list) {
                 total += tran.getPrice();
             }
             jsonObject.put("total", total);
@@ -165,6 +167,7 @@ public class PaymentService implements  IPaymentService{
         }
         return jsonArray;
     }
+
     public static class VNPayReturnHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -204,6 +207,7 @@ public class PaymentService implements  IPaymentService{
             }
         }
     }
+
     public static class ZaloPayReturnHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {

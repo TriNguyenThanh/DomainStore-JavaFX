@@ -150,6 +150,7 @@ public class ShoppingCartController implements Initializable {
         // create transaction
         JSONObject request = new JSONObject();
         request.put("user_id", UserSession.getInstance().getUserId());
+        request.put("is_renewal", 0);
         JSONArray domainArray = new JSONArray();
         for (DomainViewModel domain : selectedItems) {
             JSONObject domainJson = new JSONObject();

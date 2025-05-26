@@ -39,10 +39,6 @@
     -fx-text-fill: #000000;
 }
 
-.text-field:focused {
-    -fx-background-color: #BACFFF;
-}
-
 .button {
     -fx-background-color: #326FFF;
     -fx-background-radius: 10;
@@ -56,10 +52,6 @@
 
 .button:hover {
  -fx-background-color: #3F40FF;
-}
-
-.button:disabled {
-    -fx-background-color: #FFFFFF;
 }
 
 .button:pressed {

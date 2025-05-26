@@ -62,7 +62,7 @@
                             </center>
                             <bottom>
                                 <Button fx:id="btUpdate" mnemonicParsing="false" text="%update"
-                                        BorderPane.alignment="CENTER">
+                                        BorderPane.alignment="CENTER" onAction="#handleButton">
                                     <BorderPane.margin>
                                         <Insets top="10.0"/>
                                     </BorderPane.margin>
