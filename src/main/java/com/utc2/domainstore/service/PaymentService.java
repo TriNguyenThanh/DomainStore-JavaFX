@@ -25,6 +25,7 @@ import java.util.Map;
 public class PaymentService implements  IPaymentService{
     private final PaymentHistoryRepository paymentHistoryDAO = new PaymentHistoryRepository();
     private static VnPayService vnPayService = new VnPayService();
+    public static ZaloPayService zaloPayService = new ZaloPayService();
     private static String paymentURL;
     private static boolean isRunning = false;
     private static PaymentListener listener; // thêm dòng này
@@ -53,20 +54,27 @@ public class PaymentService implements  IPaymentService{
 
     @Override
     public JSONObject createPayment(JSONObject json) throws IOException {
-        // request: total (int), transactionId (String)
-        // response: true / false (boolean)
+        // request: total (int), transactionId (String), paymentMethod (VNPAY, MOMO, ZALOPAY) (String)
+        // response: status (String) , message (String)
         JSONObject jsonObject = new JSONObject();
         String transactionId = json.getString("transactionId");
+        ZaloPayService.TransactionID = transactionId;
         PaymentHistoryModel pay = PaymentHistoryRepository.getInstance().selectById(new PaymentHistoryModel(transactionId));
         TransactionModel tran = TransactionRepository.getInstance()
                 .selectById(new TransactionModel(transactionId, null, null));
-        if (tran == null || TransactionStatusEnum.COMPLETED.equals(tran.getTransactionStatus()) || PaymentStatusEnum.COMPLETED.equals(pay.getPaymentStatus())){
+        if (tran == null || TransactionStatusEnum.COMPLETED.equals(tran.getTransactionStatus())){
             jsonObject.put("status", "failed");
             jsonObject.put("message", "Hoá đơn đã được thanh toán !!");
             System.out.println("Hoá đơn đã được thanh toán !!");
             return jsonObject;
         }
 
+        if(pay != null && PaymentStatusEnum.COMPLETED.equals(pay.getPaymentStatus())){
+            jsonObject.put("status", "failed");
+            jsonObject.put("message", "Hoá đơn đã được thanh toán !!");
+            System.out.println("Hoá đơn đã được thanh toán !!");
+            return jsonObject;
+        }
         if(!tran.getRenewal()){
             for(TransactionInfoModel t : tran.getTransactionInfos()){
                 DomainModel domain = DomainRepository.getInstance()
@@ -83,22 +91,38 @@ public class PaymentService implements  IPaymentService{
             }
         }
 
-        if (!isRunning) {
-            server = HttpServer.create(new InetSocketAddress(8080), 0);
-            server.createContext("/return", new VNPayReturnHandler());
-            server.setExecutor(null); // Sử dụng executor mặc định
-            // Nếu server chưa chạy, khởi động lại
-            server.start();
-            isRunning = true;
-            System.out.println("Server đã được khởi động.");
+        String payment = json.getString("paymentMethod");
+        if(isRunning){
+            // Đóng server
+            server.stop(0);
+            isRunning = false;
         }
+        server = HttpServer.create(new InetSocketAddress(8080), 0);
+        if(payment.equals("VNPAY")) server.createContext("/return", new VNPayReturnHandler());
+        else if (payment.equals("ZALOPAY")) server.createContext("/return", new ZaloPayReturnHandler());
+        else{
+            jsonObject.put("status", "failed");
+            jsonObject.put("message", "Không hỗ trợ phương thức thanh toán này!!");
+            return jsonObject;
+        }
+        server.setExecutor(null); // Sử dụng executor mặc định
+        // Nếu server chưa chạy, khởi động lại
+        server.start();
+        isRunning = true;
+        System.out.println("Server đã được khởi động.");
         // Đổi trạng thái hoá đơn
         tran.setTransactionStatus(TransactionStatusEnum.PAYMENT);
 
         // Tạo transaction reference là timestamp hiện tại
         String txnRef = String.valueOf(System.currentTimeMillis());
         // Tạo URL thanh toán
-        paymentURL = vnPayService.createPaymentUrl(json.getLong("total"), transactionId, txnRef);
+        if(payment.equals("VNPAY"))
+            paymentURL = vnPayService.createPaymentUrl(json.getLong("total"), transactionId, txnRef);
+        else if(payment.equals("ZALOPAY"))
+            paymentURL = zaloPayService.createPaymentUrl(json.getLong("total"), transactionId, txnRef);
+        else{
+            System.out.println("Đang cập nhật ...");
+        }
         try {
             // Kiểm tra xem Desktop có được hỗ trợ không
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
@@ -107,6 +131,7 @@ public class PaymentService implements  IPaymentService{
                 Desktop.getDesktop().browse(uri);
                 // Cập nhật hoá đơn
                 TransactionRepository.getInstance().update(tran);
+
                 System.out.println("Tạo thanh toán thành công");
                 jsonObject.put("status", "success");
                 jsonObject.put("message", "Tạo thanh toán thành công");
@@ -165,6 +190,8 @@ public class PaymentService implements  IPaymentService{
             os.write(response.getBytes());
             os.close();
 
+            server.stop(0);
+
             // Gọi listener để thông báo kết quả thanh toán
             if (listener != null) {
                 listener.onPaymentProcessed(paymentResult);
@@ -175,10 +202,44 @@ public class PaymentService implements  IPaymentService{
             for (Map.Entry<String, String> entry : paymentResult.entrySet()) {
                 System.out.println(entry.getKey() + ": " + entry.getValue());
             }
+        }
+    }
+    public static class ZaloPayReturnHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            URI requestURI = exchange.getRequestURI(); // lấy phần sau dấu ?
+            String query = requestURI.getQuery(); // amount=12000&appid=...
 
-            // Đóng server
+            System.out.println("Nhận callback từ ZaloPay: " + query);
+
+            // Parse query string thành Map
+            Map<String, String> parameters = VnPayUtils.parseQueryString(query);
+
+            // Xử lý kết quả thanh toán
+            Map<String, String> paymentResult = zaloPayService.processReturnUrl(parameters);
+
+            // Tạo response HTML
+            String response = ZaloPayService.createResponseHTML(paymentResult, paymentURL);
+            // Gửi response về cho client
+            byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
+            exchange.sendResponseHeaders(200, responseBytes.length);
+            OutputStream os = exchange.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+
             server.stop(0);
-            isRunning = false;
+
+            // Gọi listener để thông báo kết quả thanh toán
+            if (listener != null) {
+                listener.onPaymentProcessed(paymentResult);
+            }
+
+            // In kết quả ra console
+            System.out.println("Kết quả xử lý thanh toán:");
+            for (Map.Entry<String, String> entry : paymentResult.entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+            }
         }
     }
 }

@@ -128,23 +128,24 @@ public class TestApp {
                   total(int),
                   status ("success" / "failed")
                   }  */
-//        TransactionService transactionService = new TransactionService();
-//        System.out.println(transactionService.createTransaction(domains));
+        TransactionService transactionService = new TransactionService();
+        System.out.println(transactionService.createTransaction(domains));
         /* thanh toán
         request: JSONObject {
                     total (int),
                     transactionId (String)
                  }
         response: true / false (boolean) */
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("transactionId", "HD011");
-//        jsonObject.put("total", 2970000);
-//        PaymentService paymentService = new PaymentService();
-//        System.out.println(paymentService.createPayment(jsonObject));
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("transactionId", "HD011");
+        jsonObject.put("total", 2970000);
+        jsonObject.put("paymentMethod", "VNPAY");
+        PaymentService paymentService = new PaymentService();
+        System.out.println(paymentService.createPayment(jsonObject));
 //          Tạo hoá đơn pdf
-        GenerateService generateService = new GenerateService();
+//        GenerateService generateService = new GenerateService();
 //        generateService.generateInvoicePDF("HD011");
-        generateService.exportExcel("user");
+//        generateService.exportExcel("user");
 //        generateService.exportExcel("domain");
     }
 }

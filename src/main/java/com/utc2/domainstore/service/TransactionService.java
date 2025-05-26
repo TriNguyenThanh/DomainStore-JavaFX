@@ -212,6 +212,9 @@ public class TransactionService implements ITransactionService {
                     DomainRepository.getInstance().update(domain);
                 }
             }
+        }else{
+            System.out.println("Không hỗ trợ cập nhật trạng thái này !!");
+            return;
         }
         System.out.println("UpdateTransactionStatus: Đã cập nhật thông tin tên miền ");
         // Cập nhật trạng thái hoá đơn
