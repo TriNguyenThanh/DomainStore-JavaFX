@@ -22,6 +22,7 @@ public class TransactionService implements ITransactionService {
         JSONArray jsonArray = new JSONArray();
         for (TransactionModel t : transactionRepository.selectAll()) {
             JSONObject jsonObject = new JSONObject();
+            jsonObject.put("is_renewal", t.getRenewal());
             jsonObject.put("id", t.getTransactionId());
             jsonObject.put("date", t.getTransactionDate());
             jsonObject.put("status", t.getTransactionStatus());
@@ -40,6 +41,7 @@ public class TransactionService implements ITransactionService {
         JSONArray jsonArray = new JSONArray();
         for (TransactionModel t : transactionRepository.selectByCondition("user_id = " + userId)) {
             JSONObject jsonObject = new JSONObject();
+            jsonObject.put("is_renewal", t.getRenewal());
             jsonObject.put("id", t.getTransactionId());
             jsonObject.put("date", t.getTransactionDate());
             jsonObject.put("status", t.getTransactionStatus());
@@ -70,6 +72,7 @@ public class TransactionService implements ITransactionService {
             jsonArray.put(jsonObject);
         }
         JSONObject result = new JSONObject();
+        result.put("is_renewal", t.getRenewal());
         result.put("user_id", t.getUserId());
         result.put("domains", jsonArray);
         return result;
@@ -91,6 +94,17 @@ public class TransactionService implements ITransactionService {
             jsonObject.put("message", "Dữ liệu đầu vào không hợp lệ");
             System.out.println("Tạo hoá đơn thất bại");
             return jsonObject;
+        }
+        for(TransactionModel t : TransactionRepository.getInstance().selectAll_V3()){
+            if(t.getTransactionStatus().equals(TransactionStatusEnum.PAYMENT)
+                || t.getTransactionStatus().equals(TransactionStatusEnum.CONFIRM)){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("status", "failed");
+                jsonObject.put("message", "Đang có hoá đơn khác đang được xử lý. Vui lòng hoàn tất hoặc huỷ trước khi tiếp tục.");
+                System.out.println("Đang có hoá đơn khác đang được xử lý. ");
+                return jsonObject;
+            }
+
         }
         int userId = json.getInt("user_id"); // lấy id người dùng
 
@@ -274,4 +288,5 @@ public class TransactionService implements ITransactionService {
         // Lấy dữ liệu tên miền
         return DomainRepository.getInstance().selectById(d);
     }
+
 }
