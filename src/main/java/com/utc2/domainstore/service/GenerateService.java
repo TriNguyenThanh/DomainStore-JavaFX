@@ -46,36 +46,36 @@ public class GenerateService implements IGenerateService {
             data.put("fullName", cus.getFullName());
             data.put("phone", cus.getPhone());
             data.put("email", cus.getEmail());
-            data.put("transactionDate", outputFormat.format(tran.getTransactionDate()));
-            data.put("invoiceDate", outputFormat.format(Timestamp.valueOf(LocalDateTime.now())));
+            data.put("invoiceDate", outputFormat.format(tran.getTransactionDate()));
             data.put("transactionId", transactionId);
             if (payment != null) {
+                data.put("transactionDate", outputFormat.format(payment.getPaymentDate()));
                 data.put("paymentMethod", String.valueOf(PaymentTypeEnum.getPaymentMethod(payment.getPaymentMethodId())));
                 if (PaymentStatusEnum.COMPLETED.equals(payment.getPaymentStatus())) {
                     data.put("paymentStatus", "ĐÃ THANH TOÁN");
                 } else data.put("paymentStatus", "CHƯA THANH TOÁN");
-                data.put("accountName", cus.getFullName());
-                data.put("accountNumber", "9704198526191432198");
-                data.put("bank", "NCB - Ngân hàng Quốc Dân");
-                data.put("content", "Thanh toán hóa đơn " + transactionId);
+                data.put("paymentId", payment.getPaymentCode());
+                data.put("price", tran.getTotalCost());
             } else {
-                data.put("paymentMethod", "Không");
+                data.put("transactionDate", "");
+                data.put("paymentMethod", "");
                 data.put("paymentStatus", "CHƯA THANH TOÁN");
-                data.put("accountName", "Không");
-                data.put("accountNumber", "Không");
-                data.put("bank", "Không");
-                data.put("content", "Không");
+                data.put("paymentId", "");
+                data.put("price", "");
             }
             List<Map<String, Object>> list = new ArrayList<>();
             list.add(data);
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
 
+            String text;
+            if(tran.getRenewal()) text = "Duy trì tên miền: ";
+            else text = "Đăng ký tên miền: ";
             List<Map<String, Object>> dataDomain = new ArrayList<>();
             for (TransactionInfoModel t : tran.getTransactionInfos()) {
                 DomainModel domain = domainRepo.selectById(new DomainModel(t.getDomainId(), null, 0, null, null, 0));
                 Map<String, Object> mp = new HashMap<>();
                 TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
-                mp.put("domainName", domain.getDomainName() + tld.getTldText());
+                mp.put("domainName", text + domain.getDomainName() + tld.getTldText());
                 mp.put("years", domain.getYears());
                 mp.put("price", tld.getPrice());
                 dataDomain.add(mp);

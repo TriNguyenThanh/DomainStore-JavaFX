@@ -59,15 +59,16 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         try {
             // Bước 2: Chuẩn bị câu lệnh để cập nhật dữ liệu
             String sql = "UPDATE transactions "
-                    + "SET user_id = ?,transaction_date = ?, transaction_status = ? "
+                    + "SET user_id = ?,transaction_date = ?, method = ?, transaction_status = ? "
                     + "WHERE id = ?;";
             PreparedStatement pst = con.prepareStatement(sql);
 
             // Bước 3: Gán giá trị cho các tham số 
             pst.setInt(1, transaction.getUserId());
             pst.setTimestamp(2, transaction.getTransactionDate());
-            pst.setString(3, String.valueOf(transaction.getTransactionStatus()));
-            pst.setString(4, transaction.getTransactionId());
+            pst.setInt(3, transaction.getPaymentMethod());
+            pst.setString(4, String.valueOf(transaction.getTransactionStatus()));
+            pst.setString(5, transaction.getTransactionId());
             // Bước 4: Thực thi câu lệnh UPDATE và lấy số dòng bị ảnh hưởng
             rowsAffected = pst.executeUpdate();
             System.out.println("Cập nhật dữ liệu thành công !! Có " + rowsAffected + " thay đổi");
@@ -140,6 +141,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setUserId(rs.getInt("user_id"));
                     t.setTransactionDate(rs.getTimestamp("transaction_date"));
                     t.setRenewal(rs.getBoolean("is_renewal"));
+                    t.setPaymentMethod(rs.getInt("method"));
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
                     t.setTotalCost(0L);
                 }
@@ -332,6 +334,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                 t.setTransactionId(rs.getString("id"));
                 t.setUserId(rs.getInt("user_id"));
                 t.setTransactionDate(rs.getTimestamp("transaction_date"));
+                t.setPaymentMethod(rs.getInt("method"));
                 t.setRenewal(rs.getBoolean("is_renewal"));
                 t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
             }
@@ -347,4 +350,39 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         return null;
     }
 
+    public ArrayList<TransactionModel> selectByCondition_V2(String condition) {
+        ArrayList<TransactionModel> listTransaction = new ArrayList<>();
+        // Bước 1: Mở kết nối đến database
+        Connection con = JDBC.getConnection();
+
+        try {
+            // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
+            String sql = "SELECT ts.*"
+                    + " FROM transactions ts "
+                    + "WHERE " + condition + " ORDER BY ts.transaction_date DESC;";
+            PreparedStatement pst = con.prepareStatement(sql);
+
+            // Bước 3: Thực thi truy vấn và nhận kết quả
+            ResultSet rs = pst.executeQuery();
+
+            // Bước 4: Duyệt qua kết quả và xử lý dữ liệu
+            TransactionModel t = new TransactionModel();
+            while (rs.next()) {
+                t.setTransactionId(rs.getString("id"));
+                t.setUserId(rs.getInt("user_id"));
+                t.setTransactionDate(rs.getTimestamp("transaction_date"));
+                t.setRenewal(rs.getBoolean("is_renewal"));
+                t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status").toUpperCase()));
+                listTransaction.add(t);
+            }
+            pst.close();
+        } catch (SQLException | NullPointerException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            // Bước 5: Đóng kết nối
+            JDBC.closeConnection(con);
+//            System.out.println("Transaction - SelectByCondition: Đã đóng kết nối cơ sở dữ liệu");
+        }
+        return listTransaction;
+    }
 }
