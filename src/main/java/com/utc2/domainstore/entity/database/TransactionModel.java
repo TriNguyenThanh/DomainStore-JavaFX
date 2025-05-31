@@ -9,6 +9,7 @@ public class TransactionModel {
     private Integer userId; // 
     private Timestamp transactionDate;
     private Boolean isRenewal;
+    private Integer paymentMethod;
     private TransactionStatusEnum transactionStatus;
     private PaymentStatusEnum paymentStatus;
     
@@ -71,6 +72,14 @@ public class TransactionModel {
         isRenewal = renewal;
     }
 
+    public Integer getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(Integer paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
     public TransactionStatusEnum getTransactionStatus() {
         return transactionStatus;
     }
@@ -106,6 +115,7 @@ public class TransactionModel {
                 ", userId=" + userId +
                 ", transactionDate=" + transactionDate +
                 ", isRenewal=" + isRenewal +
+                ", paymentMethod=" + paymentMethod +
                 ", transactionStatus=" + transactionStatus +
                 ", paymentStatus=" + paymentStatus +
                 ", totalCost=" + totalCost +

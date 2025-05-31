@@ -63,19 +63,9 @@ public class PaymentService implements IPaymentService {
         TransactionModel tran = TransactionRepository.getInstance()
                 .selectById(new TransactionModel(transactionId, null, null));
 
-        if (tran == null || TransactionStatusEnum.COMPLETED.equals(tran.getTransactionStatus())) {
-            jsonObject.put("status", "failed");
-            jsonObject.put("message", "Hoá đơn đã được thanh toán !!");
-            System.out.println("Hoá đơn đã được thanh toán !!");
-            return jsonObject;
-        }
+        if (TransactionStatusEnum.COMPLETED.equals(tran.getTransactionStatus()) || (pay != null && PaymentStatusEnum.COMPLETED.equals(pay.getPaymentStatus())))
+            return response("failed", "Hoá đơn đã được thanh toán !!");
 
-        if (pay != null && PaymentStatusEnum.COMPLETED.equals(pay.getPaymentStatus())) {
-            jsonObject.put("status", "failed");
-            jsonObject.put("message", "Hoá đơn đã được thanh toán !!");
-            System.out.println("Hoá đơn đã được thanh toán !!");
-            return jsonObject;
-        }
         if (!tran.getRenewal()) {
             for (TransactionInfoModel t : tran.getTransactionInfos()) {
                 DomainModel domain = DomainRepository.getInstance()
@@ -84,23 +74,26 @@ public class PaymentService implements IPaymentService {
                 if (domain.getOwnerId() != null) {
                     String domainName = domain.getDomainName()
                             + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText();
-                    System.out.println("Tên miền đã được bán: " + domainName);
-                    jsonObject.put("status", "failed");
-                    jsonObject.put("message", "Tên miền đã được bán " + domainName);
-                    return jsonObject;
+                    return response("failed", "Tên miền đã được bán " + domainName);
                 }
             }
         }
 
         String payment = json.getString("paymentMethod");
+
+        PaymentTypeEnum typeEnum = PaymentTypeEnum.valueOf(payment);
+        if ((tran.getPaymentMethod() > 0 && tran.getPaymentMethod() < 5 ) && tran.getPaymentMethod() != typeEnum.getCode()) {
+            return response("failed", "Không thể thay đổi phương thức thanh toán khi đã chọn. Vui lòng huỷ trước.");
+        }
+
         if (isRunning) {
             // Đóng server
             server.stop(0);
             isRunning = false;
         }
         server = HttpServer.create(new InetSocketAddress(8080), 0);
-        if (payment.equals("VNPAY")) server.createContext("/return", new VNPayReturnHandler());
-        else if (payment.equals("ZALOPAY")) server.createContext("/return", new ZaloPayReturnHandler());
+        if (payment.equals("VNPAY")) server.createContext("/vnpay", new VNPayReturnHandler());
+        else if (payment.equals("ZALOPAY")) server.createContext("/zalopay", new ZaloPayReturnHandler());
         else {
             jsonObject.put("status", "failed");
             jsonObject.put("message", "Không hỗ trợ phương thức thanh toán này!!");
@@ -111,8 +104,6 @@ public class PaymentService implements IPaymentService {
         server.start();
         isRunning = true;
         System.out.println("Server đã được khởi động.");
-        // Đổi trạng thái hoá đơn
-        tran.setTransactionStatus(TransactionStatusEnum.PAYMENT);
 
         // Tạo transaction reference là timestamp hiện tại
         String txnRef = String.valueOf(System.currentTimeMillis());
@@ -124,14 +115,19 @@ public class PaymentService implements IPaymentService {
         else {
             System.out.println("Đang cập nhật ...");
         }
+
+        // Cập nhật hoá đơn
+        tran.setTransactionStatus(TransactionStatusEnum.PAYMENT);
+        tran.setPaymentMethod(typeEnum.getCode());
+        TransactionRepository.getInstance().update(tran);
+
+
         try {
             // Kiểm tra xem Desktop có được hỗ trợ không
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 URI uri = new URI(paymentURL);
                 // Mở URL trong trình duyệt mặc định
                 Desktop.getDesktop().browse(uri);
-                // Cập nhật hoá đơn
-                TransactionRepository.getInstance().update(tran);
 
                 System.out.println("Tạo thanh toán thành công");
                 jsonObject.put("status", "success");
@@ -145,6 +141,13 @@ public class PaymentService implements IPaymentService {
         }
         System.out.println("Có lỗi khi tạo thanh toán");
         return null;
+    }
+
+    public void resetPayment(String transactionId) {
+        TransactionModel t = TransactionRepository.getInstance().selectById_V2(transactionId);
+        t.setPaymentMethod(5);
+        TransactionRepository.getInstance().update(t);
+        System.out.println("Reset thanh toán");
     }
 
     private JSONArray result(String condition) {
@@ -166,6 +169,14 @@ public class PaymentService implements IPaymentService {
             jsonArray.put(jsonObject);
         }
         return jsonArray;
+    }
+
+    private JSONObject response(String status, String message) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("status", status);
+        jsonObject.put("message", message);
+        System.out.println(message);
+        return jsonObject;
     }
 
     public static class VNPayReturnHandler implements HttpHandler {

@@ -28,7 +28,7 @@ public class ZaloPayService implements IPaymentGateway{
     private static final String KEY1 = "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL";
     private static final String KEY2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
     private static final String CREATE_ORDER_URL = "https://sb-openapi.zalopay.vn/v2/create";
-    private static final String CALLBACK_URL = "http://localhost:8080/return";
+    private static final String CALLBACK_URL = "http://localhost:8080/zalopay";
     protected static String TransactionID;
     @Override
     public String createPaymentUrl(Long amount, String transactionId, String txnRef) {
@@ -44,7 +44,7 @@ public class ZaloPayService implements IPaymentGateway{
             params.put("amount", String.valueOf(amount));
             params.put("description", "Thanh toán hoá đơn " + transactionId);
             params.put("bank_code", ""); // Optional, leave empty for user to choose
-            params.put("embed_data", "{\"redirecturl\":\"http://localhost:8080/return\"}"); // Optional JSON data
+            params.put("embed_data", "{\"redirecturl\":\"http://localhost:8080/zalopay\"}"); // Optional JSON data
             params.put("item", "[]"); // Optional JSON array of items
             params.put("callback_url", CALLBACK_URL);
 
