@@ -116,9 +116,10 @@ public class ChangePasswordController implements Initializable {
         // luu vao database
         JSONObject request = new JSONObject();
         request.put("user_id", UserSession.getInstance().getUserId());
+        request.put("email", rootEmail);
         request.put("password", tfNew.getText());
 
-        JSONObject respond = accountServices.updateUserPassword(request);
+        JSONObject respond = accountServices.updatingNewPassWord(request);
 
         if (respond.get("status").equals("failed")) {
             SceneManager.getInstance().showDialog(Alert.AlertType.ERROR, bundle.getString("error"), null, bundle.getString("notice.updatePassFailed"));

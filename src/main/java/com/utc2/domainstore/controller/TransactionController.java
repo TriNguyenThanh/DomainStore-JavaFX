@@ -84,7 +84,6 @@ public class TransactionController implements Initializable {
 
             // nếu nhấn đúp chuột vào dòng trong bảng
             if (event.getClickCount() == 2) {
-
                 BillInfo(selectedBill);
             }
         });
@@ -95,9 +94,6 @@ public class TransactionController implements Initializable {
                 // mở một cửa sổ mới với thông tin chi tiết của hóa đơn
                 BillInfo(selectedBill);
             }
-//            else {
-//                System.out.println("No row selected");
-//            }
         });
 
         ObservableList<BillViewModel> billObservableList = FXCollections.observableArrayList(getData());

@@ -8,6 +8,7 @@ public class BillViewModel {
     private STATUS status;
     private Integer price;
     private Integer userId;
+    private Boolean is_renewal = false;
 
     public BillViewModel(String id, LocalDateTime date, STATUS status, Integer price, Integer userId) {
         this.id = id;
@@ -58,5 +59,13 @@ public class BillViewModel {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Boolean getIs_renewal() {
+        return is_renewal;
+    }
+
+    public void setIs_renewal(Boolean is_renewal) {
+        this.is_renewal = is_renewal;
     }
 }
