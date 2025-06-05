@@ -13,8 +13,11 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
 
         try {
-            UserSession.getInstance().setUserId(1);
-            UserSession.getInstance().setRole(RoleEnum.ADMIN);
+            boolean test = true;
+            if (test) {
+                UserSession.getInstance().setUserId(1);
+                UserSession.getInstance().setRole(RoleEnum.ADMIN);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
