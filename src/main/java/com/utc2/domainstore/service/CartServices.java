@@ -95,6 +95,7 @@ public class CartServices implements ICart {
 //                 Cập nhật số năm nếu đã có
                 domainModel.setYears(years);
                 domainModel.setPrice(price);
+                domainModel.setOwnerId(cus_id);
                 DomainRepository.getInstance().update(domainModel);
             }
 
