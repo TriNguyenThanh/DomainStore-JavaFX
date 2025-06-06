@@ -55,13 +55,20 @@ CREATE INDEX idx_carts_id ON carts(id);
 CREATE INDEX idx_carts_cus_id ON carts(cus_id);
 CREATE INDEX idx_carts_domain_id ON carts(domain_id);
 
+CREATE TABLE PaymentMethod (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    method ENUM('VNPay', 'MoMo', 'CreditCard', 'ZaloPay', 'N/A')
+);
+
 CREATE TABLE Transactions (
     id VARCHAR(10) PRIMARY KEY NOT NULL,
     user_id INT NOT NULL,
     transaction_date TIMESTAMP NOT NULL,
     is_renewal BOOLEAN DEFAULT 0,
+    method INT NULL,
     transaction_status ENUM('CONFIRM', 'PAYMENT', 'COMPLETED', 'CANCELLED') DEFAULT 'CONFIRM',
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (method) REFERENCES PaymentMethod(id)
 );
 
 CREATE INDEX idx_transactions_user_id ON Transactions(user_id);
@@ -80,11 +87,6 @@ CREATE TABLE transactions_info (
 
 CREATE INDEX idx_transactions_info_transaction_id ON Transactions_info(transactions_id);
 CREATE INDEX idx_transactions_info_domain_id ON Transactions_info(domain_id);
-
-CREATE TABLE PaymentMethod (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    method ENUM('VNPay', 'MoMo', 'CreditCard', 'ZaloPay')
-);
 
 CREATE TABLE PaymentHistory (
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -41,5 +41,7 @@ public class UserSession {
 
     public void logout() {
         instance = null;
+        userId = 0;
+        role = RoleEnum.USER;
     }
 }
