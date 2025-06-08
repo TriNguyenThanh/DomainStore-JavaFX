@@ -182,7 +182,7 @@ public class ZaloPayService implements IPaymentGateway{
         String random = String.format("%06d", new Random().nextInt(1000000));
         return date + "_" + random;
     }
-    private static String getCurrentTimeString(String format) {
+    public static String getCurrentTimeString(String format) {
         Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT+7"));
         SimpleDateFormat fmt = new SimpleDateFormat(format);
         fmt.setCalendar(cal);
