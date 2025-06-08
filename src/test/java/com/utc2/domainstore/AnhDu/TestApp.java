@@ -139,9 +139,15 @@ public class TestApp {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("transactionId", "HD011");
         jsonObject.put("total", 2970000);
-        jsonObject.put("paymentMethod", "VNPAY");
+        jsonObject.put("paymentMethod", "MOMO");
         PaymentService paymentService = new PaymentService();
+//        paymentService.resetPayment("HD011");
         System.out.println(paymentService.createPayment(jsonObject));
+//        JSONObject jsonObject1 = new JSONObject();
+//        jsonObject1.put("transactionId", "HD011");
+//        jsonObject1.put("total", 2970000);
+//        jsonObject1.put("paymentMethod", "ZALOPAY");
+//        System.out.println(paymentService.createPayment(jsonObject1));
 //          Tạo hoá đơn pdf
 //        GenerateService generateService = new GenerateService();
 //        generateService.generateInvoicePDF("HD011");
