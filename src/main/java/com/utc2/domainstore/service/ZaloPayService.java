@@ -95,7 +95,8 @@ public class ZaloPayService implements IPaymentGateway{
                 PaymentHistoryModel paymentHistoryModel = new PaymentHistoryModel(TransactionID, appTransId,
                         PaymentTypeEnum.ZALOPAY.getCode(), PaymentStatusEnum.COMPLETED, Timestamp.valueOf(LocalDateTime.now()));
                 PaymentHistoryRepository.getInstance().insert(paymentHistoryModel);
-                transactionService.updateTransactionStatus(TransactionID, TransactionStatusEnum.COMPLETED);
+                // bỏ vì frontend đã xử lý rồi, nếu không có frontend xử lý thì mở
+//                transactionService.updateTransactionStatus(TransactionID, TransactionStatusEnum.COMPLETED);
             }else{
                 result.put("status", "failed");
                 result.put("message", "Thanh toán thất bại");
@@ -108,7 +109,7 @@ public class ZaloPayService implements IPaymentGateway{
             e.printStackTrace();
             result.put("status", "error");
             result.put("message", "Error parsing callback: " + e.getMessage());
-            transactionService.updateTransactionStatus(TransactionID, TransactionStatusEnum.CANCELLED);
+//            transactionService.updateTransactionStatus(TransactionID, TransactionStatusEnum.CANCELLED);
         }
         return result;
     }
