@@ -122,7 +122,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
         try {
             // Bước 2: Chuẩn bị câu lệnh SQL để truy vấn dữ liệu
             String sql = "SELECT ts.*,"
-                    + "tsi.domain_id, tsi.price, d.years"
+                    + "tsi.domain_id, tsi.price, d.years,tsi.years"
                     + " FROM transactions ts "
                     + "JOIN transactions_info tsi on ts.id = tsi.transactions_id "
                     + "JOIN domains d on tsi.domain_id = d.id "
@@ -146,7 +146,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setTotalCost(0L);
                 }
                 TransactionInfoModel tsi = new TransactionInfoModel(rs.getString("ts.id"),
-                        rs.getInt("domain_id"), rs.getLong("price"));
+                        rs.getInt("domain_id"), rs.getLong("price"), rs.getInt("tsi.years"));
                 t.setTotalCost(t.getTotalCost() + tsi.getPrice());
                 t.getTransactionInfos().add(tsi);
             }
