@@ -91,7 +91,7 @@ public class VnPayService implements IPaymentGateway{
             if (vnp_SecureHash == null) {
                 result.put("status", "invalid");
                 result.put("message", "Không tìm thấy chữ ký bảo mật");
-                transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
+//                transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
                 return result;
             }
 
@@ -125,7 +125,8 @@ public class VnPayService implements IPaymentGateway{
                     PaymentHistoryModel paymentHistoryModel = new PaymentHistoryModel(transactionId, fields.get("vnp_TransactionNo"),
                             PaymentTypeEnum.VNPAY.getCode(), PaymentStatusEnum.COMPLETED, Timestamp.valueOf(LocalDateTime.now()));
                     PaymentHistoryRepository.getInstance().insert(paymentHistoryModel);
-                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.COMPLETED);
+                    // bỏ vì frontend đã xử lý rồi, nếu không có frontend xử lý thì mở
+//                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.COMPLETED);
                 } else {
                     // Payment failed
                     result.put("status", "failed");
@@ -137,7 +138,7 @@ public class VnPayService implements IPaymentGateway{
                 // Invalid signature
                 result.put("status", "invalid");
                 result.put("message", "Chữ ký không hợp lệ");
-                transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
+//                transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
             }
         } catch (Exception e) {
             e.printStackTrace();

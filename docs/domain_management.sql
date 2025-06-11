@@ -56,8 +56,8 @@ CREATE INDEX idx_carts_cus_id ON carts(cus_id);
 CREATE INDEX idx_carts_domain_id ON carts(domain_id);
 
 CREATE TABLE PaymentMethod (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    method ENUM('VNPay', 'MoMo', 'CreditCard', 'ZaloPay', 'N/A')
+    id INT PRIMARY KEY,
+    method ENUM('N/A', 'VNPay', 'MoMo', 'CreditCard', 'ZaloPay')
 );
 
 CREATE TABLE Transactions (
@@ -65,7 +65,7 @@ CREATE TABLE Transactions (
     user_id INT NOT NULL,
     transaction_date TIMESTAMP NOT NULL,
     is_renewal BOOLEAN DEFAULT 0,
-    method INT NULL,
+    method INT DEFAULT 0,
     transaction_status ENUM('CONFIRM', 'PAYMENT', 'COMPLETED', 'CANCELLED') DEFAULT 'CONFIRM',
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (method) REFERENCES PaymentMethod(id)
@@ -212,18 +212,26 @@ INSERT INTO carts (cus_id, domain_id, years) VALUES
 (10, 18, 1),
 (10, 28, 1),
 (10, 32, 1);
-INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VALUES
-('HD001', 1, '2024-01-21 07:03:00', 'COMPLETED'),
-('HD002', 2, '2024-01-22 10:15:50', 'CANCELLED'),
-('HD003', 2, '2024-02-10 08:05:00', 'CONFIRM'),
-('HD004', 3, '2024-03-15 02:17:43', 'COMPLETED'),
-('HD005', 7, '2024-03-20 13:55:12', 'CANCELLED'),
-('HD006', 4, '2024-04-20 09:23:38', 'COMPLETED'),
-('HD007', 8, '2024-08-10 18:41:07', 'CONFIRM'),
-('HD008', 10, '2024-08-20 00:59:26', 'CANCELLED'),
-('HD009', 11, '2024-11-25 21:34:05', 'COMPLETED'),
-('HD010', 9, '2025-03-15 06:02:50', 'COMPLETED'),
-('HD011', 5, '2025-03-25 14:28:19', 'CONFIRM');
+
+INSERT INTO PaymentMethod(id, method) VALUES
+(0, 'N/A'),
+(1, 'VNPay'),
+(2, 'MoMo'),
+(3, 'CreditCard'),
+(4, 'ZaloPay');
+
+INSERT INTO Transactions (id, user_id, transaction_date, method, transaction_status) VALUES
+('HD001', 1, '2024-01-21 07:03:00', 0, 'COMPLETED'),
+('HD002', 2, '2024-01-22 10:15:50', 0, 'CANCELLED'),
+('HD003', 2, '2024-02-10 08:05:00', 0, 'CONFIRM'),
+('HD004', 3, '2024-03-15 02:17:43', 0, 'COMPLETED'),
+('HD005', 7, '2024-03-20 13:55:12', 0, 'CANCELLED'),
+('HD006', 4, '2024-04-20 09:23:38', 0, 'COMPLETED'),
+('HD007', 8, '2024-08-10 18:41:07', 0, 'CONFIRM'),
+('HD008', 10, '2024-08-20 00:59:26', 0, 'CANCELLED'),
+('HD009', 11, '2024-11-25 21:34:05', 0, 'COMPLETED'),
+('HD010', 9, '2025-03-15 06:02:50', 0, 'COMPLETED'),
+('HD011', 5, '2025-03-25 14:28:19', 0, 'CONFIRM');
 
 INSERT INTO Transactions_info (transactions_id, domain_id) VALUES
 -- HD001
@@ -282,12 +290,6 @@ INSERT INTO Transactions_info (transactions_id, domain_id) VALUES
 UPDATE Transactions_info tsi
 JOIN Domains d ON d.id = tsi.domain_id
 JOIN TopLevelDomain tld ON d.tld_id = tld.id SET tsi.price = d.years * tld.price;
-
-INSERT INTO PaymentMethod (method) VALUES
-('VNPay'),
-('MoMo'),
-('CreditCard'),
-('ZaloPay');
 
 INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
 ('HD001', '14931583', 1, 'COMPLETED', '2025-01-21 08:15:32'),

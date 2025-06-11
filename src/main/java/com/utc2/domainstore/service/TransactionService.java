@@ -1,7 +1,11 @@
 package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.entity.database.*;
+import com.utc2.domainstore.entity.view.BillViewModel;
+import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.repository.*;
+import com.utc2.domainstore.view.ConfigManager;
+import com.utc2.domainstore.view.UserSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -65,10 +69,18 @@ public class TransactionService implements ITransactionService {
             DomainModel d = new DomainModel();
             d.setId(ti.getDomainId());
             DomainModel domain = DomainRepository.getInstance().selectById(d);
-            jsonObject.put("name", domain.getDomainName() + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
+            String type = "";
+            if(t.getRenewal()) {
+                jsonObject.put("years", ti.getYears());
+                type = "Gia hạn " ;
+            }
+            else {
+                jsonObject.put("years", domain.getYears());
+                type = "Đăng ký " ;
+            }
+            jsonObject.put("name", type + domain.getDomainName() + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
             jsonObject.put("status", domain.getStatus());
             jsonObject.put("price", domain.getPrice());
-            jsonObject.put("years", domain.getYears());
             jsonArray.put(jsonObject);
         }
         JSONObject result = new JSONObject();
@@ -95,38 +107,36 @@ public class TransactionService implements ITransactionService {
             System.out.println("Tạo hoá đơn thất bại");
             return jsonObject;
         }
-        for(TransactionModel t : TransactionRepository.getInstance().selectAll_V3()){
-            if(t.getTransactionStatus().equals(TransactionStatusEnum.PAYMENT)
-                || t.getTransactionStatus().equals(TransactionStatusEnum.CONFIRM)){
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("status", "failed");
-                jsonObject.put("message", "Đang có hoá đơn khác đang được xử lý. Vui lòng hoàn tất hoặc huỷ trước khi tiếp tục.");
+        JSONObject respond = getAllUserTransaction(json);
+        JSONArray list = respond.getJSONArray("transactions");
+        for (Object o : list) {
+            JSONObject jsonObject = (JSONObject) o;
+            STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
+            if(status.equals(STATUS.PAYMENT) || status.equals(STATUS.CONFIRM)){
+                JSONObject j = new JSONObject();
+                j.put("status", "failed");
+                j.put("message", "Đang có hoá đơn khác đang được xử lý. Vui lòng hoàn tất hoặc huỷ trước khi tiếp tục.");
                 System.out.println("Đang có hoá đơn khác đang được xử lý. ");
                 return jsonObject;
             }
 
         }
+//        for(TransactionModel t : TransactionRepository.getInstance().selectAll_V3()){
+//            if(t.getTransactionStatus().equals(TransactionStatusEnum.PAYMENT)
+//                || t.getTransactionStatus().equals(TransactionStatusEnum.CONFIRM)){
+//                JSONObject jsonObject = new JSONObject();
+//                jsonObject.put("status", "failed");
+//                jsonObject.put("message", "Đang có hoá đơn khác đang được xử lý. Vui lòng hoàn tất hoặc huỷ trước khi tiếp tục.");
+//                System.out.println("Đang có hoá đơn khác đang được xử lý. ");
+//                return jsonObject;
+//            }
+//        }
         int userId = json.getInt("user_id"); // lấy id người dùng
 
         JSONArray domains = json.getJSONArray("domains");
 
         int renew = json.getInt("is_renewal");
         boolean is_renewal = renew == 1;
-
-        // Nếu tên miền đã nằm trong hoá đơn trước đó
-        for (int i = 0; i < domains.length(); i++) {
-            JSONObject jsonObject = domains.getJSONObject(i);
-            int domainId = getDomainByName(jsonObject.getString("name"));
-            String domainName = jsonObject.getString("name");
-            if (!transactionRepository.selectByCondition
-                    ("user_id = " + userId + " AND domain_id = " + domainId + " AND is_renewal = " + renew).isEmpty()) {
-                JSONObject response = new JSONObject();
-                response.put("status", "failed");
-                response.put("message", "Tên miền " + domainName + " đã có trong hoá đơn !!");
-                System.out.println("Tên miền " + domainName + " đã có trong hoá đơn !!");
-                return response;
-            }
-        }
 
         if (!is_renewal) {
             // Nếu tên miền ở trạng thái sold
@@ -140,6 +150,21 @@ public class TransactionService implements ITransactionService {
                     response.put("status", "failed");
                     response.put("message", "Tên miền " + domainName + " đã được bán !!");
                     System.out.println("Tên miền " + domainName + " đã được bán !!");
+                    return response;
+                }
+            }
+
+            // Nếu tên miền đã nằm trong hoá đơn trước đó
+            for (int i = 0; i < domains.length(); i++) {
+                JSONObject jsonObject = domains.getJSONObject(i);
+                int domainId = getDomainByName(jsonObject.getString("name"));
+                String domainName = jsonObject.getString("name");
+                if (!transactionRepository.selectByCondition
+                        ("user_id = " + userId + " AND domain_id = " + domainId + " AND is_renewal = " + renew).isEmpty()) {
+                    JSONObject response = new JSONObject();
+                    response.put("status", "failed");
+                    response.put("message", "Tên miền " + domainName + " đã có trong hoá đơn !!");
+                    System.out.println("Tên miền " + domainName + " đã có trong hoá đơn !!");
                     return response;
                 }
             }

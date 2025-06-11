@@ -1,12 +1,10 @@
 package com.utc2.domainstore.service;
 
-import com.sun.net.httpserver.HttpServer;
 import com.utc2.domainstore.entity.database.PaymentHistoryModel;
 import com.utc2.domainstore.entity.database.PaymentStatusEnum;
 import com.utc2.domainstore.entity.database.PaymentTypeEnum;
 import com.utc2.domainstore.entity.database.TransactionStatusEnum;
 import com.utc2.domainstore.repository.PaymentHistoryRepository;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.crypto.Mac;
@@ -16,60 +14,66 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-public class ZaloPayService implements IPaymentGateway{
-    private static final String APP_ID = "2553";
-    private static final String KEY1 = "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL";
-    private static final String KEY2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
-    private static final String CREATE_ORDER_URL = "https://sb-openapi.zalopay.vn/v2/create";
-    private static final String CALLBACK_URL = "http://localhost:8080/zalopay";
-    protected static String TransactionID;
+import static com.utc2.domainstore.service.ZaloPayService.getCurrentTimeString;
+
+public class MoMoService implements IPaymentGateway{
+    // MoMo configuration - replace with actual values from MoMo
+    private static final String PARTNER_CODE = "MOMO"; // MoMo Partner Code
+    private static final String ACCESS_KEY = "F8BBA842ECF85"; // MoMo Access Key
+    private static final String SECRET_KEY = "K951B6PE1waDMi640xX08PD3vg6EkVlz"; // MoMo Secret Key
+    private static final String CREATE_ORDER_URL = "https://test-payment.momo.vn/v2/gateway/api/create";
+    private static final String IPN_URL = "http://localhost:8080/momo";
+    private static final String REDIRECT_URL = "http://localhost:8080/momo";
     @Override
-    public String createPaymentUrl(Long amount, String transactionId, String txnRef) {
+    public String createPaymentUrl(Long amount, String transactionId, String tnxId) {
+        String orderId = transactionId + "_" + tnxId;
+        String requestId = orderId +"_req";
+        Map<String, String> result = new HashMap<>();
         try {
-            Map<String, String> params = new HashMap<>();
-//            long appTime = System.currentTimeMillis();
-            String appTransId = generateAppTransId();
-            params.put("app_id", APP_ID);
-            params.put("app_user", "demo_user"); // Should be unique user ID in production
-//            params.put("app_time", String.valueOf(appTime));
-            params.put("app_time", txnRef);
-            params.put("app_trans_id", appTransId);
+            JSONObject params = new JSONObject();
+            params.put("partnerCode", PARTNER_CODE);
+            params.put("accessKey", ACCESS_KEY);
+            params.put("requestId", requestId);
             params.put("amount", String.valueOf(amount));
-            params.put("description", "Thanh toán hoá đơn " + transactionId);
-            params.put("bank_code", ""); // Optional, leave empty for user to choose
-            params.put("embed_data", "{\"redirecturl\":\"http://localhost:8080/zalopay\"}"); // Optional JSON data
-            params.put("item", "[]"); // Optional JSON array of items
-            params.put("callback_url", CALLBACK_URL);
+            params.put("orderId", orderId);
+            params.put("orderInfo", "Thanh toán hoá đơn " + transactionId);
+            params.put("redirectUrl", REDIRECT_URL);
+            params.put("ipnUrl", IPN_URL);
+            params.put("requestType", "captureWallet");
+            params.put("extraData", ""); // Optional
+            params.put("lang", "vi");
 
-            // Generate MAC (checksum)
-            String data = params.get("app_id") + "|" +
-                    params.get("app_trans_id") + "|" +
-                    params.get("app_user") + "|" +
-                    params.get("amount") + "|" +
-                    params.get("app_time") + "|" +
-                    params.get("embed_data") + "|" +
-                    params.get("item");
-            String mac = hmacSHA256(KEY1, data);
-            params.put("mac", mac);
+            // Generate signature
+            String rawSignature = "accessKey=" + ACCESS_KEY +
+                    "&amount=" + amount +
+                    "&extraData=" + "" +
+                    "&ipnUrl=" + IPN_URL +
+                    "&orderId=" + orderId +
+                    "&orderInfo=" + "Thanh toán hoá đơn " + transactionId +
+                    "&partnerCode=" + PARTNER_CODE +
+                    "&redirectUrl=" + REDIRECT_URL +
+                    "&requestId=" + requestId +
+                    "&requestType=captureWallet";
+            String signature = hmacSHA256(SECRET_KEY, rawSignature);
+            params.put("signature", signature);
 
-            // Send POST request to ZaloPay
-            String response = sendPostRequest(CREATE_ORDER_URL, params);
+            // Send POST request to MoMo
+            String response = sendPostRequest(CREATE_ORDER_URL, params.toString());
             JSONObject jsonResponse = new JSONObject(response);
 
-            int returnCode = jsonResponse.getInt("return_code");
-            if (returnCode == 1) {
-                String url = jsonResponse.getString("order_url");
-//                System.out.println("Tạo URL thành công: " + url);
-                return url;
+            // Handle resultCode as a potential integer
+            String resultCode = String.valueOf(jsonResponse.get("resultCode"));
+            if ("0".equals(resultCode)) {
+                return jsonResponse.getString("payUrl");
             } else {
-                System.out.println("Tạo URL thất bại: " + jsonResponse.getString("return_message"));
+                result.put("status", "failed");
+                result.put("message", jsonResponse.getString("message"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,38 +85,47 @@ public class ZaloPayService implements IPaymentGateway{
     @Override
     public Map<String, String> processReturnUrl(Map<String, String> fields) {
         Map<String, String> result = new HashMap<>();
+        String orderId = fields.get("orderId");
+        String requestId = fields.get("requestId");
+        String amount = fields.get("amount");
+        String transId = fields.get("transId");
+        String resultCode = String.valueOf(fields.get("resultCode"));
+
         TransactionService transactionService = new TransactionService();
+        int n = orderId.indexOf('_');
+        String transactionId = orderId.substring(0,n);
         try {
-            String status = fields.get("status");
-            String appTransId = fields.get("apptransid");
-            if("1".equals(status)){
+            // Process based on resultCode
+            if ("0".equals(resultCode)) {
                 result.put("status", "success");
                 result.put("message", "Thanh toán thành công");
-                result.put("apptransid", appTransId);
-                result.put("amount", fields.get("amount"));
-                result.put("transactionId", TransactionID);
+                result.put("orderId", orderId);
+                result.put("amount", amount);
+                result.put("transId", transId);
+                result.put("requestId", requestId);
 
-                PaymentHistoryModel paymentHistoryModel = new PaymentHistoryModel(TransactionID, appTransId,
-                        PaymentTypeEnum.ZALOPAY.getCode(), PaymentStatusEnum.COMPLETED, Timestamp.valueOf(LocalDateTime.now()));
+                // Update order status
+                PaymentHistoryModel paymentHistoryModel = new PaymentHistoryModel(transactionId, transId,
+                        PaymentTypeEnum.MOMO.getCode(), PaymentStatusEnum.COMPLETED, Timestamp.valueOf(LocalDateTime.now()));
                 PaymentHistoryRepository.getInstance().insert(paymentHistoryModel);
                 // bỏ vì frontend đã xử lý rồi, nếu không có frontend xử lý thì mở
-//                transactionService.updateTransactionStatus(TransactionID, TransactionStatusEnum.COMPLETED);
-            }else{
+//                transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.COMPLETED);
+            } else {
                 result.put("status", "failed");
-                result.put("message", "Thanh toán thất bại");
-                result.put("apptransid", appTransId);
-                result.put("amount", fields.get("amount"));
-                result.put("transactionId", TransactionID);
-//                transactionService.updateTransactionStatus(TransactionID, TransactionStatusEnum.PAYMENT);
+                result.put("message", "Thanh toán thất bại. Lỗi: " + resultCode);
+                result.put("orderId", orderId);
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             result.put("status", "error");
             result.put("message", "Error parsing callback: " + e.getMessage());
-//            transactionService.updateTransactionStatus(TransactionID, TransactionStatusEnum.CANCELLED);
+//            transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
         }
         return result;
     }
+    /**
+     * Calculate HMAC-SHA256
+     */
     public static String hmacSHA256(String key, String data) {
         try {
             Mac hmac = Mac.getInstance("HmacSHA256");
@@ -131,31 +144,21 @@ public class ZaloPayService implements IPaymentGateway{
             return "";
         }
     }
-
     /**
-     * Send POST request with form data
+     * Send POST request with JSON body
      */
-    private static String sendPostRequest(String url, Map<String, String> params) {
+    private static String sendPostRequest(String url, String jsonBody) {
         StringBuilder response = new StringBuilder();
         try {
             URL obj = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoOutput(true);
-
-            // Build form data
-            StringBuilder postData = new StringBuilder();
-            for (Map.Entry<String, String> param : params.entrySet()) {
-                if (postData.length() != 0) postData.append('&');
-                postData.append(URLEncoder.encode(param.getKey(), StandardCharsets.UTF_8.toString()));
-                postData.append('=');
-                postData.append(URLEncoder.encode(param.getValue(), StandardCharsets.UTF_8.toString()));
-            }
 
             // Send request
             OutputStream os = conn.getOutputStream();
-            os.write(postData.toString().getBytes(StandardCharsets.UTF_8));
+            os.write(jsonBody.getBytes(StandardCharsets.UTF_8));
             os.flush();
             os.close();
 
@@ -169,27 +172,15 @@ public class ZaloPayService implements IPaymentGateway{
                 }
                 in.close();
             } else {
-                response.append("{\"return_code\": \"0\", \"return_message\": \"HTTP Error " + responseCode + "\"}");
+                response.append("{\"resultCode\": \"99\", \"message\": \"HTTP Error " + responseCode + "\"}");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.append("{\"return_code\": \"0\", \"return_message\": \"Exception: " + e.getMessage() + "\"}");
+            response.append("{\"resultCode\": \"99\", \"message\": \"Exception: " + e.getMessage() + "\"}");
         }
         return response.toString();
     }
-    private static String generateAppTransId() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
-        String date = dateFormat.format(new Date());
-        String random = String.format("%06d", new Random().nextInt(1000000));
-        return date + "_" + random;
-    }
-    public static String getCurrentTimeString(String format) {
-        Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT+7"));
-        SimpleDateFormat fmt = new SimpleDateFormat(format);
-        fmt.setCalendar(cal);
-        return fmt.format(cal.getTimeInMillis());
-    }
-    static String createResponseHTML(Map<String, String> paymentResult, String paymentURL) {
+    public String createResponseHTML(Map<String, String> paymentResult, String paymentURL) {
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html>");
         html.append("<html lang='vi'>");
@@ -216,7 +207,10 @@ public class ZaloPayService implements IPaymentGateway{
             html.append("<div class='space-y-4'>");
             html.append("<div class='flex justify-between border-b pb-2'>");
             html.append("<span class='text-gray-600 font-medium'>Mã đơn hàng:</span>");
-            html.append("<span class='text-gray-800'>").append(paymentResult.get("transactionId")).append("</span>");
+            String orderId = paymentResult.get("orderId");
+            int n = orderId.indexOf('_');
+            String transactionId = orderId.substring(0,n);
+            html.append("<span class='text-gray-800'>").append(transactionId).append("</span>");
             html.append("</div>");
             html.append("<div class='flex justify-between border-b pb-2'>");
             html.append("<span class='text-gray-600 font-medium'>Số tiền:</span>");
@@ -227,7 +221,7 @@ public class ZaloPayService implements IPaymentGateway{
             html.append("</div>");
             html.append("<div class='flex justify-between border-b pb-2'>");
             html.append("<span class='text-gray-600 font-medium'>Nội dung thanh toán:</span>");
-            html.append("<span class='text-gray-800'>").append("Thanh toán hoá đơn ").append(paymentResult.get("transactionId")).append("</span>");
+            html.append("<span class='text-gray-800'>").append("Thanh toán hoá đơn ").append(transactionId).append("</span>");
             html.append("</div>");
             html.append("<div class='flex justify-between border-b pb-2'>");
             html.append("<span class='text-gray-600 font-medium'>Thời gian:</span>");
@@ -235,11 +229,11 @@ public class ZaloPayService implements IPaymentGateway{
             html.append("</div>");
             html.append("<div class='flex justify-between border-b pb-2'>");
             html.append("<span class='text-gray-600 font-medium'>Mã giao dịch:</span>");
-            html.append("<span class='text-gray-800'>").append(paymentResult.get("apptransid")).append("</span>");
+            html.append("<span class='text-gray-800'>").append(paymentResult.get("transId")).append("</span>");
             html.append("</div>");
             html.append("</div>");
             html.append("<div class='mt-6 text-center'>");
-            html.append("<a href='https://docs.zalopay.vn/v2/' class='inline-block bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700 transition duration-300'>Về trang chủ</a>");
+            html.append("<a href='https://vnpay.vn/' class='inline-block bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700 transition duration-300'>Về trang chủ</a>");
             html.append("</div>");
         } else {
             html.append("<div class='text-center'>");
