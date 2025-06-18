@@ -61,7 +61,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
     @FXML
     private AnchorPane paymentPanel;
     @FXML
-    private RadioButton rbVN_Pay, rbZalo_Pay;
+    private RadioButton rbVN_Pay, rbZalo_Pay, rbMoMo_Pay;
 
     @FXML
     private void handleButtonOnAction(ActionEvent e) throws IOException {
@@ -85,6 +85,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
         this.bundle = resources;
         rbVN_Pay.setToggleGroup(paymentMethod);
         rbZalo_Pay.setToggleGroup(paymentMethod);
+        rbMoMo_Pay.setToggleGroup(paymentMethod);
         paymentMethod.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
             if (newToggle != null) {
                 RadioButton selected = (RadioButton) newToggle;
@@ -130,6 +131,8 @@ public class TransactionInfoController implements Initializable, PaymentListener
         } else if (rbPayment == rbZalo_Pay) {
             paymentmethod = "ZALOPAY";
             rbVN_Pay.setDisable(true);
+        } else if (rbPayment == rbMoMo_Pay) {
+            paymentmethod = "MOMO";
         }
         // Handle the payment return
         JSONObject request = new JSONObject();

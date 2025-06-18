@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 public class ChangePasswordController implements Initializable {
     private ResourceBundle bundle;
     private AccountServices accountServices;
-    private String rootEmail;
+    private String rootEmail = "";
     private boolean isConfirm = false;
     private boolean isChecking = false;
 
@@ -88,6 +88,43 @@ public class ChangePasswordController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
         accountServices = new AccountServices();
+        setAction();
+    }
+
+    private void setAction() {
+        tfEmail.setOnAction(ActionEvent -> {
+            if (!tfEmail.getText().isBlank() && !tfPhone.getText().isBlank()) {
+                checkInfo();
+            }
+        });
+        tfPhone.setOnAction(ActionEvent -> {
+            if (!tfEmail.getText().isBlank() && !tfPhone.getText().isBlank()) {
+                checkInfo();
+            }
+        });
+        tfOTP.setOnAction(ActionEvent -> {
+            if (!tfOTP.getText().isBlank()) {
+                checkOTP();
+            }
+        });
+        tfNew.setOnAction(ActionEvent -> {
+            if (!tfNew.getText().isBlank() && !tfConfirm.getText().isBlank()) {
+                changePassword();
+            }
+        });
+        tfConfirm.setOnAction(ActionEvent -> {
+            if (!tfNew.getText().isBlank() && !tfConfirm.getText().isBlank()) {
+                changePassword();
+            }
+        });
+    }
+
+    public void setRootEmail(String email) {
+        rootEmail = email;
+        if (!rootEmail.isBlank()) {
+            tfEmail.setText(rootEmail);
+            tfEmail.setEditable(false);
+        }
     }
 
     private void changePassword() {
@@ -134,9 +171,9 @@ public class ChangePasswordController implements Initializable {
             System.out.println("Button is already processing.");
             return;
         }
-
         isConfirm = true;
         btConfirm1.setDisable(true);
+        btCancel1.setDisable(true);
         System.out.println("Button is disabled for processing.");
 
         String phone = tfPhone.getText();
@@ -168,6 +205,7 @@ public class ChangePasswordController implements Initializable {
         if (hasError) {
             isConfirm = false;
             btConfirm1.setDisable(false);
+            btCancel1.setDisable(false);
             System.out.println("Validation failed, button re-enabled.");
             return;
         }
@@ -201,6 +239,7 @@ public class ChangePasswordController implements Initializable {
 
             isConfirm = false;
             btConfirm1.setDisable(false);
+            btCancel1.setDisable(false);
             System.out.println("Processing done, button re-enabled.");
         });
 
@@ -211,6 +250,7 @@ public class ChangePasswordController implements Initializable {
 
             isConfirm = false;
             btConfirm1.setDisable(false);
+            btCancel1.setDisable(false);
             System.out.println("Task failed, button re-enabled.");
             task.getException().printStackTrace(); // Ghi log lỗi
         });
@@ -247,6 +287,9 @@ public class ChangePasswordController implements Initializable {
             } else {
                 SceneManager.getInstance().showDialog(Alert.AlertType.INFORMATION, bundle.getString("recovery_password"), null, bundle.getString("error.otpIncorrect"));
             }
+
+            btConfirm.setDisable(false);
+            isChecking = false;
         });
 
         new Thread(task).start();
