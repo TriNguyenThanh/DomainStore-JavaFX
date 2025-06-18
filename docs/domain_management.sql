@@ -56,8 +56,8 @@ CREATE INDEX idx_carts_cus_id ON carts(cus_id);
 CREATE INDEX idx_carts_domain_id ON carts(domain_id);
 
 CREATE TABLE PaymentMethod (
-    id INT PRIMARY KEY,
-    method ENUM('N/A', 'VNPay', 'MoMo', 'CreditCard', 'ZaloPay')
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    method ENUM('VNPay', 'MoMo', 'CreditCard', 'ZaloPay', 'N/A')
 );
 
 CREATE TABLE Transactions (
@@ -65,7 +65,7 @@ CREATE TABLE Transactions (
     user_id INT NOT NULL,
     transaction_date TIMESTAMP NOT NULL,
     is_renewal BOOLEAN DEFAULT 0,
-    method INT DEFAULT 0,
+    method INT NULL,
     transaction_status ENUM('CONFIRM', 'PAYMENT', 'COMPLETED', 'CANCELLED') DEFAULT 'CONFIRM',
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (method) REFERENCES PaymentMethod(id)
@@ -212,84 +212,82 @@ INSERT INTO carts (cus_id, domain_id, years) VALUES
 (10, 18, 1),
 (10, 28, 1),
 (10, 32, 1);
+INSERT INTO Transactions (id, user_id, transaction_date, transaction_status) VALUES
+('HD001', 1, '2024-01-21 07:03:00', 'COMPLETED'),
+('HD002', 2, '2024-01-22 10:15:50', 'CANCELLED'),
+('HD003', 2, '2024-02-10 08:05:00', 'CONFIRM'),
+('HD004', 3, '2024-03-15 02:17:43', 'COMPLETED'),
+('HD005', 7, '2024-03-20 13:55:12', 'CANCELLED'),
+('HD006', 4, '2024-04-20 09:23:38', 'COMPLETED'),
+('HD007', 8, '2024-08-10 18:41:07', 'CONFIRM'),
+('HD008', 10, '2024-08-20 00:59:26', 'CANCELLED'),
+('HD009', 11, '2024-11-25 21:34:05', 'COMPLETED'),
+('HD010', 9, '2025-03-15 06:02:50', 'COMPLETED'),
+('HD011', 5, '2025-03-25 14:28:19', 'CONFIRM');
 
-INSERT INTO PaymentMethod(id, method) VALUES
-(0, 'N/A'),
-(1, 'VNPay'),
-(2, 'MoMo'),
-(3, 'CreditCard'),
-(4, 'ZaloPay');
-
-INSERT INTO Transactions (id, user_id, transaction_date, method, transaction_status) VALUES
-('HD001', 1, '2024-01-21 07:03:00', 0, 'COMPLETED'),
-('HD002', 2, '2024-01-22 10:15:50', 0, 'CANCELLED'),
-('HD003', 2, '2024-02-10 08:05:00', 0, 'CONFIRM'),
-('HD004', 3, '2024-03-15 02:17:43', 0, 'COMPLETED'),
-('HD005', 7, '2024-03-20 13:55:12', 0, 'CANCELLED'),
-('HD006', 4, '2024-04-20 09:23:38', 0, 'COMPLETED'),
-('HD007', 8, '2024-08-10 18:41:07', 0, 'CONFIRM'),
-('HD008', 10, '2024-08-20 00:59:26', 0, 'CANCELLED'),
-('HD009', 11, '2024-11-25 21:34:05', 0, 'COMPLETED'),
-('HD010', 9, '2025-03-15 06:02:50', 0, 'COMPLETED'),
-('HD011', 5, '2025-03-25 14:28:19', 0, 'CONFIRM');
-
-INSERT INTO Transactions_info (transactions_id, domain_id) VALUES
+INSERT INTO Transactions_info (transactions_id, domain_id, years) VALUES
 -- HD001
-('HD001', 15),
+('HD001', 15, 2),
 
 -- HD002 (cancelled)
-('HD002', 11),
-('HD002', 13),
+('HD002', 11, 1),
+('HD002', 13, 1),
 
 -- HD003
-('HD003', 5),
-('HD003', 12),
-('HD003', 6),
+('HD003', 5, 1),
+('HD003', 12, 1),
+('HD003', 6, 1),
 
 -- HD004
-('HD004', 2),
-('HD004', 3),
-('HD004', 4),
+('HD004', 2, 1),
+('HD004', 3, 1),
+('HD004', 4, 1),
 
 -- HD005 (cancelled)
-('HD005', 7),
-('HD005', 8),
-('HD005', 9),
-('HD005', 10),
+('HD005', 7, 1),
+('HD005', 8, 1),
+('HD005', 9, 1),
+('HD005', 10, 1),
 
 -- HD006
-('HD006', 14),
-('HD006', 16),
-('HD006', 19),
+('HD006', 14, 1),
+('HD006', 16, 1),
+('HD006', 19, 1),
 
 -- HD007
-('HD007', 22),
-('HD007', 23),
-('HD007', 24),
+('HD007', 22, 1),
+('HD007', 23, 1),
+('HD007', 24, 1),
 
 -- HD008 (cancelled)
-('HD008', 17),
-('HD008', 18),
-('HD008', 28),
-('HD008', 32),
+('HD008', 17, 1),
+('HD008', 18, 1),
+('HD008', 28, 1),
+('HD008', 32, 1),
 
 -- HD009
-('HD009', 25),
-('HD009', 30),
+('HD009', 25, 1),
+('HD009', 30, 1),
 
 -- HD010
-('HD010', 33),
-('HD010', 34),
-('HD010', 35),
+('HD010', 33, 1),
+('HD010', 34, 1),
+('HD010', 35, 1),
 
 -- HD011
-('HD011', 21),
-('HD011', 26),
-('HD011', 27);
+('HD011', 21, 1),
+('HD011', 26, 1),
+('HD011', 27, 1);
 
 UPDATE Transactions_info tsi
 JOIN Domains d ON d.id = tsi.domain_id
 JOIN TopLevelDomain tld ON d.tld_id = tld.id SET tsi.price = d.years * tld.price;
+
+INSERT INTO PaymentMethod (method) VALUES
+('VNPay'),
+('MoMo'),
+('CreditCard'),
+('ZaloPay');
 
 INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
 ('HD001', '14931583', 1, 'COMPLETED', '2025-01-21 08:15:32'),
