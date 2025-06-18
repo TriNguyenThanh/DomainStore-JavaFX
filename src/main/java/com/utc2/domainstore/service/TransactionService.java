@@ -1,8 +1,11 @@
 package com.utc2.domainstore.service;
 
 import com.utc2.domainstore.entity.database.*;
+import com.utc2.domainstore.entity.view.BillViewModel;
 import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.repository.*;
+import com.utc2.domainstore.view.ConfigManager;
+import com.utc2.domainstore.view.UserSession;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -66,17 +69,10 @@ public class TransactionService implements ITransactionService {
             DomainModel d = new DomainModel();
             d.setId(ti.getDomainId());
             DomainModel domain = DomainRepository.getInstance().selectById(d);
-            String type = "";
-            if (t.getRenewal()) {
-                jsonObject.put("years", ti.getYears());
-                type = "Gia hạn ";
-            } else {
-                jsonObject.put("years", domain.getYears());
-                type = "Đăng ký ";
-            }
             jsonObject.put("name", domain.getDomainName() + domain.getTopLevelDomainbyId(domain.getTldId()).getTldText());
             jsonObject.put("status", domain.getStatus());
             jsonObject.put("price", domain.getPrice());
+            jsonObject.put("years", ti.getYears());
             jsonArray.put(jsonObject);
         }
         JSONObject result = new JSONObject();
@@ -108,7 +104,7 @@ public class TransactionService implements ITransactionService {
         for (Object o : list) {
             JSONObject jsonObject = (JSONObject) o;
             STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
-            if (status.equals(STATUS.PAYMENT) || status.equals(STATUS.CONFIRM)) {
+            if(status.equals(STATUS.PAYMENT) || status.equals(STATUS.CONFIRM)){
                 JSONObject j = new JSONObject();
                 j.put("status", "failed");
                 j.put("message", "Đang có hoá đơn khác đang được xử lý. Vui lòng hoàn tất hoặc huỷ trước khi tiếp tục.");
@@ -182,7 +178,7 @@ public class TransactionService implements ITransactionService {
             int domainId = getDomainByName(jsonObject.getString("name"));
             int year = jsonObject.getInt("years");
             long price = jsonObject.getLong("price") * year;
-            if (!is_renewal) {
+            if(!is_renewal){
                 DomainModel d = DomainRepository.getInstance().selectById(new DomainModel(domainId, null, 0, null, null, 0));
                 d.setYears(year);
                 d.setStatus(DomainStatusEnum.SOLD);
@@ -228,7 +224,7 @@ public class TransactionService implements ITransactionService {
                     domain.setActiveDate(Timestamp.valueOf(LocalDateTime.now()));
                     domain.setOwnerId(cus.getId());
                     domain.setPrice(domain.getTopLevelDomainbyId(domain.getTldId()).getPrice());
-                } else {
+                }else{
                     domain.setYears(domain.getYears() + transactionInfoModel.getYears());
                 }
                 DomainRepository.getInstance().update(domain);
@@ -238,7 +234,7 @@ public class TransactionService implements ITransactionService {
             notifier.notifySoldDomains(cus.getEmail(), domains, tran.getRenewal());
 
         } else if (TransactionStatusEnum.CANCELLED.equals(status)) {
-            if (!tran.getRenewal()) {
+            if(!tran.getRenewal()){
                 for (TransactionInfoModel transactionInfoModel : listTranInfo) {
                     // lấy thông tin tên miền
                     DomainModel domain = getInfoDomain(transactionInfoModel);
@@ -247,7 +243,7 @@ public class TransactionService implements ITransactionService {
                     DomainRepository.getInstance().update(domain);
                 }
             }
-        } else {
+        }else{
             System.out.println("Không hỗ trợ cập nhật trạng thái này !!");
             return;
         }
