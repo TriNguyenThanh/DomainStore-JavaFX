@@ -150,8 +150,12 @@ public class TransactionController implements Initializable {
             STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
             Integer price = jsonObject.getInt("total_price");
             Integer userId = jsonObject.getInt("user_id");
+            Boolean is_renewal = jsonObject.getBoolean("is_renewal");
 
-            bills.add(new BillViewModel(id, date, status, price, userId));
+            BillViewModel bill = new BillViewModel(id, date, status, price, userId);
+            bill.setIs_renewal(is_renewal);
+
+            bills.add(bill);
         }
 
         return bills;
