@@ -157,9 +157,9 @@ INSERT INTO TopLevelDomain (TLD_text, price) VALUES
 ('.edu.vn', 100000);
 INSERT INTO domains (domain_name, tld_id, STATUS, active_date, years, owner_id) VALUES
 ('diamonielts', 1, 'AVAILABLE', NULL, 1, NULL),
-('example', 3, 'SOLD', '2024-05-07 17:00:00', 2, 3),
-('testdomain', 6, 'SOLD', '2024-05-07 17:00:00', 2, 3),
-('mywebsite', 1, 'SOLD', '2024-05-07 17:00:00', 2, 3),
+('example', 3, 'SOLD', '2024-05-07 17:00:00', 1, 3),
+('testdomain', 6, 'SOLD', '2024-05-07 17:00:00', 1, 3),
+('mywebsite', 1, 'SOLD', '2024-05-07 17:00:00', 1, 3),
 ('yourdomain123', 2, 'SOLD', NULL, 1, NULL),
 ('newproject3213', 3, 'SOLD', NULL, 1, NULL),
 ('spicydonut1', 4, 'AVAILABLE', NULL, 1, NULL),
@@ -293,7 +293,7 @@ INSERT INTO PaymentMethod (id, method) VALUES
 INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
 ('HD001', '14931583', 1, 'COMPLETED', '2025-01-21 08:15:32'),
 -- HD002: cancelled
-('HD004', '2194000', 1, 'COMPLETED', '2025-05-07 11:42:07'),
+('HD004', '14936383', 1, 'COMPLETED', '2025-05-07 11:42:07'),
 -- HD005: cancelled
 ('HD006', '14938357', 1, 'COMPLETED', '2025-04-20 14:29:55'),
 -- HD008: cancelled
