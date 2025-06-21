@@ -56,8 +56,8 @@ CREATE INDEX idx_carts_cus_id ON carts(cus_id);
 CREATE INDEX idx_carts_domain_id ON carts(domain_id);
 
 CREATE TABLE PaymentMethod (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    method ENUM('VNPay', 'MoMo', 'CreditCard', 'ZaloPay', 'N/A')
+    id INT PRIMARY KEY,
+    method ENUM('N/A', 'VNPay', 'MoMo', 'CreditCard', 'ZaloPay')
 );
 
 CREATE TABLE Transactions (
@@ -283,11 +283,12 @@ UPDATE Transactions_info tsi
 JOIN Domains d ON d.id = tsi.domain_id
 JOIN TopLevelDomain tld ON d.tld_id = tld.id SET tsi.price = d.years * tld.price;
 
-INSERT INTO PaymentMethod (method) VALUES
-('VNPay'),
-('MoMo'),
-('CreditCard'),
-('ZaloPay');
+INSERT INTO PaymentMethod (id, method) VALUES
+(0, 'N/A'),
+(1, 'VNPay'),
+(2, 'MoMo'),
+(3, 'CreditCard'),
+(4, 'ZaloPay');
 
 INSERT INTO PaymentHistory (transaction_id, payment_id, payment_method, payment_status, payment_date) VALUES
 ('HD001', '14931583', 1, 'COMPLETED', '2025-01-21 08:15:32'),
