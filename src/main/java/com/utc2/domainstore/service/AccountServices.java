@@ -177,19 +177,17 @@ public class AccountServices implements IAccount {
             return response;
         }
 
-        //tạo otp
+        // tạo otp
         String otp = generateOtp();
-        String subject = "Mã OTP đặt lại mật khẩu";
-        String content = "Mã OTP của bạn là: " + otp + "\nMã này có hiệu lực trong 5 phút.";
 
-        //gọi emailUtil
-        EmailUtil.sendEmail(userEmail,subject,content);
-
-        //update Otp trong db
+        // update Otp
         int result = CustomerRepository.getInstance().updateOtp(userEmail, otp, userPhone);
 
-        // Trả về kết quả JSON
         if (result > 0) {
+            String subject = "Mã OTP đặt lại mật khẩu";
+            String content = "Mã OTP của bạn là: " + otp + "\nMã này có hiệu lực trong 5 phút.";
+            EmailUtil.sendEmail(userEmail, subject, content);
+
             response.put("status", "success");
             response.put("message", "OTP sent to email.");
         } else {
