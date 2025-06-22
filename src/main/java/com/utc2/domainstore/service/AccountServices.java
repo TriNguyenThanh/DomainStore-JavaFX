@@ -164,26 +164,34 @@ public class AccountServices implements IAccount {
 
     @Override
     public JSONObject sendOtpToUser(JSONObject t) {
-        String userPhone = t.getString("phone");
         String userEmail = t.getString("email");
-        String otp = generateOtp();
-        String subject = "Mã OTP đặt lại mật khẩu";
-        String content = "Mã OTP của bạn là: " + otp + "\nMã này có hiệu lực trong 5 phút.";
 
-        //gọi emailUtil
-        EmailUtil.sendEmail(userEmail,subject,content);
-
-        //update Otp trong db
-        int result = CustomerRepository.getInstance().updateOtp(userEmail, otp, userPhone);
-
-        // Trả về kết quả JSON
         JSONObject response = new JSONObject();
+
+        // kiểm tra email và phone có tồn tại hay không
+        boolean exists = CustomerRepository.getInstance().existsByEmail(userEmail);
+        if (!exists) {
+            response.put("status", "failed");
+            response.put("message", "Invalid email.");
+            return response;
+        }
+
+        // tạo otp
+        String otp = generateOtp();
+
+        // update Otp
+        int result = CustomerRepository.getInstance().updateOtp(userEmail, otp);
+
         if (result > 0) {
+            String subject = "Mã OTP đặt lại mật khẩu";
+            String content = "Mã OTP của bạn là: " + otp + "\nMã này có hiệu lực trong 5 phút.";
+            EmailUtil.sendEmail(userEmail, subject, content);
+
             response.put("status", "success");
-            response.put("message", "OTP sent to email.");
+            response.put("message", otp);
         } else {
             response.put("status", "failed");
-            response.put("message", "Invalid email or phone number.");
+            response.put("message", "Invalid email.");
         }
 
         return response;
