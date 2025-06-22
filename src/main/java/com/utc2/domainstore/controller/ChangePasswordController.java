@@ -24,7 +24,7 @@ public class ChangePasswordController implements Initializable {
     private boolean isChecking = false;
 
     @FXML
-    private Label lbNewErr, lbConfirmErr, lbPhoneErr, lbEmailErr;
+    private Label lbNewErr, lbConfirmErr, lbPhoneErr, lbEmailErr, lbPhone;
     @FXML
     private PasswordField tfNew, tfConfirm;
     @FXML
@@ -87,6 +87,12 @@ public class ChangePasswordController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+
+        this.tfPhone.setVisible(false);
+        this.lbPhoneErr.setVisible(false);
+        tfPhone.setText("0987654329");
+        lbPhone.setVisible(false);
+
         accountServices = new AccountServices();
         setAction();
     }
