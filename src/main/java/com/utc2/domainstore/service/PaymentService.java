@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.utc2.domainstore.entity.database.*;
+import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.repository.PaymentHistoryRepository;
 import com.utc2.domainstore.repository.TransactionInfoRepository;
@@ -20,6 +21,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class PaymentService implements IPaymentService {
     private final PaymentHistoryRepository paymentHistoryDAO = new PaymentHistoryRepository();
@@ -84,9 +86,19 @@ public class PaymentService implements IPaymentService {
 
         PaymentTypeEnum typeEnum = PaymentTypeEnum.valueOf(payment);
         if ((tran.getPaymentMethod() > 0 && tran.getPaymentMethod() < 5 ) && tran.getPaymentMethod() != typeEnum.getCode()) {
-            return response("failed", "Không thể thay đổi phương thức thanh toán khi đã chọn. Vui lòng huỷ trước.");
+            String s = Objects.requireNonNull(PaymentTypeEnum.getPaymentMethod(tran.getPaymentMethod())).toString();
+            return response("failed", "Không thể thay đổi phương thức thanh toán khi đã chọn.\n" +
+                    "Vui lòng huỷ phương thức " + s + " trước !!");
         }
-
+        ArrayList<TransactionModel> listTran = TransactionRepository.getInstance()
+                .selectByCondition("user_id="+tran.getUserId()+" and transaction_status='PAYMENT'");
+        if(!listTran.isEmpty() && tran.getTransactionStatus() != TransactionStatusEnum.PAYMENT){
+            JSONObject j = new JSONObject();
+            j.put("status", "failed");
+            j.put("message", "Đang có hoá đơn khác đang được xử lý.\nVui lòng hoàn tất hoặc huỷ trước khi tiếp tục !!");
+            System.out.println("Đang có hoá đơn khác đang được xử lý. ");
+            return j;
+        }
         if (isRunning) {
             // Đóng server
             server.stop(0);
