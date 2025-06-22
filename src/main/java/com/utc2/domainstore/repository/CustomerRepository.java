@@ -233,13 +233,12 @@ public class CustomerRepository implements IRepository<CustomerModel> {
     }
 
     //update otp by email
-    public int updateOtp(String email, String otp, String phone) {
-        String sql = "UPDATE users SET otp = ?, otp_created_at = NOW() WHERE email = ? AND is_deleted = false AND phone = ?";
+    public int updateOtp(String email, String otp) {
+        String sql = "UPDATE users SET otp = ?, otp_created_at = NOW() WHERE email = ? AND is_deleted = false";
         try (Connection con = JDBC.getConnection();
              PreparedStatement pst = con.prepareStatement(sql)) {
             pst.setString(1, otp);
             pst.setString(2, email);
-            pst.setString(3, phone);
             return pst.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -266,6 +265,20 @@ public class CustomerRepository implements IRepository<CustomerModel> {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, phone);
             stmt.setString(2, email);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            JDBC.closeConnection(conn);
+        }
+    }
+    public boolean existsByEmail(String email) {
+        Connection conn = JDBC.getConnection();
+        String sql = "SELECT 1 FROM users WHERE email = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             return rs.next();
         } catch (SQLException e) {

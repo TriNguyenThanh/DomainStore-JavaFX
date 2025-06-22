@@ -164,16 +164,15 @@ public class AccountServices implements IAccount {
 
     @Override
     public JSONObject sendOtpToUser(JSONObject t) {
-        String userPhone = t.getString("phone");
         String userEmail = t.getString("email");
 
         JSONObject response = new JSONObject();
 
         // kiểm tra email và phone có tồn tại hay không
-        boolean exists = CustomerRepository.getInstance().existsByPhoneAndEmail(userPhone, userEmail);
+        boolean exists = CustomerRepository.getInstance().existsByEmail(userEmail);
         if (!exists) {
             response.put("status", "failed");
-            response.put("message", "Invalid email or phone number.");
+            response.put("message", "Invalid email.");
             return response;
         }
 
@@ -181,7 +180,7 @@ public class AccountServices implements IAccount {
         String otp = generateOtp();
 
         // update Otp
-        int result = CustomerRepository.getInstance().updateOtp(userEmail, otp, userPhone);
+        int result = CustomerRepository.getInstance().updateOtp(userEmail, otp);
 
         if (result > 0) {
             String subject = "Mã OTP đặt lại mật khẩu";
@@ -189,10 +188,10 @@ public class AccountServices implements IAccount {
             EmailUtil.sendEmail(userEmail, subject, content);
 
             response.put("status", "success");
-            response.put("message", "OTP sent to email.");
+            response.put("message", otp);
         } else {
             response.put("status", "failed");
-            response.put("message", "Invalid email or phone number.");
+            response.put("message", "Invalid email.");
         }
 
         return response;
