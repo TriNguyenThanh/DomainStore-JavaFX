@@ -199,7 +199,6 @@ public class testService {
         // ====== TEST 22: Gửi otp ======
 //        AccountServices a = new AccountServices();
 //        JSONObject b = new JSONObject();
-//        b.put("phone", "0923456789");
 //        b.put("email", "auduongtan321@gmail.com");
 //        JSONObject result = a.sendOtpToUser(b);
 //        System.out.println("testService.main: " + result.toString(2));
