@@ -123,16 +123,24 @@ public class TransactionInfoController implements Initializable, PaymentListener
     private void handlePay() throws IOException {
         RadioButton rbPayment = checkPaymentMethod();
         String paymentmethod = "";
+
         if (rbPayment == null) {
             SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("warning"), null, bundle.getString("error.paymentMethod"));
-        } else if (rbPayment == rbVN_Pay) {
-            paymentmethod = "VNPAY";
-            rbZalo_Pay.setDisable(true);
-        } else if (rbPayment == rbZalo_Pay) {
-            paymentmethod = "ZALOPAY";
-            rbVN_Pay.setDisable(true);
-        } else if (rbPayment == rbMoMo_Pay) {
-            paymentmethod = "MOMO";
+        } else {
+            for (Object o : paymentMethod.getToggles()) {
+                RadioButton rb = (RadioButton) o;
+                rb.setDisable(true);
+            }
+            if (rbPayment == rbVN_Pay) {
+                paymentmethod = "VNPAY";
+                rbVN_Pay.setDisable(false);
+            } else if (rbPayment == rbZalo_Pay) {
+                paymentmethod = "ZALOPAY";
+                rbZalo_Pay.setDisable(false);
+            } else if (rbPayment == rbMoMo_Pay) {
+                paymentmethod = "MOMO";
+                rbMoMo_Pay.setDisable(false);
+            }
         }
         // Handle the payment return
         JSONObject request = new JSONObject();

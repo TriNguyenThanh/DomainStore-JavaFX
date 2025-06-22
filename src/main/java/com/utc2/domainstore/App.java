@@ -15,7 +15,7 @@ public class App extends Application {
         try {
             boolean test = true;
             if (test) {
-                UserSession.getInstance().setUserId(4);
+                UserSession.getInstance().setUserId(1);
                 UserSession.getInstance().setRole(RoleEnum.ADMIN);
             }
         } catch (Exception e) {
