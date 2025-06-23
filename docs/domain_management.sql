@@ -157,9 +157,9 @@ INSERT INTO TopLevelDomain (TLD_text, price) VALUES
 ('.edu.vn', 100000);
 INSERT INTO domains (domain_name, tld_id, STATUS, active_date, years, owner_id) VALUES
 ('diamonielts', 1, 'AVAILABLE', NULL, 1, NULL),
-('example', 3, 'SOLD', '2024-05-07 17:00:00', 1, 3),
-('testdomain', 6, 'SOLD', '2024-05-07 17:00:00', 1, 3),
-('mywebsite', 1, 'SOLD', '2024-05-07 17:00:00', 1, 3),
+('example', 3, 'SOLD', '2024-05-07 17:00:00', 2, 3),
+('testdomain', 6, 'SOLD', '2024-05-07 17:00:00', 2, 3),
+('mywebsite', 1, 'SOLD', '2024-05-07 17:00:00', 2, 3),
 ('yourdomain123', 2, 'SOLD', NULL, 1, NULL),
 ('newproject3213', 3, 'SOLD', NULL, 1, NULL),
 ('spicydonut1', 4, 'AVAILABLE', NULL, 1, NULL),
@@ -245,9 +245,9 @@ INSERT INTO Transactions_info (transactions_id, domain_id, years) VALUES
 ('HD003', 6, 1),
 
 -- HD004
-('HD004', 2, 1),
-('HD004', 3, 1),
-('HD004', 4, 1),
+('HD004', 2, 2),
+('HD004', 3, 2),
+('HD004', 4, 2),
 
 -- HD005 (cancelled)
 ('HD005', 7, 1),
