@@ -185,6 +185,11 @@ public class MainController implements Initializable {
         });
     }
 
+    public void refresh() {
+        System.out.println("Refresh " + currentFxmlPath);
+        load(currentFxmlPath, true);
+    }
+
     public void setCurrentFxmlPath(String currentFxmlPath) {
         if (currentFxmlPath.equals("/fxml/dashboard.fxml") ||
                 currentFxmlPath.equals("/fxml/search.fxml") ||

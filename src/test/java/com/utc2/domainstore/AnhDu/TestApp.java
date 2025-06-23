@@ -92,7 +92,7 @@ public class TestApp {
 //        TransactionInfoModel t =new TransactionInfoModel(); t.setTransactionId("HD001");
 //        System.out.println(TransactionInfoRepository.getInstance().selectById(t));
         // Insert
-//        TransactionInfoModel t = new TransactionInfoModel("HD001", 2, 66666);
+//        TransactionInfoModel t = new TransactionInfoModel("HD001", 2, 66666L);
 //        TransactionInfoRepository.getInstance().insert(t);
         //Update
 //        TransactionInfoModel t = new TransactionInfoModel("HD001", 15, 0L);
@@ -102,21 +102,23 @@ public class TestApp {
 //        TransactionInfoRepository.getInstance().delete(t);
 
         JSONArray domainArray = new JSONArray();
-        JSONObject domain1 = new JSONObject();
-        domain1.put("name", "globalban3.biz"); // 2
-        domain1.put("status", "available");
-        domain1.put("price", 299000);
-        domain1.put("years", 20);
-        domainArray.put(domain1);
+//        JSONObject domain1 = new JSONObject();
+//        domain1.put("name", "globalban3.biz"); // 8
+//        domain1.put("status", "AVAILABLE");
+//        domain1.put("price", 299000);
+//        domain1.put("years", 20);
+//        domainArray.put(domain1);
         JSONObject domain2 = new JSONObject();
-        domain2.put("name", "diamonielts.com"); // 1
-        domain2.put("status", "available");
+//        domain2.put("name", "diamonielts.com"); // 1
+        domain2.put("name", "supercool.com"); // 14
+        domain2.put("status", "SOLD");
         domain2.put("price", 99000);
         domain2.put("years", 30);
         domainArray.put(domain2);
 //
         JSONObject domains = new JSONObject();
-        domains.put("user_id", 2);
+        domains.put("user_id", 4);
+        domains.put("is_renewal", 1);
         domains.put("domains", domainArray);
 
         /* tạo hoá đơn
@@ -134,13 +136,22 @@ public class TestApp {
                     transactionId (String)
                  }
         response: true / false (boolean) */
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("transactionId", "HD002");
-//        jsonObject.put("total", 895000);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("transactionId", "HD011");
+        jsonObject.put("total", 2970000);
+        jsonObject.put("paymentMethod", "MOMO");
 //        PaymentService paymentService = new PaymentService();
+//        paymentService.resetPayment("HD011");
 //        System.out.println(paymentService.createPayment(jsonObject));
+//        JSONObject jsonObject1 = new JSONObject();
+//        jsonObject1.put("transactionId", "HD011");
+//        jsonObject1.put("total", 2970000);
+//        jsonObject1.put("paymentMethod", "ZALOPAY");
+//        System.out.println(paymentService.createPayment(jsonObject1));
 //          Tạo hoá đơn pdf
 //        GenerateService generateService = new GenerateService();
-//        generateService.generateInvoicePDF("HD006");
+//        generateService.generateInvoicePDF("HD011");
+//        generateService.exportExcel("user");
+//        generateService.exportExcel("domain");
     }
 }

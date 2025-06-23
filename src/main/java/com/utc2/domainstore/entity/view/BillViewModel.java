@@ -8,13 +8,16 @@ public class BillViewModel {
     private STATUS status;
     private Integer price;
     private Integer userId;
+    private Boolean is_renewal = false;
+    private Integer method;
 
-    public BillViewModel(String id, LocalDateTime date, STATUS status, Integer price, Integer userId) {
+    public BillViewModel(String id, LocalDateTime date, STATUS status, Integer price, Integer userId, Integer method) {
         this.id = id;
         this.date = date;
         this.status = status;
         this.price = price;
         this.userId = userId;
+        this.method = method;
     }
 
     public BillViewModel() {
@@ -58,5 +61,34 @@ public class BillViewModel {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Boolean getIs_renewal() {
+        return is_renewal;
+    }
+
+    public void setIs_renewal(Boolean is_renewal) {
+        this.is_renewal = is_renewal;
+    }
+
+    public Integer getMethod() {
+        return method;
+    }
+
+    public void setMethod(Integer method) {
+        this.method = method;
+    }
+
+    @Override
+    public String toString() {
+        return "BillViewModel{" +
+                "id='" + id + '\'' +
+                ", date=" + date +
+                ", status=" + status +
+                ", price=" + price +
+                ", userId=" + userId +
+                ", is_renewal=" + is_renewal +
+                ", method='" + method + '\'' +
+                '}';
     }
 }

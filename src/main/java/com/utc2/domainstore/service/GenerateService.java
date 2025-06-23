@@ -14,12 +14,9 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,46 +39,48 @@ public class GenerateService implements IGenerateService {
         PaymentHistoryModel payment = PaymentHistoryRepository.getInstance().selectById(new PaymentHistoryModel(transactionId, null, null, null, null));
         copyFont();
         try {
+            System.out.println("Đang tiến hành xuất PDF ......");
             JasperReport jasperReport = input("/report/invoice_domain.jasper");
             Map<String, Object> data = new HashMap<>();
             SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             data.put("fullName", cus.getFullName());
             data.put("phone", cus.getPhone());
             data.put("email", cus.getEmail());
-            data.put("transactionDate", outputFormat.format(tran.getTransactionDate()));
-            data.put("invoiceDate", outputFormat.format(Timestamp.valueOf(LocalDateTime.now())));
+            data.put("invoiceDate", outputFormat.format(tran.getTransactionDate()));
             data.put("transactionId", transactionId);
             if (payment != null) {
+                data.put("transactionDate", outputFormat.format(payment.getPaymentDate()));
                 data.put("paymentMethod", String.valueOf(PaymentTypeEnum.getPaymentMethod(payment.getPaymentMethodId())));
                 if (PaymentStatusEnum.COMPLETED.equals(payment.getPaymentStatus())) {
                     data.put("paymentStatus", "ĐÃ THANH TOÁN");
                 } else data.put("paymentStatus", "CHƯA THANH TOÁN");
-                data.put("accountName", cus.getFullName());
-                data.put("accountNumber", "9704198526191432198");
-                data.put("bank", "NCB - Ngân hàng Quốc Dân");
-                data.put("content", "Thanh toán hóa đơn " + transactionId);
+                data.put("paymentId", payment.getPaymentCode());
+                data.put("price", tran.getTotalCost());
             } else {
-                data.put("paymentMethod", "Không");
+                data.put("transactionDate", "");
+                data.put("paymentMethod", "");
                 data.put("paymentStatus", "CHƯA THANH TOÁN");
-                data.put("accountName", "Không");
-                data.put("accountNumber", "Không");
-                data.put("bank", "Không");
-                data.put("content", "Không");
+                data.put("paymentId", "");
+                data.put("price", "");
             }
             List<Map<String, Object>> list = new ArrayList<>();
             list.add(data);
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
 
+            String text;
+            if(tran.getRenewal()) text = "Duy trì tên miền: ";
+            else text = "Đăng ký tên miền: ";
             List<Map<String, Object>> dataDomain = new ArrayList<>();
             for (TransactionInfoModel t : tran.getTransactionInfos()) {
                 DomainModel domain = domainRepo.selectById(new DomainModel(t.getDomainId(), null, 0, null, null, 0));
                 Map<String, Object> mp = new HashMap<>();
                 TopLevelDomainModel tld = domain.getTopLevelDomainbyId(domain.getTldId());
-                mp.put("domainName", domain.getDomainName() + tld.getTldText());
+                mp.put("domainName", text + domain.getDomainName() + tld.getTldText());
                 mp.put("years", domain.getYears());
                 mp.put("price", tld.getPrice());
                 dataDomain.add(mp);
             }
+            System.out.println("Lấy dữ liệu thành công ...");
             JRBeanCollectionDataSource tableDataSource = new JRBeanCollectionDataSource(dataDomain);
 
             Map<String, Object> parameters = new HashMap<>();
@@ -89,11 +88,11 @@ public class GenerateService implements IGenerateService {
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
-            System.out.println("Đang tiến hành xuất PDF ......");
             File invoiceDir = new File("invoices");
             if (!invoiceDir.exists()) {
                 System.out.println(invoiceDir.mkdirs());
             }
+            System.out.println("Đang lưu file ...");
             // Xử lý tên file an toàn
             String safeName = cus.getFullName().replaceAll("\\s+", "");
             // Tạo đường dẫn file
@@ -102,16 +101,16 @@ public class GenerateService implements IGenerateService {
             String pdfPath = invoiceDir.getAbsolutePath() + File.separator + transactionId + "_" + safeName + dateTime + ".pdf";
             JasperExportManager.exportReportToPdfFile(jasperPrint, pdfPath);
 
+            System.out.println("Đang gửi về mail ...");
             EmailUtil.sendEmailFile(cus.getEmail(), "Hoá đơn dịch vụ UTC2 Domain Store",
-                    "Cảm ơn Quý khách đã sử dụng dịch vụ UTC2 Domain Store" , pdfPath);
-            String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Đường dẫn đến file chrome.exe
-//            String command = "cmd /c start \"\" \"" + pdfPath + "\"";
-//            Runtime.getRuntime().exec(command);
-            Desktop.getDesktop().browse(new URI(pdfPath));
+                    "Cảm ơn Quý khách đã sử dụng dịch vụ UTC2 Domain Store", pdfPath);
+
+            String command = "cmd /c start \"\" \"" + pdfPath + "\"";
+            Runtime.getRuntime().exec(command);
+
+            System.out.println("Xuất PDF thành công !!");
         } catch (JRException | IOException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
@@ -121,33 +120,33 @@ public class GenerateService implements IGenerateService {
         copyFont();
         try {
             JasperReport jasperReport;
-            if(type.equals("domain"))
+            if (type.equals("domain"))
                 jasperReport = input("/report/export_domain.jasper");
             else if (type.equals("user"))
                 jasperReport = input("/report/export_user.jasper");
-            else{
+            else {
                 System.out.println("Dữ liệu đầu vào không hợp lệ !!");
                 return;
             }
 
             List<Map<String, Object>> TABLE_DATASET = new ArrayList<>();
-            if(type.equals("domain")){
+            if (type.equals("domain")) {
                 for (DomainModel d : DomainRepository.getInstance().selectAll()) {
                     Map<String, Object> mp = new HashMap<>();
                     mp.put("id", d.getId());
                     mp.put("domain_name", d.getDomainName());
                     mp.put("tld_id", d.getTldId());
                     mp.put("status", String.valueOf(d.getStatus()));
-                    if(d.getActiveDate() != null) mp.put("active_date", String.valueOf(d.getActiveDate()));
+                    if (d.getActiveDate() != null) mp.put("active_date", String.valueOf(d.getActiveDate()));
                     else mp.put("active_date", "");
                     mp.put("years", d.getYears());
                     mp.put("price", d.getPrice());
-                    if(d.getOwnerId() != null) mp.put("owner_id", d.getOwnerId());
+                    if (d.getOwnerId() != null) mp.put("owner_id", d.getOwnerId());
                     else mp.put("owner_id", 0);
                     mp.put("created_at", String.valueOf(d.getCreatedAt()));
                     TABLE_DATASET.add(mp);
                 }
-            }else {
+            } else {
                 for (CustomerModel c : CustomerRepository.getInstance().selectAll()) {
                     Map<String, Object> mp = new HashMap<>();
                     mp.put("id", c.getId());
@@ -156,7 +155,7 @@ public class GenerateService implements IGenerateService {
                     mp.put("phone", c.getPhone());
                     mp.put("role", String.valueOf(c.getRole()));
                     mp.put("password", c.getPasswordHash());
-                    if(c.getIsDeleted()) mp.put("is_deleted", "Khoá");
+                    if (c.getIsDeleted()) mp.put("is_deleted", "Khoá");
                     else mp.put("is_deleted", "Hoạt động");
                     mp.put("created_at", String.valueOf(c.getCreatedAt()));
                     TABLE_DATASET.add(mp);
@@ -191,7 +190,7 @@ public class GenerateService implements IGenerateService {
             exporter.setConfiguration(config);
             exporter.exportReport();
 
-            String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Đường dẫn đến file chrome.exe
+            //String chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"; // Đường dẫn đến file chrome.exe
             String command = "cmd /c start \"\" \"" + Path + "\"";
             Runtime.getRuntime().exec(command);
         } catch (JRException | IOException e) {
@@ -232,6 +231,7 @@ public class GenerateService implements IGenerateService {
             System.err.println("Lỗi khi copy project: " + e.getMessage());
         }
     }
+
     private JasperReport input(String file) throws JRException {
         InputStream jasperStream = getClass().getResourceAsStream(file);
         return (JasperReport) JRLoader.loadObject(jasperStream);

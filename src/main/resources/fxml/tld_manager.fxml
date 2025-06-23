@@ -18,7 +18,7 @@
                     </BorderPane.margin>
                     <children>
                         <Label alignment="CENTER" layoutX="434.0" layoutY="14.0" styleClass="header"
-                               text="%paymentManager" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0"
+                               text="%tld_management" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0"
                                AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0"/>
                     </children>
                     <effect>
@@ -53,7 +53,8 @@
                                         <TableColumn fx:id="colPrice" prefWidth="150" text="%price"/>
                                     </columns>
                                 </TableView>
-                                <HBox AnchorPane.leftAnchor="120.0" AnchorPane.bottomAnchor="10.0" spacing="30"
+                                <HBox fx:id="ActionButtons" AnchorPane.leftAnchor="120.0" AnchorPane.bottomAnchor="10.0"
+                                      spacing="30"
                                       prefWidth="470" alignment="CENTER">
                                     <children>
                                         <Button fx:id="btAdd" mnemonicParsing="false"

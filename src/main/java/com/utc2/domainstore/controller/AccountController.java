@@ -142,6 +142,8 @@ public class AccountController implements Initializable {
         Scene scene = null;
         try {
             scene = new Scene(fxmlLoader.load());
+            ChangePasswordController controller = fxmlLoader.getController();
+            controller.setRootEmail(rootData.getEmail());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

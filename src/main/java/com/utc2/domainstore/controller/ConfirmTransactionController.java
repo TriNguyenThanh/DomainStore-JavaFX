@@ -129,15 +129,13 @@ public class ConfirmTransactionController implements Initializable {
         for (Object o : list) {
             JSONObject jsonObject = (JSONObject) o;
             STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
-            if (status != STATUS.CONFIRM) {
-                continue;
-            }
             String id = jsonObject.getString("id");
             LocalDateTime date = LocalDateTime.parse(jsonObject.optString("date"), ConfigManager.getInstance().getParser());
             Integer price = jsonObject.getInt("total_price");
             Integer userId = jsonObject.getInt("user_id");
+            Integer method = jsonObject.getInt("method");
 
-            bills.add(new BillViewModel(id, date, status, price, userId));
+            bills.add(new BillViewModel(id, date, status, price, userId, method));
         }
 
         return bills;

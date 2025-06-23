@@ -26,7 +26,7 @@
                                 <Label styleClass="error"/>
                                 <Label alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="300.0" text="%username">
                                     <VBox.margin>
-                                        <Insets right="10.0" top="14.0"/>
+                                        <Insets right="10.0"/>
                                     </VBox.margin>
                                 </Label>
                                 <Label styleClass="error"/>
@@ -88,7 +88,7 @@
                                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
-                                                <Image url="@../icon/save_2.png"/>
+                                                <Image url="@../icon/save2.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>
@@ -101,7 +101,7 @@
                                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
-                                                <Image url="@../icon/cancel_2.png"/>
+                                                <Image url="@../icon/cancel2.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>
@@ -114,7 +114,7 @@
                                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
-                                                <Image url="@../icon/logout_2.png"/>
+                                                <Image url="@../icon/logout2.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>
@@ -127,7 +127,7 @@
                                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
-                                                <Image url="@../icon/password_2.png"/>
+                                                <Image url="@../icon/password2.png"/>
                                             </image>
                                         </ImageView>
                                     </graphic>

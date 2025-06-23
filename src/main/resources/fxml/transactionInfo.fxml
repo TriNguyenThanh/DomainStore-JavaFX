@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <AnchorPane prefHeight="800.0" prefWidth="600.0" styleClass="pnBackground" stylesheets="@../style/subwindow.css"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
@@ -89,7 +90,46 @@
             <bottom>
                 <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <right>
-                        <AnchorPane fx:id="imgQR" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+                        <AnchorPane fx:id="paymentPanel" prefHeight="200.0" prefWidth="246.0"
+                                    BorderPane.alignment="CENTER">
+                            <children>
+                                <Label fx:id="lbChange" styleClass="clickable" text="%paymentChange"/>
+                                <RadioButton fx:id="rbVN_Pay" layoutX="-14.0" layoutY="20.0" mnemonicParsing="false"
+                                             styleClass="label" text="VN Pay" AnchorPane.leftAnchor="20.0"
+                                             AnchorPane.topAnchor="30.0">
+                                    <graphic>
+                                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../image/logoVNPay.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </RadioButton>
+                                <RadioButton fx:id="rbZalo_Pay" mnemonicParsing="false" styleClass="label"
+                                             text="Zalo Pay" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="70.0">
+                                    <graphic>
+                                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../image/logoZaloPay.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </RadioButton>
+                                <RadioButton fx:id="rbMoMo_Pay" mnemonicParsing="false" styleClass="label" text="MoMo"
+                                             AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="110.0">
+                                    <graphic>
+                                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true"
+                                                   preserveRatio="true">
+                                            <image>
+                                                <Image url="@../image/logoMomo.png"/>
+                                            </image>
+                                        </ImageView>
+                                    </graphic>
+                                </RadioButton>
+                            </children>
+                        </AnchorPane>
                     </right>
                     <center>
                         <AnchorPane prefHeight="149.0" prefWidth="527.0" BorderPane.alignment="CENTER">
@@ -114,12 +154,11 @@
                                         </VBox>
                                     </children>
                                 </HBox>
-                                <AnchorPane prefHeight="50.0" prefWidth="579.0"/>
                             </children>
                         </AnchorPane>
                     </center>
                     <bottom>
-                        <HBox fx:id="btContainer" prefHeight="50.0" prefWidth="200.0" spacing="30.0" alignment="CENTER"
+                        <HBox fx:id="btContainer" alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="30.0"
                               AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                             <children>
                                 <Button fx:id="btExport" mnemonicParsing="false" onAction="#handleButtonOnAction"

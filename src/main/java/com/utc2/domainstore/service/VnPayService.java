@@ -91,7 +91,7 @@ public class VnPayService implements IPaymentGateway{
             if (vnp_SecureHash == null) {
                 result.put("status", "invalid");
                 result.put("message", "Không tìm thấy chữ ký bảo mật");
-                transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
+//                transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
                 return result;
             }
 
@@ -121,22 +121,24 @@ public class VnPayService implements IPaymentGateway{
                     result.put("payDate", formattedDate );
                     result.put("transactionNo", fields.get("vnp_TransactionNo"));
 
-                    // Tạo thanh toán, chuyển tới trang thanh toán
+                    // Lưu lịch sử giao dịch
                     PaymentHistoryModel paymentHistoryModel = new PaymentHistoryModel(transactionId, fields.get("vnp_TransactionNo"),
                             PaymentTypeEnum.VNPAY.getCode(), PaymentStatusEnum.COMPLETED, Timestamp.valueOf(LocalDateTime.now()));
                     PaymentHistoryRepository.getInstance().insert(paymentHistoryModel);
+                    // bỏ vì frontend đã xử lý rồi, nếu không có frontend xử lý thì mở
+//                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.COMPLETED);
                 } else {
                     // Payment failed
                     result.put("status", "failed");
                     result.put("message", "Thanh toán thất bại. Mã lỗi: " + vnp_ResponseCode);
                     result.put("txnRef", fields.get("vnp_TxnRef"));
-                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.PAYMENT);
+//                    transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.PAYMENT);
                 }
             } else {
                 // Invalid signature
                 result.put("status", "invalid");
                 result.put("message", "Chữ ký không hợp lệ");
-                transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
+//                transactionService.updateTransactionStatus(transactionId, TransactionStatusEnum.CANCELLED);
             }
         } catch (Exception e) {
             e.printStackTrace();

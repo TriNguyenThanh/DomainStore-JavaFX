@@ -17,7 +17,7 @@
                            BorderPane.alignment="CENTER">
                     <children>
                         <Label alignment="CENTER" prefHeight="60.0" styleClass="lbHeader"
-                               stylesheets="@../style/main.css" text="UTC2 DOMAIN STORE">
+                               stylesheets="@../style/main.css" text="DOMAIN STORE">
                             <graphic>
                                 <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                     <image>

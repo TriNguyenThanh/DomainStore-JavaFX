@@ -6,9 +6,13 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public interface ITransactionService {
-    public JSONObject getAllTransaction();
-    public JSONObject getAllUserTransaction(JSONObject json);
-    public JSONObject getTransactionInfomation(JSONObject json);
-    public JSONObject createTransaction(JSONObject json) throws IOException;
-    public void updateTransactionStatus(String transactionId, TransactionStatusEnum status);
+    JSONObject getAllTransaction();
+
+    JSONObject getAllUserTransaction(JSONObject json);
+
+    JSONObject getTransactionInfomation(JSONObject json);
+
+    JSONObject createTransaction(JSONObject json) throws IOException;
+
+    void updateTransactionStatus(String transactionId, TransactionStatusEnum status);
 }

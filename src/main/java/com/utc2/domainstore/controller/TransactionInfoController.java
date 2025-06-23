@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.json.JSONArray;
@@ -37,9 +38,11 @@ public class TransactionInfoController implements Initializable, PaymentListener
     private PaymentViewModel paymentViewModel;
     private METHOD method;
     private TransactionService transactionService = new TransactionService();
+    private PaymentService paymentService = new PaymentService();
+    private ToggleGroup paymentMethod = new ToggleGroup();
 
     @FXML
-    private Label lbUsername, lbPhone, lbEmail, lbBillID, lbDate, lbTotal;
+    private Label lbUsername, lbPhone, lbEmail, lbBillID, lbDate, lbTotal, lbChange;
     @FXML
     private Label lbStatus, lbPaymentID, lbMethod, lbPaymentDate;
     @FXML
@@ -56,12 +59,16 @@ public class TransactionInfoController implements Initializable, PaymentListener
     private TableColumn<DomainViewModel, STATUS> colDomainStatus;
     @FXML
     private TableColumn<DomainViewModel, Integer> colDomainYears;
+    @FXML
+    private AnchorPane paymentPanel;
+    @FXML
+    private RadioButton rbVN_Pay, rbZalo_Pay, rbMoMo_Pay;
 
     @FXML
     private void handleButtonOnAction(ActionEvent e) throws IOException {
         if (e.getSource() == btExport) {
             // export
-            hanldleExport();
+            handleExport();
         } else if (e.getSource() == btPay) {
             // pay
             handlePay();
@@ -77,26 +84,37 @@ public class TransactionInfoController implements Initializable, PaymentListener
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        rbVN_Pay.setToggleGroup(paymentMethod);
+        rbZalo_Pay.setToggleGroup(paymentMethod);
+        rbMoMo_Pay.setToggleGroup(paymentMethod);
     }
 
     public void setMethod(METHOD method) {
         this.method = method;
+        paymentViewModel = getPaymentViewModel();
         List<Button> buttons = new ArrayList<>();
         if (method == METHOD.PAY) {
             // Set up for payment
             buttons.add(btPay);
             buttons.add(btCancel);
+
+            lbChange.setVisible(false);
+            lbChange.setOnMouseClicked(ActionEvent -> {
+                handleChange();
+                lbChange.setVisible(false);
+//                System.out.println("change payment method");
+            });
         } else if (method == METHOD.CONFIRM) {
             // Set up for confirmation
             buttons.add(btAccept);
             buttons.add(btCancel);
+            paymentPanel.setVisible(false);
         } else if (method == METHOD.REVIEW) {
             // Set up for review
+            paymentPanel.setVisible(false);
             if (billViewModel.getStatus() == STATUS.COMPLETED) {
                 buttons.add(btExport);
-                paymentViewModel = getPaymentViewModel();
             }
-
         }
         btContainer.getChildren().clear();
         btContainer.getChildren().addAll(buttons);
@@ -104,10 +122,34 @@ public class TransactionInfoController implements Initializable, PaymentListener
     }
 
     private void handlePay() throws IOException {
+        RadioButton rbPayment = checkPaymentMethod();
+        String paymentmethod = "";
+
+        if (rbPayment == null) {
+            SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("warning"), null, bundle.getString("error.paymentMethod"));
+            return;
+        } else {
+            lbChange.setVisible(true);
+            for (Object o : paymentMethod.getToggles()) {
+                RadioButton rb = (RadioButton) o;
+                rb.setDisable(true);
+            }
+            if (rbPayment == rbVN_Pay) {
+                paymentmethod = "VNPAY";
+                rbVN_Pay.setDisable(false);
+            } else if (rbPayment == rbZalo_Pay) {
+                paymentmethod = "ZALOPAY";
+                rbZalo_Pay.setDisable(false);
+            } else if (rbPayment == rbMoMo_Pay) {
+                paymentmethod = "MOMO";
+                rbMoMo_Pay.setDisable(false);
+            }
+        }
         // Handle the payment return
         JSONObject request = new JSONObject();
         request.put("transactionId", billViewModel.getId());
         request.put("total", billViewModel.getPrice());
+        request.put("paymentMethod", paymentmethod);
 
         PaymentService paymentService = new PaymentService();
         paymentService.setListener(this);
@@ -115,7 +157,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
         if (response.getString("status").equals("failed")) {
             // Open payment window
             SceneManager.getInstance().showDialog(Alert.AlertType.ERROR, "error", null, response.getString("message"));
-            transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.CANCELLED);
+//            transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.CANCELLED);
             System.out.println("Transaction canceled: " + billViewModel.getId());
             ((Stage) btCancel.getScene().getWindow()).close();
         }
@@ -136,12 +178,22 @@ public class TransactionInfoController implements Initializable, PaymentListener
         ((Stage) btCancel.getScene().getWindow()).close();
     }
 
-    private void hanldleExport() {
+    private void handleExport() {
         // Handle the export action
         System.out.println("Exporting transaction: " + billViewModel.getId());
         // Implement export logic here
         GenerateService generateService = new GenerateService();
         generateService.generateInvoicePDF(billViewModel.getId());
+    }
+
+    private void handleChange() {
+        String id = billViewModel.getId();
+        paymentService.resetPayment(id);
+
+        for (Object o : paymentMethod.getToggles()) {
+            RadioButton rb = (RadioButton) o;
+            rb.setDisable(false);
+        }
     }
 
     private void displayBillInfo() {
@@ -158,10 +210,37 @@ public class TransactionInfoController implements Initializable, PaymentListener
             lbPaymentID.setText(String.valueOf(paymentViewModel.getPaymentID()));
             lbMethod.setText(paymentViewModel.getMethod());
             lbPaymentDate.setText(paymentViewModel.getPaymentDate().format(ConfigManager.getInstance().getDateTimeFormatter()));
+
         } else {
             lbPaymentID.setText("");
             lbMethod.setText("");
             lbPaymentDate.setText("");
+        }
+
+        Integer payment_method = billViewModel.getMethod();
+
+        if (payment_method != 0) {
+
+            lbChange.setVisible(true);
+            for (Object o : paymentMethod.getToggles()) {
+                RadioButton rb = (RadioButton) o;
+                rb.setDisable(true);
+            }
+
+            switch (payment_method) {
+                case 1 -> {
+                    rbVN_Pay.setDisable(false);
+                    rbVN_Pay.setSelected(true);
+                }
+                case 4 -> {
+                    rbZalo_Pay.setDisable(false);
+                    rbZalo_Pay.setSelected(true);
+                }
+                case 2 -> {
+                    rbMoMo_Pay.setDisable(false);
+                    rbMoMo_Pay.setSelected(true);
+                }
+            }
         }
     }
 
@@ -262,7 +341,18 @@ public class TransactionInfoController implements Initializable, PaymentListener
                 setMethod(METHOD.REVIEW);
             } else {
                 SceneManager.getInstance().showDialog(Alert.AlertType.ERROR, "error", null, bundle.getString("notice.paymentFailed"));
+                btPay.setDisable(false);
+                for (Toggle rb : paymentMethod.getToggles()) {
+                    ((RadioButton) rb).setDisable(false);
+                }
             }
         });
+    }
+
+    private RadioButton checkPaymentMethod() {
+        if (paymentMethod.getSelectedToggle() == null) {
+            return null;
+        }
+        return (RadioButton) paymentMethod.getSelectedToggle();
     }
 }
