@@ -31,6 +31,8 @@ public class DomainViewModel {
         this.date = date;
         this.ownerID = ownerID;
         this.ownerName = ownerName;
+
+        if (this.status == STATUS.SOLD && ownerID == null) this.status = STATUS.PAYMENT;
     }
 
     public String getName() {

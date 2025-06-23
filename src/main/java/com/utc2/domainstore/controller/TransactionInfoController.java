@@ -111,9 +111,9 @@ public class TransactionInfoController implements Initializable, PaymentListener
             paymentPanel.setVisible(false);
         } else if (method == METHOD.REVIEW) {
             // Set up for review
+            paymentPanel.setVisible(false);
             if (billViewModel.getStatus() == STATUS.COMPLETED) {
                 buttons.add(btExport);
-                paymentPanel.setVisible(false);
             }
         }
         btContainer.getChildren().clear();
@@ -157,7 +157,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
         if (response.getString("status").equals("failed")) {
             // Open payment window
             SceneManager.getInstance().showDialog(Alert.AlertType.ERROR, "error", null, response.getString("message"));
-            transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.CANCELLED);
+//            transactionService.updateTransactionStatus(billViewModel.getId(), TransactionStatusEnum.CANCELLED);
             System.out.println("Transaction canceled: " + billViewModel.getId());
             ((Stage) btCancel.getScene().getWindow()).close();
         }
