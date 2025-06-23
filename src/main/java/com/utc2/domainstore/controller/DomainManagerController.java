@@ -79,7 +79,7 @@ public class DomainManagerController implements Initializable {
         data = getData();
 
         btRemove.setVisible(false);
-        cbStatus.getItems().addAll(List.of("", bundle.getString("status.available"), bundle.getString("status.sold")));
+        cbStatus.getItems().addAll(List.of("", bundle.getString("status.available"), bundle.getString("status.sold"), bundle.getString("status.payment")));
         initTable();
     }
 
