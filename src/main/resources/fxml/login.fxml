@@ -49,7 +49,7 @@
                             <PasswordField fx:id="passwordField" layoutX="206.0" layoutY="152.0" prefHeight="26.0"
                                            prefWidth="268.0" AnchorPane.rightAnchor="10.0"/>
                             <Label alignment="CENTER_RIGHT" layoutX="28.0" layoutY="71.0" prefHeight="30.0"
-                                   text="%username"/>
+                                   text="%phone"/>
                             <Label alignment="CENTER_RIGHT" layoutX="30.0" layoutY="160.0" prefHeight="30.0"
                                    text="%password"/>
                             <CheckBox fx:id="cbShowPassword" layoutX="350.0" layoutY="198.0" mnemonicParsing="false"
