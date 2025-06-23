@@ -21,7 +21,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -42,6 +41,8 @@ public class MyDomainController implements Initializable {
     private AtomicInteger renew = new AtomicInteger(0);
     private Integer previousValue = 0;
     private ITransactionService transactionService = new TransactionService();
+    private DomainViewModel selectedDomain = null;
+
     @FXML
     private TableView<DomainViewModel> tbDomain;
     @FXML
@@ -67,19 +68,51 @@ public class MyDomainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
         initTable();
+
+        tfYears = new Spinner<>(0, 10, 1);
+        tfYears.setEditable(true);
+        tfYears.getEditor().positionCaret(tfYears.getEditor().getText().length());
+
+        // Khi thay đổi bằng nút mũi tên
+        tfYears.valueProperty().addListener((obs, oldVal, newVal) -> {
+            renew.set(newVal);
+        });
+
+        tfYears.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            try {
+                if (newValue.isBlank()) newValue = "0";
+                Integer value = Integer.parseInt(newValue);
+                if (value > 10) value = 10;
+                tfYears.getEditor().setText(String.valueOf(value));
+            } catch (NumberFormatException e) {
+                tfYears.getEditor().setText(oldValue);
+            }
+        });
+
+        tfYears.getEditor().setOnAction(ActionEvent -> {
+            handleUpdate();
+        });
+
+        btComfirm = new Button(bundle.getString("confirm"));
+        btComfirm.setOnAction(actionEvent -> {
+            renew.set(tfYears.getValue());
+            if (renew.get() > 0) {
+                Optional<ButtonType> buttonType = SceneManager.getInstance().showDialog(Alert.AlertType.CONFIRMATION, bundle.getString("information"), null, bundle.getString("notice.domainRenew"));
+                if (buttonType.isPresent() && buttonType.get() == ButtonType.OK) {
+                    createTransactions(selectedDomain);
+                }
+            }
+            
+            ((Stage) btComfirm.getScene().getWindow()).close();
+        });
     }
 
     private void handleUpdate() {
-        DomainViewModel domainViewModel = null;
-        domainViewModel = tbDomain.getSelectionModel().getSelectedItem();
-        if (domainViewModel == null) {
+        selectedDomain = tbDomain.getSelectionModel().getSelectedItem();
+        if (selectedDomain == null) {
             SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("warning"), null, bundle.getString("error.noSelect"));
         } else {
             getYear();
-            Optional<ButtonType> buttonType = SceneManager.getInstance().showDialog(Alert.AlertType.CONFIRMATION, bundle.getString("information"), null, bundle.getString("notice.domainRenew"));
-            if (buttonType.isPresent() && buttonType.get() == ButtonType.OK) {
-                createTransactions(domainViewModel);
-            }
         }
     }
 
@@ -140,65 +173,8 @@ public class MyDomainController implements Initializable {
         return list;
     }
 
-    private void validateInput(Spinner<Integer> spinner) {
-        String text = spinner.getEditor().getText();
-        try {
-            int value = Integer.parseInt(text);
-            if (value < 0) {
-                spinner.getValueFactory().setValue(0);
-                spinner.getEditor().setText("0");
-            } else if (value > 10) {
-                spinner.getValueFactory().setValue(10);
-                spinner.getEditor().setText("10");
-            } else {
-                spinner.getValueFactory().setValue(value);
-                spinner.getEditor().setText(String.valueOf(value));
-            }
-        } catch (NumberFormatException e) {
-            spinner.getValueFactory().setValue(0);
-            spinner.getEditor().setText("0");
-        }
-        spinner.getEditor().positionCaret(spinner.getEditor().getText().length());
-    }
-
     private void getYear() {
         renew.set(0);
-        tfYears = new Spinner<>(0, 10, 1);
-        tfYears.setEditable(true);
-        tfYears.getEditor().positionCaret(tfYears.getEditor().getText().length());
-
-        //loc key
-        tfYears.getEditor().addEventFilter(KeyEvent.KEY_TYPED, event -> {
-            if (!event.getCharacter().matches("[0-9]")) {
-                event.consume();
-            }
-        });
-
-        tfYears.getEditor().setOnKeyReleased(event -> {
-            String text = tfYears.getEditor().getText();
-            if (!text.matches("\\d*")) return;
-
-            validateInput(tfYears);
-            System.out.println(tfYears.getValue());
-        });
-
-        // Khi mất focus, kiểm tra giá trị nhập
-        tfYears.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
-            if (!isNowFocused) {
-                validateInput(tfYears);
-            }
-        });
-
-        // Khi thay đổi bằng nút mũi tên
-        tfYears.valueProperty().addListener((obs, oldVal, newVal) -> {
-            previousValue = newVal; // Lưu lại giá trị hợp lệ gần nhất
-        });
-
-        btComfirm = new Button(bundle.getString("confirm"));
-        btComfirm.setOnAction(actionEvent -> {
-            renew.set(tfYears.getValue());
-            ((Stage) btComfirm.getScene().getWindow()).close();
-        });
 
         HBox content = new HBox(20);
         content.setPadding(new Insets(20));
