@@ -93,11 +93,12 @@
                         <AnchorPane fx:id="paymentPanel" prefHeight="200.0" prefWidth="246.0"
                                     BorderPane.alignment="CENTER">
                             <children>
+                                <Label fx:id="lbChange" styleClass="clickable" text="%paymentChange"/>
                                 <RadioButton fx:id="rbVN_Pay" layoutX="-14.0" layoutY="20.0" mnemonicParsing="false"
                                              styleClass="label" text="VN Pay" AnchorPane.leftAnchor="20.0"
-                                             AnchorPane.topAnchor="10.0">
+                                             AnchorPane.topAnchor="30.0">
                                     <graphic>
-                                        <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true"
+                                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
                                                 <Image url="@../image/logoVNPay.png"/>
@@ -106,9 +107,9 @@
                                     </graphic>
                                 </RadioButton>
                                 <RadioButton fx:id="rbZalo_Pay" mnemonicParsing="false" styleClass="label"
-                                             text="Zalo Pay" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="65.0">
+                                             text="Zalo Pay" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="70.0">
                                     <graphic>
-                                        <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true"
+                                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
                                                 <Image url="@../image/logoZaloPay.png"/>
@@ -116,10 +117,10 @@
                                         </ImageView>
                                     </graphic>
                                 </RadioButton>
-                                <RadioButton fx:id="rbMoMo_Pay" mnemonicParsing="false" styleClass="label"
-                                             text="MoMo" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="120.0">
+                                <RadioButton fx:id="rbMoMo_Pay" mnemonicParsing="false" styleClass="label" text="MoMo"
+                                             AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="110.0">
                                     <graphic>
-                                        <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true"
+                                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                             <image>
                                                 <Image url="@../image/logoMomo.png"/>

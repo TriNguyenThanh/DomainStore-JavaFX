@@ -83,7 +83,7 @@ public class PaymentService implements IPaymentService {
         String payment = json.getString("paymentMethod");
 
         PaymentTypeEnum typeEnum = PaymentTypeEnum.valueOf(payment);
-        if ((tran.getPaymentMethod() > 0 && tran.getPaymentMethod() < 5 ) && tran.getPaymentMethod() != typeEnum.getCode()) {
+        if ((tran.getPaymentMethod() > 0 && tran.getPaymentMethod() < 5) && tran.getPaymentMethod() != typeEnum.getCode()) {
             return response("failed", "Không thể thay đổi phương thức thanh toán khi đã chọn. Vui lòng huỷ trước.");
         }
 
@@ -95,7 +95,7 @@ public class PaymentService implements IPaymentService {
         server = HttpServer.create(new InetSocketAddress(8080), 0);
         if (payment.equals("VNPAY")) server.createContext("/vnpay", new VNPayReturnHandler());
         else if (payment.equals("ZALOPAY")) server.createContext("/zalopay", new ZaloPayReturnHandler());
-        else if(payment.equals("MOMO")) server.createContext("/momo", new MoMoReturnHandler());
+        else if (payment.equals("MOMO")) server.createContext("/momo", new MoMoReturnHandler());
         else {
             jsonObject.put("status", "failed");
             jsonObject.put("message", "Không hỗ trợ phương thức thanh toán này!!");
@@ -146,7 +146,7 @@ public class PaymentService implements IPaymentService {
 
     public void resetPayment(String transactionId) {
         TransactionModel t = TransactionRepository.getInstance().selectById_V2(transactionId);
-        t.setPaymentMethod(5);
+        t.setPaymentMethod(0);
         TransactionRepository.getInstance().update(t);
         System.out.println("Reset thanh toán");
     }
@@ -259,7 +259,7 @@ public class PaymentService implements IPaymentService {
         }
     }
 
-    public static class MoMoReturnHandler implements  HttpHandler{
+    public static class MoMoReturnHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
