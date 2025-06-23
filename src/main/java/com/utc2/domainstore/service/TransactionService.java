@@ -156,12 +156,15 @@ public class TransactionService implements ITransactionService {
                 ArrayList<TransactionModel> trans = transactionRepository.selectByCondition
                         ("user_id = " + userId + " AND domain_id = " + domainId + " AND is_renewal = " + renew);
                 if (!trans.isEmpty()) {
-                    for (TransactionModel t : trans){
-                        if(TransactionStatusEnum.CANCELLED != t.getTransactionStatus()){
+                    DomainModel d = DomainRepository.getInstance().selectById(new DomainModel(domainId, null, 0, null, null, 0));
+
+                    for (TransactionModel t : trans) {
+                        if (TransactionStatusEnum.CANCELLED != t.getTransactionStatus()
+                                && !d.getStatus().equals(DomainStatusEnum.AVAILABLE)) {
                             JSONObject response = new JSONObject();
                             response.put("status", "failed");
-                            response.put("message", "Tên miền " + domainName + " đã có trong hoá đơn !!");
-                            System.out.println("Tên miền " + domainName + " đã có trong hoá đơn !!");
+                            response.put("message", "Tên miền " + domainName + " đã có trong hoá đơn chưa hoàn tất hoặc vẫn còn hiệu lực !!");
+                            System.out.println("Tên miền " + domainName + " đã có trong hoá đơn chưa hoàn tất hoặc vẫn còn hiệu lực !!");
                             return response;
                         }
                     }
