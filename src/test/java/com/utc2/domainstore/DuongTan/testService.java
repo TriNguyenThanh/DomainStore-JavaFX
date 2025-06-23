@@ -157,7 +157,7 @@ public class testService {
         // ====== TEST 18: Thêm domain ======
 //        DomainServices a = new DomainServices();
 //        JSONObject b = new JSONObject();
-//        b.put("name", "diamonielts.net");
+//        b.put("name", "supermom.mom");
 //        JSONObject result = a.insertNewDomain(b);
 //        System.out.println(result.toString(2));
 
