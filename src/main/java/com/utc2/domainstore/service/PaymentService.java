@@ -158,7 +158,7 @@ public class PaymentService implements IPaymentService {
 
     public void resetPayment(String transactionId) {
         TransactionModel t = TransactionRepository.getInstance().selectById_V2(transactionId);
-        t.setPaymentMethod(5);
+        t.setPaymentMethod(0);
         TransactionRepository.getInstance().update(t);
         System.out.println("Reset thanh toán");
     }

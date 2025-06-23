@@ -31,6 +31,7 @@ public class TransactionService implements ITransactionService {
             jsonObject.put("date", t.getTransactionDate());
             jsonObject.put("status", t.getTransactionStatus());
             jsonObject.put("total_price", t.getTotalCost());
+            jsonObject.put("method", t.getPaymentMethod());
             jsonObject.put("user_id", t.getUserId());
             jsonArray.put(jsonObject);
         }
@@ -50,6 +51,7 @@ public class TransactionService implements ITransactionService {
             jsonObject.put("date", t.getTransactionDate());
             jsonObject.put("status", t.getTransactionStatus());
             jsonObject.put("total_price", t.getTotalCost());
+            jsonObject.put("method", t.getPaymentMethod());
             jsonObject.put("user_id", t.getUserId());
             jsonArray.put(jsonObject);
         }
