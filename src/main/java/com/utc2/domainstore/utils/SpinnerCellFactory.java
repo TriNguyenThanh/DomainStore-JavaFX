@@ -43,6 +43,24 @@ public class SpinnerCellFactory<T> extends TableCell<T, Integer> {
                     commitEdit(newValue); // Xác nhận chỉnh sửa
                 }
             }
+            System.out.println("value input: " + spinner.getEditor().getText());
+        });
+
+        spinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            try {
+                System.out.println("old: " + oldValue + " new: " + newValue);
+                if (newValue.isBlank()) newValue = "0";
+
+                int value = Integer.parseInt(newValue);
+
+                if (value > 10) {
+                    value = 10;
+                }
+                spinner.getEditor().setText(String.valueOf(value));
+            } catch (NumberFormatException e) {
+                // Restore previous valid value
+                spinner.getEditor().setText(oldValue);
+            }
         });
 
         this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
@@ -70,6 +88,23 @@ public class SpinnerCellFactory<T> extends TableCell<T, Integer> {
                         onValueChange.run(); // Trigger the callback
                     }
                 }
+            }
+        });
+
+        spinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            try {
+                System.out.println("old: " + oldValue + " new: " + newValue);
+                if (newValue.isBlank()) newValue = "0";
+
+                int value = Integer.parseInt(newValue);
+
+                if (value > 10) {
+                    value = 10;
+                }
+                spinner.getEditor().setText(String.valueOf(value));
+            } catch (NumberFormatException e) {
+                // Restore previous valid value
+                spinner.getEditor().setText(oldValue);
             }
         });
 

@@ -34,6 +34,7 @@ import java.util.ResourceBundle;
 
 public class TransactionController implements Initializable {
     private ResourceBundle bundle;
+    ITransactionService transactionService = new TransactionService();
 
     @FXML
     private TableView<BillViewModel> tableView;
@@ -139,7 +140,6 @@ public class TransactionController implements Initializable {
         JSONObject request = new JSONObject();
         request.put("user_id", UserSession.getInstance().getUserId());
 
-        ITransactionService transactionService = new TransactionService();
         JSONObject respond = transactionService.getAllUserTransaction(request);
         JSONArray list = respond.getJSONArray("transactions");
 
@@ -151,8 +151,9 @@ public class TransactionController implements Initializable {
             Integer price = jsonObject.getInt("total_price");
             Integer userId = jsonObject.getInt("user_id");
             Boolean is_renewal = jsonObject.getBoolean("is_renewal");
+            Integer method = jsonObject.getInt("method");
 
-            BillViewModel bill = new BillViewModel(id, date, status, price, userId);
+            BillViewModel bill = new BillViewModel(id, date, status, price, userId, method);
             bill.setIs_renewal(is_renewal);
 
             bills.add(bill);

@@ -1,5 +1,10 @@
 .pnBackground {
-    -fx-background-color: radial-gradient(center 50% 50%, radius 50%, #4A00E0, #8E2DE2);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #050C9C, #A7E6FF);
+}
+
+.label {
+    -fx-font-size: 40;
+    -fx-font-weight: bold;
 }
 
 .lbHeader {
@@ -9,7 +14,7 @@
 }
 
 .pnHeader {
-    -fx-background-color: #0000C6;
+    -fx-background-color: #3ABEF9;
     -fx-background-radius: 20;
 }
 
@@ -24,7 +29,7 @@
 .btSideBarItem {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 0 10 10 0;
-    -fx-border-color: #326FFF;
+    -fx-border-color: #A7E6FF;
     -fx-border-width: 0 0 0 0;
     -fx-border-radius: 0 10 10 0;
 
@@ -35,19 +40,15 @@
 
 .btSideBarItem:hover {
     -fx-border-width: 1 1 1 10;
-    -fx-background-color: #326FFF;
+    -fx-background-color: #A7E6FF;
 }
 
 .btSideBarItem:pressed {
     -fx-border-width: 1 1 1 10;
-    -fx-border-color: #0000C6;
-    -fx-background-color: #0000C6;
+    -fx-border-color: #3ABEF9;
+    -fx-background-color: #3ABEF9;
 }
 
-.label {
-    -fx-font-size: 40;
-    -fx-font-weight: bold;
-}
 
 .pnContent {
     -fx-background-color: #FFFFFF;

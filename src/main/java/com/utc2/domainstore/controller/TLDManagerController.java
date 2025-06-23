@@ -12,17 +12,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class TLDManagerController implements Initializable {
     private ResourceBundle bundle;
     private ITopLevelDomain tldServices = new TopLevelDomainServices();
+    private TLDViewModel selectedTLD = null;
 
     // initialize UI components
     @FXML
@@ -37,6 +40,8 @@ public class TLDManagerController implements Initializable {
     private TextField tfSearch, tfTLD, tfPrice;
     @FXML
     private Button btAdd, btEdit, btSave, btCancel;
+    @FXML
+    private HBox ActionButtons;
 
     @FXML
     private void onHandleButton(ActionEvent e) {
@@ -58,6 +63,8 @@ public class TLDManagerController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
+        //
+        ActionButtons.setVisible(false);
         // set up button
         setupEditor();
         // set up table
@@ -75,11 +82,29 @@ public class TLDManagerController implements Initializable {
 
         // add listener to table
         table.setOnMouseClicked(event -> {
-            TLDViewModel selectedTLD = table.getSelectionModel().getSelectedItem();
+            selectedTLD = table.getSelectionModel().getSelectedItem();
             if (selectedTLD != null) {
+                handleEditButton();
                 tfTLD.setText(selectedTLD.getName());
                 tfPrice.setText(String.valueOf(selectedTLD.getPrice()));
+                tfPrice.setEditable(true);
+                tfPrice.setFocusTraversable(true);
             }
+        });
+
+        tfPrice.textProperty().addListener((obs, oldValue, newValue) -> {
+            try {
+                if (newValue.isBlank()) {
+                    newValue = "0";
+                }
+                Integer value = Integer.parseInt(newValue);
+            } catch (NumberFormatException e) {
+                tfPrice.setText(oldValue);
+            }
+        });
+
+        tfPrice.setOnAction(ActionEvent -> {
+            handleSaveButton();
         });
     }
 
@@ -123,8 +148,6 @@ public class TLDManagerController implements Initializable {
 
         tfTLD.clear();
         tfPrice.clear();
-
-        tfPrice.setEditable(false);
     }
 
     // handle save button action
@@ -133,10 +156,19 @@ public class TLDManagerController implements Initializable {
         String tldPrice = tfPrice.getText();
 
         if (tldPrice.isEmpty() || !CheckingUtils.numberCheck(tldPrice)) {
-            SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("alert.warning"), null, bundle.getString("alert.emptyField"));
+            SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("warning"), null, bundle.getString("error.noSelect"));
             return;
         }
 
+        if (Integer.parseInt(tldPrice) == selectedTLD.getPrice()) {
+            handleCancelButton();
+            return;
+        }
+
+        Optional<ButtonType> buttonType = SceneManager.getInstance().showDialog(Alert.AlertType.CONFIRMATION, bundle.getString("save"), null, bundle.getString("notice.save"));
+        if (buttonType.isPresent() && buttonType.get() == ButtonType.NO) {
+            return;
+        }
         // get selected TLD
         TLDViewModel selectedTLD = table.getSelectionModel().getSelectedItem();
         if (selectedTLD != null) {
@@ -156,6 +188,7 @@ public class TLDManagerController implements Initializable {
                 selectedTLD.setPrice(Integer.parseInt(tldPrice));
             }
         }
+        MainController.getInstance().refresh();
     }
 
     // handle edit button action
