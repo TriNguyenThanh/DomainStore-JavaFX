@@ -208,6 +208,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setTransactionDate(rs.getTimestamp("transaction_date"));
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
                     t.setRenewal(rs.getBoolean("is_renewal"));
+                    t.setPaymentMethod(rs.getInt("method"));
                     t.setTotalCost(price);
                     t.getTransactionInfos().add(tsi);
                     listTransaction.add(t);
@@ -270,6 +271,7 @@ public class TransactionRepository implements IRepository<TransactionModel> {
                     t.setTransactionDate(rs.getTimestamp("transaction_date"));
                     t.setTransactionStatus(TransactionStatusEnum.valueOf(rs.getString("transaction_status")));
                     t.setRenewal(rs.getBoolean("is_renewal"));
+                    t.setPaymentMethod(rs.getInt("method"));
                     t.setTotalCost(price);
                     t.getTransactionInfos().add(tsi);
                     listTransaction.add(t);

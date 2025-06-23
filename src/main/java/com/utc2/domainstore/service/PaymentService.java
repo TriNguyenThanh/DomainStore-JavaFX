@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.utc2.domainstore.entity.database.*;
+import com.utc2.domainstore.entity.view.STATUS;
 import com.utc2.domainstore.repository.DomainRepository;
 import com.utc2.domainstore.repository.PaymentHistoryRepository;
 import com.utc2.domainstore.repository.TransactionInfoRepository;
@@ -20,6 +21,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class PaymentService implements IPaymentService {
     private final PaymentHistoryRepository paymentHistoryDAO = new PaymentHistoryRepository();
@@ -83,10 +85,20 @@ public class PaymentService implements IPaymentService {
         String payment = json.getString("paymentMethod");
 
         PaymentTypeEnum typeEnum = PaymentTypeEnum.valueOf(payment);
-        if ((tran.getPaymentMethod() > 0 && tran.getPaymentMethod() < 5) && tran.getPaymentMethod() != typeEnum.getCode()) {
-            return response("failed", "Không thể thay đổi phương thức thanh toán khi đã chọn. Vui lòng huỷ trước.");
+        if ((tran.getPaymentMethod() > 0 && tran.getPaymentMethod() < 5 ) && tran.getPaymentMethod() != typeEnum.getCode()) {
+            String s = Objects.requireNonNull(PaymentTypeEnum.getPaymentMethod(tran.getPaymentMethod())).toString();
+            return response("failed", "Không thể thay đổi phương thức thanh toán khi đã chọn.\n" +
+                    "Vui lòng huỷ phương thức " + s + " trước !!");
         }
-
+        ArrayList<TransactionModel> listTran = TransactionRepository.getInstance()
+                .selectByCondition("user_id="+tran.getUserId()+" and transaction_status='PAYMENT'");
+        if(!listTran.isEmpty() && tran.getTransactionStatus() != TransactionStatusEnum.PAYMENT){
+            JSONObject j = new JSONObject();
+            j.put("status", "failed");
+            j.put("message", "Đang có hoá đơn khác đang được xử lý.\nVui lòng hoàn tất hoặc huỷ trước khi tiếp tục !!");
+            System.out.println("Đang có hoá đơn khác đang được xử lý. ");
+            return j;
+        }
         if (isRunning) {
             // Đóng server
             server.stop(0);
@@ -95,7 +107,7 @@ public class PaymentService implements IPaymentService {
         server = HttpServer.create(new InetSocketAddress(8080), 0);
         if (payment.equals("VNPAY")) server.createContext("/vnpay", new VNPayReturnHandler());
         else if (payment.equals("ZALOPAY")) server.createContext("/zalopay", new ZaloPayReturnHandler());
-        else if (payment.equals("MOMO")) server.createContext("/momo", new MoMoReturnHandler());
+        else if(payment.equals("MOMO")) server.createContext("/momo", new MoMoReturnHandler());
         else {
             jsonObject.put("status", "failed");
             jsonObject.put("message", "Không hỗ trợ phương thức thanh toán này!!");
@@ -259,7 +271,7 @@ public class PaymentService implements IPaymentService {
         }
     }
 
-    public static class MoMoReturnHandler implements HttpHandler {
+    public static class MoMoReturnHandler implements  HttpHandler{
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {

@@ -31,6 +31,7 @@ public class TransactionService implements ITransactionService {
             jsonObject.put("date", t.getTransactionDate());
             jsonObject.put("status", t.getTransactionStatus());
             jsonObject.put("total_price", t.getTotalCost());
+            jsonObject.put("method", t.getPaymentMethod());
             jsonObject.put("user_id", t.getUserId());
             jsonArray.put(jsonObject);
         }
@@ -50,6 +51,7 @@ public class TransactionService implements ITransactionService {
             jsonObject.put("date", t.getTransactionDate());
             jsonObject.put("status", t.getTransactionStatus());
             jsonObject.put("total_price", t.getTotalCost());
+            jsonObject.put("method", t.getPaymentMethod());
             jsonObject.put("user_id", t.getUserId());
             jsonArray.put(jsonObject);
         }
@@ -99,20 +101,20 @@ public class TransactionService implements ITransactionService {
             System.out.println("Tạo hoá đơn thất bại");
             return jsonObject;
         }
-        JSONObject respond = getAllUserTransaction(json);
-        JSONArray list = respond.getJSONArray("transactions");
-        for (Object o : list) {
-            JSONObject jsonObject = (JSONObject) o;
-            STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
-            if(status.equals(STATUS.PAYMENT) || status.equals(STATUS.CONFIRM)){
-                JSONObject j = new JSONObject();
-                j.put("status", "failed");
-                j.put("message", "Đang có hoá đơn khác đang được xử lý. Vui lòng hoàn tất hoặc huỷ trước khi tiếp tục.");
-                System.out.println("Đang có hoá đơn khác đang được xử lý. ");
-                return jsonObject;
-            }
-
-        }
+//        JSONObject respond = getAllUserTransaction(json);
+//        JSONArray list = respond.getJSONArray("transactions");
+//        for (Object o : list) {
+//            JSONObject jsonObject = (JSONObject) o;
+//            STATUS status = STATUS.valueOf(jsonObject.get("status").toString());
+//            if(status.equals(STATUS.PAYMENT) || status.equals(STATUS.CONFIRM)){
+//                JSONObject j = new JSONObject();
+//                j.put("status", "failed");
+//                j.put("message", "Đang có hoá đơn khác đang được xử lý. Vui lòng hoàn tất hoặc huỷ trước khi tiếp tục.");
+//                System.out.println("Đang có hoá đơn khác đang được xử lý. ");
+//                return j;
+//            }
+//
+//        }
 //        for(TransactionModel t : TransactionRepository.getInstance().selectAll_V3()){
 //            if(t.getTransactionStatus().equals(TransactionStatusEnum.PAYMENT)
 //                || t.getTransactionStatus().equals(TransactionStatusEnum.CONFIRM)){
