@@ -9,9 +9,9 @@ public class BillViewModel {
     private Integer price;
     private Integer userId;
     private Boolean is_renewal = false;
-    private String method;
+    private Integer method;
 
-    public BillViewModel(String id, LocalDateTime date, STATUS status, Integer price, Integer userId, String method) {
+    public BillViewModel(String id, LocalDateTime date, STATUS status, Integer price, Integer userId, Integer method) {
         this.id = id;
         this.date = date;
         this.status = status;
@@ -71,11 +71,11 @@ public class BillViewModel {
         this.is_renewal = is_renewal;
     }
 
-    public String getMethod() {
+    public Integer getMethod() {
         return method;
     }
 
-    public void setMethod(String method) {
+    public void setMethod(Integer method) {
         this.method = method;
     }
 

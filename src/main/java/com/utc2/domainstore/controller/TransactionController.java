@@ -151,8 +151,7 @@ public class TransactionController implements Initializable {
             Integer price = jsonObject.getInt("total_price");
             Integer userId = jsonObject.getInt("user_id");
             Boolean is_renewal = jsonObject.getBoolean("is_renewal");
-//            String method = jsonObject.getString("method");
-            String method = "VNPay";
+            Integer method = jsonObject.getInt("method");
 
             BillViewModel bill = new BillViewModel(id, date, status, price, userId, method);
             bill.setIs_renewal(is_renewal);

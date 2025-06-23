@@ -53,7 +53,8 @@
                                         <TableColumn fx:id="colPrice" prefWidth="150" text="%price"/>
                                     </columns>
                                 </TableView>
-                                <HBox AnchorPane.leftAnchor="120.0" AnchorPane.bottomAnchor="10.0" spacing="30"
+                                <HBox fx:id="ActionButtons" AnchorPane.leftAnchor="120.0" AnchorPane.bottomAnchor="10.0"
+                                      spacing="30"
                                       prefWidth="470" alignment="CENTER">
                                     <children>
                                         <Button fx:id="btAdd" mnemonicParsing="false"
@@ -100,4 +101,5 @@
             </center>
         </BorderPane>
     </children>
+</AnchorPane>
 </AnchorPane>

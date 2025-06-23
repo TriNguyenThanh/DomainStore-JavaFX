@@ -127,6 +127,7 @@ public class TransactionInfoController implements Initializable, PaymentListener
 
         if (rbPayment == null) {
             SceneManager.getInstance().showDialog(Alert.AlertType.WARNING, bundle.getString("warning"), null, bundle.getString("error.paymentMethod"));
+            return;
         } else {
             lbChange.setVisible(true);
             for (Object o : paymentMethod.getToggles()) {
@@ -134,13 +135,13 @@ public class TransactionInfoController implements Initializable, PaymentListener
                 rb.setDisable(true);
             }
             if (rbPayment == rbVN_Pay) {
-                paymentmethod = "VNPay";
+                paymentmethod = "VNPAY";
                 rbVN_Pay.setDisable(false);
             } else if (rbPayment == rbZalo_Pay) {
-                paymentmethod = "ZaloPay";
+                paymentmethod = "ZALOPAY";
                 rbZalo_Pay.setDisable(false);
             } else if (rbPayment == rbMoMo_Pay) {
-                paymentmethod = "MoMo";
+                paymentmethod = "MOMO";
                 rbMoMo_Pay.setDisable(false);
             }
         }
@@ -216,24 +217,26 @@ public class TransactionInfoController implements Initializable, PaymentListener
             lbPaymentDate.setText("");
         }
 
-        String payment_method = billViewModel.getMethod();
+        Integer payment_method = billViewModel.getMethod();
 
-        if (!payment_method.equals("N/A")) {
+        if (payment_method != 0) {
+
+            lbChange.setVisible(true);
             for (Object o : paymentMethod.getToggles()) {
                 RadioButton rb = (RadioButton) o;
                 rb.setDisable(true);
             }
 
             switch (payment_method) {
-                case "VNPay" -> {
+                case 1 -> {
                     rbVN_Pay.setDisable(false);
                     rbVN_Pay.setSelected(true);
                 }
-                case "ZaloPay" -> {
+                case 4 -> {
                     rbZalo_Pay.setDisable(false);
                     rbZalo_Pay.setSelected(true);
                 }
-                case "MoMo" -> {
+                case 2 -> {
                     rbMoMo_Pay.setDisable(false);
                     rbMoMo_Pay.setSelected(true);
                 }

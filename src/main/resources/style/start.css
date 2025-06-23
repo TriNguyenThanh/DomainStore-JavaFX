@@ -1,5 +1,5 @@
 .pane {
-    -fx-background-color: #3F40FF;
+    -fx-background-color: #050C9C;
 }
 
 .pane .debug {
@@ -13,7 +13,7 @@
 }
 
 .label.header{
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #A7E6FF;
     -fx-font-size: 40;
     -fx-font-weight: bold;
 }
